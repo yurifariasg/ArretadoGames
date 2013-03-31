@@ -103,6 +103,8 @@ public class LevelEditorView extends FrameView {
         mainPanel = new javax.swing.JPanel();
         activateBoxBtn = new javax.swing.JButton();
         gameCanvas1 = new com.arretados.leveleditor.GameCanvas();
+        activateGroundBtn = new javax.swing.JButton();
+        activateApple = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -131,12 +133,28 @@ public class LevelEditorView extends FrameView {
         gameCanvas1.setLayout(gameCanvas1Layout);
         gameCanvas1Layout.setHorizontalGroup(
             gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 339, Short.MAX_VALUE)
+            .addGap(0, 341, Short.MAX_VALUE)
         );
         gameCanvas1Layout.setVerticalGroup(
             gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 230, Short.MAX_VALUE)
+            .addGap(0, 243, Short.MAX_VALUE)
         );
+
+        activateGroundBtn.setText(resourceMap.getString("activateGroundBtn.text")); // NOI18N
+        activateGroundBtn.setName("activateGroundBtn"); // NOI18N
+        activateGroundBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activateGroundBtnActionPerformed(evt);
+            }
+        });
+
+        activateApple.setText(resourceMap.getString("activateApple.text")); // NOI18N
+        activateApple.setName("activateApple"); // NOI18N
+        activateApple.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activateAppleActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -144,8 +162,11 @@ public class LevelEditorView extends FrameView {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(activateBoxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(activateApple, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(activateBoxBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(activateGroundBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(gameCanvas1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -156,6 +177,10 @@ public class LevelEditorView extends FrameView {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(activateBoxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(activateGroundBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(activateApple, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addComponent(gameCanvas1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
@@ -200,7 +225,7 @@ public class LevelEditorView extends FrameView {
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 258, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 274, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -224,11 +249,21 @@ public class LevelEditorView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void activateBoxBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activateBoxBtnActionPerformed
-
+        gameCanvas1.setModeBox(true);
     }//GEN-LAST:event_activateBoxBtnActionPerformed
 
+private void activateGroundBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activateGroundBtnActionPerformed
+        gameCanvas1.setModeGround(true);
+}//GEN-LAST:event_activateGroundBtnActionPerformed
+
+private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activateAppleActionPerformed
+        gameCanvas1.setModeApple(true);
+}//GEN-LAST:event_activateAppleActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton activateApple;
     private javax.swing.JButton activateBoxBtn;
+    private javax.swing.JButton activateGroundBtn;
     private com.arretados.leveleditor.GameCanvas gameCanvas1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
