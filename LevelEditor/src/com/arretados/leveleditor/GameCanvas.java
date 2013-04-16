@@ -5,6 +5,8 @@
 
 package com.arretados.leveleditor;
 
+import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.Fruit;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -18,13 +20,11 @@ import javax.swing.JPanel;
  * @author bruno
  */
 public class GameCanvas extends JPanel implements MouseListener{
-
-    private List<int[]> positions = new ArrayList<int[]>();
+    
+    private List<Box> boxPos = new ArrayList<Box>();
+    private List<Fruit> circlePos = new ArrayList<Fruit>();
     private List<int[]> groundPos = new ArrayList<int[]>();
-    private List<int[]> circlePos = new ArrayList<int[]>();
-    private boolean modeBox = false;
-    private boolean modeGround = false;
-    private boolean modeApple = false;
+    DrawMode mode = DrawMode.BOX;
 
     public GameCanvas() {
         addMouseListener(this);
@@ -36,13 +36,15 @@ public class GameCanvas extends JPanel implements MouseListener{
         g.fillRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
         g.setColor(Color.red);
 
-        int posX,posY;
-        for (int i = 0; i < positions.size(); i++){
-            posX = positions.get(i)[0];
-            posY = positions.get(i)[1];
-            g.drawRect(posX, posY, 50, 50);
+        for (int i = 0; i < boxPos.size(); i++){
+            boxPos.get(i).drawMyself(g);
         }
-        
+
+        for (int i = 0; i < circlePos.size(); i++){
+            circlePos.get(i).drawMyself(g);
+        }
+
+        int posX,posY;
         posX = 0;
         posY = 0;
         for (int i = 0; i < groundPos.size(); i++){
@@ -53,90 +55,72 @@ public class GameCanvas extends JPanel implements MouseListener{
             else
                 g.drawLine( groundPos.get(i-1)[0], groundPos.get(i-1)[1], posX, posY);
         }
-        
-        posX = 0;
-        posY = 0;
-        for (int i = 0; i < circlePos.size(); i++){
-            posX = circlePos.get(i)[0];
-            posY = circlePos.get(i)[1];
-            g.drawOval(posX, posY, 25, 25);
-        }
     }
 
     public void drawBox(int x,int y){
-        //lista de caixas
-        //positions.add(new int[]{x- boxWidth/2 ...});
-        positions.add(new int[]{x-25, y-25});
-        repaint();
-    }
-    
-    public void drawGroundLine(int x,int y){
-        //lista de pontos
-        groundPos.add(new int[]{x, y});
+        boxPos.add(new Box(x, y));
         repaint();
     }
     
     public void drawApple(int x, int y){
-        circlePos.add(new int[]{x-12, y-12});
+        circlePos.add(new Fruit(x, y));
+        repaint();
+    }
+    
+    public void drawGroundLine(int x,int y){
+        int lastPointX = 0;
+        
+        if (groundPos.size() > 0) {
+            lastPointX = groundPos.get(groundPos.size()-1)[0];  //Gets the last point
+        }
+        
+        if ( x >= lastPointX){  //Verify if the point that will be created comes after the last point
+            groundPos.add(new int[]{x, y});     
+        }
         repaint();
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (modeBox){
-            drawBox(e.getX(), e.getY());
+        
+        switch (mode) {
+            
+            case BOX:
+                drawBox(e.getX(), e.getY());
+            break;
+
+            case FRUIT:
+                drawApple(e.getX(), e.getY());
+            break;
+
+            case LINE:
+                drawGroundLine(e.getX(), e.getY());
+            break;
+
+            default: 
+                System.out.println("BUG");
+            break;            
         }
-        if (modeGround){
-            drawGroundLine(e.getX(), e.getY());
-        }
-        if (modeApple){
-            drawApple(e.getX(), e.getY());
-        }
-    }
-
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    public void mouseExited(MouseEvent e) {
-
     }
     
-    public boolean getModeBox(){
-        return this.modeBox;
+    public List<Box> getBoxPos(){
+        return boxPos;
+    }
+    
+    public List<Fruit> getFruitPos(){
+        return circlePos;
+    }
+    
+    public List<int[]> getLinesPos(){
+        return groundPos;
     }
 
-    public boolean getModeGround(){
-        return this.modeGround;
-    }
-    
-    public boolean getModeCircle(){
-        return this.modeApple;
-    }
-    
-    public void setModeBox(boolean newMode){
-        this.modeBox = newMode;
-        this.modeGround = false;
-        this.modeApple = false;
-    }
-    
-    public void setModeGround(boolean newMode){
-        this.modeGround = newMode;
-        this.modeBox = false;
-        this.modeApple = false;
-    }
-    
-    public void setModeApple(boolean newMode){
-        this.modeApple = newMode;
-        this.modeGround = false;
-        this.modeBox = false;
-    }
+    public void mousePressed(MouseEvent e) { }
 
+    public void mouseReleased(MouseEvent e) { }
+
+    public void mouseEntered(MouseEvent e) { }
+
+    public void mouseExited(MouseEvent e) { }
 }
+
+
