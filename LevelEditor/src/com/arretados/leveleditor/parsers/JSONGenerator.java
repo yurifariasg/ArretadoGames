@@ -48,6 +48,7 @@ public class JSONGenerator {
             jObj.put("type", TYPE_BOX);
             jObj.put("x", boxes.get(i).getX());
             jObj.put("y", boxes.get(i).getY());
+            jObj.put("size", boxes.get(i).getSize());
             
             jArray.add(jObj);
         }
@@ -58,6 +59,7 @@ public class JSONGenerator {
             jObj.put("type", TYPE_FRUIT);
             jObj.put("x", fruits.get(i).getX());
             jObj.put("y", fruits.get(i).getY());
+            jObj.put("size", fruits.get(i).getSize());
             
             jArray.add(jObj);
         }        

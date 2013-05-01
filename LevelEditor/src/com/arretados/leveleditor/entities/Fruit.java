@@ -14,11 +14,12 @@ public class Fruit extends DrawableObject{
     
     private int x;
     private int y;
-    //private Graphics g;
+    private int size;
 
-    public Fruit(int x, int y) {
+    public Fruit(int x, int y, int size) {
         this.x = x;
         this.y = y;
+        this.size = size;
     }
     
     public int getX(){
@@ -28,9 +29,13 @@ public class Fruit extends DrawableObject{
     public int getY(){
         return this.y;
     }
+    
+    public int getSize(){
+        return this.size;
+    }
 
     @Override
     public void drawMyself(Graphics g) {
-        g.drawOval(x-12, y-12, 25, 25);
+        g.drawOval(x-(this.size/2), y-(this.size/2), this.size, this.size);
     }    
 }

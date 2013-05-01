@@ -284,7 +284,7 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JSONGenerator json = new JSONGenerator(gameCanvas1.getBoxPos(), gameCanvas1.getFruitPos(), gameCanvas1.getLinesPos());
         try {
-          File file = new File("c://level.json");
+          File file = new File("level.json");
           BufferedWriter output = new BufferedWriter(new FileWriter(file));
           output.write(json.generateJson().toJSONString());
           output.close();

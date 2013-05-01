@@ -58,12 +58,12 @@ public class GameCanvas extends JPanel implements MouseListener{
     }
 
     public void drawBox(int x,int y){
-        boxPos.add(new Box(x, y));
+        boxPos.add(new Box(x, y, 50));
         repaint();
     }
     
     public void drawApple(int x, int y){
-        circlePos.add(new Fruit(x, y));
+        circlePos.add(new Fruit(x, y, 25));
         repaint();
     }
     
