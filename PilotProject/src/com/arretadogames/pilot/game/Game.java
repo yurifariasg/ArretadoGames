@@ -1,8 +1,8 @@
 package com.arretadogames.pilot.game;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import android.view.MotionEvent;
+
+import com.arretadogames.pilot.render.GameCanvas;
 
 /**
  * Game class represents our Game
@@ -22,12 +22,14 @@ public class Game {
 	/**
 	 * Renders the current state of the game
 	 * 
-	 * @param gl
-	 *            GL Interface to draw
+	 * @param canvas
+	 *            GameCanvas to draw
 	 * @param timeElapsed
 	 *            Time Elapsed since last frame
 	 */
-	public void render(GL10 gl, float timeElapsed) {
+	public void render(GameCanvas canvas, float timeElapsed) {
+		
+		canvas.drawRect(0, 0, 0, 0);
 
 	}
 

@@ -58,7 +58,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements
 						+ (System.nanoTime() - before));
 
 			long beforeRender = System.nanoTime();
-			game.render(gl, frameTimeDifference);
+//			game.render(gl, frameTimeDifference);
 
 			if (PROFILE_SPEED)
 				Log.i("Profiling", "Render Speed: "

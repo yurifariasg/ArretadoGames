@@ -3,8 +3,8 @@ package com.arretadogames.pilot;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.arretadogames.pilot.game.Game;
-import com.arretadogames.pilot.render.GameGLSurfaceView;
+import com.arretadogames.pilot.loop.GameThread;
+import com.arretadogames.pilot.render.canvas.RenderingSurface;
 
 /**
  * GameActivity represents the MainActivity of our game,
@@ -13,17 +13,17 @@ import com.arretadogames.pilot.render.GameGLSurfaceView;
  */
 public class GameActivity extends Activity {
 	
-	private GameGLSurfaceView surfaceView;
-	private Game game;
+	private RenderingSurface renderingSurface;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		renderingSurface = new RenderingSurface(this);
+		setContentView(renderingSurface);
 		
-		surfaceView = new GameGLSurfaceView(this);
-		game = new Game();
-		surfaceView.setGame(game);
-		setContentView(surfaceView);
+//		GameThread gameThread = new GameThread();
+//		gameThread.setSurfaceHolder(renderingSurface.getHolder());
+//		gameThread.start();
 	}
 	
 	@Override
