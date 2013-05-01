@@ -3,6 +3,8 @@ package com.arretadogames.pilot;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.loop.GameThread;
 import com.arretadogames.pilot.render.canvas.RenderingSurface;
 
 /**
@@ -12,6 +14,8 @@ import com.arretadogames.pilot.render.canvas.RenderingSurface;
  */
 public class GameActivity extends Activity {
 	
+	private Game game;
+	private GameThread gameThread;
 	private RenderingSurface renderingSurface;
 	
 	@Override
@@ -20,9 +24,9 @@ public class GameActivity extends Activity {
 		renderingSurface = new RenderingSurface(this);
 		setContentView(renderingSurface);
 		
-//		GameThread gameThread = new GameThread();
-//		gameThread.setSurfaceHolder(renderingSurface.getHolder());
-//		gameThread.start();
+		// Create Game
+		game = new Game();
+		// Starts the Thread on onResume()
 	}
 	
 	@Override
@@ -37,6 +41,10 @@ public class GameActivity extends Activity {
 		// TODO Handles the Resume Operation into Activity
 		// http://developer.android.com/reference/android/app/Activity.html
 		super.onResume();
+		// On Resume, starts a new GameThread
+		gameThread = new GameThread();
+		gameThread.setGame(game);
+		renderingSurface.setGameThread(gameThread);
 	}
 	
 	@Override
