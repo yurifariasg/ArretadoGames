@@ -14,13 +14,6 @@ public class Box extends DrawableObject{
     
     private int x;
     private int y;
-//    private Graphics g;
-    
-//    public Box(int x, int y, Graphics g) {
-//        this.x = x;
-//        this.y = y;
-//        this.g = g;
-//    }
     
     public Box(int x, int y) {
         this.x = x;
