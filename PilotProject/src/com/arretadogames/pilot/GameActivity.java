@@ -3,7 +3,6 @@ package com.arretadogames.pilot;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.arretadogames.pilot.loop.GameThread;
 import com.arretadogames.pilot.render.canvas.RenderingSurface;
 
 /**

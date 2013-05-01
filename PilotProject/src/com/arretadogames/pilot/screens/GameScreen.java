@@ -1,8 +1,8 @@
 package com.arretadogames.pilot.screens;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import android.view.MotionEvent;
+
+import com.arretadogames.pilot.render.GameCanvas;
 
 /**
  * GameScreen class represents a Screen in the Game<br>
@@ -21,7 +21,7 @@ public abstract class GameScreen {
 	 * @param timeElapsed
 	 *            Time Elapsed from last frame
 	 */
-	public abstract void render(GL10 gl, float timeElapsed);
+	public abstract void render(GameCanvas canvas, float timeElapsed);
 
 	/**
 	 * Performs a Step in the Screen's logic

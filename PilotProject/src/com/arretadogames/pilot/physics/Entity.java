@@ -12,7 +12,7 @@ public class Entity {
 	protected World world;
 	
 	public Entity(float x, float y){
-		world = GameWorld.getInstance().getWorld();
+		world = PhysicalWorld.getInstance().getWorld();
 		BodyDef bd = new BodyDef();
 		bd.position.set(x, y);
 		body = world.createBody(bd);

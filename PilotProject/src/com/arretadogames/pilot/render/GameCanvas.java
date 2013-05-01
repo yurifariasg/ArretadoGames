@@ -26,10 +26,10 @@ public class GameCanvas {
 		canvas = null;
 	}
 	
-	public void drawRect(int x, int y, int width, int height) {
+	public void drawRect(int x, int y, int x2, int y2) {
 		Paint p = new Paint();
 		p.setColor(Color.RED);
-		canvas.drawRect(new Rect(500, 10, 600, 110), p);
+		canvas.drawRect(new Rect(x, y, x2, y2), p);
 	}
 	
 }

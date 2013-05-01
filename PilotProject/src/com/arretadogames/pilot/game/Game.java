@@ -3,6 +3,7 @@ package com.arretadogames.pilot.game;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.world.GameWorld;
 
 /**
  * Game class represents our Game
@@ -14,9 +15,11 @@ public class Game {
 	// as the other screens
 	
 	private GameState currentState;
+	private GameWorld gameWorld;
 	
 	public Game() {
 		currentState = GameState.RUNNING_GAME;
+		gameWorld = new GameWorld();
 	}
 
 	/**
@@ -29,7 +32,7 @@ public class Game {
 	 */
 	public void render(GameCanvas canvas, float timeElapsed) {
 		
-		canvas.drawRect(0, 0, 0, 0);
+		gameWorld.render(canvas, timeElapsed);
 
 	}
 

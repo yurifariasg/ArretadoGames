@@ -7,17 +7,17 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
 
-public class GameWorld implements ContactListener{
-	private static GameWorld gworld;
+public class PhysicalWorld implements ContactListener{
+	private static PhysicalWorld gworld;
 	World world;
 	
-	private GameWorld(){
+	private PhysicalWorld() {
 		world = new World(new Vec2(0.0f,10.0f), true);
 	}
 	
-	public static GameWorld getInstance(){
+	public static PhysicalWorld getInstance(){
 		if(gworld == null) {
-			gworld = new GameWorld();
+			gworld = new PhysicalWorld();
 		}
 		return gworld;
 	}
