@@ -14,12 +14,10 @@ public class JSONParser {
 		
 		for (int i=0; i<ground.length(); i++ ){
 			JSONObject jsonEntry = ground.getJSONObject(i);
-			System.out.println("ground: ("+jsonEntry.getInt("x")+", "+jsonEntry.getInt("y"));
 		}
 
 		for (int i=0; i<entities.length(); i++ ){
-			JSONObject jsonEntry = ground.getJSONObject(i);
-			System.out.println("entity: ("+jsonEntry.getInt("x")+", "+jsonEntry.getInt("y"));
+			JSONObject jsonEntry = entities.getJSONObject(i);
 		}
 		
 		return jsonObject;
