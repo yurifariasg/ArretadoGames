@@ -43,6 +43,8 @@ public class Game {
 	 *            Time Elapsed since last frame
 	 */
 	public void step(float timeElapsed) {
+		
+		gameWorld.step(timeElapsed);
 
 	}
 
@@ -53,6 +55,8 @@ public class Game {
 	 *            Input Event to be handled
 	 */
 	public void input(MotionEvent event) {
+		
+		gameWorld.input(event);
 
 	}
 

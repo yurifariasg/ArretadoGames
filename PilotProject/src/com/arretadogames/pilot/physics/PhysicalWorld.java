@@ -7,7 +7,7 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
 
-public class PhysicalWorld implements ContactListener{
+public class PhysicalWorld implements ContactListener {
 	private static PhysicalWorld gworld;
 	World world;
 	
@@ -15,14 +15,14 @@ public class PhysicalWorld implements ContactListener{
 		world = new World(new Vec2(0.0f,10.0f), true);
 	}
 	
-	public static PhysicalWorld getInstance(){
+	public static PhysicalWorld getInstance() {
 		if(gworld == null) {
 			gworld = new PhysicalWorld();
 		}
 		return gworld;
 	}
 	
-	public World getWorld(){
+	public World getWorld() {
 		return world;
 	}
 

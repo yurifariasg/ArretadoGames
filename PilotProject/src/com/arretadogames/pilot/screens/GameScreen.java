@@ -7,7 +7,6 @@ import com.arretadogames.pilot.render.GameCanvas;
 /**
  * GameScreen class represents a Screen in the Game<br>
  * It has all operations that support a screen
- * 
  */
 public abstract class GameScreen {
 	// For now this class is abstract because we are going to add some
@@ -38,5 +37,15 @@ public abstract class GameScreen {
 	 *            MotionEvent / Input Event to be handled
 	 */
 	public abstract void input(MotionEvent event);
+	
+	/**
+	 * Handles the event for when the user press the physical back button
+	 */
+	public abstract void onBackPressed();
+	
+	/**
+	 * Handles the pause event, when the user receives a call or locks the screen
+	 */
+	public abstract void onPause();
 
 }
