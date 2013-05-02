@@ -23,7 +23,7 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		renderingSurface = new RenderingSurface(this);
 		setContentView(renderingSurface);
-		
+
 		// Create Game
 		game = new Game();
 		// Starts the Thread on onResume()
