@@ -43,13 +43,13 @@ public class GameWorld extends GameScreen {
 		
 		for (Entity entity : worldEntities)
 			entity.render(canvas, timeElapsed);
-		
 	}
 	
 	@Override
 	public void step(float timeElapsed) {
 		// TODO: Perform a World Step
 		ui.step(timeElapsed);
+		pWorld.step(timeElapsed);
 	}
 
 	@Override
