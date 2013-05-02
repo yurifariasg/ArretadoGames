@@ -1,4 +1,4 @@
-package com.arretadogames.pilot.physics;
+package com.arretadogames.pilot.entities;
 
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -6,12 +6,15 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
+import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.Renderable;
 
-public class Entity {
+
+public abstract class Entity implements Renderable {
 	protected Body body;
 	protected World world;
 	
-	public Entity(float x, float y){
+	public Entity(float x, float y) {
 		world = PhysicalWorld.getInstance().getWorld();
 		BodyDef bd = new BodyDef();
 		bd.position.set(x, y);
@@ -39,7 +42,8 @@ public class Entity {
 		
 	}
 	
-	public void step(){
-		
-	}
+	public abstract void step();
+	
+	public abstract EntityType getType();
+
 }

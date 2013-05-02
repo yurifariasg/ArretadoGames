@@ -1,7 +1,11 @@
 package com.arretadogames.pilot.world;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.view.MotionEvent;
 
+import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.screens.GameScreen;
@@ -12,9 +16,12 @@ import com.arretadogames.pilot.screens.GameScreen;
 public class GameWorld extends GameScreen {
 	
 	private PhysicalWorld pWorld;
+	private List<Entity> worldEntities;
+	
 	
 	public GameWorld() {
 		pWorld = PhysicalWorld.getInstance();
+		worldEntities = new ArrayList<Entity>();
 	}
 	
 	@Override
@@ -30,8 +37,9 @@ public class GameWorld extends GameScreen {
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 		// Render the World
-		// TODO: Danilo IMPLEMENTA SA POHA
-		canvas.drawRect(100, 10, 160, 60);
+		
+		for (Entity entity : worldEntities)
+			entity.render(canvas, timeElapsed);
 	}
 
 }

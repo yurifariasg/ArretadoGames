@@ -1,8 +1,10 @@
 package com.arretadogames.pilot.render;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.SurfaceHolder;
 
@@ -15,8 +17,17 @@ public class GameCanvas {
 	private SurfaceHolder surfaceHolder;
 	private Canvas canvas;
 
+	private Paint defaultPaint;
+	private Paint debugPaint;
+
 	public GameCanvas(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
+
+		defaultPaint = new Paint();
+		defaultPaint.setAntiAlias(true);
+
+		debugPaint = new Paint();
+		debugPaint.setColor(Color.RED);
 	}
 
 	/**
@@ -39,7 +50,7 @@ public class GameCanvas {
 	}
 
 	/**
-	 * Draws a rect at the given location
+	 * Draws a debugging rect at the given location
 	 * 
 	 * @param x
 	 *            Top Left X Position
@@ -50,10 +61,67 @@ public class GameCanvas {
 	 * @param y2
 	 *            Bottom Right Y Position
 	 */
-	public void drawRect(int x, int y, int x2, int y2) {
-		Paint p = new Paint();
-		p.setColor(Color.RED);
-		canvas.drawRect(new Rect(x, y, x2, y2), p);
+	public void drawDebugRect(int x, int y, int x2, int y2) {
+		canvas.drawRect(new Rect(x, y, x2, y2), debugPaint);
 	}
 
+	/**
+	 * Saves the current state of the GameCanvas<br>
+	 * This should be done before rotating or translating operations
+	 */
+	public void saveState() {
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+	}
+
+	/**
+	 * Restores the canvas to the last saved state<br>
+	 * This should be done after performing rotating, translating and drawing
+	 * operations
+	 */
+	public void restoreState() {
+		canvas.restore();
+	}
+
+	/**
+	 * Rotates the canvas on the given point by the given angle
+	 * 
+	 * @param angle
+	 *            Rotate the amount of degrees
+	 * @param point
+	 *            Rotates on this given point
+	 */
+	public void rotate(float angle, Point point) {
+		canvas.rotate(angle, point.x, point.y);
+	}
+
+	/**
+	 * Draws the given bitmap on the given coordinates
+	 * 
+	 * @param bitmap
+	 *            Bitmap to be drawn
+	 * @param x
+	 *            x coordinate
+	 * @param y
+	 *            y coordinate
+	 */
+	public void drawBitmap(Bitmap bitmap, float x, float y) {
+		drawBitmap(bitmap, x, y, defaultPaint);
+	}
+
+	/**
+	 * Draws the given bitmap on the given coordinates
+	 * 
+	 * @param bitmap
+	 *            bitmap to be drawn
+	 * @param x
+	 *            x coordinate
+	 * @param y
+	 *            y coordinate
+	 * @param paint
+	 *            paint to be used when drawing
+	 * 
+	 */
+	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) {
+		canvas.drawBitmap(bitmap, x, y, paint);
+	}
 }

@@ -22,7 +22,7 @@ public class PhysicalWorld implements ContactListener{
 		return gworld;
 	}
 	
-	World getWorld(){
+	public World getWorld(){
 		return world;
 	}
 
