@@ -19,9 +19,9 @@ public class Loader {
 			"{"+
 				"'entities':"+
 				"["+
-					"{'type':'box','y':202,'x':107},"+
-					"{'type':'box','y':493,'x':533},"+
-					"{'type':'box','y':461,'x':929},"+
+					"{'type':'box','y':10,'x':10},"+
+					"{'type':'box','y':15,'x':14},"+
+					"{'type':'box','y':100,'x':10},"+
 				"]"+
 			"}";
 	public Loader(String json){
@@ -37,12 +37,13 @@ public class Loader {
 			for( int i = 0 ; i < entities.length(); i++){
 				JSONObject ent = entities.getJSONObject(i);
 				String type = ent.getString("type");
+				type = type.toUpperCase();
 				int x = ent.getInt("x");
 				int y = ent.getInt("y");
 				//int size = ent.getInt("size");
 				EntityType t = EntityType.valueOf(type);
 				if( t == EntityType.BOX){
-					Entity entity = new Box(x, y);
+					Entity entity = new Box(x, y,10);
 					col.add(entity);
 				}
 				else{

@@ -48,4 +48,9 @@ public class PhysicalWorld implements ContactListener {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void step(float timeElapsed) {
+		System.out.println("ooooooo");
+		world.step(timeElapsed * 5, 8, 10);
+	}
 }
