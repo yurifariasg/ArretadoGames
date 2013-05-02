@@ -1,7 +1,6 @@
 package com.arretadogames.pilot.world;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +9,7 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.loading.Loader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.screens.GameScreen;
@@ -24,15 +24,16 @@ public class GameWorld extends GameScreen {
 	
 	private GameWorldUI ui;
 	private PhysicalWorld pWorld;
-	private List<Entity> worldEntities;
+	private Collection<Entity> worldEntities;
 	
 	
 	public GameWorld() {
 		background = BitmapFactory.decodeResource(GameActivity.getContext().getResources(),
 				R.drawable.stage_background);
 		pWorld = PhysicalWorld.getInstance();
+		Loader loader = new Loader(Loader.jsonExample);
 		ui = new GameWorldUI();
-		worldEntities = new ArrayList<Entity>();
+		worldEntities = loader.getEntities();
 	}
 	
 	@Override
