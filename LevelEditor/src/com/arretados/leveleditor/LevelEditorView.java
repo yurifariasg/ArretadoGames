@@ -124,6 +124,7 @@ public class LevelEditorView extends FrameView {
         activateGroundBtn = new javax.swing.JButton();
         activateBoxBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollInternalPanel = new javax.swing.JPanel();
         gameCanvas1 = new com.arretados.leveleditor.GameCanvas();
         clearScrBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -181,7 +182,10 @@ public class LevelEditorView extends FrameView {
         jScrollPane1.setName("jScrollPane1"); // NOI18N
         jScrollPane1.setPreferredSize(new java.awt.Dimension(1000, 1000));
 
-        gameCanvas1.setAutoscrolls(true);
+        jScrollInternalPanel.setName("jScrollInternalPanel"); // NOI18N
+        jScrollInternalPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        gameCanvas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         gameCanvas1.setName("gameCanvas1"); // NOI18N
         gameCanvas1.setPreferredSize(new java.awt.Dimension(1500, 289));
 
@@ -189,14 +193,17 @@ public class LevelEditorView extends FrameView {
         gameCanvas1.setLayout(gameCanvas1Layout);
         gameCanvas1Layout.setHorizontalGroup(
             gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1500, Short.MAX_VALUE)
+            .addGap(0, 1498, Short.MAX_VALUE)
         );
         gameCanvas1Layout.setVerticalGroup(
             gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 344, Short.MAX_VALUE)
+            .addGap(0, 287, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(gameCanvas1);
+        jScrollInternalPanel.add(gameCanvas1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, -1));
+        gameCanvas1.getAccessibleContext().setAccessibleParent(null);
+
+        jScrollPane1.setViewportView(jScrollInternalPanel);
 
         clearScrBtn.setText(resourceMap.getString("clearScrBtn.text")); // NOI18N
         clearScrBtn.setName("clearScrBtn"); // NOI18N
@@ -238,7 +245,8 @@ public class LevelEditorView extends FrameView {
                     .addComponent(jTextWidthValue)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE)
+                .addGap(674, 674, 674))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -366,9 +374,10 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
         if (value.length() > 0)
             newX = Integer.parseInt(value);
         System.out.println(newX);
-        gameCanvas1.setSize(new Dimension(newX, newX));
-        jScrollPane1.validate();
-        gameCanvas1.validate();
+        //gameCanvas1.setSize(new Dimension(newX, gameCanvas1.getSize().height));
+        gameCanvas1.setPreferredSize(new Dimension(newX, gameCanvas1.getSize().height));
+        jScrollPane1.revalidate();
+        gameCanvas1.revalidate();
         gameCanvas1.repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -381,6 +390,7 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jScrollInternalPanel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextWidthValue;
     private javax.swing.JPanel mainPanel;

@@ -33,7 +33,7 @@ public class GameCanvas extends JPanel implements MouseListener{
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
-        g.fillRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
+        g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.red);
 
         for (int i = 0; i < boxPos.size(); i++){
