@@ -4,6 +4,7 @@
  */
 package com.arretados.leveleditor.parsers;
 
+import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.Fruit;
 import java.util.HashMap;
@@ -46,9 +47,9 @@ public class JSONGenerator {
             
             JSONObject jObj = new JSONObject(hm);
             jObj.put("type", TYPE_BOX);
-            jObj.put("x", boxes.get(i).getX());
-            jObj.put("y", boxes.get(i).getY());
-            jObj.put("size", boxes.get(i).getSize());
+            jObj.put("x", Utils.convertPixelToMeter(boxes.get(i).getX()));
+            jObj.put("y", Utils.convertPixelToMeter(boxes.get(i).getY()));
+            jObj.put("size", Utils.convertPixelToMeter(boxes.get(i).getSize()));
             
             jArray.add(jObj);
         }
@@ -57,9 +58,9 @@ public class JSONGenerator {
             
             JSONObject jObj = new JSONObject();
             jObj.put("type", TYPE_FRUIT);
-            jObj.put("x", fruits.get(i).getX());
-            jObj.put("y", fruits.get(i).getY());
-            jObj.put("size", fruits.get(i).getSize());
+            jObj.put("x", Utils.convertPixelToMeter(fruits.get(i).getX()));
+            jObj.put("y", Utils.convertPixelToMeter(fruits.get(i).getY()));
+            jObj.put("size", Utils.convertPixelToMeter(fruits.get(i).getSize()));
             
             jArray.add(jObj);
         }        

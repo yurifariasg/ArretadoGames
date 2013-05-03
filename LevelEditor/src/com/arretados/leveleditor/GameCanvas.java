@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 public class GameCanvas extends JPanel implements MouseListener{
     
     private List<Box> boxPos = new ArrayList<Box>();
-    private List<Fruit> circlePos = new ArrayList<Fruit>();
+    private List<Fruit> fruitPos = new ArrayList<Fruit>();
     private List<int[]> groundPos = new ArrayList<int[]>();
     DrawMode mode = DrawMode.BOX;
 
@@ -40,8 +40,8 @@ public class GameCanvas extends JPanel implements MouseListener{
             boxPos.get(i).drawMyself(g);
         }
 
-        for (int i = 0; i < circlePos.size(); i++){
-            circlePos.get(i).drawMyself(g);
+        for (int i = 0; i < fruitPos.size(); i++){
+            fruitPos.get(i).drawMyself(g);
         }
 
         int posX,posY;
@@ -58,12 +58,12 @@ public class GameCanvas extends JPanel implements MouseListener{
     }
 
     public void drawBox(int x,int y){
-        boxPos.add(new Box(x, y, 50));
+        boxPos.add(new Box(x, y, 100));
         repaint();
     }
     
     public void drawApple(int x, int y){
-        circlePos.add(new Fruit(x, y, 25));
+        fruitPos.add(new Fruit(x, y, 25));
         repaint();
     }
     
@@ -74,7 +74,7 @@ public class GameCanvas extends JPanel implements MouseListener{
             lastPointX = groundPos.get(groundPos.size()-1)[0];  //Gets the last point
         }
         
-        if ( x >= lastPointX){  //Verify if the point that will be created comes after the last point
+        if (x >= lastPointX){  //Verify if the point that will be created comes after the last point
             groundPos.add(new int[]{x, y});     
         }
         repaint();
@@ -107,11 +107,17 @@ public class GameCanvas extends JPanel implements MouseListener{
     }
     
     public List<Fruit> getFruitPos(){
-        return circlePos;
+        return fruitPos;
     }
     
     public List<int[]> getLinesPos(){
         return groundPos;
+    }
+    
+    public void clearObjectsList(){
+        this.groundPos = new ArrayList<int[]>();
+        this.fruitPos = new ArrayList<Fruit>();
+        this.boxPos = new ArrayList<Box>();
     }
 
     public void mousePressed(MouseEvent e) { }

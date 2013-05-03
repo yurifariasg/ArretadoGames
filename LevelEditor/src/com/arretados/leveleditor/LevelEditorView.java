@@ -5,6 +5,8 @@
 package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.parsers.JSONGenerator;
+import java.awt.Dimension;
+import javax.swing.event.ChangeEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -20,6 +22,7 @@ import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.event.ChangeListener;
 
 /**
  * The application's main frame.
@@ -30,6 +33,16 @@ public class LevelEditorView extends FrameView {
         super(app);
 
         initComponents();
+        jScrollPane1.getViewport().addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                jScrollPane1.repaint();
+                gameCanvas1.repaint();
+                jScrollPane1.revalidate();
+                gameCanvas1.revalidate();
+
+            }
+        });
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -106,11 +119,16 @@ public class LevelEditorView extends FrameView {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        activateBoxBtn = new javax.swing.JButton();
-        gameCanvas1 = new com.arretados.leveleditor.GameCanvas();
-        activateGroundBtn = new javax.swing.JButton();
-        activateApple = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        activateApple = new javax.swing.JButton();
+        activateGroundBtn = new javax.swing.JButton();
+        activateBoxBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        gameCanvas1 = new com.arretados.leveleditor.GameCanvas();
+        clearScrBtn = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jTextWidthValue = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -125,49 +143,82 @@ public class LevelEditorView extends FrameView {
         mainPanel.setName("mainPanel"); // NOI18N
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(LevelEditorView.class);
-        activateBoxBtn.setText(resourceMap.getString("activateBoxBtn.text")); // NOI18N
-        activateBoxBtn.setName("activateBoxBtn"); // NOI18N
-        activateBoxBtn.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                activateBoxBtnActionPerformed(evt);
-            }
-        });
-
-        gameCanvas1.setAutoscrolls(true);
-        gameCanvas1.setName("gameCanvas1"); // NOI18N
-
-        javax.swing.GroupLayout gameCanvas1Layout = new javax.swing.GroupLayout(gameCanvas1);
-        gameCanvas1.setLayout(gameCanvas1Layout);
-        gameCanvas1Layout.setHorizontalGroup(
-            gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 345, Short.MAX_VALUE)
-        );
-        gameCanvas1Layout.setVerticalGroup(
-            gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 289, Short.MAX_VALUE)
-        );
-
-        activateGroundBtn.setText(resourceMap.getString("activateGroundBtn.text")); // NOI18N
-        activateGroundBtn.setName("activateGroundBtn"); // NOI18N
-        activateGroundBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                activateGroundBtnActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
         activateApple.setText(resourceMap.getString("activateApple.text")); // NOI18N
         activateApple.setName("activateApple"); // NOI18N
+        activateApple.setPreferredSize(new java.awt.Dimension(50, 20));
         activateApple.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 activateAppleActionPerformed(evt);
             }
         });
 
-        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        activateGroundBtn.setText(resourceMap.getString("activateGroundBtn.text")); // NOI18N
+        activateGroundBtn.setName("activateGroundBtn"); // NOI18N
+        activateGroundBtn.setPreferredSize(new java.awt.Dimension(50, 20));
+        activateGroundBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                activateGroundBtnActionPerformed(evt);
+            }
+        });
+
+        activateBoxBtn.setText(resourceMap.getString("activateBoxBtn.text")); // NOI18N
+        activateBoxBtn.setName("activateBoxBtn"); // NOI18N
+        activateBoxBtn.setPreferredSize(new java.awt.Dimension(50, 20));
+        activateBoxBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activateBoxBtnActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(1000, 1000));
+
+        gameCanvas1.setAutoscrolls(true);
+        gameCanvas1.setName("gameCanvas1"); // NOI18N
+        gameCanvas1.setPreferredSize(new java.awt.Dimension(1500, 289));
+
+        javax.swing.GroupLayout gameCanvas1Layout = new javax.swing.GroupLayout(gameCanvas1);
+        gameCanvas1.setLayout(gameCanvas1Layout);
+        gameCanvas1Layout.setHorizontalGroup(
+            gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1500, Short.MAX_VALUE)
+        );
+        gameCanvas1Layout.setVerticalGroup(
+            gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 344, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(gameCanvas1);
+
+        clearScrBtn.setText(resourceMap.getString("clearScrBtn.text")); // NOI18N
+        clearScrBtn.setName("clearScrBtn"); // NOI18N
+        clearScrBtn.setPreferredSize(new java.awt.Dimension(50, 20));
+        clearScrBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearScrBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jTextWidthValue.setText(resourceMap.getString("jTextWidthValue.text")); // NOI18N
+        jTextWidthValue.setName("jTextWidthValue"); // NOI18N
+
+        jButton2.setText(resourceMap.getString("jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.setPreferredSize(new java.awt.Dimension(50, 20));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -177,31 +228,41 @@ public class LevelEditorView extends FrameView {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(activateApple, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(activateBoxBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(activateGroundBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
-                    .addComponent(jButton1))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(activateApple, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(activateBoxBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(activateGroundBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextWidthValue)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gameCanvas1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(activateBoxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(activateGroundBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(activateApple, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextWidthValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                         .addComponent(jButton1)
-                        .addContainerGap())
-                    .addComponent(gameCanvas1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -294,12 +355,34 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
         System.out.println(json.generateJson().toJSONString());
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void clearScrBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearScrBtnActionPerformed
+        gameCanvas1.clearObjectsList();
+        gameCanvas1.repaint();
+    }//GEN-LAST:event_clearScrBtnActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String value = jTextWidthValue.getText();
+        int newX = 0;
+        if (value.length() > 0)
+            newX = Integer.parseInt(value);
+        System.out.println(newX);
+        gameCanvas1.setSize(new Dimension(newX, newX));
+        jScrollPane1.validate();
+        gameCanvas1.validate();
+        gameCanvas1.repaint();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton activateApple;
     private javax.swing.JButton activateBoxBtn;
     private javax.swing.JButton activateGroundBtn;
+    private javax.swing.JButton clearScrBtn;
     private com.arretados.leveleditor.GameCanvas gameCanvas1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextWidthValue;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JProgressBar progressBar;
