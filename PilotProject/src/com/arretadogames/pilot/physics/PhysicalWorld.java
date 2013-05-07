@@ -12,7 +12,7 @@ public class PhysicalWorld implements ContactListener {
 	World world;
 	
 	private PhysicalWorld() {
-		world = new World(new Vec2(0.0f,10.0f));
+		world = new World(new Vec2(0.0f,-10.0f));
 	}
 	
 	public static PhysicalWorld getInstance() {
