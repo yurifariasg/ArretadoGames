@@ -32,7 +32,7 @@ public class GameWorld extends GameScreen {
 				R.drawable.stage_background);
 		pWorld = PhysicalWorld.getInstance();
 		Loader loader = new Loader(Loader.jsonExample);
-		ui = new GameWorldUI();
+		ui = new GameWorldUI(this);
 		worldEntities = loader.getEntities();
 	}
 	
@@ -43,6 +43,8 @@ public class GameWorld extends GameScreen {
 		
 		for (Entity entity : worldEntities)
 			entity.render(canvas, timeElapsed);
+		
+		ui.render(canvas, timeElapsed);
 	}
 	
 	@Override

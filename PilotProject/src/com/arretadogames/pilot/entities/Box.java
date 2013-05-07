@@ -20,7 +20,6 @@ public class Box extends Entity {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		Log.d("posss", "x " +getPosX() + " y: " + getPosY());
 		canvas.drawDebugRect((int)getPosX(), (int)getPosY(), (int)getPosX()+50, (int)getPosY()+60);
 	}
 
