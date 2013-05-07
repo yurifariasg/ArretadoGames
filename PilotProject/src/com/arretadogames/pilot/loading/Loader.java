@@ -27,6 +27,8 @@ public class Loader {
 					"{'type':'box','y':100,'x':10 , size : 2},"+
 				"]"+
 			"}";
+	public static String jsonExample2 = "{\"ground\":[{\"y\":445,\"x\":222},{\"y\":486,\"x\":449}, {\"y\":528,\"x\":850}, {\"y\":536,\"x\":1143}, {\"y\":530,\"x\":1318},{\"y\":527,\"x\":1439},],\"entities\":[{\"type\":\"box\",\"y\":4.58,\"size\":1.0,\"x\":5.45},{\"type\":\"box\",\"y\":4.65,\"size\":1.0,\"x\":8.64},{\"type\":\"box\",\"y\":4.74,\"size\":1.0,\"x\":10.17},{\"type\":\"box\",\"y\":4.17,\"size\":1.0,\"x\":1.09},{\"type\":\"fruit\",\"y\":5.87,\"size\":0.25,\"x\":9.53},]}";
+	
 	public Loader(String json){
 		this.json = json;
 	}
