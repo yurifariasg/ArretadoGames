@@ -12,7 +12,7 @@ public class PhysicalWorld implements ContactListener {
 	World world;
 	
 	private PhysicalWorld() {
-		world = new World(new Vec2(0.0f,10.0f));
+		world = new World(new Vec2(0.0f,-10.0f));
 	}
 	
 	public static PhysicalWorld getInstance() {
@@ -50,6 +50,6 @@ public class PhysicalWorld implements ContactListener {
 	}
 
 	public void step(float timeElapsed) {
-		world.step(timeElapsed * 5, 8, 10);
+		world.step(timeElapsed, 8, 10);
 	}
 }

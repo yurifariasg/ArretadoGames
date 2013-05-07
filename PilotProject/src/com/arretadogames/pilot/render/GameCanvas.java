@@ -13,6 +13,11 @@ import android.view.SurfaceHolder;
  * done
  */
 public class GameCanvas {
+	
+	private final static int SCREEN_WIDTH = 800;
+	private final static int SCREEN_HEIGHT = 480;
+	private final static float BOX2D_RATIO = 50f;
+	
 
 	private SurfaceHolder surfaceHolder;
 	private Canvas canvas;
@@ -63,6 +68,21 @@ public class GameCanvas {
 	 */
 	public void drawDebugRect(int x, int y, int x2, int y2) {
 		canvas.drawRect(new Rect(x, y, x2, y2), debugPaint);
+	}
+	
+	public void drawPhysicsDebugRect(float centerX, float centerY, float sideLength) {
+		drawPhysicsDebugRect(centerX, centerY, sideLength, Color.RED);
+	}
+	
+	public void drawPhysicsDebugRect(float centerX, float centerY, float sideLength, int color) {
+		sideLength /= 2;
+		debugPaint.setColor(color);
+		canvas.drawRect(new Rect(
+				(int) ((centerX - sideLength) * BOX2D_RATIO),
+				(int) (SCREEN_HEIGHT - (centerY + sideLength) * BOX2D_RATIO),
+				(int) ((centerX + sideLength)  * BOX2D_RATIO),
+				(int) (SCREEN_HEIGHT - (centerY - sideLength) * BOX2D_RATIO)),
+				debugPaint);
 	}
 
 	/**

@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.LoboGuara;
+import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.Loader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCanvas;
@@ -34,6 +36,9 @@ public class GameWorld extends GameScreen {
 		Loader loader = new Loader(Loader.jsonExample2);
 		ui = new GameWorldUI(this);
 		worldEntities = loader.getEntities();
+		
+		
+		worldEntities.add(new LoboGuara(0f, 0f, PlayerNumber.ONE)); // Fake Position
 	}
 	
 	@Override

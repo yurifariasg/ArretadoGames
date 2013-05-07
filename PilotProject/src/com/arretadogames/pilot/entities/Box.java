@@ -2,9 +2,6 @@ package com.arretadogames.pilot.entities;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Fixture;
-
-import android.util.Log;
 
 import com.arretadogames.pilot.render.GameCanvas;
 
@@ -23,7 +20,9 @@ public class Box extends Entity {
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 		//Log.d("posss", "x " +getPosX() + " y: " + getPosY());
-		canvas.drawDebugRect((int)getPosX(), (int)getPosY(), (int)(getPosX()+size), (int)(getPosY()+size));
+//		canvas.drawDebugRect((int)getPosX(), (int)getPosY(), (int)(getPosX()+size), (int)(getPosY()+size));
+		System.out.println("X: " + getPosX() + "  Y: " + getPosY());
+		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 0.5f);
 	}
 
 	@Override
