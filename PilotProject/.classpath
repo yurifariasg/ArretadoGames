@@ -4,8 +4,8 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="libs/jbox2d-library-2.1.2.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-android-1.6.1-RC1.jar"/>
 	<classpathentry kind="lib" path="libs/tween-engine-api.jar"/>
+	<classpathentry kind="lib" path="libs/jbox2d-library-new.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

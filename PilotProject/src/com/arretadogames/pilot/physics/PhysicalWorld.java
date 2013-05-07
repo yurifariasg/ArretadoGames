@@ -2,6 +2,7 @@ package com.arretadogames.pilot.physics;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -12,7 +13,7 @@ public class PhysicalWorld implements ContactListener {
 	World world;
 	
 	private PhysicalWorld() {
-		world = new World(new Vec2(0.0f,10.0f), true);
+		world = new World(new Vec2(0.0f,10.0f));
 	}
 	
 	public static PhysicalWorld getInstance() {
@@ -47,10 +48,13 @@ public class PhysicalWorld implements ContactListener {
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		// TODO Auto-generated method stub
 		
+		ChainShape cp;
+		
 	}
 
 	public void step(float timeElapsed) {
 		System.out.println("ooooooo");
+		System.out.println(timeElapsed);
 		world.step(timeElapsed * 5, 8, 10);
 	}
 }
