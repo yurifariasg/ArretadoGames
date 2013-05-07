@@ -4,8 +4,11 @@ import com.arretadogames.pilot.render.GameCanvas;
 
 public class Fruit extends Entity {
 
-	public Fruit(float x, float y) {
+	private float size;
+	
+	public Fruit(float x, float y, float size) {
 		super(x, y);
+		this.size = size;
 	}
 
 	@Override

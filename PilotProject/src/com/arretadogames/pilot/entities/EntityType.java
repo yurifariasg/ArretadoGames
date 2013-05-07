@@ -2,5 +2,6 @@ package com.arretadogames.pilot.entities;
 
 public enum EntityType {
 	BOX, 
-	FRUIT ;
+	FRUIT,
+	GROUND;
 }

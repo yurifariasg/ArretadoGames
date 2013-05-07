@@ -45,5 +45,5 @@ public abstract class Entity implements Renderable {
 	public abstract void step();
 	
 	public abstract EntityType getType();
-
+	
 }
