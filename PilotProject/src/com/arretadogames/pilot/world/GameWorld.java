@@ -31,7 +31,7 @@ public class GameWorld extends GameScreen {
 		background = BitmapFactory.decodeResource(GameActivity.getContext().getResources(),
 				R.drawable.stage_background);
 		pWorld = PhysicalWorld.getInstance();
-		Loader loader = new Loader(Loader.jsonExample);
+		Loader loader = new Loader(Loader.jsonExample2);
 		ui = new GameWorldUI(this);
 		worldEntities = loader.getEntities();
 	}

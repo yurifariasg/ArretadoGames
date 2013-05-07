@@ -10,8 +10,10 @@ import com.arretadogames.pilot.render.GameCanvas;
 
 public class Box extends Entity {
 
+	private float size;
 	public Box(float x, float y, float size) {
 		super(x, y);
+		this.size = size;
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(size, size);
 		body.createFixture(shape, (float) 0.5);
@@ -20,7 +22,8 @@ public class Box extends Entity {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		canvas.drawDebugRect((int)getPosX(), (int)getPosY(), (int)getPosX()+50, (int)getPosY()+60);
+		//Log.d("posss", "x " +getPosX() + " y: " + getPosY());
+		canvas.drawDebugRect((int)getPosX(), (int)getPosY(), (int)(getPosX()+size), (int)(getPosY()+size));
 	}
 
 	@Override
