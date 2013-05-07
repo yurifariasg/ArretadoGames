@@ -7,6 +7,7 @@ package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.Fruit;
+import com.arretados.leveleditor.entities.Player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -23,6 +24,7 @@ public class GameCanvas extends JPanel implements MouseListener{
     
     private List<Box> boxPos = new ArrayList<Box>();
     private List<Fruit> fruitPos = new ArrayList<Fruit>();
+    private List<Player> playerPos = new ArrayList<Player>();
     private List<int[]> groundPos = new ArrayList<int[]>();
     DrawMode mode = DrawMode.BOX;
 
@@ -36,6 +38,10 @@ public class GameCanvas extends JPanel implements MouseListener{
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.red);
 
+        for (int i = 0; i < playerPos.size(); i++){
+            playerPos.get(i).drawMyself(g);
+        }
+        
         for (int i = 0; i < boxPos.size(); i++){
             boxPos.get(i).drawMyself(g);
         }
@@ -51,10 +57,19 @@ public class GameCanvas extends JPanel implements MouseListener{
             posX = groundPos.get(i)[0];
             posY = groundPos.get(i)[1];
             if (i == 0)
-                g.drawLine(0, 600, posX, posY);
+                g.drawLine(0, 480, posX, posY);
             else
                 g.drawLine( groundPos.get(i-1)[0], groundPos.get(i-1)[1], posX, posY);
         }
+    }
+    
+    public void drawPlayer(int x, int y){
+        if (playerPos.isEmpty()){
+            playerPos.add(new Player(x, y, 50, "player1"));
+        }else if (playerPos.size() == 1){
+            playerPos.add(new Player(x, y, 50, "player2"));
+        }
+        repaint();
     }
 
     public void drawBox(int x,int y){
@@ -95,6 +110,10 @@ public class GameCanvas extends JPanel implements MouseListener{
             case LINE:
                 drawGroundLine(e.getX(), e.getY());
             break;
+                
+            case PLAYER:
+                drawPlayer(e.getX(), e.getY());
+            break;
 
             default: 
                 System.out.println("BUG");
@@ -114,10 +133,15 @@ public class GameCanvas extends JPanel implements MouseListener{
         return groundPos;
     }
     
+    public List<Player> getPlayersPos(){
+        return playerPos;
+    }
+    
     public void clearObjectsList(){
         this.groundPos = new ArrayList<int[]>();
         this.fruitPos = new ArrayList<Fruit>();
         this.boxPos = new ArrayList<Box>();
+        this.playerPos = new ArrayList<Player>();
     }
 
     public void mousePressed(MouseEvent e) { }

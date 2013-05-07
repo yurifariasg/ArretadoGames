@@ -7,6 +7,7 @@ package com.arretados.leveleditor.parsers;
 import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.Fruit;
+import com.arretados.leveleditor.entities.Player;
 import java.util.HashMap;
 import java.util.List;
 import org.json.simple.JSONArray;
@@ -23,11 +24,13 @@ public class JSONGenerator {
     private List<Box> boxes;
     private List<Fruit> fruits;
     private List<int[]> groundLines;
+    private List<Player> players;
 
-    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<int[]> groundLines) {
+    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<int[]> groundLines, List<Player> players) {
         this.boxes = boxes;
         this.fruits = fruits;
         this.groundLines = groundLines;
+        this.players = players;
     }
     
     public JSONObject generateJson(){
@@ -39,12 +42,23 @@ public class JSONGenerator {
     public HashMap<String, JSONArray> createMap(){
         final String TYPE_BOX = "box";
         final String TYPE_FRUIT = "fruit";
+        final String TYPE_PLAYER = "player";
         
         HashMap<String, JSONArray> hm = new HashMap<String, JSONArray>();
         JSONArray jArray = new JSONArray();
         
+        for (int i = 0; i < players.size(); i++){
+            JSONObject jObj = new JSONObject(hm);
+            jObj.put("type", TYPE_PLAYER);
+            jObj.put("player", players.get(i).getPlayer());
+            jObj.put("x", Utils.convertPixelToMeter(players.get(i).getX()));
+            jObj.put("y", Utils.convertPixelToMeter(players.get(i).getY()));
+            jArray.add(jObj);
+        }
+        hm.put("players", jArray);
+        jArray = new JSONArray();        
+        
         for (int i = 0; i < boxes.size(); i++){
-            
             JSONObject jObj = new JSONObject(hm);
             jObj.put("type", TYPE_BOX);
             jObj.put("x", Utils.convertPixelToMeter(boxes.get(i).getX()));
@@ -66,13 +80,12 @@ public class JSONGenerator {
         }        
         
         hm.put("entities", jArray);
-        
         jArray = new JSONArray();
         
         for (int i = 0; i < groundLines.size(); i++){
             JSONObject jObj = new JSONObject();
-            jObj.put("x", groundLines.get(i)[0]);
-            jObj.put("y", groundLines.get(i)[1]);
+            jObj.put("x", Utils.convertPixelToMeter(groundLines.get(i)[0]) );
+            jObj.put("y", Utils.convertPixelToMeter(groundLines.get(i)[1]) );
             jArray.add(jObj);
         }
         hm.put("ground", jArray);

@@ -10,6 +10,6 @@ package com.arretados.leveleditor;
  */
 public enum DrawMode {
     
-    BOX, FRUIT, LINE;
+    BOX, FRUIT, LINE, PLAYER;
     
 }
