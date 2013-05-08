@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 
@@ -38,16 +39,16 @@ public class GameWorldUI extends GameScreen {
 				event.getY() > 380) {
 			if (event.getX() < 200) {
 				// Jump 1
-				System.out.println("Player 1 Jump");
+				gWorld.jumpPlayer(PlayerNumber.ONE);
 			} else if (event.getX() < 400) {
 				// Act 1
-				System.out.println("Player 1 Act");
+				gWorld.actPlayer(PlayerNumber.ONE);
 			} else if (event.getX() < 600) {
 				// Jump 2
-				System.out.println("Player 2 Jump");
+				gWorld.jumpPlayer(PlayerNumber.TWO);
 			} else {
 				// Act 2
-				System.out.println("Player 2 Act");
+				gWorld.actPlayer(PlayerNumber.TWO);
 			}
 		}
 	}
