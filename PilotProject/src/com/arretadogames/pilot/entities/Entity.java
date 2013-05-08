@@ -18,6 +18,7 @@ public abstract class Entity implements Renderable {
 		world = PhysicalWorld.getInstance().getWorld();
 		BodyDef bd = new BodyDef();
 		bd.position.set(x, y);
+		bd.userData = this;
 		body = world.createBody(bd);
 		body.setUserData(this);
 	}

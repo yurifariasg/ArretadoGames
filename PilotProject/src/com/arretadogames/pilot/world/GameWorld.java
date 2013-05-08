@@ -10,12 +10,12 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.Loader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
@@ -31,7 +31,7 @@ public class GameWorld extends GameScreen {
 	private PhysicalWorld pWorld;
 	private Collection<Entity> worldEntities;
 	private HashMap<PlayerNumber, Player> players;
-	
+	private GameCamera gameCamera;
 	
 	public GameWorld() {
 		background = BitmapFactory.decodeResource(GameActivity.getContext().getResources(),
@@ -39,23 +39,24 @@ public class GameWorld extends GameScreen {
 		pWorld = PhysicalWorld.getInstance();
 		Loader loader = new Loader(Loader.jsonExample2);
 		ui = new GameWorldUI(this);
+		gameCamera = new GameCamera(this);
 		worldEntities = loader.getEntities();
 		players = new HashMap<PlayerNumber, Player>();
 		
 		LoboGuara loboGuara = new LoboGuara(0f, 0f, PlayerNumber.ONE);
+		LoboGuara loboGuara2 = new LoboGuara(0f, 0f, PlayerNumber.TWO);
 		
 		players.put(loboGuara.getNumber(), loboGuara);
+		players.put(loboGuara2.getNumber(), loboGuara2);
 		worldEntities.add(loboGuara);
+		worldEntities.add(loboGuara2);
 	}
 	
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 		// Render the World
-		canvas.drawBitmap(background, 0, 0);
-		
-		for (Entity entity : worldEntities)
-			entity.render(canvas, timeElapsed);
-		
+
+		gameCamera.render(canvas, background, timeElapsed);
 		ui.render(canvas, timeElapsed);
 	}
 	
@@ -94,6 +95,10 @@ public class GameWorld extends GameScreen {
 		Player p = players.get(number);
 		if (p != null)
 			p.act();
+	}
+	
+	public HashMap<PlayerNumber, Player> getPlayers(){
+		return players;
 	}
 
 }
