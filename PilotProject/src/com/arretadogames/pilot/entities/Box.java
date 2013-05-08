@@ -21,7 +21,10 @@ public class Box extends Entity {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
+		canvas.saveState();
+		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
 		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), size );
+		canvas.restoreState();
 	}
 
 	@Override
