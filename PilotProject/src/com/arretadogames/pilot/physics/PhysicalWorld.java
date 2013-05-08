@@ -5,6 +5,7 @@ import org.jbox2d.collision.Manifold;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
+import com.arretadogames.pilot.entities.Entity;
 
 
 public class PhysicalWorld implements ContactListener {
@@ -13,6 +14,7 @@ public class PhysicalWorld implements ContactListener {
 	
 	private PhysicalWorld() {
 		world = new World(new Vec2(0.0f,-10.0f));
+		world.setContactListener(this);
 	}
 	
 	public static PhysicalWorld getInstance() {
@@ -28,13 +30,19 @@ public class PhysicalWorld implements ContactListener {
 
 	@Override
 	public void beginContact(Contact contact) {
-		// TODO Auto-generated method stub
+		System.out.println("guilherme eh gay");
+		Entity a = (Entity)contact.m_fixtureA.getBody().getUserData();
+		Entity b = (Entity)contact.m_fixtureB.getBody().getUserData();
+		a.beginContact(b, contact);
+		b.beginContact(a, contact);
 	}
 
 	@Override
 	public void endContact(Contact contact) {
-		// TODO Auto-generated method stub
-		
+		Entity a = (Entity)contact.m_fixtureA.getBody().getUserData();
+		Entity b = (Entity)contact.m_fixtureB.getBody().getUserData();
+		a.endContact(b, contact);
+		b.endContact(a, contact);
 	}
 
 	@Override
