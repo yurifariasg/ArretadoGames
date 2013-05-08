@@ -10,20 +10,16 @@ import com.arretadogames.pilot.world.GameWorld;
  * Game class represents our Game
  */
 public class Game {
-	// TODO: remove the message below
-	// This class isn't inherit from GameScreen
-	// becucase it will not have some common functionalities
-	// as the other screens
-	
+
 	private GameState currentState;
 	private GameWorld gameWorld;
-	
+
 	private MainMenuScreen mainMenu;
-	
+
 	public Game() {
 		currentState = GameState.MAIN_MENU;
 		gameWorld = new GameWorld();
-		mainMenu = new MainMenuScreen();
+		mainMenu = new MainMenuScreen(this);
 	}
 
 	/**
@@ -75,7 +71,7 @@ public class Game {
 	 *            Input Event to be handled
 	 */
 	public void input(MotionEvent event) {
-		
+
 		switch (currentState) {
 		case RUNNING_GAME:
 			gameWorld.input(event);
@@ -87,6 +83,17 @@ public class Game {
 			break;
 		}
 
+	}
+
+	/**
+	 * Switch the current game state
+	 * 
+	 * @param state
+	 *            new game's current state
+	 */
+	public void switchState(GameState state) {
+		if (state != null)
+			currentState = state;
 	}
 
 }
