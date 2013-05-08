@@ -13,7 +13,7 @@ public class LoboGuara extends Player {
 		super(1f, 10f, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
-		body.createFixture(shape, (float) 0.5);
+		body.createFixture(shape,  0.5f);
 		body.setType(BodyType.DYNAMIC);
 	}
 
@@ -23,6 +23,7 @@ public class LoboGuara extends Player {
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
+		
 		
 	}
 
