@@ -1,0 +1,66 @@
+package com.arretadogames.pilot.ui;
+
+import android.view.MotionEvent;
+
+import com.arretadogames.pilot.render.GameCanvas;
+
+public abstract class Button {
+	
+	protected int id;
+	protected float x, y;
+	protected float width, height;
+	private GameButtonListener listener;
+	protected boolean isSelected;
+	
+	public Button(int id, float x, float y, float width, float height, GameButtonListener listener) {
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.listener = listener;
+		isSelected = false;
+	}
+	
+	public abstract void render(GameCanvas canvas, float timeElapsed);
+	
+	public void input(MotionEvent event) {
+		
+		switch (event.getActionMasked()) {
+		case MotionEvent.ACTION_DOWN:
+			if (pressed(event.getX(), event.getY())) {
+				isSelected = true;
+			} else {
+				isSelected = false;
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (pressed(event.getX(), event.getY())) {
+				isSelected = true;
+			} else {
+				isSelected = false;
+			}
+			break;
+		case MotionEvent.ACTION_UP:
+			if (pressed(event.getX(), event.getY())) {
+				listener.onClick(id);
+			}
+			isSelected = false;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private boolean pressed(float x, float y) {
+		if (x > this.x && x < this.x + width) {
+			// Is on X Range
+			if (y > this.y && y < this.y + height) {
+				// Is on Y Range
+				return true;
+			}
+		}
+		return false;
+	}
+	
+}

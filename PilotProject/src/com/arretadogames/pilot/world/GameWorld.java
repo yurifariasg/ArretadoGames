@@ -35,7 +35,7 @@ public class GameWorld extends GameScreen {
 	
 	public GameWorld() {
 		background = BitmapFactory.decodeResource(GameActivity.getContext().getResources(),
-				R.drawable.stage_background);
+		R.drawable.stage_background);
 		pWorld = PhysicalWorld.getInstance();
 		Loader loader = new Loader(Loader.jsonExample2);
 		ui = new GameWorldUI(this);
@@ -63,6 +63,7 @@ public class GameWorld extends GameScreen {
 	@Override
 	public void step(float timeElapsed) {
 		// TODO: Perform a World Step
+		players.get(PlayerNumber.ONE).step();
 		ui.step(timeElapsed);
 		pWorld.step(timeElapsed);
 	}
