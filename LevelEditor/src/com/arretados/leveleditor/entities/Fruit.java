@@ -4,6 +4,7 @@
  */
 package com.arretados.leveleditor.entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 /**
@@ -30,12 +31,21 @@ public class Fruit extends DrawableObject{
         return this.y;
     }
     
+    public void setX(int x){
+        this.x = x;
+    }
+    
+    public void setY(int y){
+        this.y = y;
+    }
+    
     public int getSize(){
         return this.size;
     }
 
     @Override
     public void drawMyself(Graphics g) {
-        g.drawOval(x-(this.size/2), y-(this.size/2), this.size, this.size);
+        g.setColor(Color.red);
+        g.fillOval(x-(this.size/2), y-(this.size/2), this.size, this.size);
     }    
 }

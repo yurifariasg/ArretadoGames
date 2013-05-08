@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -20,7 +21,7 @@ import javax.swing.JPanel;
  *
  * @author bruno
  */
-public class GameCanvas extends JPanel implements MouseListener{
+public class GameCanvas extends JPanel implements MouseMotionListener, MouseListener{
     
     private List<Box> boxPos = new ArrayList<Box>();
     private List<Fruit> fruitPos = new ArrayList<Fruit>();
@@ -30,13 +31,13 @@ public class GameCanvas extends JPanel implements MouseListener{
 
     public GameCanvas() {
         addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.red);
 
         for (int i = 0; i < playerPos.size(); i++){
             playerPos.get(i).drawMyself(g);
@@ -53,6 +54,7 @@ public class GameCanvas extends JPanel implements MouseListener{
         int posX,posY;
         posX = 0;
         posY = 0;
+        g.setColor(Color.green);
         for (int i = 0; i < groundPos.size(); i++){
             posX = groundPos.get(i)[0];
             posY = groundPos.get(i)[1];
@@ -94,6 +96,29 @@ public class GameCanvas extends JPanel implements MouseListener{
         }
         repaint();
     }
+    
+    public List<Box> getBoxPos(){
+        return boxPos;
+    }
+    
+    public List<Fruit> getFruitPos(){
+        return fruitPos;
+    }
+    
+    public List<int[]> getLinesPos(){
+        return groundPos;
+    }
+    
+    public List<Player> getPlayersPos(){
+        return playerPos;
+    }
+    
+    public void clearObjectsList(){
+        this.groundPos = new ArrayList<int[]>();
+        this.fruitPos = new ArrayList<Fruit>();
+        this.boxPos = new ArrayList<Box>();
+        this.playerPos = new ArrayList<Player>();
+    }
 
     public void mouseClicked(MouseEvent e) {
         
@@ -121,36 +146,45 @@ public class GameCanvas extends JPanel implements MouseListener{
         }
     }
     
-    public List<Box> getBoxPos(){
-        return boxPos;
-    }
-    
-    public List<Fruit> getFruitPos(){
-        return fruitPos;
-    }
-    
-    public List<int[]> getLinesPos(){
-        return groundPos;
-    }
-    
-    public List<Player> getPlayersPos(){
-        return playerPos;
-    }
-    
-    public void clearObjectsList(){
-        this.groundPos = new ArrayList<int[]>();
-        this.fruitPos = new ArrayList<Fruit>();
-        this.boxPos = new ArrayList<Box>();
-        this.playerPos = new ArrayList<Player>();
-    }
-
     public void mousePressed(MouseEvent e) { }
-
+    
     public void mouseReleased(MouseEvent e) { }
-
+    
     public void mouseEntered(MouseEvent e) { }
 
     public void mouseExited(MouseEvent e) { }
+
+    public void mouseDragged(MouseEvent e) {
+        switch (mode) {
+            
+            case BOX:
+                boxPos.get(boxPos.size()-1).setX(e.getX());
+                boxPos.get(boxPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+
+            case FRUIT:
+                fruitPos.get(fruitPos.size()-1).setX(e.getX());
+                fruitPos.get(fruitPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+                
+            case PLAYER:
+                playerPos.get(playerPos.size()-1).setX(e.getX());
+                playerPos.get(playerPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+
+            default: 
+                System.out.println("BUG");
+            break;            
+        }
+        
+    }
+
+    public void mouseMoved(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
 
 
