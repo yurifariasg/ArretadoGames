@@ -16,7 +16,7 @@ public class GameCanvas {
 	
 	private final static int SCREEN_WIDTH = 800;
 	private final static int SCREEN_HEIGHT = 480;
-	private final static float BOX2D_RATIO = 50f;
+	private final static float BOX2D_RATIO = 25f;
 	
 
 	private SurfaceHolder surfaceHolder;
@@ -75,13 +75,21 @@ public class GameCanvas {
 	}
 	
 	public void drawPhysicsDebugRect(float centerX, float centerY, float sideLength, int color) {
+		sideLength *= BOX2D_RATIO;
 		sideLength /= 2;
 		debugPaint.setColor(color);
 		canvas.drawRect(new Rect(
-				(int) ((centerX - sideLength) * BOX2D_RATIO),
-				(int) (SCREEN_HEIGHT - (centerY + sideLength) * BOX2D_RATIO),
-				(int) ((centerX + sideLength)  * BOX2D_RATIO),
-				(int) (SCREEN_HEIGHT - (centerY - sideLength) * BOX2D_RATIO)),
+				(int) ((centerX * BOX2D_RATIO - sideLength)),
+				(int) (SCREEN_HEIGHT - (centerY * BOX2D_RATIO + sideLength)),
+				(int) ((centerX * BOX2D_RATIO + sideLength)),
+				(int) (SCREEN_HEIGHT - (centerY * BOX2D_RATIO - sideLength))),
+				debugPaint);
+	}
+	
+	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
+		canvas.drawLine(
+				(int) (x1 * BOX2D_RATIO), (int) (SCREEN_HEIGHT - y1 * BOX2D_RATIO),
+				(int) (x2 * BOX2D_RATIO), (int) (SCREEN_HEIGHT - y2 * BOX2D_RATIO),
 				debugPaint);
 	}
 

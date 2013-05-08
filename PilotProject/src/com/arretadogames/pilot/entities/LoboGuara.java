@@ -22,7 +22,7 @@ public class LoboGuara extends Player {
 		// TODO Auto-generated method stub
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
-		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 0.5f, Color.BLUE);
+		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
 		
 	}
 

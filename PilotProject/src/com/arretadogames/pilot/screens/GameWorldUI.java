@@ -22,7 +22,7 @@ public class GameWorldUI extends GameScreen {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		canvas.drawBitmap(buttonsBitmap, 0, 380);
+//		canvas.drawBitmap(buttonsBitmap, 0, 380);
 	}
 
 	@Override

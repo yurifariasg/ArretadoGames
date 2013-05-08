@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
@@ -27,9 +29,9 @@ public class Loader {
 					"{'type':'box','y':100,'x':10 , size : 2},"+
 				"]"+
 			"}";
-	public static String jsonExample2 = "{\"ground\":[{\"y\":445,\"x\":222},{\"y\":486,\"x\":449}, {\"y\":528,\"x\":850}, {\"y\":536,\"x\":1143}, {\"y\":530,\"x\":1318},{\"y\":527,\"x\":1439},],\"entities\":[{\"type\":\"box\",\"y\":4.58,\"size\":1.0,\"x\":5.45},{\"type\":\"box\",\"y\":20.65,\"size\":1.0,\"x\":8.64},{\"type\":\"box\",\"y\":4.74,\"size\":1.0,\"x\":10.17},{\"type\":\"box\",\"y\":4.17,\"size\":1.0,\"x\":1.09},{\"type\":\"fruit\",\"y\":5.87,\"size\":0.25,\"x\":9.53},]}";
+	public static String jsonExample2 = "{\"ground\":[{\"y\":3,\"x\":0},{\"y\":5,\"x\":4}, {\"y\":0,\"x\":7}, {\"y\":0,\"x\":100}, {\"y\":0,\"x\":150}],\"entities\":[{\"type\":\"box\",\"y\":4.58,\"size\":1.0,\"x\":5.45},{\"type\":\"box\",\"y\":4.65,\"size\":1.0,\"x\":8.64},{\"type\":\"box\",\"y\":4.74,\"size\":1.0,\"x\":10.17},{\"type\":\"box\",\"y\":4.17,\"size\":1.0,\"x\":1.09},{\"type\":\"fruit\",\"y\":5.87,\"size\":0.25,\"x\":9.53}]}";
 	
-	public Loader(String json){
+	public Loader(String json) {
 		this.json = json;
 	}
 	
@@ -43,8 +45,8 @@ public class Loader {
 				JSONObject ent = entities.getJSONObject(i);
 				String type = ent.getString("type");
 				type = type.toUpperCase();
-				int x = ent.getInt("x");
-				int y = ent.getInt("y");
+				float x = (float) ent.getDouble("x");
+				float y = (float) ent.getDouble("y");
 				EntityType t = EntityType.valueOf(type);
 				if( t == EntityType.BOX){
 					float size = (float)ent.getDouble("size");
@@ -61,14 +63,18 @@ public class Loader {
 			JSONArray ground = jsonObject.getJSONArray("ground");
 			Vec2 vec[] = new Vec2[ground.length()];
 			for( int i = 0 ; i < ground.length(); i++){
-				JSONObject ent = entities.getJSONObject(i);
-				int x = ent.getInt("x");
-				int y = ent.getInt("y");
+				Log.d("pos ground", " pos " + i);
+				JSONObject ent = ground.getJSONObject(i);
+				float x = (float) ent.getDouble("x");
+				float y = (float) ent.getDouble("y");
+				Log.d("pos ground", "x " + x + " y " + y);
 				vec[i] = new Vec2(x,y);
 			}
+			Log.d("pos ground", "cabo");
 			col.add(new Ground(vec,ground.length()));
 		}catch(JSONException e){
-			System.out.println("Error: "+e.getMessage());
+			e.printStackTrace();
+			
 		}
 		return col;
 		
