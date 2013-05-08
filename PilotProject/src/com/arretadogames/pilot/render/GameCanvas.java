@@ -13,26 +13,38 @@ import android.view.SurfaceHolder;
  * done
  */
 public class GameCanvas {
-	
+
 	private final static int SCREEN_WIDTH = 800;
 	private final static int SCREEN_HEIGHT = 380;
-	private final static float BOX2D_RATIO = 25f;
-	
 
 	private SurfaceHolder surfaceHolder;
 	private Canvas canvas;
 
 	private Paint defaultPaint;
 	private Paint debugPaint;
+	private float physicsRatio;
 
 	public GameCanvas(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
 
 		defaultPaint = new Paint();
 		defaultPaint.setAntiAlias(true);
+		physicsRatio = 25f;
 
 		debugPaint = new Paint();
 		debugPaint.setColor(Color.RED);
+	}
+
+	/**
+	 * Sets the new ratio used by Physics methods - this only works if the new
+	 * ratio is higher than 0. Higher Ratio means more zoom
+	 * 
+	 * @param newRatio
+	 *            New Ratio to be used - Must be higher than 0
+	 */
+	public void setPhysicsRatio(float newRatio) {
+		if (newRatio > 0)
+			this.physicsRatio = newRatio;
 	}
 
 	/**
@@ -55,6 +67,47 @@ public class GameCanvas {
 	}
 
 	/**
+	 * Translates the canvas dx x-coordinates and dy y-coordinates
+	 * 
+	 * @param dx
+	 *            X Coordinates to Translate
+	 * @param dy
+	 *            Y Coordinates to Translate
+	 */
+	public void translate(float dx, float dy) {
+		canvas.translate(dx, dy);
+	}
+
+	/**
+	 * Rotates the canvas on the given point the amount of given degrees
+	 * 
+	 * @param degrees
+	 *            Degrees to rotate
+	 * @param x
+	 *            X Coordinate of the point
+	 * @param y
+	 *            Y Coordinate of the point
+	 */
+	public void rotate(float degrees, float x, float y) {
+		canvas.rotate(degrees, x, y);
+	}
+
+	/**
+	 * Rotates the canvas on the given point the amount of given degrees. All X
+	 * and Y coords are units given in meters
+	 * 
+	 * @param degrees
+	 *            Degrees to rotate
+	 * @param x
+	 *            X Coordinate of the point
+	 * @param y
+	 *            Y Coordinate of the point
+	 */
+	public void rotatePhysics(float degrees, float x, float y) {
+		canvas.rotate(degrees, x * physicsRatio, SCREEN_HEIGHT - y * physicsRatio);
+	}
+
+	/**
 	 * Draws a debugging rect at the given location
 	 * 
 	 * @param x
@@ -69,28 +122,28 @@ public class GameCanvas {
 	public void drawDebugRect(int x, int y, int x2, int y2) {
 		canvas.drawRect(new Rect(x, y, x2, y2), debugPaint);
 	}
-	
-	public void drawPhysicsDebugRect(float centerX, float centerY, float sideLength) {
+
+	public void drawPhysicsDebugRect(float centerX, float centerY,
+			float sideLength) {
 		drawPhysicsDebugRect(centerX, centerY, sideLength, Color.RED);
 	}
-	
-	public void drawPhysicsDebugRect(float centerX, float centerY, float sideLength, int color) {
-		sideLength *= BOX2D_RATIO;
+
+	public void drawPhysicsDebugRect(float centerX, float centerY,
+			float sideLength, int color) {
+		sideLength *= physicsRatio;
 		sideLength /= 2;
 		debugPaint.setColor(color);
-		canvas.drawRect(new Rect(
-				(int) ((centerX * BOX2D_RATIO - sideLength)),
-				(int) (SCREEN_HEIGHT - (centerY * BOX2D_RATIO + sideLength)),
-				(int) ((centerX * BOX2D_RATIO + sideLength)),
-				(int) (SCREEN_HEIGHT - (centerY * BOX2D_RATIO - sideLength))),
+		canvas.drawRect(new Rect((int) ((centerX * physicsRatio - sideLength)),
+				(int) (SCREEN_HEIGHT - (centerY * physicsRatio + sideLength)),
+				(int) ((centerX * physicsRatio + sideLength)),
+				(int) (SCREEN_HEIGHT - (centerY * physicsRatio - sideLength))),
 				debugPaint);
 	}
-	
+
 	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
-		canvas.drawLine(
-				(int) (x1 * BOX2D_RATIO), (int) (SCREEN_HEIGHT - y1 * BOX2D_RATIO),
-				(int) (x2 * BOX2D_RATIO), (int) (SCREEN_HEIGHT - y2 * BOX2D_RATIO),
-				debugPaint);
+		canvas.drawLine((int) (x1 * physicsRatio), (int) (SCREEN_HEIGHT - y1
+				* physicsRatio), (int) (x2 * physicsRatio),
+				(int) (SCREEN_HEIGHT - y2 * physicsRatio), debugPaint);
 	}
 
 	/**
