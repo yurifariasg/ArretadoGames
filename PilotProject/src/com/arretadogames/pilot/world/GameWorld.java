@@ -1,6 +1,7 @@
 package com.arretadogames.pilot.world;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +10,9 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.LoboGuara;
+import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.Loader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
@@ -27,6 +30,7 @@ public class GameWorld extends GameScreen {
 	private GameWorldUI ui;
 	private PhysicalWorld pWorld;
 	private Collection<Entity> worldEntities;
+	private HashMap<PlayerNumber, Player> players;
 	
 	
 	public GameWorld() {
@@ -36,9 +40,12 @@ public class GameWorld extends GameScreen {
 		Loader loader = new Loader(Loader.jsonExample2);
 		ui = new GameWorldUI(this);
 		worldEntities = loader.getEntities();
+		players = new HashMap<PlayerNumber, Player>();
 		
+		LoboGuara loboGuara = new LoboGuara(0f, 0f, PlayerNumber.ONE);
 		
-		worldEntities.add(new LoboGuara(0f, 0f, PlayerNumber.ONE)); // Fake Position
+		players.put(loboGuara.getNumber(), loboGuara);
+		worldEntities.add(loboGuara);
 	}
 	
 	@Override
@@ -74,6 +81,19 @@ public class GameWorld extends GameScreen {
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
+	}
+	
+	public void jumpPlayer(PlayerNumber number) {
+		Player p = players.get(number);
+		if (p != null)
+			p.jump();
+		
+	}
+	
+	public void actPlayer(PlayerNumber number) {
+		Player p = players.get(number);
+		if (p != null)
+			p.act();
 	}
 
 }

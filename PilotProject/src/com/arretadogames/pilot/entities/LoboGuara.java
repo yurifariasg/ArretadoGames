@@ -29,12 +29,14 @@ public class LoboGuara extends Player {
 	@Override
 	public void jump() {
 		// TODO create impulse
+		System.out.println("Jump Player 1");
 		
 	}
 
 	@Override
 	public void act() {
 		// TODO stop moving for awhile or do something else...
+		System.out.println("Act Player 1");
 	}
 
 	@Override
