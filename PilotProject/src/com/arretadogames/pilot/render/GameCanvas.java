@@ -16,22 +16,35 @@ public class GameCanvas {
 
 	private final static int SCREEN_WIDTH = 800;
 	private final static int SCREEN_HEIGHT = 380;
-	private final static float BOX2D_RATIO = 25f;
 
 	private SurfaceHolder surfaceHolder;
 	private Canvas canvas;
 
 	private Paint defaultPaint;
 	private Paint debugPaint;
+	private float physicsRatio;
 
 	public GameCanvas(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
 
 		defaultPaint = new Paint();
 		defaultPaint.setAntiAlias(true);
+		physicsRatio = 25f;
 
 		debugPaint = new Paint();
 		debugPaint.setColor(Color.RED);
+	}
+
+	/**
+	 * Sets the new ratio used by Physics methods - this only works if the new
+	 * ratio is higher than 0. Higher Ratio means more zoom
+	 * 
+	 * @param newRatio
+	 *            New Ratio to be used - Must be higher than 0
+	 */
+	public void setPhysicsRatio(float newRatio) {
+		if (newRatio > 0)
+			this.physicsRatio = newRatio;
 	}
 
 	/**
@@ -102,20 +115,20 @@ public class GameCanvas {
 
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength, int color) {
-		sideLength *= BOX2D_RATIO;
+		sideLength *= physicsRatio;
 		sideLength /= 2;
 		debugPaint.setColor(color);
-		canvas.drawRect(new Rect((int) ((centerX * BOX2D_RATIO - sideLength)),
-				(int) (SCREEN_HEIGHT - (centerY * BOX2D_RATIO + sideLength)),
-				(int) ((centerX * BOX2D_RATIO + sideLength)),
-				(int) (SCREEN_HEIGHT - (centerY * BOX2D_RATIO - sideLength))),
+		canvas.drawRect(new Rect((int) ((centerX * physicsRatio - sideLength)),
+				(int) (SCREEN_HEIGHT - (centerY * physicsRatio + sideLength)),
+				(int) ((centerX * physicsRatio + sideLength)),
+				(int) (SCREEN_HEIGHT - (centerY * physicsRatio - sideLength))),
 				debugPaint);
 	}
 
 	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
-		canvas.drawLine((int) (x1 * BOX2D_RATIO), (int) (SCREEN_HEIGHT - y1
-				* BOX2D_RATIO), (int) (x2 * BOX2D_RATIO),
-				(int) (SCREEN_HEIGHT - y2 * BOX2D_RATIO), debugPaint);
+		canvas.drawLine((int) (x1 * physicsRatio), (int) (SCREEN_HEIGHT - y1
+				* physicsRatio), (int) (x2 * physicsRatio),
+				(int) (SCREEN_HEIGHT - y2 * physicsRatio), debugPaint);
 	}
 
 	/**
