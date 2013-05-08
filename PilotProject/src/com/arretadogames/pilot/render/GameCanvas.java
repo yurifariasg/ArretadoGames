@@ -93,6 +93,21 @@ public class GameCanvas {
 	}
 
 	/**
+	 * Rotates the canvas on the given point the amount of given degrees. All X
+	 * and Y coords are units given in meters
+	 * 
+	 * @param degrees
+	 *            Degrees to rotate
+	 * @param x
+	 *            X Coordinate of the point
+	 * @param y
+	 *            Y Coordinate of the point
+	 */
+	public void rotatePhysics(float degrees, float x, float y) {
+		canvas.rotate(degrees, x * physicsRatio, SCREEN_HEIGHT - y * physicsRatio);
+	}
+
+	/**
 	 * Draws a debugging rect at the given location
 	 * 
 	 * @param x
