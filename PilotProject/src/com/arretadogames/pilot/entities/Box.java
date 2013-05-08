@@ -12,14 +12,16 @@ public class Box extends Entity {
 		super(x, y);
 		this.size = size;
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(size, size);
+		shape.setAsBox(size/2, size/2);
 		body.createFixture(shape, (float) 0.5);
 		body.setType(BodyType.DYNAMIC);
+		body.setFixedRotation(false);
+		
 	}
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), size * 2);
+		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), size );
 	}
 
 	@Override
