@@ -3,6 +3,7 @@ package com.arretadogames.pilot.game;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.screens.MainMenuScreen;
 import com.arretadogames.pilot.world.GameWorld;
 
 /**
@@ -17,9 +18,12 @@ public class Game {
 	private GameState currentState;
 	private GameWorld gameWorld;
 	
+	private MainMenuScreen mainMenu;
+	
 	public Game() {
-		currentState = GameState.RUNNING_GAME;
+		currentState = GameState.MAIN_MENU;
 		gameWorld = new GameWorld();
+		mainMenu = new MainMenuScreen();
 	}
 
 	/**
@@ -31,8 +35,16 @@ public class Game {
 	 *            Time Elapsed since last frame
 	 */
 	public void render(GameCanvas canvas, float timeElapsed) {
-		
-		gameWorld.render(canvas, timeElapsed);
+		switch (currentState) {
+		case RUNNING_GAME:
+			gameWorld.render(canvas, timeElapsed);
+			break;
+		case MAIN_MENU:
+			mainMenu.render(canvas, timeElapsed);
+			break;
+		default:
+			break;
+		}
 
 	}
 
@@ -43,8 +55,16 @@ public class Game {
 	 *            Time Elapsed since last frame
 	 */
 	public void step(float timeElapsed) {
-		
-		gameWorld.step(timeElapsed);
+		switch (currentState) {
+		case RUNNING_GAME:
+			gameWorld.step(timeElapsed);
+			break;
+		case MAIN_MENU:
+			mainMenu.step(timeElapsed);
+			break;
+		default:
+			break;
+		}
 
 	}
 
@@ -56,7 +76,16 @@ public class Game {
 	 */
 	public void input(MotionEvent event) {
 		
-		gameWorld.input(event);
+		switch (currentState) {
+		case RUNNING_GAME:
+			gameWorld.input(event);
+			break;
+		case MAIN_MENU:
+			mainMenu.input(event);
+			break;
+		default:
+			break;
+		}
 
 	}
 
