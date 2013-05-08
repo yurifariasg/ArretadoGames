@@ -15,7 +15,7 @@ import android.view.SurfaceHolder;
 public class GameCanvas {
 	
 	private final static int SCREEN_WIDTH = 800;
-	private final static int SCREEN_HEIGHT = 480;
+	private final static int SCREEN_HEIGHT = 380;
 	private final static float BOX2D_RATIO = 25f;
 	
 
