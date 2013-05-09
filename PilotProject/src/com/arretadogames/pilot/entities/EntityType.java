@@ -1,8 +1,17 @@
 package com.arretadogames.pilot.entities;
 
 public enum EntityType {
-	BOX, 
-	FRUIT,
-	GROUND,
-	PLAYER;
+	
+	BOX("Box"), FRUIT("Fruit"),	GROUND("Ground"), PLAYER("Player");
+	
+	private String name;
+	
+	EntityType(String name) {
+		this.name = name;
+	}
+	
+	public String toString(){
+		return this.name();
+	}
+	
 }
