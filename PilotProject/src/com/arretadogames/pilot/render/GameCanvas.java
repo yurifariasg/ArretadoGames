@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.view.SurfaceHolder;
 
@@ -126,13 +126,12 @@ public class GameCanvas {
 	}
 	
 	public void drawCameraDebugRect(float x, float y, float x2, float y2) {
-		int previous = debugPaint.getColor();
-		Style previousStyle = debugPaint.getStyle();
-		debugPaint.setColor(Color.BLUE);
-		debugPaint.setStyle(Style.STROKE);
-		canvas.drawRect(new RectF(x, y, x2, y2), debugPaint);
-		debugPaint.setColor(previous);
-		debugPaint.setStyle(previousStyle);
+		
+		float centerX = (x + x2) / 2, centerY = (y + y2) / 2;
+//		drawPhysicsDebugRect(centerX, centerY, Math.max(Math.abs(x - x2), Math.abs(y - y2)), Color.GRAY);
+		debugPaint.setColor(Color.GRAY);
+//		debugPaint.setStyle(Style.STROKE);
+		canvas.drawRect(new RectF(x*physicsRatio, SCREEN_HEIGHT - y*physicsRatio, x2*physicsRatio, SCREEN_HEIGHT - y2*physicsRatio), debugPaint);
 	}
 
 	public void drawPhysicsDebugRect(float centerX, float centerY,
