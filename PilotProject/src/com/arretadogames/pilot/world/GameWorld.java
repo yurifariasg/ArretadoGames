@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -17,6 +18,7 @@ import com.arretadogames.pilot.loading.Loader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.SpriteManager;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 
@@ -33,6 +35,8 @@ public class GameWorld extends GameScreen {
 	private HashMap<PlayerNumber, Player> players;
 	private GameCamera gameCamera;
 	
+	private SpriteManager sm;
+	
 	public GameWorld() {
 		background = BitmapFactory.decodeResource(GameActivity.getContext().getResources(),
 		R.drawable.stage_background);
@@ -42,14 +46,15 @@ public class GameWorld extends GameScreen {
 		gameCamera = new GameCamera(this);
 		worldEntities = loader.getEntities();
 		players = new HashMap<PlayerNumber, Player>();
+		sm = new SpriteManager();		
 		
-		LoboGuara loboGuara = new LoboGuara(0f, 0f, PlayerNumber.ONE);
-		LoboGuara loboGuara2 = new LoboGuara(0f, 0f, PlayerNumber.TWO);
+		LoboGuara loboGuara = new LoboGuara(0f, 0f, PlayerNumber.ONE, sm.getSprite(EntityType.PLAYER));
+//		LoboGuara loboGuara2 = new LoboGuara(0f, 0f, PlayerNumber.TWO);
 		
 		players.put(loboGuara.getNumber(), loboGuara);
-		players.put(loboGuara2.getNumber(), loboGuara2);
+//		players.put(loboGuara2.getNumber(), loboGuara2);
 		worldEntities.add(loboGuara);
-		worldEntities.add(loboGuara2);
+//		worldEntities.add(loboGuara2);
 	}
 	
 	@Override

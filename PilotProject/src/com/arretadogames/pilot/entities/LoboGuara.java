@@ -9,14 +9,17 @@ import org.jbox2d.dynamics.contacts.Contact;
 import android.graphics.Color;
 
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.SpriteManager;
 
 public class LoboGuara extends Player {
 	
+	private Sprite sprite;
 	private int contJump;
 	private int contacts;
 	private Fixture footFixture;
 	
-	public LoboGuara(float x, float y, PlayerNumber number) {
+	public LoboGuara(float x, float y, PlayerNumber number, Sprite sprite) {
 		super(1f, 10f, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
@@ -27,6 +30,7 @@ public class LoboGuara extends Player {
 		body.setFixedRotation(false);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(0.4f, 0.1f, new Vec2(0f,-0.5f), 0f);
+		this.sprite = sprite;
 		
 		//footFixture = body.createFixture(footShape, 0f);
 	}
@@ -36,6 +40,9 @@ public class LoboGuara extends Player {
 		// TODO Auto-generated method stub
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
+		
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
+		
 		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
 		
 		
@@ -43,7 +50,8 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void jump() {
-		System.out.println("jump " + contJump);
+		sprite.setAnimationState("jump");
+//		System.out.println("jump " + contJump);
 		if( contJump > 0 || contacts <= 0) return;	
 		float impulseX = (8) * body.getMass();
 		Vec2 direction = new Vec2(0f,1f);
@@ -51,7 +59,7 @@ public class LoboGuara extends Player {
 		direction.mulLocal(impulseX);
 		body.applyLinearImpulse(direction, body.getWorldCenter());
 		contJump = 10;
-		System.out.println("Jump Player 1");
+//		System.out.println("Jump Player 1");
 	}
 	
 	public void run(){

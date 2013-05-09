@@ -4,10 +4,13 @@ import android.graphics.Bitmap;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
+import com.arretadogames.pilot.ui.ZoomImageButton;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener {
 	
@@ -15,10 +18,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener {
 	
 	private Bitmap background;
 	private ImageButton playButton;
+	private Game game;
 	
-	public MainMenuScreen() {
+	public MainMenuScreen(Game game) {
+		this.game = game;
 		background = ImageLoader.loadImage(R.drawable.menu_background);
-		playButton = new ImageButton(PLAY_BUTTON, 340, 210, this,
+		playButton = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
 				ImageLoader.loadImage(R.drawable.bt_play_selected),
 				ImageLoader.loadImage(R.drawable.bt_play_unselected));
 	}
@@ -56,7 +61,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener {
 	public void onClick(int buttonId) {
 		switch (buttonId) {
 		case PLAY_BUTTON:
-			System.out.println("Play Button");
+			game.switchState(GameState.RUNNING_GAME);
 			break;
 		}
 	}

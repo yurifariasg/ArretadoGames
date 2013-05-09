@@ -27,10 +27,10 @@ public class SpriteState {
 	public Bitmap getCurrentFrame(float timeElapsed) {
 		if (keyFrameDuration[currentKeyFrameIndex] > 0) {
 			float currentTimeElapsed = timeElapsed;
-			while (currentTimeElapsed > 0) {
+			while (currentTimeElapsed > 0){
 				float timeElapsedBefore = currentTimeElapsed;
-				currentTimeElapsed = currentTimeElapsed - currentFrameTimeLeft;
-				currentFrameTimeLeft = currentFrameTimeLeft - timeElapsedBefore;
+				currentTimeElapsed -= currentFrameTimeLeft;
+				currentFrameTimeLeft -= timeElapsedBefore;
 				if (currentFrameTimeLeft < 0) { // Frame Expired
 					nextFrame();
 					if (currentFrameTimeLeft == 0)
