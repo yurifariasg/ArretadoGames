@@ -10,6 +10,7 @@ import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
+import com.arretadogames.pilot.ui.ZoomImageButton;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener {
 	
@@ -22,7 +23,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener {
 	public MainMenuScreen(Game game) {
 		this.game = game;
 		background = ImageLoader.loadImage(R.drawable.menu_background);
-		playButton = new ImageButton(PLAY_BUTTON, 340, 210, this,
+		playButton = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
 				ImageLoader.loadImage(R.drawable.bt_play_selected),
 				ImageLoader.loadImage(R.drawable.bt_play_unselected));
 	}

@@ -79,6 +79,10 @@ public class GameCanvas {
 	public void translate(float dx, float dy) {
 		canvas.translate(dx, dy);
 	}
+	
+	public void scale(float sx, float sy, float px, float py) {
+		canvas.scale(sx, sy, px, py);
+	}
 
 	/**
 	 * Rotates the canvas on the given point the amount of given degrees
@@ -153,6 +157,7 @@ public class GameCanvas {
 	}
 
 	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
+		debugPaint.setColor(Color.RED);
 		canvas.drawLine((int) (x1 * physicsRatio), (int) (SCREEN_HEIGHT - y1
 				* physicsRatio), (int) (x2 * physicsRatio),
 				(int) (SCREEN_HEIGHT - y2 * physicsRatio), debugPaint);
