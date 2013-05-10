@@ -10,13 +10,15 @@ import com.arretadogames.pilot.world.GameWorld;
  * Game class represents our Game
  */
 public class Game {
+	
+	private static Game game;
 
 	private GameState currentState;
 	private GameWorld gameWorld;
 
 	private MainMenuScreen mainMenu;
 
-	public Game() {
+	private Game() {
 		currentState = GameState.MAIN_MENU;
 		gameWorld = new GameWorld();
 		mainMenu = new MainMenuScreen(this);
@@ -94,6 +96,25 @@ public class Game {
 	public void switchState(GameState state) {
 		if (state != null)
 			currentState = state;
+	}
+
+	public void onBackPressed() {
+		switch (currentState) {
+		case RUNNING_GAME:
+			gameWorld.onBackPressed();
+			break;
+		case MAIN_MENU:
+			mainMenu.onBackPressed();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public static Game getInstance() {
+		if (game == null)
+			game = new Game();
+		return game;
 	}
 
 }

@@ -19,6 +19,7 @@ import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
+import com.arretadogames.pilot.screens.PauseScreen;
 
 /**
  * GameWorld class represents the World in our Game
@@ -32,6 +33,8 @@ public class GameWorld extends GameScreen {
 	private Collection<Entity> worldEntities;
 	private HashMap<PlayerNumber, Player> players;
 	private GameCamera gameCamera;
+	private PauseScreen pauseScreen;
+	
 	
 	public GameWorld() {
 		background = BitmapFactory.decodeResource(GameActivity.getContext().getResources(),
@@ -42,6 +45,7 @@ public class GameWorld extends GameScreen {
 		gameCamera = new GameCamera(this);
 		worldEntities = loader.getEntities();
 		players = new HashMap<PlayerNumber, Player>();
+		pauseScreen = new PauseScreen();
 		
 		LoboGuara loboGuara = new LoboGuara(0f, 0f, PlayerNumber.ONE);
 		LoboGuara loboGuara2 = new LoboGuara(0f, 0f, PlayerNumber.TWO);
@@ -58,26 +62,35 @@ public class GameWorld extends GameScreen {
 
 		gameCamera.render(canvas, background, timeElapsed);
 		ui.render(canvas, timeElapsed);
+		pauseScreen.render(canvas, timeElapsed);
 	}
 	
 	@Override
 	public void step(float timeElapsed) {
 		// TODO: Perform a World Step
-		players.get(PlayerNumber.ONE).step();
-		ui.step(timeElapsed);
-		pWorld.step(timeElapsed);
+		pauseScreen.step(timeElapsed);
+		if (pauseScreen.isHidden()) {
+			players.get(PlayerNumber.ONE).step();
+			ui.step(timeElapsed);
+			pWorld.step(timeElapsed);
+		}
 	}
 
 	@Override
 	public void input(MotionEvent event) {
 		// TODO Handle Inputs
-		ui.input(event);
+		pauseScreen.input(event);
+		if (pauseScreen.isHidden())
+			ui.input(event);
 	}
 
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
-		ui.onBackPressed();
+		if (pauseScreen.isHidden())
+			ui.onBackPressed();
+		else
+			pauseScreen.onBackPressed();
 	}
 
 	@Override

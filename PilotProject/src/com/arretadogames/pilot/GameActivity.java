@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loop.GameThread;
 import com.arretadogames.pilot.render.canvas.RenderingSurface;
 
@@ -20,7 +21,6 @@ public class GameActivity extends Activity implements OnTouchListener {
 	
 	private static Context context;
 	
-	private Game game;
 	private GameThread gameThread;
 	private RenderingSurface renderingSurface;
 	
@@ -30,9 +30,7 @@ public class GameActivity extends Activity implements OnTouchListener {
 		renderingSurface = new RenderingSurface(this);
 		setContentView(renderingSurface);
 		context = getApplicationContext();
-
-		// Create Game
-		game = new Game();
+		FontLoader.create(context);
 	}
 	
 	@Override
@@ -49,7 +47,7 @@ public class GameActivity extends Activity implements OnTouchListener {
 		super.onResume();
 		// On Resume, starts a new GameThread
 		gameThread = new GameThread();
-		gameThread.setGame(game);
+		gameThread.setGame(Game.getInstance());
 		renderingSurface.setGameThread(gameThread);
 	}
 	
@@ -63,7 +61,7 @@ public class GameActivity extends Activity implements OnTouchListener {
 	@Override
 	public void onBackPressed() {
 		// TODO Handles the Back Button input from a Physical Button
-		super.onBackPressed();
+		Game.getInstance().onBackPressed();
 	}
 	
 	public static Context getContext() {
@@ -72,7 +70,7 @@ public class GameActivity extends Activity implements OnTouchListener {
 
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
-		game.input(event);
+		Game.getInstance().input(event);
 		return true;
 	}
 

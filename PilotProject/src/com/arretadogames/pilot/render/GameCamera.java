@@ -106,7 +106,7 @@ public class GameCamera {
 				if ( e != null ){
 					Entity entity = (Entity) e;
 					entity.render(canvas, timeElapsed);
-					System.out.println("drawing entity: "+entity.getClass());
+//					System.out.println("drawing entity: "+entity.getClass());
 				}
 				else{
 				}

@@ -168,7 +168,7 @@ public class GameCanvas {
 	 * This should be done before rotating or translating operations
 	 */
 	public void saveState() {
-		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.save();
 	}
 
 	/**
@@ -221,5 +221,14 @@ public class GameCanvas {
 	 */
 	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) {
 		canvas.drawBitmap(bitmap, x, y, paint);
+	}
+	
+	
+	public void drawText(String text, float x, float y, Paint p) {
+		canvas.drawText(text, x, y, p);
+	}
+	
+	public void fillScreen(float a, float r, float g, float b) {
+		canvas.drawARGB((int) a, (int) r, (int) g, (int) b);
 	}
 }

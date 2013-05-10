@@ -1,10 +1,6 @@
 package com.arretadogames.pilot.ui;
 
 import android.graphics.Bitmap;
-import android.view.MotionEvent;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenAccessor;
-import aurelienribon.tweenengine.TweenManager;
 
 import com.arretadogames.pilot.render.GameCanvas;
 
@@ -38,9 +34,9 @@ public class ImageButton extends Button {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		if (isSelected) {
+		if (isSelected && selectedImage != null) {
 			canvas.drawBitmap(selectedImage, x, y);
-		} else {
+		} else if (unselectedImage != null) {
 			canvas.drawBitmap(unselectedImage, x, y);
 		}
 	}
