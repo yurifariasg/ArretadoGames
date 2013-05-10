@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.render;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.jbox2d.callbacks.QueryCallback;
@@ -9,6 +11,7 @@ import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Bitmap;
 
+import com.arretadogames.pilot.Configuration;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -25,97 +28,115 @@ public class GameCamera {
 
 	private GameWorld gameWorld = null;
 	private GameCanvas gameCanvas = null;
-	private float width;
-	private float height;
-	private Vec2 origin;
-	private Vec2 otherEnd;
 	
 	public GameCamera(GameWorld world){
 
-		this(world, 0, 0, 800, 380);
-	}
-	
-	public GameCamera(GameWorld world, int x, int y, int newWidth, int newHeight){
-		
 		gameWorld = world;
-		width = newWidth;
-		height = newHeight;
-
-		origin = new Vec2(x, y);
-		otherEnd = new Vec2(origin);
-		otherEnd = otherEnd.add(new Vec2(width, height));
-		System.out.println("Origin at :"+origin.x+", "+origin.y+". End at :"+otherEnd.x+", "+otherEnd.y+".");
 	}
 
-	public void setPosition(int x, int y){
+	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
+	public void determineViewport(float timeElapsed){
 
-		setPosition(new Vec2(x, y));
-	}
-	
-	public void setPosition(Vec2 vec){
-		
-		origin.set(vec);
-		otherEnd.set(origin);
-		otherEnd = otherEnd.add(new Vec2(width, height));
-	}
-	
-	public void setDimentions(float newWidth, float newHeight){
-
-		this.width = newWidth;
-		this.height = newHeight;
-		
-		otherEnd.set(origin);
-		otherEnd = otherEnd.add(new Vec2(width, height));
-	}
-
-	public void update(){
-		
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
+
+		int numberOfPlayers = players.keySet().size();
+
+		float maxDistance = 0;
+		Vec2 center = new Vec2();
 		
-		Vec2 p1Pos = new Vec2(players.get(PlayerNumber.ONE).getPosX(), players.get(PlayerNumber.ONE).getPosY());
-		Vec2 p2Pos = new Vec2(players.get(PlayerNumber.TWO).getPosX(), players.get(PlayerNumber.TWO).getPosY());
+		for ( int i=0; i<numberOfPlayers; i++ ){
 
-		float distance = Math.abs(p1Pos.sub(p2Pos).length());
+			float x = players.get(PlayerNumber.values()[i]).getPosX();
+			float y = players.get(PlayerNumber.values()[i]).getPosY();
 
-		float max = Math.max(width, height);
-		if ( distance > max ){
-			//Both players arent close enough
-			float zoom = distance / max;
-			
-			setDimentions(width*zoom, height*zoom);
+			center.addLocal(x, y);
+
+			for ( int j=0; j<numberOfPlayers; j++ ){
+
+				if ( i == j ){
+					continue;
+				}
+				
+				float x2 = players.get(PlayerNumber.values()[j]).getPosX();
+				float currentDistance = Math.abs(x - x2);
+				
+				if ( maxDistance == -1 ){
+					maxDistance = currentDistance;
+				}
+				else if ( maxDistance < currentDistance ){
+					maxDistance = currentDistance;
+				}
+			}
 		}
 		
-		Vec2 center = new Vec2(p1Pos);
-		center.add(p2Pos);
-		center.mul(.5f);
+		center.mulLocal(1f / numberOfPlayers);
+		
+		float viewportWidth = maxDistance + 30;
+		float physicsRatio = GameCanvas.SCREEN_WIDTH / viewportWidth;
+		float viewportHeight = GameCanvas.SCREEN_HEIGHT / physicsRatio;
+		
+		Vec2 lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
+		if ( Configuration.debugViewport ){
+			lowerBound.addLocal(new Vec2(2, 2));
+		}
 
-		setPosition(center.sub(new Vec2(width/2, height/2)));
-		setDimentions(width, height);
+		Vec2 upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
+		if ( Configuration.debugViewport ){
+			upperBound.subLocal(new Vec2(2, 2));
+		}
+		
+		Vec2 translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
+		
+		gameCanvas.setPhysicsRatio(physicsRatio);
+
+		gameCanvas.saveState();
+		gameCanvas.translate(translator.x, translator.y);
+
+		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, upperBound);
+		
+		for ( Entity entity : entities ){
+			entity.render(gameCanvas, timeElapsed);
+		}
+
+		gameCanvas.restoreState();
 	}
-	
-	public void render(final GameCanvas canvas, Bitmap background, final float timeElapsed) {
 
-		canvas.drawBitmap(background, 0, 0);
-	
+	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
+
+		if ( Configuration.debugViewport ){
+			gameCanvas.drawCameraDebugRect(lowerBound.x, lowerBound.y, upperBound.x, upperBound.y);
+		}
+
+		final Collection<Entity> entities = new ArrayList<Entity>();
+
 		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() {
-			
+
 			@Override
 			public boolean reportFixture(Fixture fixture) {
 
 				Object e = fixture.getBody().getUserData();
 				if ( e != null ){
+
 					Entity entity = (Entity) e;
-					entity.render(canvas, timeElapsed);
-//					System.out.println("drawing entity: "+entity.getClass());
-				}
-				else{
+					entities.add(entity);
 				}
 				return true;
 			}
-		}, new AABB(origin, otherEnd));
-		
-		canvas.drawCameraDebugRect(origin.x, origin.y, otherEnd.x, otherEnd.y);
+		}, new AABB(lowerBound, upperBound));
 
+		return entities;
+	}
+	
+	public void render(final GameCanvas canvas, Bitmap background, final float timeElapsed) {
+
+		if ( gameCanvas == null ){
+			gameCanvas = canvas;
+		}
+		
+		gameCanvas.drawBitmap(background, 0, 0);
+
+		determineViewport(timeElapsed);
+		
 	}
 
 }
