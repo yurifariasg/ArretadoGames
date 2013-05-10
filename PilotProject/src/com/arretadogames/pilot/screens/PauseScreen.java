@@ -65,13 +65,12 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		
+
+		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.drawBitmap(background, (800 - currentWidth), 1);
 		
 		
 		if (!isHidden) {
-			System.out.println("CurrentBlackAlpha: " + currentBlackAlpha);
-//			canvas.fillScreen(currentBlackAlpha, 0, 0, 0); -- Draws Black Screen
 			float buttonX = 800 - currentWidth + ARROW_WIDTH + 2;
 			continueBt.setX(buttonX);
 			continueBt.render(canvas, timeElapsed);
@@ -107,13 +106,15 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	private void show() {
 		isHidden = false;
-		Tween.to(this, 1, 1f).target(PAUSE_MENU_SIZE + ARROW_WIDTH, 100f).start(tweenManager);
+		Tween.to(this, 1, 1f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).start(tweenManager);
+		Tween.to(this, 2, 1f).target(100f).start(tweenManager);
 		
 	}
 	
 	private void hide() {
 		isHidden = true;
-		Tween.to(this, 1, 1f).target(ARROW_WIDTH, 0f).start(tweenManager);
+		Tween.to(this, 1, 1f).target(ARROW_WIDTH).start(tweenManager);
+		Tween.to(this, 2, 1f).target(0f).start(tweenManager);
 	}
 
 	@Override
@@ -136,15 +137,19 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 
 	@Override
 	public int getValues(PauseScreen pScreen, int type, float[] returnValues) {
-		returnValues[0] = pScreen.currentWidth;
-		returnValues[1] = pScreen.currentBlackAlpha;
+		if (type == 1)
+			returnValues[0] = pScreen.currentWidth;
+		if (type == 2)
+			returnValues[0] = pScreen.currentBlackAlpha;
 		return 1;
 	}
 
 	@Override
 	public void setValues(PauseScreen pScreen, int type, float[] newValues) {
-		pScreen.currentWidth = newValues[0];
-		pScreen.currentBlackAlpha = newValues[1];
+		if (type == 1)
+			pScreen.currentWidth = newValues[0];
+		if (type == 2)
+			pScreen.currentBlackAlpha = newValues[0];
 	}
 
 	@Override
