@@ -42,8 +42,11 @@ public class LoboGuara extends Player {
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
-		
+
+		canvas.saveState();
+		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
 		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
+		canvas.restoreState();
 		
 		
 	}
