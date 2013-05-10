@@ -3,7 +3,6 @@ package com.arretadogames.pilot.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
@@ -12,6 +11,7 @@ import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Bitmap;
 
+import com.arretadogames.pilot.Configuration;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -28,8 +28,7 @@ public class GameCamera {
 
 	private GameWorld gameWorld = null;
 	private GameCanvas gameCanvas = null;
-	private float range = 5; //range of sight of a player in meters
-
+	
 	public GameCamera(GameWorld world){
 
 		gameWorld = world;
@@ -39,131 +38,75 @@ public class GameCamera {
 	public void determineViewport(float timeElapsed){
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
-		Vec2 p1 = null, p2 = null;
 
-		if ( players.containsKey(PlayerNumber.ONE) ){
-			p1 = new Vec2(players.get(PlayerNumber.ONE).getPosX(), players.get(PlayerNumber.ONE).getPosY());
-		}
-		if ( players.containsKey(PlayerNumber.TWO) ){
-			p2 = new Vec2(players.get(PlayerNumber.TWO).getPosX(), players.get(PlayerNumber.TWO).getPosY());
-		}
+		int numberOfPlayers = players.keySet().size();
 
-		List<Vec2> boundaries = null;
+		float maxDistance = 0;
+		Vec2 center = new Vec2();
 		
-		if ( p1 == null || p2 == null ){
+		for ( int i=0; i<numberOfPlayers; i++ ){
 
-			if ( p1 == null ){
+			float x = players.get(PlayerNumber.values()[i]).getPosX();
+			float y = players.get(PlayerNumber.values()[i]).getPosY();
+
+			center.addLocal(x, y);
+
+			for ( int j=0; j<numberOfPlayers; j++ ){
+
+				if ( i == j ){
+					continue;
+				}
 				
-				boundaries = singlePlayerViewport(p1);
-			}
-			else{
+				float x2 = players.get(PlayerNumber.values()[j]).getPosX();
+				float currentDistance = Math.abs(x - x2);
 				
-				boundaries = singlePlayerViewport(p2);
+				if ( maxDistance == -1 ){
+					maxDistance = currentDistance;
+				}
+				else if ( maxDistance < currentDistance ){
+					maxDistance = currentDistance;
+				}
 			}
 		}
-		else{
-
-			float distance = Math.abs(p1.sub(p2).length());
-
-			if ( distance < range ){
-
-				boundaries = twoPlayerFarViewport(p1, p2);
-			}
-			else{
-
-				boundaries = twoPlayerFarViewport(p1, p2);
-			}
-			
-		}
-
-		Vec2 lowerBound = boundaries.get(0);
-		Vec2 upperBound = boundaries.get(1);
 		
+		center.mulLocal(1f / numberOfPlayers);
+		
+		float viewportWidth = maxDistance + 30;
+		float physicsRatio = GameCanvas.SCREEN_WIDTH / viewportWidth;
+		float viewportHeight = GameCanvas.SCREEN_HEIGHT / physicsRatio;
+		
+		Vec2 lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
+		if ( Configuration.debugViewport ){
+			lowerBound.addLocal(new Vec2(2, 2));
+		}
+
+		Vec2 upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
+		if ( Configuration.debugViewport ){
+			upperBound.subLocal(new Vec2(2, 2));
+		}
+		
+		Vec2 translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
+		
+		gameCanvas.setPhysicsRatio(physicsRatio);
+
+		gameCanvas.saveState();
+		gameCanvas.translate(translator.x, translator.y);
+
 		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, upperBound);
-
-//		Collection<Drawing> drawings = new ArrayList<Drawing>();
 		
 		for ( Entity entity : entities ){
 			entity.render(gameCanvas, timeElapsed);
 		}
-	}
 
-	private List<Vec2> singlePlayerViewport(Vec2 player) {
-
-		List<Vec2> boundaries = new ArrayList<Vec2>();
-		Vec2 lowerBound = new Vec2(player);
-		Vec2 upperBound = new Vec2(player);
-
-		lowerBound = lowerBound.sub(new Vec2(range*1.5f, range*1.5f));
-		upperBound = upperBound.add(new Vec2(range*1.5f, range*1.5f));
-
-		boundaries.add(lowerBound);
-		boundaries.add(upperBound);
-		return boundaries;
-	}
-
-	private List<Vec2> twoPlayerCloseViewport(Vec2 p1, Vec2 p2) {
-
-		List<Vec2> boundaries = new ArrayList<Vec2>();
-		Vec2 lowerBound = null;
-		Vec2 upperBound = null;
-
-		if ( p1.x < p2.x ){
-			lowerBound = new Vec2(p1);
-			upperBound = new Vec2(p2);
-		}
-		else{
-			lowerBound = new Vec2(p2);
-			upperBound = new Vec2(p1);			
-		}
-		
-		lowerBound = lowerBound.sub(new Vec2(range*1.5f, range*1.5f));
-		upperBound = upperBound.add(new Vec2(range*1.5f, range*1.5f));
-
-		boundaries.add(lowerBound);
-		boundaries.add(upperBound);
-		return boundaries;
-	}
-
-	private List<Vec2> twoPlayerFarViewport(Vec2 p1, Vec2 p2) {
-
-		List<Vec2> boundaries = new ArrayList<Vec2>();
-		Vec2 lowerBound = null;
-		Vec2 upperBound = null;
-		
-		if ( p1.x < p2.x ){
-			if ( p1.y < p2.y ){
-				lowerBound = new Vec2(p1);
-				upperBound = new Vec2(p2);
-			}
-			else{
-				lowerBound = new Vec2(p1.x, p2.y);
-				upperBound = new Vec2(p2.x, p1.y);
-			}
-		}
-		else{
-			if ( p1.y < p2.y ){
-				lowerBound = new Vec2(p2.x, p1.y);
-				upperBound = new Vec2(p1.x, p2.y);
-			}
-			else{
-				lowerBound = new Vec2(p2);
-				upperBound = new Vec2(p1);
-			}
-		}
-
-		lowerBound = lowerBound.sub(new Vec2(range, range));
-		upperBound = upperBound.add(new Vec2(range, range));
-		
-		boundaries.add(lowerBound);
-		boundaries.add(upperBound);
-		return boundaries;
+		gameCanvas.restoreState();
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
 
-		gameCanvas.drawCameraDebugRect(lowerBound.x, lowerBound.y, upperBound.x, upperBound.y);
-		
+		if ( Configuration.debugViewport ){
+			gameCanvas.drawCameraDebugRect(lowerBound.x, lowerBound.y, upperBound.x, upperBound.y);
+		}
+
 		final Collection<Entity> entities = new ArrayList<Entity>();
 
 		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() {
