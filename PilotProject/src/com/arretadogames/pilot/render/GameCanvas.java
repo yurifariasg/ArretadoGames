@@ -1,12 +1,16 @@
 package com.arretadogames.pilot.render;
 
+import org.jbox2d.common.Vec2;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Paint.Style;
 import android.view.SurfaceHolder;
 
 /**
@@ -150,12 +154,38 @@ public class GameCanvas {
 				(int) (SCREEN_HEIGHT - (centerY * physicsRatio - sideLength))),
 				debugPaint);
 	}
+	
+	private final static int BOTTOM_MAP = -10;
+	
+	public void drawPhysicsLines(Vec2[] lines) {
+		
+		// FIXME Can be optimized
+		Path path = new Path();
+		path.moveTo(lines[0].x * physicsRatio, SCREEN_HEIGHT - lines[1].y * physicsRatio);
+		for (int i = 1 ; i < lines.length ; i++) {
+			path.lineTo(lines[i].x * physicsRatio, SCREEN_HEIGHT - lines[i].y * physicsRatio);
+		}
+		
+		path.lineTo(lines[lines.length - 1].x * physicsRatio, SCREEN_HEIGHT - BOTTOM_MAP * physicsRatio);
+		path.lineTo(lines[0].x * physicsRatio, SCREEN_HEIGHT -  BOTTOM_MAP * physicsRatio);
+		path.lineTo(lines[0].x * physicsRatio, SCREEN_HEIGHT - lines[1].y * physicsRatio);
+		
+
+		debugPaint.setStyle(Style.FILL);
+		int oldColor = debugPaint.getColor();
+		debugPaint.setARGB(255, 124, 60, 3);
+		canvas.drawPath(path, debugPaint);
+		debugPaint.setColor(oldColor);
+	}
 
 	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
 		debugPaint.setColor(Color.RED);
-		canvas.drawLine((int) (x1 * physicsRatio), (int) (SCREEN_HEIGHT - y1
+		canvas.drawLine(
+				(int) (x1 * physicsRatio),
+				(int) (SCREEN_HEIGHT - y1
 				* physicsRatio), (int) (x2 * physicsRatio),
-				(int) (SCREEN_HEIGHT - y2 * physicsRatio), debugPaint);
+				(int) (SCREEN_HEIGHT - y2 * physicsRatio),
+				debugPaint);
 	}
 
 	/**

@@ -21,11 +21,7 @@ public class Ground extends Entity {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		for (int i = 1 ; i < vec.length ; i++) {
-			Vec2 v1 = vec[i - 1];
-			Vec2 v2 = vec[i];
-			canvas.drawPhysicsLine(v1.x, v1.y, v2.x, v2.y);
-		}
+		canvas.drawPhysicsLines(vec);
 	}
 
 	@Override
