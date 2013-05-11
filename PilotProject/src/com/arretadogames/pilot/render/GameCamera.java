@@ -172,12 +172,12 @@ public class GameCamera {
 
 		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
 		if ( DisplaySettings.debugViewport ){
-			lowerBound.addLocal(new Vec2(2, 2));
+			lowerBound.addLocal(new Vec2(0.2f, 0.2f));
 		}
 
 		upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
 		if ( DisplaySettings.debugViewport ){
-			upperBound.subLocal(new Vec2(2, 2));
+			upperBound.subLocal(new Vec2(0.2f, 0.2f));
 		}
 
 		translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
@@ -286,8 +286,10 @@ public class GameCamera {
 			gameCanvas = canvas;
 		}
 
-		gameCanvas.drawBitmap(background, 0, 0);
-
+		if ( !DisplaySettings.debugViewport ){
+			gameCanvas.drawBitmap(background, 0, 0);
+		}
+		
 		if ( DisplaySettings.mockDanilo ){
 			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
 		}

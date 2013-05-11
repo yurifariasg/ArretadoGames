@@ -11,7 +11,7 @@ public class DisplaySettings {
 	public static float WIDTH_RATIO = 1f;
 	public static float HEIGHT_RATIO = 1f;
 	
-	public static final boolean debugViewport = false;
+	public static final boolean debugViewport = true;
 	public static final boolean mockDanilo = false;
 
 }
