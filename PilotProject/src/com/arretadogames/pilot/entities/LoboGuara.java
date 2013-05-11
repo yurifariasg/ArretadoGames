@@ -83,15 +83,13 @@ public class LoboGuara extends Player {
 	
 	public void beginContact(Entity e, Contact contact) {
 		//if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			System.out.println(" Contacts " + contacts++);
-			System.out.println("encostou " + contacts);
+		contacts++;
 		//}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		//if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			System.out.println(" Contacts " + contacts--);
-			System.out.println("DESencostou " + contacts);
+		contacts--;
 		//}
 	}
 

@@ -82,7 +82,7 @@ public class GameCamera {
 		center.mulLocal(1f / numberOfPlayers);
 
 		float viewportWidth, viewportHeight, physicsRatio;
-		if ( maxXDistance > maxYDistance ){
+		if ( maxYDistance < 100 ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 			viewportWidth = maxXDistance + 30;
 			physicsRatio = GameCanvas.SCREEN_WIDTH / viewportWidth;
 			viewportHeight = GameCanvas.SCREEN_HEIGHT / physicsRatio;
