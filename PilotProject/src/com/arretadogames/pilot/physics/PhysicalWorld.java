@@ -30,7 +30,6 @@ public class PhysicalWorld implements ContactListener {
 
 	@Override
 	public void beginContact(Contact contact) {
-		System.out.println("guilherme eh gay");
 		Entity a = (Entity)contact.m_fixtureA.getBody().getUserData();
 		Entity b = (Entity)contact.m_fixtureB.getBody().getUserData();
 		a.beginContact(b, contact);

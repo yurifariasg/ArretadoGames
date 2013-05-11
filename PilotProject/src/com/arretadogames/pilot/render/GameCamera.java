@@ -41,7 +41,8 @@ public class GameCamera {
 
 		int numberOfPlayers = players.keySet().size();
 
-		float maxDistance = 0;
+		float maxXDistance = 0;
+		float maxYDistance = 0;
 		Vec2 center = new Vec2();
 		
 		for ( int i=0; i<numberOfPlayers; i++ ){
@@ -58,22 +59,40 @@ public class GameCamera {
 				}
 				
 				float x2 = players.get(PlayerNumber.values()[j]).getPosX();
-				float currentDistance = Math.abs(x - x2);
+				float y2 = players.get(PlayerNumber.values()[j]).getPosY();
 				
-				if ( maxDistance == -1 ){
-					maxDistance = currentDistance;
+				float currentXDistance = Math.abs(x - x2);
+				float currentYDistance = Math.abs(y - y2);
+				
+				if ( maxXDistance == 0 ){
+					maxXDistance = currentXDistance;
 				}
-				else if ( maxDistance < currentDistance ){
-					maxDistance = currentDistance;
+				else if ( maxXDistance < currentXDistance ){
+					maxXDistance = currentXDistance;
+				}
+				if ( maxYDistance == 0 ){
+					maxYDistance = currentYDistance;
+				}
+				else if ( maxYDistance < currentYDistance ){
+					maxYDistance = currentYDistance;
 				}
 			}
 		}
 		
 		center.mulLocal(1f / numberOfPlayers);
+
+		float viewportWidth, viewportHeight, physicsRatio;
+		if ( maxXDistance > maxYDistance ){
+			viewportWidth = maxXDistance + 30;
+			physicsRatio = GameCanvas.SCREEN_WIDTH / viewportWidth;
+			viewportHeight = GameCanvas.SCREEN_HEIGHT / physicsRatio;
+		}
+		else{
+			viewportHeight = maxYDistance + 30;
+			physicsRatio = GameCanvas.SCREEN_HEIGHT / viewportHeight;
+			viewportWidth = GameCanvas.SCREEN_WIDTH / physicsRatio;
+		}
 		
-		float viewportWidth = maxDistance + 30;
-		float physicsRatio = GameCanvas.SCREEN_WIDTH / viewportWidth;
-		float viewportHeight = GameCanvas.SCREEN_HEIGHT / physicsRatio;
 		
 		Vec2 lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
 		if ( Configuration.debugViewport ){
@@ -135,6 +154,11 @@ public class GameCamera {
 		
 		gameCanvas.drawBitmap(background, 0, 0);
 
+		if ( Configuration.mockDanilo ){
+			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
+		}
+
+		
 		determineViewport(timeElapsed);
 		
 	}
