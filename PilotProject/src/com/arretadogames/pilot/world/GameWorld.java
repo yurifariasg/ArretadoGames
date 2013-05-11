@@ -48,7 +48,7 @@ public class GameWorld extends GameScreen {
 		worldEntities = loader.getEntities();
 		players = new HashMap<PlayerNumber, Player>();
 		pauseScreen = new PauseScreen();
-		sm = new SpriteManager();		
+		sm = new SpriteManager();
 		
 		LoboGuara loboGuara = new LoboGuara(0f, 0f, PlayerNumber.ONE, sm.getSprite(EntityType.PLAYER));
 		LoboGuara loboGuara2 = new LoboGuara(0f, 0f, PlayerNumber.TWO,  sm.getSprite(EntityType.PLAYER));
@@ -118,4 +118,8 @@ public class GameWorld extends GameScreen {
 		return players;
 	}
 
+	public Collection<Entity> getEntities(){
+		return worldEntities;
+	}
+	
 }

@@ -11,8 +11,10 @@ import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Bitmap;
 
-import com.arretadogames.pilot.Configuration;
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.EntityType;
+import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.physics.PhysicalWorld;
@@ -26,7 +28,7 @@ import com.arretadogames.pilot.world.GameWorld;
 
 public class GameCamera {
 
-	private GameWorld gameWorld = null;
+	private static GameWorld gameWorld = null;
 	private GameCanvas gameCanvas = null;
 
 	private boolean calculateWidthFirst;
@@ -40,7 +42,6 @@ public class GameCamera {
 	private boolean transitioning;
 	private float transitionDuration; //Measured in milliseconds.
 	private long startTime;
-	private long targetTime;
 
 	private Vec2 targetLowerBound;
 	private Vec2 targetUpperBound;
@@ -49,7 +50,7 @@ public class GameCamera {
 
 	public GameCamera(GameWorld world){
 
-		this(world, 5000);
+		this(world, 1500);//Default is 1.5 seconds
 	}
 
 	public GameCamera(GameWorld world, float setTransitionDuration){
@@ -69,7 +70,6 @@ public class GameCamera {
 		targetTranslator = null;
 		targetPhysicsRatio = 0;
 		startTime = 0;
-		targetTime = 0;
 	}
 
 	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
@@ -84,7 +84,6 @@ public class GameCamera {
 		if ( numberOfPlayers != currentNumberOfPlayers ){
 			transitioning = true;
 			startTime = getCurrentTime();
-			targetTime = (long) (startTime + transitionDuration);
 			targetLowerBound = null;
 			targetUpperBound = null;
 			targetTranslator = null;
@@ -148,7 +147,6 @@ public class GameCamera {
 				if ( !calculateWidthFirst ){
 					transitioning = true;
 					startTime = getCurrentTime();
-					targetTime = (long) (startTime + transitionDuration);
 					System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = true;
@@ -165,7 +163,6 @@ public class GameCamera {
 				if ( calculateWidthFirst ){
 					transitioning = true;
 					startTime = getCurrentTime();
-					targetTime = (long) (startTime + transitionDuration);
 					System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = false;
@@ -174,12 +171,12 @@ public class GameCamera {
 
 
 		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
-		if ( Configuration.debugViewport ){
+		if ( DisplaySettings.debugViewport ){
 			lowerBound.addLocal(new Vec2(2, 2));
 		}
 
 		upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
-		if ( Configuration.debugViewport ){
+		if ( DisplaySettings.debugViewport ){
 			upperBound.subLocal(new Vec2(2, 2));
 		}
 
@@ -209,8 +206,7 @@ public class GameCamera {
 
 				System.out.println("TRANSITION IS OVER");
 				transitioning = false;
-				targetTime = 0;
-
+				
 				currentLowerBound = new Vec2(targetLowerBound);
 				lowerBound = currentLowerBound;
 
@@ -260,7 +256,7 @@ public class GameCamera {
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
 
-		if ( Configuration.debugViewport ){
+		if ( DisplaySettings.debugViewport ){
 			gameCanvas.drawCameraDebugRect(lowerBound.x, lowerBound.y, upperBound.x, upperBound.y);
 		}
 
@@ -292,7 +288,7 @@ public class GameCamera {
 
 		gameCanvas.drawBitmap(background, 0, 0);
 
-		if ( Configuration.mockDanilo ){
+		if ( DisplaySettings.mockDanilo ){
 			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
 		}
 
@@ -303,6 +299,12 @@ public class GameCamera {
 
 	private long getCurrentTime() {
 		return System.nanoTime()/1000000;
+	}
+
+	public static void doThisShit() {
+
+		gameWorld.getPlayers().get(PlayerNumber.ONE).body.applyForce(new Vec2(-4000f, 100f), gameWorld.getPlayers().get(PlayerNumber.ONE).body.getWorldCenter());
+		
 	}
 
 }

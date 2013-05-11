@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import android.graphics.Color;
 
+import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.SpriteManager;
@@ -41,7 +42,7 @@ public class LoboGuara extends Player {
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
+//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
 
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
@@ -73,6 +74,7 @@ public class LoboGuara extends Player {
 	public void act() {
 		// TODO stop moving for awhile or do something else...
 		System.out.println("Act Player 1");
+		GameCamera.doThisShit();
 	}
 
 	@Override

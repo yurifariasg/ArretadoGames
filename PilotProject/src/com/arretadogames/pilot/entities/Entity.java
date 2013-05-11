@@ -11,7 +11,7 @@ import com.arretadogames.pilot.render.Renderable;
 
 
 public abstract class Entity implements Renderable {
-	protected Body body;
+	public Body body;
 	protected World world;
 	
 	public Entity(float x, float y) {
