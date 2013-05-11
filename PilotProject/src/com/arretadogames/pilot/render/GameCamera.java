@@ -28,23 +28,79 @@ public class GameCamera {
 
 	private GameWorld gameWorld = null;
 	private GameCanvas gameCanvas = null;
-	
+
+	private boolean calculateWidthFirst;
+	private int currentNumberOfPlayers;
+
+	private Vec2 currentLowerBound;
+	private Vec2 currentUpperBound;
+	private Vec2 currentTranslator;
+	private float currentPhysicsRatio;
+
+	private boolean transitioning;
+	private float transitionDuration; //Measured in milliseconds.
+	private long startTime;
+	private long targetTime;
+
+	private Vec2 targetLowerBound;
+	private Vec2 targetUpperBound;
+	private Vec2 targetTranslator;
+	private float targetPhysicsRatio;
+
 	public GameCamera(GameWorld world){
 
+		this(world, 5000);
+	}
+
+	public GameCamera(GameWorld world, float setTransitionDuration){
+
 		gameWorld = world;
+
+		calculateWidthFirst = true;
+		currentNumberOfPlayers = -1;
+		transitioning = false;
+		transitionDuration = setTransitionDuration;
+		currentLowerBound = null;
+		currentUpperBound = null;
+		currentTranslator = null;
+		currentPhysicsRatio = 0;
+		targetLowerBound = null;
+		targetUpperBound = null;
+		targetTranslator = null;
+		targetPhysicsRatio = 0;
+		startTime = 0;
+		targetTime = 0;
 	}
 
 	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
-	public void determineViewport(float timeElapsed){
+	private void determineViewport(float timeElapsed){
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
 
 		int numberOfPlayers = players.keySet().size();
+		if ( currentNumberOfPlayers == -1 ){
+			currentNumberOfPlayers = numberOfPlayers;
+		}
+		if ( numberOfPlayers != currentNumberOfPlayers ){
+			transitioning = true;
+			startTime = getCurrentTime();
+			targetTime = (long) (startTime + transitionDuration);
+			targetLowerBound = null;
+			targetUpperBound = null;
+			targetTranslator = null;
+			System.out.println("TRANSITION IS STARTED");
+		}
+		currentNumberOfPlayers = numberOfPlayers;
+
+		float viewportWidth, viewportHeight, physicsRatio;
+		Vec2 lowerBound, upperBound, translator;
+
+//		if ( transitioning == false || (targetLowerBound == null && targetUpperBound == null && targetTranslator == null) ){
 
 		float maxXDistance = 0;
 		float maxYDistance = 0;
 		Vec2 center = new Vec2();
-		
+
 		for ( int i=0; i<numberOfPlayers; i++ ){
 
 			float x = players.get(PlayerNumber.values()[i]).getPosX();
@@ -57,13 +113,13 @@ public class GameCamera {
 				if ( i == j ){
 					continue;
 				}
-				
+
 				float x2 = players.get(PlayerNumber.values()[j]).getPosX();
 				float y2 = players.get(PlayerNumber.values()[j]).getPosY();
-				
+
 				float currentXDistance = Math.abs(x - x2);
 				float currentYDistance = Math.abs(y - y2);
-				
+
 				if ( maxXDistance == 0 ){
 					maxXDistance = currentXDistance;
 				}
@@ -78,41 +134,123 @@ public class GameCamera {
 				}
 			}
 		}
-		
+
 		center.mulLocal(1f / numberOfPlayers);
 
-		float viewportWidth, viewportHeight, physicsRatio;
 		if ( maxYDistance < 100 ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
+
 			viewportWidth = maxXDistance + 30;
 			physicsRatio = GameCanvas.SCREEN_WIDTH / viewportWidth;
 			viewportHeight = GameCanvas.SCREEN_HEIGHT / physicsRatio;
+
+			if ( !transitioning ){
+
+				if ( !calculateWidthFirst ){
+					transitioning = true;
+					startTime = getCurrentTime();
+					targetTime = (long) (startTime + transitionDuration);
+					System.out.println("TRANSITION IS STARTED");
+				}
+				calculateWidthFirst = true;
+			}
 		}
 		else{
+
 			viewportHeight = maxYDistance + 30;
 			physicsRatio = GameCanvas.SCREEN_HEIGHT / viewportHeight;
 			viewportWidth = GameCanvas.SCREEN_WIDTH / physicsRatio;
+
+			if ( !transitioning ){
+
+				if ( calculateWidthFirst ){
+					transitioning = true;
+					startTime = getCurrentTime();
+					targetTime = (long) (startTime + transitionDuration);
+					System.out.println("TRANSITION IS STARTED");
+				}
+				calculateWidthFirst = false;
+			}
 		}
-		
-		
-		Vec2 lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
+
+
+		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
 		if ( Configuration.debugViewport ){
 			lowerBound.addLocal(new Vec2(2, 2));
 		}
 
-		Vec2 upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
+		upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
 		if ( Configuration.debugViewport ){
 			upperBound.subLocal(new Vec2(2, 2));
 		}
-		
-		Vec2 translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
-		
+
+		translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
+
+		if ( !transitioning ){
+			currentLowerBound = lowerBound;
+			currentUpperBound = upperBound;
+			currentTranslator = translator;
+			currentPhysicsRatio = physicsRatio;
+		}
+		else{
+			targetLowerBound = lowerBound;
+			targetUpperBound = upperBound;
+			targetTranslator = translator;
+			targetPhysicsRatio = physicsRatio;
+		}
+//		}
+//		else{
+		if ( transitioning ){
+
+			float currentTime = getCurrentTime();
+			float elapsedTime = currentTime - startTime;
+			float reachedPercentage = elapsedTime / transitionDuration;
+
+			if ( reachedPercentage >= 1 ){
+
+				System.out.println("TRANSITION IS OVER");
+				transitioning = false;
+				targetTime = 0;
+
+				currentLowerBound = new Vec2(targetLowerBound);
+				lowerBound = currentLowerBound;
+
+				currentUpperBound = new Vec2(targetUpperBound);
+				upperBound = currentUpperBound;
+
+				currentTranslator = new Vec2(targetTranslator);
+				translator = currentTranslator;
+
+				currentPhysicsRatio = targetPhysicsRatio;
+				physicsRatio = currentPhysicsRatio;
+
+				targetLowerBound = null;
+				targetUpperBound = null;
+				targetTranslator = null;
+				targetPhysicsRatio = 0;
+			}
+			else{
+
+				lowerBound = new Vec2(currentLowerBound);
+				lowerBound.addLocal(targetLowerBound.sub(currentLowerBound).mul(reachedPercentage));
+
+				upperBound = new Vec2(currentUpperBound);
+				upperBound.addLocal(targetUpperBound.sub(currentUpperBound).mul(reachedPercentage));
+
+				translator = new Vec2(currentTranslator);
+				translator.addLocal(targetTranslator.sub(currentTranslator).mul(reachedPercentage));
+
+				physicsRatio = currentPhysicsRatio;
+				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio)*reachedPercentage;
+			}
+		}
+
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
 		gameCanvas.saveState();
 		gameCanvas.translate(translator.x, translator.y);
 
 		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, upperBound);
-		
+
 		for ( Entity entity : entities ){
 			entity.render(gameCanvas, timeElapsed);
 		}
@@ -145,22 +283,26 @@ public class GameCamera {
 
 		return entities;
 	}
-	
+
 	public void render(final GameCanvas canvas, Bitmap background, final float timeElapsed) {
 
 		if ( gameCanvas == null ){
 			gameCanvas = canvas;
 		}
-		
+
 		gameCanvas.drawBitmap(background, 0, 0);
 
 		if ( Configuration.mockDanilo ){
 			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
 		}
 
-		
+
 		determineViewport(timeElapsed);
-		
+
+	}
+
+	private long getCurrentTime() {
+		return System.nanoTime()/1000000;
 	}
 
 }
