@@ -36,7 +36,7 @@ public abstract class GameScreen {
 	 * @param event
 	 *            MotionEvent / Input Event to be handled
 	 */
-	public abstract void input(MotionEvent event);
+	public abstract void input(InputEventHandler event);
 	
 	/**
 	 * Handles the event for when the user press the physical back button

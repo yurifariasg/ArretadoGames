@@ -4,6 +4,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.util.Util;
 
 import android.content.Context;
@@ -85,7 +86,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		game.input(event);
+		game.input(new InputEventHandler(event));
 		return super.onTouchEvent(event);
 	}
 

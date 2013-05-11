@@ -1,12 +1,11 @@
 package com.arretadogames.pilot.screens;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.MotionEvent;
 
-import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 
@@ -16,8 +15,7 @@ public class GameWorldUI extends GameScreen {
 	private GameWorld gWorld;
 	
 	public GameWorldUI(GameWorld gameWorld) {
-		buttonsBitmap = BitmapFactory.decodeResource(GameActivity.getContext().getResources(),
-				R.drawable.ui_buttons);
+		buttonsBitmap = ImageLoader.loadImage(R.drawable.ui_buttons);
 		this.gWorld = gameWorld;
 	}
 
@@ -33,7 +31,7 @@ public class GameWorldUI extends GameScreen {
 	}
 
 	@Override
-	public void input(MotionEvent event) {
+	public void input(InputEventHandler event) {
 		// TODO Auto-generated method stub
 		if (event.getAction() == MotionEvent.ACTION_DOWN &&
 				event.getY() > 380) {

@@ -3,6 +3,7 @@ package com.arretadogames.pilot.ui;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.screens.InputEventHandler;
 
 public abstract class Button {
 	
@@ -24,9 +25,9 @@ public abstract class Button {
 	
 	public abstract void render(GameCanvas canvas, float timeElapsed);
 	
-	public void input(MotionEvent event) {
+	public void input(InputEventHandler event) {
 		
-		switch (event.getActionMasked()) {
+		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			if (pressed(event.getX(), event.getY())) {
 				isSelected = true;

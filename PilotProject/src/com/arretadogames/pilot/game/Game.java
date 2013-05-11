@@ -1,8 +1,7 @@
 package com.arretadogames.pilot.game;
 
-import android.view.MotionEvent;
-
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
 import com.arretadogames.pilot.world.GameWorld;
 
@@ -72,7 +71,7 @@ public class Game {
 	 * @param event
 	 *            Input Event to be handled
 	 */
-	public void input(MotionEvent event) {
+	public void input(InputEventHandler event) {
 
 		switch (currentState) {
 		case RUNNING_GAME:

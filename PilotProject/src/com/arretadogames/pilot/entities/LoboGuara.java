@@ -66,7 +66,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public void run(){
-		body.applyLinearImpulse(new Vec2((1 - body.m_linearVelocity.x) * body.getMass(), 0.0f), body.getPosition());
+		body.applyLinearImpulse(new Vec2((10 - body.m_linearVelocity.x) * body.getMass(), 0.0f), body.getPosition());
 	}
 
 	@Override

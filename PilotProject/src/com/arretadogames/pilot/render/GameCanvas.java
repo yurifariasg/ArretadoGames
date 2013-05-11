@@ -2,15 +2,17 @@ package com.arretadogames.pilot.render;
 
 import org.jbox2d.common.Vec2;
 
+import com.arretadogames.pilot.config.DisplaySettings;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Paint.Style;
 import android.view.SurfaceHolder;
 
 /**
@@ -60,6 +62,14 @@ public class GameCanvas {
 	 */
 	public boolean initiate() {
 		canvas = surfaceHolder.lockCanvas();
+		if (canvas != null) {
+			DisplaySettings.DISPLAY_WIDTH = canvas.getWidth(); // FIXME: Find a way of doing it only once
+			DisplaySettings.DISPLAY_HEIGHT = canvas.getHeight();
+			DisplaySettings.WIDTH_RATIO = DisplaySettings.DISPLAY_WIDTH / DisplaySettings.TARGET_WIDTH;
+			DisplaySettings.HEIGHT_RATIO = DisplaySettings.DISPLAY_HEIGHT / DisplaySettings.TARGET_HEIGHT;
+			
+			canvas.scale(DisplaySettings.WIDTH_RATIO, DisplaySettings.HEIGHT_RATIO);
+		}
 		return canvas != null;
 	}
 
@@ -155,7 +165,7 @@ public class GameCanvas {
 				debugPaint);
 	}
 	
-	private final static int BOTTOM_MAP = -10;
+	private final static int BOTTOM_MAP = -100;
 	
 	public void drawPhysicsLines(Vec2[] lines) {
 		
@@ -245,7 +255,27 @@ public class GameCanvas {
 	 * 
 	 */
 	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) {
+//		Rect rs = new Rect();
+//		RectF rd = new RectF();
+//		rs.left = rs.top = 0;
+//		rs.right = bitmap.getWidth();
+//		rs.bottom = bitmap.getHeight();
+//		rd.left = x;
+//		rd.top = y;
+//		rd.right = x + bitmap.getWidth();
+//		rd.bottom = y + bitmap.getHeight();
+//		
+//		saveState();
+//		canvas.scale(originalCanvas.getWidth() / 800f, originalCanvas.getHeight() / 480f);
+//		canvas.translate(x, y);
+//		
+//		canvas.drawBitmap(bitmap, 0, 0, paint);
+//		
+//		restoreState();
+//		canvas.drawBitmap(bitmap, rs, rd, paint);
+//		bitmap.setDensity(Bitmap.DENSITY_NONE);
 		canvas.drawBitmap(bitmap, x, y, paint);
+//		canvas.drawBitmap(bitmap, null, rd, paint);
 	}
 	
 	

@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.RelativeLayout;
 
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loop.GameThread;
 import com.arretadogames.pilot.render.canvas.RenderingSurface;
+import com.arretadogames.pilot.screens.InputEventHandler;
 
 /**
  * GameActivity represents the MainActivity of our game,
@@ -70,7 +72,7 @@ public class GameActivity extends Activity implements OnTouchListener {
 
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
-		Game.getInstance().input(event);
+		Game.getInstance().input(new InputEventHandler(event));
 		return true;
 	}
 

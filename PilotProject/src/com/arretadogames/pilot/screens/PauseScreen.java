@@ -6,6 +6,7 @@ import android.widget.Toast;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Quart;
 
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
@@ -23,7 +24,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	private static final int QUIT_BT = 3;
 	
 	
-	private static final float PAUSE_MENU_SIZE = 277;
+	private static final float PAUSE_MENU_SIZE = 277; // 277
 	
 	private TweenManager tweenManager;
 	
@@ -90,7 +91,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	}
 
 	@Override
-	public void input(MotionEvent event) {
+	public void input(InputEventHandler event) {
 		
 		if (isHidden && event.getAction() == MotionEvent.ACTION_UP) {
 			if (event.getY() <= 77 && event.getX() > 800 - ARROW_WIDTH) {
@@ -106,15 +107,15 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	private void show() {
 		isHidden = false;
-		Tween.to(this, 1, 1f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).start(tweenManager);
-		Tween.to(this, 2, 1f).target(100f).start(tweenManager);
+		Tween.to(this, 1, 0.5f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).ease(Quart.OUT).start(tweenManager);
+		Tween.to(this, 2, 0.5f).target(100f).start(tweenManager);
 		
 	}
 	
 	private void hide() {
 		isHidden = true;
-		Tween.to(this, 1, 1f).target(ARROW_WIDTH).start(tweenManager);
-		Tween.to(this, 2, 1f).target(0f).start(tweenManager);
+		Tween.to(this, 1, 0.5f).target(ARROW_WIDTH).ease(Quart.IN).start(tweenManager);
+		Tween.to(this, 2, 0.5f).target(0f).start(tweenManager);
 	}
 
 	@Override
