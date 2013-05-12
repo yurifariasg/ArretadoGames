@@ -73,7 +73,8 @@ public class GameWorld extends GameScreen {
 		// TODO: Perform a World Step
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
-			players.get(PlayerNumber.ONE).step();
+			for (Player p : players.values())
+				p.step(timeElapsed);
 			ui.step(timeElapsed);
 			pWorld.step(timeElapsed);
 		}

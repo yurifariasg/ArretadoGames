@@ -43,7 +43,7 @@ public abstract class Entity implements Renderable {
 		
 	}
 	
-	public abstract void step();
+	public abstract void step(float timeElapsed);
 	
 	public abstract EntityType getType();
 	

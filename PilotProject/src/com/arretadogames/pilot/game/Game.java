@@ -3,6 +3,8 @@ package com.arretadogames.pilot.game;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
+import com.arretadogames.pilot.screens.SplashScreen;
+import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
 
 /**
@@ -16,11 +18,13 @@ public class Game {
 	private GameWorld gameWorld;
 
 	private MainMenuScreen mainMenu;
-
+	private SplashScreen splashScreen;
+	
 	private Game() {
-		currentState = GameState.MAIN_MENU;
+		currentState = GameState.SPLASH;
 		gameWorld = new GameWorld();
 		mainMenu = new MainMenuScreen(this);
+		splashScreen = new SplashScreen(this);
 	}
 
 	/**
@@ -32,12 +36,18 @@ public class Game {
 	 *            Time Elapsed since last frame
 	 */
 	public void render(GameCanvas canvas, float timeElapsed) {
+		
+		AnimationManager.getInstance().update(timeElapsed);
+		
 		switch (currentState) {
 		case RUNNING_GAME:
 			gameWorld.render(canvas, timeElapsed);
 			break;
 		case MAIN_MENU:
 			mainMenu.render(canvas, timeElapsed);
+			break;
+		case SPLASH:
+			splashScreen.render(canvas, timeElapsed);
 			break;
 		default:
 			break;
@@ -59,6 +69,9 @@ public class Game {
 		case MAIN_MENU:
 			mainMenu.step(timeElapsed);
 			break;
+		case SPLASH:
+			splashScreen.step(timeElapsed);
+			break;
 		default:
 			break;
 		}
@@ -79,6 +92,9 @@ public class Game {
 			break;
 		case MAIN_MENU:
 			mainMenu.input(event);
+			break;
+		case SPLASH:
+			splashScreen.input(event);
 			break;
 		default:
 			break;

@@ -25,7 +25,7 @@ public class Ground extends Entity {
 	}
 
 	@Override
-	public void step() {
+	public void step(float timeElapsed) {
 		// TODO Auto-generated method stub
 
 	}

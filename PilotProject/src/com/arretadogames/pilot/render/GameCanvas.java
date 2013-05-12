@@ -286,4 +286,10 @@ public class GameCanvas {
 	public void fillScreen(float a, float r, float g, float b) {
 		canvas.drawARGB((int) a, (int) r, (int) g, (int) b);
 	}
+
+	public void drawRect(Rect rect, int argb) {
+		Paint p = new Paint();
+		p.setColor(argb);
+		canvas.drawRect(rect, p);
+	}
 }

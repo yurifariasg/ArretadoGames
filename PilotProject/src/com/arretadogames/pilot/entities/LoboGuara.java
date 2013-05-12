@@ -11,7 +11,6 @@ import android.graphics.Color;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.SpriteManager;
 
 public class LoboGuara extends Player {
 	
@@ -78,7 +77,7 @@ public class LoboGuara extends Player {
 	}
 
 	@Override
-	public void step() {
+	public void step(float timeElapsed) {
 		if(contJump >= 0) contJump--;
 		run();
 	}

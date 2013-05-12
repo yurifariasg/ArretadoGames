@@ -14,6 +14,7 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.ZoomImageButton;
@@ -24,8 +25,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private final static int BLACK_ALPHA_PROPERTY = 2;
 	
 	private static final int PLAY_BUTTON = 1;
-	
-	private TweenManager manager;
 	
 	private Bitmap background;
 	private ImageButton playButton;
@@ -43,13 +42,14 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
-		manager = new TweenManager();
 	}
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
+		
+		canvas.fillScreen(255, 0, 0, 0);
 		
 		canvas.scale(currentZoom, currentZoom, DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2);
 		
@@ -64,7 +64,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	@Override
 	public void step(float timeElapsed) {
 		// TODO Auto-generated method stub
-		manager.update(timeElapsed);
 	}
 
 	@Override
@@ -89,14 +88,14 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void onClick(int buttonId) {
 		switch (buttonId) {
 		case PLAY_BUTTON:
-			Tween.to(this, ZOOM_PROPERTY, 0.7f).target(2f).ease(Back.IN).start(manager);
+			Tween.to(this, ZOOM_PROPERTY, 0.7f).target(3f).ease(Back.IN).start(AnimationManager.getInstance());
 			Tween.to(this, BLACK_ALPHA_PROPERTY, 0.7f).target(255f).setCallback(new TweenCallback() {
 				
 				@Override
 				public void onEvent(int arg0, BaseTween<?> arg1) {
 					startGame();
 				}
-			}).start(manager);
+			}).start(AnimationManager.getInstance());
 			break;
 		}
 	}

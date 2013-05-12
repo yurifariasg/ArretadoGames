@@ -28,7 +28,7 @@ public class Box extends Entity {
 	}
 
 	@Override
-	public void step() {
+	public void step(float timeElapsed) {
 		// TODO Box Logic
 	}
 

@@ -5,7 +5,6 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
-import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Quart;
 
 import com.arretadogames.pilot.GameActivity;
@@ -14,6 +13,7 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.TextImageButton;
 
@@ -25,8 +25,6 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	
 	private static final float PAUSE_MENU_SIZE = 277; // 277
-	
-	private TweenManager tweenManager;
 	
 	private boolean isHidden;
 	
@@ -42,7 +40,6 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	public PauseScreen() {
 		isHidden = true;
-		tweenManager = new TweenManager();
 		background = ImageLoader.loadImage(R.drawable.pause_menu_bg);
 		ARROW_WIDTH = background.getWidth() - PAUSE_MENU_SIZE;
 		currentWidth = ARROW_WIDTH;
@@ -53,12 +50,12 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 				null,
 				"continue");
 		
-		optionsBt = new TextImageButton(OPTIONS_BT, 0, 91 + 55, this,
+		optionsBt = new TextImageButton(OPTIONS_BT, 0, 146, this,
 				ImageLoader.loadImage(R.drawable.bt_pause_selected),
 				null,
 				"options");
 		
-		quitBt = new TextImageButton(QUIT_BT, 0, 91 + 55 + 55, this,
+		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
 				ImageLoader.loadImage(R.drawable.bt_pause_selected),
 				null,
 				"quit");
@@ -87,7 +84,6 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	@Override
 	public void step(float timeElapsed) {
 		// TODO Auto-generated method stub
-		tweenManager.update(timeElapsed);
 	}
 
 	@Override
@@ -107,15 +103,15 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	private void show() {
 		isHidden = false;
-		Tween.to(this, 1, 0.5f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).ease(Quart.OUT).start(tweenManager);
-		Tween.to(this, 2, 0.5f).target(100f).start(tweenManager);
+		Tween.to(this, 1, 0.5f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).ease(Quart.OUT).start(AnimationManager.getInstance());
+		Tween.to(this, 2, 0.5f).target(150f).start(AnimationManager.getInstance());
 		
 	}
 	
 	private void hide() {
 		isHidden = true;
-		Tween.to(this, 1, 0.5f).target(ARROW_WIDTH).ease(Quart.IN).start(tweenManager);
-		Tween.to(this, 2, 0.5f).target(0f).start(tweenManager);
+		Tween.to(this, 1, 0.5f).target(ARROW_WIDTH).ease(Quart.IN).start(AnimationManager.getInstance());
+		Tween.to(this, 2, 0.5f).target(0f).start(AnimationManager.getInstance());
 	}
 
 	@Override
