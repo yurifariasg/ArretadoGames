@@ -2,8 +2,10 @@ package com.arretadogames.pilot.screens;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenCallback;
@@ -21,19 +23,24 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	
 	private static final int TWEEN_ZOOM = 1;
 	private static final int TWEEN_ANGLE = 2;
+	private static final int TWEEN_LOGO_ALPHA = 3;
 	
 	private boolean animationStarted;
 	
 	private float currentZoom;
 	private float currentAngle;
+	private int currentBitmapAlpha;
 	private Bitmap logo;
 	
 	private Game game;
+	private Paint paintBitmap;
 	
 	public SplashScreen(Game game) {
 		animationStarted = false;
 		this.game = game;
 		logo = ImageLoader.loadImage(R.drawable.logo);
+		paintBitmap = new Paint();
+		paintBitmap.setAntiAlias(true);
 	}
 	
 	
@@ -51,9 +58,11 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		canvas.saveState();
 		canvas.scale(2, currentZoom, centerX, centerY);
 		canvas.drawRect(new Rect(0, 180, 800, 300), Color.argb(255, 255, 255, 255));
-		canvas.drawBitmap(logo, centerX - logo.getWidth() / 2, centerY - logo.getHeight() / 2);
-		
 		canvas.restoreState();
+
+		paintBitmap.setAlpha(currentBitmapAlpha);
+		canvas.drawBitmap(logo, centerX - logo.getWidth() / 2, centerY - logo.getHeight() / 2, paintBitmap);
+		
 		
 		canvas.restoreState();
 		
@@ -94,32 +103,35 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		
 		currentAngle = -45f;
 		currentZoom = 0.001f;
+		currentBitmapAlpha = 0;
 		
-		Tween angleTween = Tween.to(this, TWEEN_ANGLE, 1f)
-				.target(0f);
-		
-		final Tween zoomTween2 = Tween.to(this, TWEEN_ZOOM, 1f)
-				.target(0.001f).delay(1f).ease(Back.IN);
-		zoomTween2.setCallback(new TweenCallback() {
+		Timeline.createSequence()
+		.beginParallel()
+		.push(Tween.to(this, TWEEN_ANGLE, 1f)
+				.target(0f))
+				
+				.push(Tween.to(this, TWEEN_ZOOM, 1f)
+				.target(1.5f) // FIXME Zoom should be 1
+				.ease(Back.INOUT))
+				.push(Tween.to(this, TWEEN_LOGO_ALPHA, 0.8f)
+						.target(255)
+						.delay(0.5f))
+				.end()
+				.pushPause(1)
+				.beginParallel()
+				.push(Tween.to(this, TWEEN_LOGO_ALPHA, 0.8f)
+						.target(0))
+				.push(Tween.to(this, TWEEN_ZOOM, 1f)
+				.target(0.001f).ease(Back.IN))
+				.end()
+				
+				.setCallback(new TweenCallback() {
 					
 					@Override
 					public void onEvent(int type, BaseTween<?> source) {
 						startMainMenu();
 					}
-				});
-		
-		Tween.to(this, TWEEN_ZOOM, 1f)
-				.target(1.5f) // FIXME Zoom should be 1
-				.ease(Back.INOUT)
-				.setCallback(new TweenCallback() {
-					
-					@Override
-					public void onEvent(int arg0, BaseTween<?> arg1) {
-						zoomTween2.start(AnimationManager.getInstance());
-					}
 				}).start(AnimationManager.getInstance());
-		
-		angleTween.start(AnimationManager.getInstance());
 	}
 
 
@@ -132,6 +144,9 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 			break;
 		case TWEEN_ZOOM:
 			returnValues[0] = splash.currentZoom;
+			break;
+		case TWEEN_LOGO_ALPHA:
+			returnValues[0] = splash.currentBitmapAlpha;
 			break;
 		default:
 			break;
@@ -150,6 +165,9 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 			break;
 		case TWEEN_ZOOM:
 			splash.currentZoom = newValues[0];
+			break;
+		case TWEEN_LOGO_ALPHA:
+			splash.currentBitmapAlpha = (int) newValues[0];
 			break;
 		default:
 			break;
