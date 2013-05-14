@@ -158,7 +158,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	}
 	
 	private void startMainMenu() {
-		game.switchState(GameState.MAIN_MENU);
+		game.goTo(GameState.MAIN_MENU);
 	}
 
 }

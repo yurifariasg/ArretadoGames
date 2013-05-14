@@ -1,12 +1,7 @@
 package com.arretadogames.pilot.screens;
 
 import android.graphics.Bitmap;
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
-import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.equations.Back;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
@@ -14,7 +9,6 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
-import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.ZoomImageButton;
@@ -88,20 +82,21 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void onClick(int buttonId) {
 		switch (buttonId) {
 		case PLAY_BUTTON:
-			Tween.to(this, ZOOM_PROPERTY, 0.7f).target(3f).ease(Back.IN).start(AnimationManager.getInstance());
-			Tween.to(this, BLACK_ALPHA_PROPERTY, 0.7f).target(255f).setCallback(new TweenCallback() {
-				
-				@Override
-				public void onEvent(int arg0, BaseTween<?> arg1) {
-					startGame();
-				}
-			}).start(AnimationManager.getInstance());
+//			Tween.to(this, ZOOM_PROPERTY, 0.7f).target(3f).ease(Back.IN).start(AnimationManager.getInstance());
+//			Tween.to(this, BLACK_ALPHA_PROPERTY, 0.7f).target(255f).setCallback(new TweenCallback() {
+//				
+//				@Override
+//				public void onEvent(int arg0, BaseTween<?> arg1) {
+//					startGame();
+//				}
+//			}).start(AnimationManager.getInstance());
+			startGame();
 			break;
 		}
 	}
 	
 	private void startGame() {
-		game.switchState(GameState.RUNNING_GAME);
+		game.goTo(GameState.RUNNING_GAME);
 		currentBlackAlpha = 0;
 		currentZoom = 1;
 	}

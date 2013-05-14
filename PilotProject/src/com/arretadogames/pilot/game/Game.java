@@ -1,5 +1,14 @@
 package com.arretadogames.pilot.game;
 
+import android.graphics.Color;
+import android.graphics.Rect;
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenCallback;
+
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
@@ -10,7 +19,10 @@ import com.arretadogames.pilot.world.GameWorld;
 /**
  * Game class represents our Game
  */
-public class Game {
+public class Game implements TweenAccessor<Game> {
+	
+	private static final int LEFT = 1;
+	private static final int RIGHT = 2;
 	
 	private static Game game;
 
@@ -20,11 +32,15 @@ public class Game {
 	private MainMenuScreen mainMenu;
 	private SplashScreen splashScreen;
 	
+	private boolean transitionStateOn;
+	private Rect transitionRect;
+	
 	private Game() {
 		currentState = GameState.SPLASH;
 		gameWorld = new GameWorld();
 		mainMenu = new MainMenuScreen(this);
 		splashScreen = new SplashScreen(this);
+		transitionStateOn = false;
 	}
 
 	/**
@@ -51,6 +67,10 @@ public class Game {
 			break;
 		default:
 			break;
+		}
+		
+		if (transitionStateOn) {
+			canvas.drawRect(transitionRect, Color.rgb(0, 0, 0));
 		}
 
 	}
@@ -85,6 +105,8 @@ public class Game {
 	 *            Input Event to be handled
 	 */
 	public void input(InputEventHandler event) {
+		if (transitionStateOn)
+			return; // Input Disabled when Transition
 
 		switch (currentState) {
 		case RUNNING_GAME:
@@ -108,7 +130,11 @@ public class Game {
 	 * @param state
 	 *            new game's current state
 	 */
-	public void switchState(GameState state) {
+	public void goTo(GameState state) {
+		startTransitionAnimation(state);
+	}
+	
+	private void changeState(GameState state) {
 		if (state != null)
 			currentState = state;
 	}
@@ -130,6 +156,58 @@ public class Game {
 		if (game == null)
 			game = new Game();
 		return game;
+	}
+	
+	@Override
+	public int getValues(Game game, int type, float[] returnValues) {
+		switch (type) {
+		case LEFT:
+			returnValues[0] = transitionRect.left;
+			break;
+		case RIGHT:
+			returnValues[0] = transitionRect.right;
+			break;
+		}
+		return 1;
+	}
+
+	@Override
+	public void setValues(Game game, int type, float[] setValues) {
+		switch (type) {
+		case LEFT:
+			transitionRect.left = (int) setValues[0];
+			break;
+		case RIGHT:
+			transitionRect.right = (int) setValues[0];
+			break;
+		}
+	}
+	
+	private void startTransitionAnimation(final GameState state) {
+		transitionStateOn = true;
+		
+		transitionRect = new Rect(
+				(int) DisplaySettings.TARGET_WIDTH, 0,
+				(int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
+		
+		Timeline.createSequence()
+				.push(Tween.to(this, LEFT, 0.4f).target(0f))
+				.push(Tween.call(new TweenCallback() {
+					
+					@Override
+					public void onEvent(int arg0, BaseTween<?> arg1) {
+						changeState(state);
+					}
+				}))
+				.push(Tween.to(this, RIGHT, 0.4f).target(0f))
+				.push(Tween.call(new TweenCallback() {
+					
+					@Override
+					public void onEvent(int arg0, BaseTween<?> arg1) {
+						transitionStateOn = false;
+					}
+				}))
+				.start(AnimationManager.getInstance());
 	}
 
 }
