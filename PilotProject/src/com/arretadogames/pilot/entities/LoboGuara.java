@@ -70,7 +70,7 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void jump() {
-//		sprite.setAnimationState("jump");
+		sprite.setAnimationState("jump");
 		if( contJump > 0 || contacts <= 0) return;	
 		float impulseX = (8) * body.getMass();
 		Vec2 direction = new Vec2(0f,1f);
@@ -102,6 +102,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
+		sprite.setAnimationState("walking");
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 		contacts++;
 		}
