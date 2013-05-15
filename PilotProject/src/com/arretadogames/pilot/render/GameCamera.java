@@ -48,7 +48,7 @@ public class GameCamera {
 
 	public GameCamera(GameWorld world){
 
-		this(world, 1500);//Default is 1.5 seconds
+		this(world, 250);//Default is 1.5 seconds
 	}
 
 	public GameCamera(GameWorld world, float setTransitionDuration){
@@ -134,7 +134,7 @@ public class GameCamera {
 
 		center.mulLocal(1f / numberOfPlayers);
 
-		if ( maxYDistance < 100 ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
+		if ( maxYDistance < maxXDistance * 0.5 ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
 			viewportWidth = maxXDistance + 30;
 			physicsRatio = DisplaySettings.TARGET_WIDTH / viewportWidth;
@@ -170,12 +170,12 @@ public class GameCamera {
 
 		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
 		if ( DisplaySettings.debugViewport ){
-			lowerBound.addLocal(new Vec2(0.2f, 0.2f));
+//			lowerBound.addLocal(new Vec2(3f, 3f));
 		}
 
 		upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
 		if ( DisplaySettings.debugViewport ){
-			upperBound.subLocal(new Vec2(0.2f, 0.2f));
+//			upperBound.subLocal(new Vec2(3f, 3f));
 		}
 
 		translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
@@ -192,8 +192,20 @@ public class GameCamera {
 			targetTranslator = translator;
 			targetPhysicsRatio = physicsRatio;
 		}
-//		}
-//		else{
+
+		if ( currentLowerBound == null ){
+			currentLowerBound = targetLowerBound;
+			currentUpperBound = targetUpperBound;
+			currentTranslator = targetTranslator;
+			currentPhysicsRatio = targetPhysicsRatio;
+		}
+		else if ( targetLowerBound == null ){
+			targetLowerBound = currentLowerBound;
+			targetUpperBound = currentUpperBound;
+			targetTranslator = currentTranslator;
+			targetPhysicsRatio = currentPhysicsRatio;
+		}
+		
 		if ( transitioning ){
 
 			float currentTime = getCurrentTime();
@@ -254,9 +266,9 @@ public class GameCamera {
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
 
-		if ( DisplaySettings.debugViewport ){
-			gameCanvas.drawCameraDebugRect(lowerBound.x, lowerBound.y, upperBound.x, upperBound.y);
-		}
+//		if ( DisplaySettings.debugViewport ){
+//			gameCanvas.drawCameraDebugRect(lowerBound.x, lowerBound.y, upperBound.x, upperBound.y);
+//		}
 
 		final Collection<Entity> entities = new ArrayList<Entity>();
 
@@ -284,9 +296,9 @@ public class GameCamera {
 			gameCanvas = canvas;
 		}
 
-		if ( !DisplaySettings.debugViewport ){
+//		if ( !DisplaySettings.debugViewport ){
 			gameCanvas.drawBitmap(background, 0, 0);
-		}
+//		}
 		
 		if ( DisplaySettings.mockDanilo ){
 			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
@@ -299,12 +311,6 @@ public class GameCamera {
 
 	private long getCurrentTime() {
 		return System.nanoTime()/1000000;
-	}
-
-	public static void doThisShit() {
-
-		gameWorld.getPlayers().get(PlayerNumber.ONE).body.applyForce(new Vec2(-4000f, 100f), gameWorld.getPlayers().get(PlayerNumber.ONE).body.getWorldCenter());
-		
 	}
 
 }
