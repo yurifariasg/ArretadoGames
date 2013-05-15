@@ -2,61 +2,89 @@ package com.arretadogames.pilot.render;
 
 import android.graphics.Bitmap;
 
-import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.entities.Box;
+import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
-import com.arretadogames.pilot.loading.ImageLoader;
+import com.arretadogames.pilot.entities.Fruit;
+import com.arretadogames.pilot.entities.Ground;
+import com.arretadogames.pilot.entities.Player;
 
 public class SpriteManager {
 	
-	private final int[] GUARA_WALKING = {R.drawable.lobo_guara1,
-							   		   R.drawable.lobo_guara2,
-							   		   R.drawable.lobo_guara3,
-							   		   R.drawable.lobo_guara4,
-							   		   R.drawable.lobo_guara5,
-							   		   R.drawable.lobo_guara6};
+/*	private final int[] WALKING = {R.drawable.lobo_guara1,
+							   		     R.drawable.lobo_guara2,
+							   		     R.drawable.lobo_guara3,
+							   		     R.drawable.lobo_guara4,
+							   		     R.drawable.lobo_guara5,
+							   		     R.drawable.lobo_guara6};
 	
-	private final int[] GUARA_JUMP = {R.drawable.lobo_guara_jump1,
-							   		   R.drawable.lobo_guara_jump2};
+	private final int[] JUMP = {R.drawable.lobo_guara_jump1,
+							   		  R.drawable.lobo_guara_jump2};
 	
+	private final int[] ACT = {R.drawable.lobo_guara_act1,
+	   		  						 R.drawable.lobo_guara_act2,
+	   		  						 R.drawable.lobo_guara_act3,
+	   		  						 };
+*/	
 	public SpriteManager() {
 	}
 	
-	public Sprite getSprite(EntityType type){
-		
+	public Sprite getSprite(Entity en){
 		Sprite sprite = new Sprite();
 		
-		if (type == EntityType.PLAYER){
-			setWalk(sprite);
-			setJump(sprite);
-			setAct(sprite);
+		if (en.getType() == EntityType.PLAYER){
+			Player player = (Player) en;
+			setPlayerSprites(sprite, player);
+		}else if(en.getType() == EntityType.BOX){
+			Box player = (Box) en;			
+		}else if(en.getType() == EntityType.FRUIT){
+			Fruit fruit = (Fruit) en;
+		}else if(en.getType() == EntityType.GROUND){
+			Ground ground = (Ground) en;
 		}
-		
 		return sprite;
 	}
 	
-	private void setWalk(Sprite sprite){
+	private void setPlayerSprites(Sprite sprite, Player player){
+
 		String name = "walking";
-		Bitmap[] frames = new Bitmap[6];
-		for (int i = 0; i < 6; i++) {
-			frames[i] = ImageLoader.loadImage(GUARA_WALKING[i]);
-		}
+		Bitmap[] frames = player.getWalkFrames();
 		float[] framesDur = {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
 		sprite.setAnimationState(name);
 		sprite.addState(new SpriteState(name, frames, framesDur));
-	}
-	
-	private void setJump(Sprite sprite){
-		String name = "jump";
-		Bitmap[] frames = new Bitmap[2];
-		for (int i = 0; i < 2; i++) {
-			frames[i] = ImageLoader.loadImage(GUARA_JUMP[i]);
-		}
-		float[] framesDur = {0.4f, 0.3f};
+		
+		name = "jump";
+		frames = player.getJumpFrames();
+		framesDur = new float[]{0.4f, 0.3f};
+		sprite.addState(new SpriteState(name, frames, framesDur));
+		
+		name = "act";
+		frames = player.getActFrames();
+		framesDur = new float[]{0.4f, 0.3f};
 		sprite.addState(new SpriteState(name, frames, framesDur));
 		
 	}
 	
-	private void setAct(Sprite sprite){
-		
+	private void setBoxImage(Sprite sprite) {
+		String name = "stopped";
+		Bitmap[] frames = new Bitmap[1];
+		for (int i = 0; i < frames.length; i++) {
+//			frames[i] = ImageLoader.loadImage(BOX_STOPPED[i]);			
+		}
+		float[] framesDur = {1f};
+		sprite.addState(new SpriteState(name, frames, framesDur));
+	}
+	
+	private void setGroundImage(Sprite sprite) {
+		String name = "stopped";
+		Bitmap[] frames = new Bitmap[1];
+		for (int i = 0; i < frames.length; i++) {
+//			frames[i] = ImageLoader.loadImage(BOX_STOPPED[i]);			
+		}
+		float[] framesDur = {1f};
+		sprite.addState(new SpriteState(name, frames, framesDur));
+	}
+
+	private void setFruitImage(Sprite sprite) {
 	}
 }

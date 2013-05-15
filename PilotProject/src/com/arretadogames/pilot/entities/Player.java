@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.entities;
 
+import android.graphics.Bitmap;
+
 
 public abstract class Player extends Entity {
 	
@@ -22,5 +24,11 @@ public abstract class Player extends Entity {
 	public abstract void jump();
 	
 	public abstract void act();
+	
+	public abstract Bitmap[] getWalkFrames();
+	
+	public abstract Bitmap[] getJumpFrames();
+	
+	public abstract Bitmap[] getActFrames();
 	
 }
