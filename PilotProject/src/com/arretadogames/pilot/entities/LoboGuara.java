@@ -20,7 +20,7 @@ public class LoboGuara extends Player {
 	private Fixture footFixture;
 	
 	public LoboGuara(float x, float y, PlayerNumber number, Sprite sprite) {
-		super(1f, 10f, number);
+		super(x, y, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		body.createFixture(shape,  0f);
@@ -43,6 +43,7 @@ public class LoboGuara extends Player {
 		
 //		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
 
+		
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
 		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
@@ -67,8 +68,9 @@ public class LoboGuara extends Player {
 	
 	public void run(){
 		if(contacts > 0 && body.getLinearVelocity().x < 20f){
-			body.applyLinearImpulse(new Vec2((2 - body.m_linearVelocity.x) * body.getMass(), 0.0f), body.getWorldCenter());
+			body.applyForceToCenter(new Vec2(5 * body.getMass(), 0.0f));
 		}
+		//body.setLinearVelocity(new Vec2(10, 20));
 		
 		
 	}
@@ -77,7 +79,8 @@ public class LoboGuara extends Player {
 	public void act() {
 		// TODO stop moving for awhile or do something else...
 		System.out.println("Act Player 1");
-		GameCamera.doThisShit();
+		//body.applyLinearImpulse((new Vec2(20 * body.getMass(), 0.0f)),body.getWorldCenter());
+		body.applyAngularImpulse(-2f);
 	}
 
 	@Override
