@@ -296,9 +296,9 @@ public class GameCamera {
 			gameCanvas = canvas;
 		}
 
-//		if ( !DisplaySettings.debugViewport ){
+		//if ( !DisplaySettings.debugViewport ){
 			gameCanvas.drawBitmap(background, 0, 0);
-//		}
+		//}
 		
 		if ( DisplaySettings.mockDanilo ){
 			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
@@ -313,4 +313,9 @@ public class GameCamera {
 		return System.nanoTime()/1000000;
 	}
 
+	public static void doThisShit() {
+
+		gameWorld.getPlayers().get(PlayerNumber.ONE).body.applyForce(new Vec2(-4000f, 100f), gameWorld.getPlayers().get(PlayerNumber.ONE).body.getWorldCenter());
+		
+	}
 }

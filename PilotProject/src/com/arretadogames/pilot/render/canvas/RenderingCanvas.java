@@ -291,4 +291,21 @@ public class RenderingCanvas implements GameCanvas {
 		p.setColor(argb);
 		canvas.drawRect(rect, p);
 	}
+	
+	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics) {
+		drawBitmap(bitmap, dstRect, convertFromPhysics, defaultPaint);
+	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics, Paint paint) {
+		
+		if (convertFromPhysics) {
+			dstRect.left *= physicsRatio;
+			dstRect.right *= physicsRatio;
+			dstRect.top *= physicsRatio;
+			dstRect.bottom *= physicsRatio;
+		}
+		
+		canvas.drawBitmap(bitmap, null, dstRect, paint);
+	}
 }

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.opengl.GLES20;
 
 import com.arretadogames.pilot.render.GameCanvas;
@@ -143,6 +144,13 @@ public class OpenGLCanvas implements GameCanvas {
 
 	@Override
 	public void drawRect(Rect rect, int argb) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, RectF dstRect,
+			boolean convertFromPhysics, Paint paint) {
 		// TODO Auto-generated method stub
 		
 	}

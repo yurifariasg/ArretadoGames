@@ -9,7 +9,7 @@ public class ImageLoader {
 	
 	public static Bitmap loadImage(int resourceId) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
-//		options.inScaled = false;
+		options.inScaled = false;
 //		options.inDensity = Bitp
 		return BitmapFactory.decodeResource(GameActivity.getContext().getResources(), resourceId, options);
 	}
