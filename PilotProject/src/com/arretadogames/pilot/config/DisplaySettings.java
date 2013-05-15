@@ -15,7 +15,7 @@ public class DisplaySettings {
 	public static final boolean debugViewport = true;
 	public static final boolean mockDanilo = false;
 	
-	public static final boolean USE_OPENGL = true;
+	public static final boolean USE_OPENGL = false;
 	public static final boolean USE_DYNAMIC_TIME = true;
 
 }
