@@ -104,6 +104,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
+		sprite.setAnimationState("walking");
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			sprite.setAnimationState("walking");
 			contacts++;

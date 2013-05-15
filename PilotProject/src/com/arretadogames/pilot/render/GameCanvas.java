@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 /**
  * GameCanvas is the Canvas class which drawing operations on the Game will be
@@ -147,6 +148,9 @@ public interface GameCanvas {
 	 * 
 	 */
 	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) ;
+	
+
+	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics, Paint paint) ;
 	
 	
 	public void drawText(String text, float x, float y, Paint p);
