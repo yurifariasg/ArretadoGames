@@ -50,9 +50,9 @@ public class GameWorld extends GameScreen {
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		
-		LoboGuara loboGuara = new LoboGuara(0f, 0f, PlayerNumber.ONE);
+		LoboGuara loboGuara = new LoboGuara(0f, 10f, PlayerNumber.ONE);
 		loboGuara.setSprite(sm.getSprite(loboGuara));
-		LoboGuara loboGuara2 = new LoboGuara(0f, 0f, PlayerNumber.TWO);
+		LoboGuara loboGuara2 = new LoboGuara(-15f, 10f, PlayerNumber.TWO);
 		loboGuara2.setSprite(sm.getSprite(loboGuara2));
 
 		players.put(loboGuara.getNumber(), loboGuara);

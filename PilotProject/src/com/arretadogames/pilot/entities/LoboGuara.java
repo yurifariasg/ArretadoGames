@@ -22,10 +22,6 @@ public class LoboGuara extends Player {
 	private int contacts;
 	private Fixture footFixture;
 	
-<<<<<<< HEAD
-	public LoboGuara(float x, float y, PlayerNumber number, Sprite sprite) {
-		super(x, y, number);
-=======
 	private static final int[] WALKING = {R.drawable.lobo_guara1,
 								  		     R.drawable.lobo_guara2,
 								  		     R.drawable.lobo_guara3,
@@ -42,8 +38,7 @@ public class LoboGuara extends Player {
 				 };*/
 	
 	public LoboGuara(float x, float y, PlayerNumber number) {
-		super(1f, 10f, number);
->>>>>>> branch 'master' of https://github.com/yurifariasg/ArretadoGames.git
+		super(x, y, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		body.createFixture(shape,  0f);
@@ -64,12 +59,7 @@ public class LoboGuara extends Player {
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
-<<<<<<< HEAD
-//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
-
-=======
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
->>>>>>> branch 'master' of https://github.com/yurifariasg/ArretadoGames.git
 		
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
