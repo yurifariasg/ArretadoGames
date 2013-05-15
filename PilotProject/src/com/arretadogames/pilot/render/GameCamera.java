@@ -13,8 +13,6 @@ import android.graphics.Bitmap;
 
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.EntityType;
-import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.physics.PhysicalWorld;
@@ -139,8 +137,8 @@ public class GameCamera {
 		if ( maxYDistance < maxXDistance * 0.5 ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
 			viewportWidth = maxXDistance + 30;
-			physicsRatio = GameCanvas.SCREEN_WIDTH / viewportWidth;
-			viewportHeight = GameCanvas.SCREEN_HEIGHT / physicsRatio;
+			physicsRatio = DisplaySettings.TARGET_WIDTH / viewportWidth;
+			viewportHeight = DisplaySettings.TARGET_HEIGHT / physicsRatio;
 
 			if ( !transitioning ){
 
@@ -155,8 +153,8 @@ public class GameCamera {
 		else{
 
 			viewportHeight = maxYDistance + 30;
-			physicsRatio = GameCanvas.SCREEN_HEIGHT / viewportHeight;
-			viewportWidth = GameCanvas.SCREEN_WIDTH / physicsRatio;
+			physicsRatio = DisplaySettings.TARGET_HEIGHT / viewportHeight;
+			viewportWidth = DisplaySettings.TARGET_WIDTH / physicsRatio;
 
 			if ( !transitioning ){
 

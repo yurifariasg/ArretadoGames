@@ -31,7 +31,7 @@ public class GameWorldUI extends GameScreen {
 	}
 
 	@Override
-	public void input(InputEventHandler event) {
+	public void input(InputEventHandler event) { // FIX : Detect several inputs
 		// TODO Auto-generated method stub
 		if (event.getAction() == MotionEvent.ACTION_DOWN &&
 				event.getY() > 380) {

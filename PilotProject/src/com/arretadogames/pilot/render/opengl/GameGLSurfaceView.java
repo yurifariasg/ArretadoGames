@@ -3,28 +3,23 @@ package com.arretadogames.pilot.render.opengl;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.opengl.GLSurfaceView;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+
+import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.screens.InputEventHandler;
-import com.arretadogames.pilot.util.Util;
-
-import android.content.Context;
-import android.opengl.GLSurfaceView;
-import android.util.Log;
-import android.view.MotionEvent;
 
 /**
  * GameGLSurfaceView class represents a GLSurfaceView specific for our Game,
  * which has operations to draw and perform the logic on the Game set into this
  * class
  */
-public class GameGLSurfaceView extends GLSurfaceView implements
-		GLSurfaceView.Renderer {
-
-	private static final boolean PROFILE_SPEED = false;
-
-	private Game game;
-
-	private long lastFrameStartingTime;
+public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer {
+	
+	private OpenGLCanvas gameCanvas;
 
 	/**
 	 * Creates a GameGLSurfaceView using the given context
@@ -32,8 +27,8 @@ public class GameGLSurfaceView extends GLSurfaceView implements
 	 * @param context
 	 *            Context to be used
 	 */
-	public GameGLSurfaceView(Context context) {
-		super(context);
+	public GameGLSurfaceView(GameActivity activity) {
+		super(activity);
 
 		// Specifies the use of OpenGL 2.0
 		setEGLContextClientVersion(2);
@@ -42,62 +37,79 @@ public class GameGLSurfaceView extends GLSurfaceView implements
 		setRenderer(this);
 
 		// Render the view only when there is a change in the drawing data
-		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+		
+		// Set OnTouchListener
+		setOnTouchListener(activity);
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		if (game != null) {
-
-			long before = System.nanoTime();
-			float frameTimeDifference = Util.convertToSeconds(before
-					- lastFrameStartingTime);
-
-			game.step(frameTimeDifference);
-			if (PROFILE_SPEED)
-				Log.i("Profiling", "Step Speed: "
-						+ (System.nanoTime() - before));
-
-			long beforeRender = System.nanoTime();
-//			game.render(gl, frameTimeDifference);
-
-			if (PROFILE_SPEED)
-				Log.i("Profiling", "Render Speed: "
-						+ (System.nanoTime() - beforeRender));
-
-			requestRender();
-
-			lastFrameStartingTime = System.nanoTime();
+		if (Game.getInstance() != null) {
+			run();
 		}
 
+	}
+	
+	public void run() {
+		/*
+		 * This method runs the Game Loop and manage the time between each frame
+		 */
+		long frameEndedTime = getCurrentTime();
+		long frameCurrentTime;
+		
+		gameCanvas = new OpenGLCanvas();
+
+		frameCurrentTime = getCurrentTime();
+		float elapsedTime = (frameCurrentTime - frameEndedTime)/1000.f;
+		
+		// Game Loop
+		Game.getInstance().step(elapsedTime);
+		
+		if (gameCanvas.initiate()) { // If initiate was successful
+			Game.getInstance().render(gameCanvas, elapsedTime);
+			gameCanvas.flush();
+		}
+		// End Game Loop
+		
+		// Wait to complete 1/60 of a second
+		long millisToWait = getTargetMilli(frameCurrentTime) - getCurrentTime();
+		if (millisToWait > 0) {
+			try {
+				synchronized (this) {
+					wait(millisToWait);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		frameEndedTime = frameCurrentTime;
+	}
+	
+	private long getCurrentTime() {
+		return System.nanoTime()/1000000;
+	}
+	
+	private long getTargetMilli(long timeBefore) {
+		return (long) (1000.0 / DisplaySettings.TARGET_FPS) + timeBefore;
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		// TODO Set ViewPort
-
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		// TODO Set Created-Specific Configurations
-
+	}
+	
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		game.input(new InputEventHandler(event));
+		Game.getInstance().input(new InputEventHandler(event));
 		return super.onTouchEvent(event);
 	}
-
-	/**
-	 * Sets the Game to be used when drawing and performing step
-	 * 
-	 * @param game
-	 *            A Game
-	 */
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
 }

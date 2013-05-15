@@ -2,45 +2,16 @@ package com.arretadogames.pilot.render;
 
 import org.jbox2d.common.Vec2;
 
-import com.arretadogames.pilot.config.DisplaySettings;
-
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.view.SurfaceHolder;
 
 /**
  * GameCanvas is the Canvas class which drawing operations on the Game will be
  * done
  */
-public class GameCanvas {
-
-	public final static int SCREEN_WIDTH = 800;
-	public final static int SCREEN_HEIGHT = 380;
-
-	private SurfaceHolder surfaceHolder;
-	private Canvas canvas;
-
-	private Paint defaultPaint;
-	private Paint debugPaint;
-	private float physicsRatio;
-
-	public GameCanvas(SurfaceHolder surfaceHolder) {
-		this.surfaceHolder = surfaceHolder;
-
-		defaultPaint = new Paint();
-		defaultPaint.setAntiAlias(true);
-		physicsRatio = 25f;
-
-		debugPaint = new Paint();
-		debugPaint.setColor(Color.RED);
-	}
+public interface GameCanvas {
 
 	/**
 	 * Sets the new ratio used by Physics methods - this only works if the new
@@ -49,10 +20,7 @@ public class GameCanvas {
 	 * @param newRatio
 	 *            New Ratio to be used - Must be higher than 0
 	 */
-	public void setPhysicsRatio(float newRatio) {
-		if (newRatio > 0)
-			this.physicsRatio = newRatio;
-	}
+	public void setPhysicsRatio(float newRatio);
 
 	/**
 	 * Initiates the GameCanvas
@@ -60,26 +28,12 @@ public class GameCanvas {
 	 * @return True - Initiate was successful<br>
 	 *         False - Initiate failed
 	 */
-	public boolean initiate() {
-		canvas = surfaceHolder.lockCanvas();
-		if (canvas != null) {
-			DisplaySettings.DISPLAY_WIDTH = canvas.getWidth(); // FIXME: Find a way of doing it only once
-			DisplaySettings.DISPLAY_HEIGHT = canvas.getHeight();
-			DisplaySettings.WIDTH_RATIO = DisplaySettings.DISPLAY_WIDTH / DisplaySettings.TARGET_WIDTH;
-			DisplaySettings.HEIGHT_RATIO = DisplaySettings.DISPLAY_HEIGHT / DisplaySettings.TARGET_HEIGHT;
-			
-			canvas.scale(DisplaySettings.WIDTH_RATIO, DisplaySettings.HEIGHT_RATIO);
-		}
-		return canvas != null;
-	}
+	public boolean initiate();
 
 	/**
 	 * Flushes draws to screen
 	 */
-	public void flush() {
-		surfaceHolder.unlockCanvasAndPost(canvas);
-		canvas = null;
-	}
+	public void flush();
 
 	/**
 	 * Translates the canvas dx x-coordinates and dy y-coordinates
@@ -89,13 +43,9 @@ public class GameCanvas {
 	 * @param dy
 	 *            Y Coordinates to Translate
 	 */
-	public void translate(float dx, float dy) {
-		canvas.translate(dx, dy);
-	}
+	public void translate(float dx, float dy);
 	
-	public void scale(float sx, float sy, float px, float py) {
-		canvas.scale(sx, sy, px, py);
-	}
+	public void scale(float sx, float sy, float px, float py);
 
 	/**
 	 * Rotates the canvas on the given point the amount of given degrees
@@ -107,9 +57,7 @@ public class GameCanvas {
 	 * @param y
 	 *            Y Coordinate of the point
 	 */
-	public void rotate(float degrees, float x, float y) {
-		canvas.rotate(degrees, x, y);
-	}
+	public void rotate(float degrees, float x, float y);
 
 	/**
 	 * Rotates the canvas on the given point the amount of given degrees. All X
@@ -122,9 +70,7 @@ public class GameCanvas {
 	 * @param y
 	 *            Y Coordinate of the point
 	 */
-	public void rotatePhysics(float degrees, float x, float y) {
-		canvas.rotate(degrees, x * physicsRatio, SCREEN_HEIGHT - y * physicsRatio);
-	}
+	public void rotatePhysics(float degrees, float x, float y);
 
 	/**
 	 * Draws a debugging rect at the given location
@@ -138,82 +84,32 @@ public class GameCanvas {
 	 * @param y2
 	 *            Bottom Right Y Position
 	 */
-	public void drawDebugRect(int x, int y, int x2, int y2) {
-		canvas.drawRect(new Rect(x, y, x2, y2), debugPaint);
-	}
+	public void drawDebugRect(int x, int y, int x2, int y2);
 	
-	public void drawCameraDebugRect(float x, float y, float x2, float y2) {
-		
-		debugPaint.setColor(Color.GRAY);
-		canvas.drawRect(new RectF(x*physicsRatio, SCREEN_HEIGHT - y*physicsRatio, x2*physicsRatio, SCREEN_HEIGHT - y2*physicsRatio), debugPaint);
-	}
+	public void drawCameraDebugRect(float x, float y, float x2, float y2);
 
 	public void drawPhysicsDebugRect(float centerX, float centerY,
-			float sideLength) {
-		drawPhysicsDebugRect(centerX, centerY, sideLength, Color.RED);
-	}
+			float sideLength);
 
 	public void drawPhysicsDebugRect(float centerX, float centerY,
-			float sideLength, int color) {
-		sideLength *= physicsRatio;
-		sideLength /= 2;
-		debugPaint.setColor(color);
-		canvas.drawRect(new Rect((int) ((centerX * physicsRatio - sideLength)),
-				(int) (SCREEN_HEIGHT - (centerY * physicsRatio + sideLength)),
-				(int) ((centerX * physicsRatio + sideLength)),
-				(int) (SCREEN_HEIGHT - (centerY * physicsRatio - sideLength))),
-				debugPaint);
-	}
+			float sideLength, int color);
 	
-	private final static int BOTTOM_MAP = -100;
-	
-	public void drawPhysicsLines(Vec2[] lines) {
-		
-		// FIXME Can be optimized
-		Path path = new Path();
-		path.moveTo(lines[0].x * physicsRatio, SCREEN_HEIGHT - lines[1].y * physicsRatio);
-		for (int i = 1 ; i < lines.length ; i++) {
-			path.lineTo(lines[i].x * physicsRatio, SCREEN_HEIGHT - lines[i].y * physicsRatio);
-		}
-		
-		path.lineTo(lines[lines.length - 1].x * physicsRatio, SCREEN_HEIGHT - BOTTOM_MAP * physicsRatio);
-		path.lineTo(lines[0].x * physicsRatio, SCREEN_HEIGHT -  BOTTOM_MAP * physicsRatio);
-		path.lineTo(lines[0].x * physicsRatio, SCREEN_HEIGHT - lines[1].y * physicsRatio);
-		
+	public void drawPhysicsLines(Vec2[] lines);
 
-		debugPaint.setStyle(Style.FILL);
-		int oldColor = debugPaint.getColor();
-		debugPaint.setARGB(255, 124, 60, 3);
-		canvas.drawPath(path, debugPaint);
-		debugPaint.setColor(oldColor);
-	}
-
-	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
-		debugPaint.setColor(Color.RED);
-		canvas.drawLine(
-				(int) (x1 * physicsRatio),
-				(int) (SCREEN_HEIGHT - y1
-				* physicsRatio), (int) (x2 * physicsRatio),
-				(int) (SCREEN_HEIGHT - y2 * physicsRatio),
-				debugPaint);
-	}
+	public void drawPhysicsLine(float x1, float y1, float x2, float y2);
 
 	/**
 	 * Saves the current state of the GameCanvas<br>
 	 * This should be done before rotating or translating operations
 	 */
-	public void saveState() {
-		canvas.save();
-	}
+	public void saveState();
 
 	/**
 	 * Restores the canvas to the last saved state<br>
 	 * This should be done after performing rotating, translating and drawing
 	 * operations
 	 */
-	public void restoreState() {
-		canvas.restore();
-	}
+	public void restoreState();
 
 	/**
 	 * Rotates the canvas on the given point by the given angle
@@ -223,9 +119,7 @@ public class GameCanvas {
 	 * @param point
 	 *            Rotates on this given point
 	 */
-	public void rotate(float angle, Point point) {
-		canvas.rotate(angle, point.x, point.y);
-	}
+	public void rotate(float angle, Point point);
 
 	/**
 	 * Draws the given bitmap on the given coordinates
@@ -237,9 +131,7 @@ public class GameCanvas {
 	 * @param y
 	 *            y coordinate
 	 */
-	public void drawBitmap(Bitmap bitmap, float x, float y) {
-		drawBitmap(bitmap, x, y, defaultPaint);
-	}
+	public void drawBitmap(Bitmap bitmap, float x, float y);
 
 	/**
 	 * Draws the given bitmap on the given coordinates
@@ -254,42 +146,12 @@ public class GameCanvas {
 	 *            paint to be used when drawing
 	 * 
 	 */
-	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) {
-//		Rect rs = new Rect();
-//		RectF rd = new RectF();
-//		rs.left = rs.top = 0;
-//		rs.right = bitmap.getWidth();
-//		rs.bottom = bitmap.getHeight();
-//		rd.left = x;
-//		rd.top = y;
-//		rd.right = x + bitmap.getWidth();
-//		rd.bottom = y + bitmap.getHeight();
-//		
-//		saveState();
-//		canvas.scale(originalCanvas.getWidth() / 800f, originalCanvas.getHeight() / 480f);
-//		canvas.translate(x, y);
-//		
-//		canvas.drawBitmap(bitmap, 0, 0, paint);
-//		
-//		restoreState();
-//		canvas.drawBitmap(bitmap, rs, rd, paint);
-//		bitmap.setDensity(Bitmap.DENSITY_NONE);
-		canvas.drawBitmap(bitmap, x, y, paint);
-//		canvas.drawBitmap(bitmap, null, rd, paint);
-	}
+	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) ;
 	
 	
-	public void drawText(String text, float x, float y, Paint p) {
-		canvas.drawText(text, x, y, p);
-	}
+	public void drawText(String text, float x, float y, Paint p);
 	
-	public void fillScreen(float a, float r, float g, float b) {
-		canvas.drawARGB((int) a, (int) r, (int) g, (int) b);
-	}
+	public void fillScreen(float a, float r, float g, float b);
 
-	public void drawRect(Rect rect, int argb) {
-		Paint p = new Paint();
-		p.setColor(argb);
-		canvas.drawRect(rect, p);
-	}
+	public void drawRect(Rect rect, int argb);
 }
