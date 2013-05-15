@@ -1,6 +1,7 @@
 package com.arretadogames.pilot.entities;
 
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.Sprite;
 
 public class Fruit extends Entity {
 
@@ -26,6 +27,11 @@ public class Fruit extends Entity {
 	public EntityType getType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setSprite(Sprite sprite) {
+		// TODO Auto-generated method stub
 	}
 
 }

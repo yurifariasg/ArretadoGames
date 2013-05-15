@@ -85,7 +85,6 @@ public class GameCamera {
 			targetLowerBound = null;
 			targetUpperBound = null;
 			targetTranslator = null;
-			System.out.println("TRANSITION IS STARTED");
 		}
 		currentNumberOfPlayers = numberOfPlayers;
 
@@ -145,7 +144,6 @@ public class GameCamera {
 				if ( !calculateWidthFirst ){
 					transitioning = true;
 					startTime = getCurrentTime();
-					System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = true;
 			}
@@ -161,7 +159,6 @@ public class GameCamera {
 				if ( calculateWidthFirst ){
 					transitioning = true;
 					startTime = getCurrentTime();
-					System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = false;
 			}
@@ -214,7 +211,6 @@ public class GameCamera {
 
 			if ( reachedPercentage >= 1 ){
 
-				System.out.println("TRANSITION IS OVER");
 				transitioning = false;
 				
 				currentLowerBound = new Vec2(targetLowerBound);

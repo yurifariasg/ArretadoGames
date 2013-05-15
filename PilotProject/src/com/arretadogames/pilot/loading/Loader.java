@@ -3,7 +3,6 @@ package com.arretadogames.pilot.loading;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.json.JSONArray;
 import org.json.JSONException;

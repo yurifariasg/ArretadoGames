@@ -140,7 +140,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public float[] getJumpFramesDuration(){
-		return new float[] {0.3f, 0.4f};
+		return new float[] {0.3f, 0f};
 	}
 
 	@Override
