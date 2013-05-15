@@ -2,6 +2,7 @@ package com.arretadogames.pilot.loop;
 
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.canvas.RenderingCanvas;
 
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -68,7 +69,7 @@ public class GameThread extends Thread {
 		
 		long frameEndedTime = getCurrentTime();
 		long frameCurrentTime;
-		gameCanvas = new GameCanvas(surfaceHolder);
+		gameCanvas = new RenderingCanvas(surfaceHolder);
 		while (mRun) {
 			frameCurrentTime = getCurrentTime();
 			float elapsedTime = (frameCurrentTime - frameEndedTime)/1000.f;

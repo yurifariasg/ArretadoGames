@@ -5,14 +5,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loop.GameThread;
 
-public class RenderingSurface extends SurfaceView implements
-	SurfaceHolder.Callback {
+public class RenderingSurface extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private GameThread gameThread;
 	private boolean surfaceIsCreated;
-	
 	
 	/**
 	* Default SurfaceView Creator
@@ -31,15 +30,15 @@ public class RenderingSurface extends SurfaceView implements
 		setOnTouchListener(activity);
 	}
 	
-	public void setGameThread(GameThread gameThread) {
-		if (gameThread != null) {
-			this.gameThread = gameThread;
-			if (surfaceIsCreated) {
-				startGameThread();
-			}
-		} else
-			Log.e("RenderingSurface.setGameThread()", "Tried to set GameThread while other is still active");
-	}
+//	public void setGameThread(GameThread gameThread) {
+//		if (gameThread == null) {
+//			this.gameThread = gameThread;
+//			if (surfaceIsCreated) {
+//				startGameThread();
+//			}
+//		} else
+//			Log.e("RenderingSurface.setGameThread()", "Tried to set GameThread while other is still active");
+//	}
 	
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -50,12 +49,14 @@ public class RenderingSurface extends SurfaceView implements
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		surfaceIsCreated = true;
-		if (gameThread != null) {
+		if (gameThread == null) {
 			startGameThread();
 		}
 	}
 	
 	private void startGameThread() {
+		gameThread = new GameThread();
+		gameThread.setGame(Game.getInstance());
 		gameThread.setSurfaceHolder(getHolder());
 		gameThread.setRunning(true);
 		gameThread.start();
