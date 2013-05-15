@@ -21,6 +21,8 @@ public abstract class Entity implements Renderable {
 		bd.userData = this;
 		body = world.createBody(bd);
 		body.setUserData(this);
+		body.setSleepingAllowed(true);
+		body.setAwake(false);
 	}
 	
 	public void addFixture(FixtureDef fd){

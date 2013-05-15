@@ -15,6 +15,7 @@ public class PhysicalWorld implements ContactListener {
 	private PhysicalWorld() {
 		world = new World(new Vec2(0.0f,-10.0f));
 		world.setContactListener(this);
+		world.setAllowSleep(true);
 	}
 	
 	public static PhysicalWorld getInstance() {

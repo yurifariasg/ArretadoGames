@@ -82,8 +82,12 @@ public class LoboGuara extends Player {
 	}
 	
 	public void run(){
-		if(contacts > 0 && body.getLinearVelocity().x < 20f){
-			body.applyForceToCenter(new Vec2(5 * body.getMass(), 0.0f));
+		if(contacts > 0 && body.getLinearVelocity().x < 15f){
+			float force = (9) * body.getMass();
+			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			direction.normalize();
+			direction.mulLocal(force);
+			body.applyForceToCenter(direction);
 		}
 		
 //		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
@@ -123,7 +127,6 @@ public class LoboGuara extends Player {
 		for (int i = 0; i < WALKING.length; i++) {
 			frames[i] = ImageLoader.loadImage(WALKING[i]);
 		}
-		
 			
 		return frames;
 	}
