@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -55,6 +54,12 @@ public class GameWorld extends GameScreen {
 
 		players.put(loboGuara.getNumber(), loboGuara);
 		worldEntities.add(loboGuara);
+		
+		LoboGuara loboGuara2 = new LoboGuara(0f, 0f, PlayerNumber.TWO);
+		loboGuara2.setSprite(sm.getSprite(loboGuara));
+
+		players.put(loboGuara2.getNumber(), loboGuara2);
+		worldEntities.add(loboGuara2);
 	}
 	
 	@Override
