@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Renderable;
+import com.arretadogames.pilot.render.Sprite;
 
 
 public abstract class Entity implements Renderable {
@@ -49,4 +50,5 @@ public abstract class Entity implements Renderable {
 	
 	public abstract EntityType getType();
 	
+	public abstract void setSprite(Sprite sprite);
 }

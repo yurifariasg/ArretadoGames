@@ -3,8 +3,11 @@ import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
+import org.jbox2d.dynamics.joints.Joint;
+
 import com.arretadogames.pilot.entities.Entity;
 
 
@@ -23,6 +26,23 @@ public class PhysicalWorld implements ContactListener {
 			gworld = new PhysicalWorld();
 		}
 		return gworld;
+	}
+	
+	public static void restart() {
+		Body b = gworld.world.getBodyList();
+		while (b != null) { // Remove Bodies
+			gworld.getWorld().destroyBody(b);
+			b = b.getNext();
+		}
+		
+		Joint j = gworld.world.getJointList();
+		while (j != null) { // Remove Bodies
+			gworld.getWorld().destroyJoint(j);
+			j = j.getNext();
+		}
+		
+		gworld.world = null;
+		gworld = null;
 	}
 	
 	public World getWorld() {

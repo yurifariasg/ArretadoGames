@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import android.view.MotionEvent;
-
 import com.arretadogames.pilot.render.GameCanvas;
 
 /**
