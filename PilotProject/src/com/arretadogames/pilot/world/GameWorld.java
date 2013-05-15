@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
