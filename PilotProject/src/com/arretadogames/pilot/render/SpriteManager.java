@@ -11,21 +11,6 @@ import com.arretadogames.pilot.entities.Player;
 
 public class SpriteManager {
 	
-/*	private final int[] WALKING = {R.drawable.lobo_guara1,
-							   		     R.drawable.lobo_guara2,
-							   		     R.drawable.lobo_guara3,
-							   		     R.drawable.lobo_guara4,
-							   		     R.drawable.lobo_guara5,
-							   		     R.drawable.lobo_guara6};
-	
-	private final int[] JUMP = {R.drawable.lobo_guara_jump1,
-							   		  R.drawable.lobo_guara_jump2};
-	
-	private final int[] ACT = {R.drawable.lobo_guara_act1,
-	   		  						 R.drawable.lobo_guara_act2,
-	   		  						 R.drawable.lobo_guara_act3,
-	   		  						 };
-*/	
 	public SpriteManager() {
 	}
 	
@@ -36,7 +21,8 @@ public class SpriteManager {
 			Player player = (Player) en;
 			setPlayerSprites(sprite, player);
 		}else if(en.getType() == EntityType.BOX){
-			Box player = (Box) en;			
+			Box box = (Box) en;
+			setBoxSprites(sprite, box);
 		}else if(en.getType() == EntityType.FRUIT){
 			Fruit fruit = (Fruit) en;
 		}else if(en.getType() == EntityType.GROUND){
@@ -49,21 +35,30 @@ public class SpriteManager {
 
 		String name = "walking";
 		Bitmap[] frames = player.getWalkFrames();
-		float[] framesDur = {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
+		float[] framesDur = player.getWalkFramesDuration();
 		sprite.setAnimationState(name);
 		sprite.addState(new SpriteState(name, frames, framesDur));
 		
 		name = "jump";
 		frames = player.getJumpFrames();
-		framesDur = new float[]{0.4f, 0.3f};
+		framesDur = player.getJumpFramesDuration();
 		sprite.addState(new SpriteState(name, frames, framesDur));
 		
 		name = "act";
 		frames = player.getActFrames();
-		framesDur = new float[]{0.4f, 0.3f};
+		framesDur = player.getActFramesDuration();
 		sprite.addState(new SpriteState(name, frames, framesDur));
 		
 	}
+	
+	private void setBoxSprites(Sprite sprite, Box box) {
+		String name = "stopped";
+		Bitmap[] frames = box.getStoppedFrames();
+		float[] framesDur = box.getStoppedFramesDuration();
+		sprite.setAnimationState(name);
+		sprite.addState(new SpriteState(name, frames, framesDur));
+	}
+	
 	
 	private void setBoxImage(Sprite sprite) {
 		String name = "stopped";

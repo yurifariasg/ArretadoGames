@@ -38,7 +38,7 @@ public class LoboGuara extends Player {
 				 };*/
 	
 	public LoboGuara(float x, float y, PlayerNumber number) {
-		super(1f, 10f, number);
+		super(x, y, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		body.createFixture(shape,  0f);
@@ -70,7 +70,7 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void jump() {
-//		sprite.setAnimationState("jump");
+		sprite.setAnimationState("jump");
 		if( contJump > 0 || contacts <= 0) return;	
 		float impulseX = (8) * body.getMass();
 		Vec2 direction = new Vec2(0f,1f);
@@ -83,16 +83,18 @@ public class LoboGuara extends Player {
 	
 	public void run(){
 		if(contacts > 0 && body.getLinearVelocity().x < 20f){
-			body.applyLinearImpulse(new Vec2((2 - body.m_linearVelocity.x) * body.getMass(), 0.0f), body.getWorldCenter());
+			body.applyForceToCenter(new Vec2(5 * body.getMass(), 0.0f));
 		}
 		
-		
+//		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
 	@Override
 	public void act() {
 		// TODO stop moving for awhile or do something else...
 		System.out.println("Act Player 1");
+		//body.applyLinearImpulse((new Vec2(20 * body.getMass(), 0.0f)),body.getWorldCenter());
+		body.applyAngularImpulse(-2f);
 	}
 
 	@Override
@@ -102,14 +104,16 @@ public class LoboGuara extends Player {
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
+		sprite.setAnimationState("walking");
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-		contacts++;
+			sprite.setAnimationState("walking");
+			contacts++;
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-		contacts--;
+			contacts--;
 		}
 	}
 
@@ -119,6 +123,8 @@ public class LoboGuara extends Player {
 		for (int i = 0; i < WALKING.length; i++) {
 			frames[i] = ImageLoader.loadImage(WALKING[i]);
 		}
+		
+			
 		return frames;
 	}
 	

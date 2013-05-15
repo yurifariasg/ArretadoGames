@@ -30,5 +30,11 @@ public abstract class Player extends Entity {
 	public abstract Bitmap[] getJumpFrames();
 	
 	public abstract Bitmap[] getActFrames();
+
+	public abstract float[] getWalkFramesDuration();
+	
+	public abstract float[] getJumpFramesDuration();
+	
+	public abstract float[] getActFramesDuration();
 	
 }
