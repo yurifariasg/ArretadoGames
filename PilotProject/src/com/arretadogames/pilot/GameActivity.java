@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.RelativeLayout;
 
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.loop.GameThread;
 import com.arretadogames.pilot.render.canvas.RenderingSurface;
+import com.arretadogames.pilot.render.opengl.GameGLSurfaceView;
 import com.arretadogames.pilot.screens.InputEventHandler;
 
 /**
@@ -23,16 +24,21 @@ public class GameActivity extends Activity implements OnTouchListener {
 	
 	private static Context context;
 	
-	private GameThread gameThread;
-	private RenderingSurface renderingSurface;
+	private SurfaceView renderingSurface;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		renderingSurface = new RenderingSurface(this);
+		context = getApplicationContext(); // Sets the Context for external use
+		FontLoader.create(context); // Create the FontLoader
+		Game.getInstance(); // Create Game
+		
+		if (DisplaySettings.USE_OPENGL) {
+			renderingSurface = new GameGLSurfaceView(this);
+		} else {
+			renderingSurface = new RenderingSurface(this);
+		}
 		setContentView(renderingSurface);
-		context = getApplicationContext();
-		FontLoader.create(context);
 	}
 	
 	@Override
@@ -47,10 +53,6 @@ public class GameActivity extends Activity implements OnTouchListener {
 		// TODO Handles the Resume Operation into Activity
 		// http://developer.android.com/reference/android/app/Activity.html
 		super.onResume();
-		// On Resume, starts a new GameThread
-		gameThread = new GameThread();
-		gameThread.setGame(Game.getInstance());
-		renderingSurface.setGameThread(gameThread);
 	}
 	
 	@Override

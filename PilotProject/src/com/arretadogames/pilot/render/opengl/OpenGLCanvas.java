@@ -1,11 +1,14 @@
 package com.arretadogames.pilot.render.opengl;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import org.jbox2d.common.Vec2;
 
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.opengl.GLES20;
 
 import com.arretadogames.pilot.render.GameCanvas;
 
@@ -19,8 +22,13 @@ public class OpenGLCanvas implements GameCanvas {
 
 	@Override
 	public boolean initiate() {
-		// TODO Auto-generated method stub
-		return false;
+		// Clears the screen and depth buffer.
+		GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		// Replace the current matrix with the identity matrix
+//		GLES20.gl
+		// Rotate world by 180 around x axis so positive y is down (like canvas)
+//		GLES20.glRotatef(-180, 1, 0, 0);
+		return true;
 	}
 
 	@Override
