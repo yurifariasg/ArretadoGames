@@ -90,6 +90,7 @@ public class LoboGuara extends Player {
 			body.applyForceToCenter(direction);
 		}
 		
+		
 //		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
