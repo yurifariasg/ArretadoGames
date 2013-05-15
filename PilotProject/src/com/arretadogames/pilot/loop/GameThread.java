@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.loop;
 
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.canvas.RenderingCanvas;
@@ -72,7 +73,11 @@ public class GameThread extends Thread {
 		gameCanvas = new RenderingCanvas(surfaceHolder);
 		while (mRun) {
 			frameCurrentTime = getCurrentTime();
-			float elapsedTime = (frameCurrentTime - frameEndedTime)/1000.f;
+			float elapsedTime;
+			if (DisplaySettings.USE_DYNAMIC_TIME)
+				elapsedTime = (frameCurrentTime - frameEndedTime)/1000.f;
+			else
+				elapsedTime = 1f / DisplaySettings.TARGET_FPS;
 			
 			// Game Loop
 			game.step(elapsedTime);
