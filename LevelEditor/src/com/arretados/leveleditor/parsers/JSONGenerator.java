@@ -45,27 +45,25 @@ public class JSONGenerator {
         final String TYPE_PLAYER = "player";
         
         HashMap<String, JSONArray> hm = new HashMap<String, JSONArray>();
-        JSONArray jArray = new JSONArray();
+        JSONArray jArrayEntities = new JSONArray();        
         
         for (int i = 0; i < players.size(); i++){
-            JSONObject jObj = new JSONObject(hm);
-            jObj.put("type", TYPE_PLAYER);
-            jObj.put("player", players.get(i).getPlayer());
-            jObj.put("x", Utils.convertPixelToMeter(players.get(i).getX()));
-            jObj.put("y", Utils.convertPixelToMeter(players.get(i).getY()));
-            jArray.add(jObj);
-        }
-        hm.put("players", jArray);
-        jArray = new JSONArray();        
+            JSONObject jPlayerObj = new JSONObject();
+            jPlayerObj.put("type", TYPE_PLAYER);
+            jPlayerObj.put("number", i+1);
+            jPlayerObj.put("x", Utils.convertPixelToMeter(players.get(i).getX()));
+            jPlayerObj.put("y", Utils.convertPixelToMeter(players.get(i).getY()));
+            jArrayEntities.add(jPlayerObj);
+        }    
         
         for (int i = 0; i < boxes.size(); i++){
-            JSONObject jObj = new JSONObject(hm);
+            JSONObject jObj = new JSONObject();
             jObj.put("type", TYPE_BOX);
             jObj.put("x", Utils.convertPixelToMeter(boxes.get(i).getX()));
             jObj.put("y", Utils.convertPixelToMeter(boxes.get(i).getY()));
             jObj.put("size", Utils.convertPixelToMeter(boxes.get(i).getSize()));
             
-            jArray.add(jObj);
+            jArrayEntities.add(jObj);
         }
         
         for (int i = 0; i < fruits.size(); i++){
@@ -76,19 +74,19 @@ public class JSONGenerator {
             jObj.put("y", Utils.convertPixelToMeter(fruits.get(i).getY()));
             jObj.put("size", Utils.convertPixelToMeter(fruits.get(i).getSize()));
             
-            jArray.add(jObj);
+            jArrayEntities.add(jObj);
         }        
         
-        hm.put("entities", jArray);
-        jArray = new JSONArray();
+        hm.put("entities", jArrayEntities);
+        JSONArray jArrayGround = new JSONArray();
         
         for (int i = 0; i < groundLines.size(); i++){
             JSONObject jObj = new JSONObject();
             jObj.put("x", Utils.convertPixelToMeter(groundLines.get(i)[0]) );
             jObj.put("y", Utils.convertPixelToMeter(groundLines.get(i)[1]) );
-            jArray.add(jObj);
+            jArrayGround.add(jObj);
         }
-        hm.put("ground", jArray);
+        hm.put("ground", jArrayGround);
         return hm;
         
     }    
