@@ -77,7 +77,6 @@ public class LoboGuara extends Player {
 	public void act() {
 		// TODO stop moving for awhile or do something else...
 		System.out.println("Act Player 1");
-		GameCamera.doThisShit();
 	}
 
 	@Override
