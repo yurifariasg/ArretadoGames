@@ -32,16 +32,24 @@ public class GameWorldUI extends GameScreen {
 
 	@Override
 	public void input(InputEventHandler event) { // FIX : Detect several inputs
-		// TODO Auto-generated method stub
-		if (event.getAction() == MotionEvent.ACTION_DOWN &&
-				event.getY() > 380) {
-			if (event.getX() < 200) {
+		
+		int action = event.getAction() & MotionEvent.ACTION_MASK;
+		if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
+//			int buttonid = getIndex(event.getEvent());
+			pressButtons(event.getX(), event.getY());
+		}
+		
+	}
+	
+	private void pressButtons(float x, float y) {
+		if (y > 380) {
+			if (x < 200) {
 				// Jump 1
 				gWorld.jumpPlayer(PlayerNumber.ONE);
-			} else if (event.getX() < 400) {
+			} else if (x < 400) {
 				// Act 1
 				gWorld.actPlayer(PlayerNumber.ONE);
-			} else if (event.getX() < 600) {
+			} else if (x < 600) {
 				// Jump 2
 				gWorld.jumpPlayer(PlayerNumber.TWO);
 			} else {

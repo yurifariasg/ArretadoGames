@@ -38,7 +38,6 @@ public class SpriteState {
 				}
 			}
 		}
-		
 		return keyframes[currentKeyFrameIndex];
 	}
 

@@ -13,15 +13,32 @@ public class InputEventHandler {
 	}
 	
 	public float getX() {
-		return motionEvent.getX() / DisplaySettings.WIDTH_RATIO;
+		return motionEvent.getX(getIndex()) / DisplaySettings.WIDTH_RATIO;
 	}
 	
 	public float getY() {
-		return motionEvent.getY() / DisplaySettings.HEIGHT_RATIO;
+		return motionEvent.getY(getIndex()) / DisplaySettings.HEIGHT_RATIO;
 	}
 
 	public int getAction() {
 		return motionEvent.getAction();
+	}
+	
+	public MotionEvent getEvent() {
+		return motionEvent;
+	}
+	
+	public float getX(int pointerIndex) {
+		return motionEvent.getX(pointerIndex) / DisplaySettings.WIDTH_RATIO;
+	}
+	
+	public float getY(int pointerIndex) {
+		return motionEvent.getY(pointerIndex) / DisplaySettings.HEIGHT_RATIO;
+	}
+	
+	private int getIndex() {
+		  int idx = (motionEvent.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+		  return idx;
 	}
 
 }
