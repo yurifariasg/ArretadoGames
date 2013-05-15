@@ -134,7 +134,11 @@ public class GameCamera {
 
 		center.mulLocal(1f / numberOfPlayers);
 
-		if ( maxYDistance < maxXDistance * 0.5 ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
+//		System.out.println("===");
+//		System.out.println("maxX: "+maxXDistance);
+//		System.out.println("maxY: "+maxYDistance);
+		
+		if ( maxYDistance <= maxXDistance * 0.5f ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
 			viewportWidth = maxXDistance + 30;
 			physicsRatio = DisplaySettings.TARGET_WIDTH / viewportWidth;
@@ -152,7 +156,7 @@ public class GameCamera {
 		}
 		else{
 
-			viewportHeight = maxYDistance + 30;
+			viewportHeight = maxYDistance + 18;
 			physicsRatio = DisplaySettings.TARGET_HEIGHT / viewportHeight;
 			viewportWidth = DisplaySettings.TARGET_WIDTH / physicsRatio;
 
@@ -167,7 +171,12 @@ public class GameCamera {
 			}
 		}
 
-
+//		System.out.println("width: "+viewportWidth);
+//		System.out.println("height: "+viewportHeight);
+//		System.out.println("===");
+//		System.out.println("??: "+(maxYDistance*physicsRatio > viewportHeight));
+//		System.out.println("?????: "+(maxYDistance > viewportHeight));
+		
 		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
 		if ( DisplaySettings.debugViewport ){
 //			lowerBound.addLocal(new Vec2(3f, 3f));
@@ -311,6 +320,14 @@ public class GameCamera {
 
 	private long getCurrentTime() {
 		return System.nanoTime()/1000000;
+	}
+
+	public static void doThisShit() {
+
+		Player a = gameWorld.getPlayers().get(PlayerNumber.ONE);
+		a.body.applyForce(new Vec2(0, 1000f), a.body.getWorldCenter());
+		a = gameWorld.getPlayers().get(PlayerNumber.TWO);
+		a.body.applyForce(new Vec2(3000f, 0f), a.body.getWorldCenter());
 	}
 
 }
