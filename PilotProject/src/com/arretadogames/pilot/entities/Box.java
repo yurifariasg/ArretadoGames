@@ -23,7 +23,6 @@ public class Box extends Entity {
 		body.createFixture(shape, (float) 0.5);
 		body.setType(BodyType.DYNAMIC);
 		body.setFixedRotation(false);
-		
 	}
 
 	@Override
