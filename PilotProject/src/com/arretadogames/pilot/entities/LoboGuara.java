@@ -70,7 +70,7 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void jump() {
-//		sprite.setAnimationState("jump");
+		sprite.setAnimationState("jump");
 		if( contJump > 0 || contacts <= 0) return;	
 		float impulseX = (8) * body.getMass();
 		Vec2 direction = new Vec2(0f,1f);
@@ -85,9 +85,8 @@ public class LoboGuara extends Player {
 		if(contacts > 0 && body.getLinearVelocity().x < 20f){
 			body.applyForceToCenter(new Vec2(5 * body.getMass(), 0.0f));
 		}
-		//body.setLinearVelocity(new Vec2(10, 20));
 		
-		
+//		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
 	@Override
@@ -106,13 +105,14 @@ public class LoboGuara extends Player {
 	
 	public void beginContact(Entity e, Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-		contacts++;
+			sprite.setAnimationState("walking");
+			contacts++;
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-		contacts--;
+			contacts--;
 		}
 	}
 
@@ -122,6 +122,8 @@ public class LoboGuara extends Player {
 		for (int i = 0; i < WALKING.length; i++) {
 			frames[i] = ImageLoader.loadImage(WALKING[i]);
 		}
+		
+			
 		return frames;
 	}
 	
