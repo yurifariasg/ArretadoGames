@@ -53,7 +53,7 @@ public class GameWorld extends GameScreen {
 		background = ImageLoader.loadImage(R.drawable.stage_background);
 		pWorld = PhysicalWorld.getInstance();
 		ui = new GameWorldUI(this);
-		gameCamera = new GameCamera(this);
+		gameCamera = new GameCamera(this, background);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		
@@ -114,7 +114,7 @@ public class GameWorld extends GameScreen {
 	public void render(GameCanvas canvas, float timeElapsed) {
 		// Render the World
 
-		gameCamera.render(canvas, background, timeElapsed);
+		gameCamera.render(canvas, timeElapsed);
 		ui.render(canvas, timeElapsed);
 		pauseScreen.render(canvas, timeElapsed);
 	}
