@@ -103,7 +103,7 @@ public class LoboGuara extends Player {
 		if( contactsHead > 0 && contAct == 0){
 			body.applyAngularImpulse(-1f);
 		} else if( contAct == 0){
-			float impulse = (6) * body.getMass();
+			float impulse = (7) * body.getMass();
 			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			direction.normalize();
 			direction.mulLocal(impulse);
