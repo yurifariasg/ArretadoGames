@@ -101,11 +101,16 @@ public class LoboGuara extends Player {
 	@Override
 	public void act() {
 		if( contactsHead > 0 && contAct == 0){
-			body.applyAngularImpulse(-2f);
+			body.applyAngularImpulse(-1f);
 		} else if( contAct == 0){
-			body.applyLinearImpulse(new Vec2(10 * body.getMass(),0f), body.getWorldCenter());
+			float impulse = (6) * body.getMass();
+			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			direction.normalize();
+			direction.mulLocal(impulse);
+			body.applyLinearImpulse(direction, body.getWorldCenter());
 			contAct = 10;
 		}
+		
 	}
 
 	@Override
