@@ -187,7 +187,7 @@ public class RenderingCanvas implements GameCanvas {
 		
 		for (int i = 1 ; i < lines.length; i++) {
 			canvas.drawLine(lines[i - 1].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i - 1].y * physicsRatio,
-					lines[i].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i].y * physicsRatio, debugPaint);
+				lines[i].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i].y * physicsRatio, debugPaint);
 		}
 		
 	}
