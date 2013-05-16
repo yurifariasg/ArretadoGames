@@ -52,7 +52,7 @@ public class JSONGenerator {
             jPlayerObj.put("type", TYPE_PLAYER);
             jPlayerObj.put("number", i+1);
             jPlayerObj.put("x", Utils.convertPixelToMeter(players.get(i).getX()));
-            jPlayerObj.put("y", Utils.convertPixelToMeter(players.get(i).getY()));
+            jPlayerObj.put("y", 10-Utils.convertPixelToMeter(players.get(i).getY()));
             jArrayEntities.add(jPlayerObj);
         }    
         
@@ -60,7 +60,7 @@ public class JSONGenerator {
             JSONObject jObj = new JSONObject();
             jObj.put("type", TYPE_BOX);
             jObj.put("x", Utils.convertPixelToMeter(boxes.get(i).getX()));
-            jObj.put("y", Utils.convertPixelToMeter(boxes.get(i).getY()));
+            jObj.put("y", 10-Utils.convertPixelToMeter(boxes.get(i).getY()));
             jObj.put("size", Utils.convertPixelToMeter(boxes.get(i).getSize()));
             
             jArrayEntities.add(jObj);
@@ -71,7 +71,7 @@ public class JSONGenerator {
             JSONObject jObj = new JSONObject();
             jObj.put("type", TYPE_FRUIT);
             jObj.put("x", Utils.convertPixelToMeter(fruits.get(i).getX()));
-            jObj.put("y", Utils.convertPixelToMeter(fruits.get(i).getY()));
+            jObj.put("y", 10-Utils.convertPixelToMeter(fruits.get(i).getY()));
             jObj.put("size", Utils.convertPixelToMeter(fruits.get(i).getSize()));
             
             jArrayEntities.add(jObj);
@@ -83,7 +83,7 @@ public class JSONGenerator {
         for (int i = 0; i < groundLines.size(); i++){
             JSONObject jObj = new JSONObject();
             jObj.put("x", Utils.convertPixelToMeter(groundLines.get(i)[0]) );
-            jObj.put("y", Utils.convertPixelToMeter(groundLines.get(i)[1]) );
+            jObj.put("y", 10-Utils.convertPixelToMeter(groundLines.get(i)[1]) );
             jArrayGround.add(jObj);
         }
         hm.put("ground", jArrayGround);
