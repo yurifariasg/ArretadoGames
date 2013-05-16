@@ -3,15 +3,17 @@ package com.arretadogames.pilot.levels;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.R;
 import android.content.res.Resources;
 
 
 public class LevelManager {
 	
-	private static final int[] LEVELS_RESOURCES = {1};
+	// List of Levels
+	private static final int[] LEVELS_RESOURCES = {R.raw.basic_level, R.raw.second_level};
 	
-	public static LevelDescriptor loadLevel(Resources res, int levelResource) throws IOException {
+	private static LevelDescriptor loadLevel(Resources res, int levelResource) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(res.openRawResource(levelResource)));
 		
 		String jsonString = "";
@@ -20,6 +22,14 @@ public class LevelManager {
 			jsonString += line;
 		}
 		return LevelDescriptor.parseJSON(jsonString);
+	}
+	
+	public static int getLevelsCount() {
+		return LEVELS_RESOURCES.length;
+	}
+	
+	public static LevelDescriptor loadLevel(int index) throws IOException {
+		return loadLevel(GameActivity.getContext().getResources(), LEVELS_RESOURCES[index]);
 	}
 
 }
