@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.loading.ImageLoader;
@@ -65,11 +66,11 @@ public class LoboGuara extends Player {
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
-		
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
-		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
+//		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
+		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
 		canvas.restoreState();
 		
 	}

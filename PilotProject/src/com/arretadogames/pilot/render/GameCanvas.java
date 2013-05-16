@@ -148,10 +148,10 @@ public interface GameCanvas {
 	 * 
 	 */
 	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) ;
-	
 
 	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics, Paint paint) ;
 	
+	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics);
 	
 	public void drawText(String text, float x, float y, Paint p);
 	
