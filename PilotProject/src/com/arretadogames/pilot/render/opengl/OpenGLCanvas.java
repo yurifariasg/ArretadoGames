@@ -155,4 +155,11 @@ public class OpenGLCanvas implements GameCanvas {
 		
 	}
 
+	@Override
+	public void drawBitmap(Bitmap bitmap, RectF dstRect,
+			boolean convertFromPhysics) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

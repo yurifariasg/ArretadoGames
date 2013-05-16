@@ -303,7 +303,9 @@ public class RenderingCanvas implements GameCanvas {
 			dstRect.left *= physicsRatio;
 			dstRect.right *= physicsRatio;
 			dstRect.top *= physicsRatio;
+			dstRect.top = DisplaySettings.TARGET_HEIGHT - dstRect.top;
 			dstRect.bottom *= physicsRatio;
+			dstRect.bottom = DisplaySettings.TARGET_HEIGHT - dstRect.bottom;
 		}
 		
 		canvas.drawBitmap(bitmap, null, dstRect, paint);
