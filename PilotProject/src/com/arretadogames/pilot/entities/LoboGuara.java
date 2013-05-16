@@ -20,8 +20,11 @@ public class LoboGuara extends Player {
 	
 	private Sprite sprite;
 	private int contJump;
+	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
+	private Fixture headFixture;
+	private int contactsHead;
 	
 	private static final int[] WALKING = {R.drawable.lobo_guara1,
 								  		     R.drawable.lobo_guara2,
@@ -46,12 +49,15 @@ public class LoboGuara extends Player {
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
+		contactsHead = 0;
 		body.setFixedRotation(false);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(0.4f, 0.1f, new Vec2(0f,-0.5f), 0f);
-		footFixture = body.createFixture(footShape, 10f);
-
-		//footFixture = body.createFixture(footShape, 0f);
+		footFixture = body.createFixture(footShape, 7f);
+		
+		PolygonShape headShape = new PolygonShape();
+		headShape.setAsBox(0.4f, 0.1f, new Vec2(0f,0.4f), 0f);
+		headFixture = body.createFixture(headShape, 0f);
 	}
 
 	@Override
@@ -90,22 +96,28 @@ public class LoboGuara extends Player {
 			direction.mulLocal(force);
 			body.applyForceToCenter(direction);
 		}
-		
-		
 //		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
 	@Override
 	public void act() {
-		// TODO stop moving for awhile or do something else...
-		System.out.println("Act Player 1");
-		//body.applyLinearImpulse((new Vec2(20 * body.getMass(), 0.0f)),body.getWorldCenter());
-		body.applyAngularImpulse(-2f);
+		if( contactsHead > 0 && contAct == 0){
+			body.applyAngularImpulse(-1f);
+		} else if( contAct == 0){
+			float impulse = (7) * body.getMass();
+			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			direction.normalize();
+			direction.mulLocal(impulse);
+			body.applyLinearImpulse(direction, body.getWorldCenter());
+			contAct = 10;
+		}
+		
 	}
 
 	@Override
 	public void step(float timeElapsed) {
-		if(contJump >= 0) contJump--;
+		if(contJump > 0) contJump--;
+		if(contAct > 0 ) contAct--;
 		run();
 	}
 	
@@ -114,12 +126,16 @@ public class LoboGuara extends Player {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			sprite.setAnimationState("walking");
 			contacts++;
+		} else if(contact.m_fixtureA.equals(headFixture) || contact.m_fixtureB.equals(headFixture)){
+			contactsHead++;
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			contacts--;
+		} else if (contact.m_fixtureA.equals(headFixture) || contact.m_fixtureB.equals(headFixture)){
+			contactsHead--;
 		}
 	}
 

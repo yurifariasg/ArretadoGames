@@ -9,6 +9,7 @@ import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenCallback;
 
 import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
@@ -35,12 +36,15 @@ public class Game implements TweenAccessor<Game> {
 	private boolean transitionStateOn;
 	private Rect transitionRect;
 	
+	private boolean resetWorld;
+	
 	private Game() {
 		currentState = GameState.SPLASH;
 		gameWorld = new GameWorld();
 		mainMenu = new MainMenuScreen(this);
 		splashScreen = new SplashScreen(this);
 		transitionStateOn = false;
+		resetWorld = false;
 	}
 
 	/**
@@ -82,6 +86,13 @@ public class Game implements TweenAccessor<Game> {
 	 *            Time Elapsed since last frame
 	 */
 	public void step(float timeElapsed) {
+		if (resetWorld) {
+			PhysicalWorld.restart();
+			gameWorld.free();
+			gameWorld = new GameWorld();
+			resetWorld = false;
+		}
+		
 		switch (currentState) {
 		case RUNNING_GAME:
 			gameWorld.step(timeElapsed);
@@ -208,6 +219,10 @@ public class Game implements TweenAccessor<Game> {
 					}
 				}))
 				.start(AnimationManager.getInstance());
+	}
+
+	public void resetWorld() {
+		resetWorld = true;
 	}
 
 }

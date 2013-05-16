@@ -5,8 +5,6 @@ import java.util.HashMap;
 import android.content.Context;
 import android.graphics.Typeface;
 
-import com.arretadogames.pilot.R;
-
 
 public class FontLoader {
 	
