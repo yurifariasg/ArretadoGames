@@ -43,7 +43,7 @@ public class GameWorld extends GameScreen {
 		pWorld = PhysicalWorld.getInstance();
 		Loader loader = new Loader(Loader.jsonExample2);
 		ui = new GameWorldUI(this);
-		gameCamera = new GameCamera(this);
+		gameCamera = new GameCamera(this, background);
 		worldEntities = loader.getEntities();
 		players = new HashMap<PlayerNumber, Player>();
 		pauseScreen = new PauseScreen();
@@ -64,7 +64,7 @@ public class GameWorld extends GameScreen {
 	public void render(GameCanvas canvas, float timeElapsed) {
 		// Render the World
 
-		gameCamera.render(canvas, background, timeElapsed);
+		gameCamera.render(canvas, timeElapsed);
 		ui.render(canvas, timeElapsed);
 		pauseScreen.render(canvas, timeElapsed);
 	}
