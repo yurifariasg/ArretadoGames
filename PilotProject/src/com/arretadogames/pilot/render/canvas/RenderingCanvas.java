@@ -315,4 +315,19 @@ public class RenderingCanvas implements GameCanvas {
 		
 		canvas.drawBitmap(bitmap, null, dstRect, paint);
 	}
+	
+	@Override
+	public void drawBitmap(Bitmap bitmap, Rect srcRect, RectF dstRect, boolean convertFromPhysics) {
+		
+		if (convertFromPhysics) {
+			dstRect.left *= physicsRatio;
+			dstRect.right *= physicsRatio;
+			dstRect.top *= physicsRatio;
+			dstRect.top = DisplaySettings.TARGET_HEIGHT - dstRect.top;
+			dstRect.bottom *= physicsRatio;
+			dstRect.bottom = DisplaySettings.TARGET_HEIGHT - dstRect.bottom;
+		}
+		
+		canvas.drawBitmap(bitmap, srcRect, dstRect, defaultPaint);
+	}
 }
