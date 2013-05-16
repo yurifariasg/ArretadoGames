@@ -10,7 +10,6 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.config.DisplaySettings;
@@ -18,15 +17,7 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.canvas.RenderingCanvas;
 import com.arretadogames.pilot.world.GameWorld;
-
-/*
- * This class represents the viewport of our game, or in other words, 
- * the portion of the world that is currently being displayed.
- * 
- */
-
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;

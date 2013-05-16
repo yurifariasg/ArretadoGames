@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Renderable;
+import com.arretadogames.pilot.render.Sprite;
 
 
 public abstract class Entity implements Renderable {
@@ -21,6 +22,8 @@ public abstract class Entity implements Renderable {
 		bd.userData = this;
 		body = world.createBody(bd);
 		body.setUserData(this);
+		body.setSleepingAllowed(true);
+		body.setAwake(false);
 	}
 	
 	public void addFixture(FixtureDef fd){
@@ -47,4 +50,5 @@ public abstract class Entity implements Renderable {
 	
 	public abstract EntityType getType();
 	
+	public abstract void setSprite(Sprite sprite);
 }

@@ -160,6 +160,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			Toast.makeText(GameActivity.getContext(), "Not Implemented YET!", Toast.LENGTH_SHORT).show();
 			break;
 		case QUIT_BT:
+			Game.getInstance().resetWorld();
 			Game.getInstance().goTo(GameState.MAIN_MENU);
 			break;
 		default:

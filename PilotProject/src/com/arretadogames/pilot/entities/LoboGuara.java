@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.loading.ImageLoader;
@@ -19,8 +20,11 @@ public class LoboGuara extends Player {
 	
 	private Sprite sprite;
 	private int contJump;
+	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
+	private Fixture headFixture;
+	private int contactsHead;
 	
 	private static final int[] WALKING = {R.drawable.lobo_guara1,
 								  		     R.drawable.lobo_guara2,
@@ -45,12 +49,15 @@ public class LoboGuara extends Player {
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
+		contactsHead = 0;
 		body.setFixedRotation(false);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(0.4f, 0.1f, new Vec2(0f,-0.5f), 0f);
-		footFixture = body.createFixture(footShape, 10f);
-
-		//footFixture = body.createFixture(footShape, 0f);
+		footFixture = body.createFixture(footShape, 7f);
+		
+		PolygonShape headShape = new PolygonShape();
+		headShape.setAsBox(0.4f, 0.1f, new Vec2(0f,0.4f), 0f);
+		headFixture = body.createFixture(headShape, 0f);
 	}
 
 	@Override
@@ -59,11 +66,11 @@ public class LoboGuara extends Player {
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), 10, 280);
-		
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
-		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
+//		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
+		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
 		canvas.restoreState();
 		
 	}
@@ -82,24 +89,35 @@ public class LoboGuara extends Player {
 	}
 	
 	public void run(){
-		if(contacts > 0 && body.getLinearVelocity().x < 20f){
-			body.applyForceToCenter(new Vec2(5 * body.getMass(), 0.0f));
+		if(contacts > 0 && body.getLinearVelocity().x < 15f){
+			float force = (9) * body.getMass();
+			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			direction.normalize();
+			direction.mulLocal(force);
+			body.applyForceToCenter(direction);
 		}
-		
 //		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
 	@Override
 	public void act() {
-		// TODO stop moving for awhile or do something else...
-		System.out.println("Act Player 1");
-		//body.applyLinearImpulse((new Vec2(20 * body.getMass(), 0.0f)),body.getWorldCenter());
-		body.applyAngularImpulse(-2f);
+		if( contactsHead > 0 && contAct == 0){
+			body.applyAngularImpulse(-1f);
+		} else if( contAct == 0){
+			float impulse = (7) * body.getMass();
+			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			direction.normalize();
+			direction.mulLocal(impulse);
+			body.applyLinearImpulse(direction, body.getWorldCenter());
+			contAct = 10;
+		}
+		
 	}
 
 	@Override
 	public void step(float timeElapsed) {
-		if(contJump >= 0) contJump--;
+		if(contJump > 0) contJump--;
+		if(contAct > 0 ) contAct--;
 		run();
 	}
 	
@@ -108,12 +126,16 @@ public class LoboGuara extends Player {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			sprite.setAnimationState("walking");
 			contacts++;
+		} else if(contact.m_fixtureA.equals(headFixture) || contact.m_fixtureB.equals(headFixture)){
+			contactsHead++;
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			contacts--;
+		} else if (contact.m_fixtureA.equals(headFixture) || contact.m_fixtureB.equals(headFixture)){
+			contactsHead--;
 		}
 	}
 
@@ -123,7 +145,6 @@ public class LoboGuara extends Player {
 		for (int i = 0; i < WALKING.length; i++) {
 			frames[i] = ImageLoader.loadImage(WALKING[i]);
 		}
-		
 			
 		return frames;
 	}
@@ -142,7 +163,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public float[] getJumpFramesDuration(){
-		return new float[] {0.3f, 0.4f};
+		return new float[] {0.3f, 0f};
 	}
 
 	@Override

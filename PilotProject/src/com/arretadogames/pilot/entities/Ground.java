@@ -5,6 +5,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 
 import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.Sprite;
 
 public class Ground extends Entity {
 	
@@ -33,6 +34,11 @@ public class Ground extends Entity {
 	@Override
 	public EntityType getType() {
 		return EntityType.GROUND;
+	}
+
+	@Override
+	public void setSprite(Sprite sprite) {
+		// Doesnt use one
 	}
 
 }

@@ -1,17 +1,29 @@
 package com.arretadogames.pilot.world;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+
+import org.jbox2d.common.Vec2;
 
 import android.graphics.Bitmap;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.EntityType;
+import com.arretadogames.pilot.entities.Fruit;
+import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.levels.EntityDescriptor;
+import com.arretadogames.pilot.levels.LevelDescriptor;
+import com.arretadogames.pilot.levels.LevelManager;
+import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.loading.ImageLoader;
-import com.arretadogames.pilot.loading.Loader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
@@ -35,29 +47,67 @@ public class GameWorld extends GameScreen {
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
 	
-	
 	private SpriteManager sm;
 	
 	public GameWorld() {
 		background = ImageLoader.loadImage(R.drawable.stage_background);
 		pWorld = PhysicalWorld.getInstance();
-		Loader loader = new Loader(Loader.jsonExample2);
 		ui = new GameWorldUI(this);
 		gameCamera = new GameCamera(this, background);
-		worldEntities = loader.getEntities();
-		players = new HashMap<PlayerNumber, Player>();
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		
-		LoboGuara loboGuara = new LoboGuara(0f, 10f, PlayerNumber.ONE);
-		loboGuara.setSprite(sm.getSprite(loboGuara));
-		LoboGuara loboGuara2 = new LoboGuara(-15f, 10f, PlayerNumber.TWO);
-		loboGuara2.setSprite(sm.getSprite(loboGuara2));
-
-		players.put(loboGuara.getNumber(), loboGuara);
-		players.put(loboGuara2.getNumber(), loboGuara2);
-		worldEntities.add(loboGuara);
-		worldEntities.add(loboGuara2);
+		try {
+			load(LevelManager.loadLevel(0)); // 0: Default Level
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void load(LevelDescriptor ld) {
+		createEntities(ld);
+	}
+	
+	private void createEntities(LevelDescriptor ld) {
+		players = new HashMap<PlayerNumber, Player>();
+		worldEntities = new ArrayList<Entity>();
+		
+		List<EntityDescriptor> entities = ld.getEntities();
+		for (EntityDescriptor entityDescriptor : entities) {
+			Entity entity = null;
+			switch (entityDescriptor.getType()) {
+			case BOX:
+				entity = new Box(entityDescriptor.getX(), entityDescriptor.getY(),
+						entityDescriptor.getSize());
+				break;
+			case FRUIT:
+				entity = new Fruit(entityDescriptor.getX(), entityDescriptor.getY(),
+						entityDescriptor.getSize());
+				break;
+			case PLAYER:
+				entity = new LoboGuara(entityDescriptor.getX(), entityDescriptor.getY(),
+						((PlayerDescriptor)entityDescriptor).getPlayerNumber());
+				break;
+			default:
+				break;
+			}
+			
+			if (entity != null) {
+				entity.setSprite(sm.getSprite(entity));
+				worldEntities.add(entity);
+				if (entity.getType() == EntityType.PLAYER)
+					players.put(((Player)entity).getNumber(), (Player) entity);
+			}
+		}
+		
+		Vec2[] groundPoints = new Vec2[ld.getGroundDescriptor().getPoints().size()];
+		ld.getGroundDescriptor().getPoints().toArray(groundPoints);
+		worldEntities.add(new Ground(groundPoints, groundPoints.length));
+		
+	}
+	
+	public void free() {
+		
 	}
 	
 	@Override
