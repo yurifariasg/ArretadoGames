@@ -10,12 +10,15 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.canvas.RenderingCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 
 /*
@@ -28,7 +31,8 @@ public class GameCamera {
 
 	private static GameWorld gameWorld = null;
 	private GameCanvas gameCanvas = null;
-
+	private Bitmap background = null;
+	
 	private boolean calculateWidthFirst;
 	private int currentNumberOfPlayers;
 
@@ -46,9 +50,10 @@ public class GameCamera {
 	private Vec2 targetTranslator;
 	private float targetPhysicsRatio;
 
-	public GameCamera(GameWorld world){
+	public GameCamera(GameWorld world, Bitmap newBackground){
 
 		this(world, 250);//Default is 1.5 seconds
+		background = newBackground;
 	}
 
 	public GameCamera(GameWorld world, float setTransitionDuration){
@@ -134,10 +139,6 @@ public class GameCamera {
 
 		center.mulLocal(1f / numberOfPlayers);
 
-//		System.out.println("===");
-//		System.out.println("maxX: "+maxXDistance);
-//		System.out.println("maxY: "+maxYDistance);
-		
 		if ( maxYDistance <= maxXDistance * 0.5f ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
 			viewportWidth = maxXDistance + 30;
@@ -171,12 +172,6 @@ public class GameCamera {
 			}
 		}
 
-//		System.out.println("width: "+viewportWidth);
-//		System.out.println("height: "+viewportHeight);
-//		System.out.println("===");
-//		System.out.println("??: "+(maxYDistance*physicsRatio > viewportHeight));
-//		System.out.println("?????: "+(maxYDistance > viewportHeight));
-		
 		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
 		if ( DisplaySettings.debugViewport ){
 //			lowerBound.addLocal(new Vec2(3f, 3f));
@@ -259,9 +254,13 @@ public class GameCamera {
 			}
 		}
 
+
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
 		gameCanvas.saveState();
+
+		drawBackground(center);
+		
 		gameCanvas.translate(translator.x, translator.y);
 
 		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, upperBound);
@@ -271,6 +270,24 @@ public class GameCamera {
 		}
 
 		gameCanvas.restoreState();
+
+	}
+
+	private void drawBackground(Vec2 center) {
+
+		float factor = (float) Math.ceil((DisplaySettings.DISPLAY_HEIGHT / background.getHeight()));
+		float backgroundWidth = background.getWidth() * factor;
+		float backgroundHeight = background.getHeight() * factor;
+
+		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
+		
+		float translate_x = ( center.x / 199.74f ) *
+				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * ( backgroundHeight / DisplaySettings.DISPLAY_HEIGHT ) ) );
+		
+		float translate_y = 0;
+		
+		Vec2 translateBackground = new Vec2(translate_x, translate_y);
+		gameCanvas.drawBitmap(background, backgroundRect, true);
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
@@ -299,16 +316,12 @@ public class GameCamera {
 		return entities;
 	}
 
-	public void render(final GameCanvas canvas, Bitmap background, final float timeElapsed) {
+	public void render(final GameCanvas canvas, final float timeElapsed) {
 
 		if ( gameCanvas == null ){
 			gameCanvas = canvas;
 		}
 
-//		if ( !DisplaySettings.debugViewport ){
-			gameCanvas.drawBitmap(background, 0, 0);
-//		}
-		
 		if ( DisplaySettings.mockDanilo ){
 			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
 		}
@@ -320,14 +333,6 @@ public class GameCamera {
 
 	private long getCurrentTime() {
 		return System.nanoTime()/1000000;
-	}
-
-	public static void doThisShit() {
-
-		Player a = gameWorld.getPlayers().get(PlayerNumber.ONE);
-		a.body.applyForce(new Vec2(0, 1000f), a.body.getWorldCenter());
-		a = gameWorld.getPlayers().get(PlayerNumber.TWO);
-		a.body.applyForce(new Vec2(3000f, 0f), a.body.getWorldCenter());
 	}
 
 }
