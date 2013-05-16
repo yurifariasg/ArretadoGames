@@ -20,5 +20,6 @@ public class DisplaySettings {
 	public static final boolean PROFILE_SPEED = false;
 	
 	public static final int GROUND_ENTITY_THRESHOLD = 5;
+	public static final boolean DRAW_DEBUG_GROUND = false;
 
 }
