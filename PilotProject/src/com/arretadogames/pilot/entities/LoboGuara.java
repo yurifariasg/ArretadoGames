@@ -55,7 +55,7 @@ public class LoboGuara extends Player {
 		footFixture = body.createFixture(footShape, 7f);
 		
 		PolygonShape headShape = new PolygonShape();
-		headShape.setAsBox(0.4f, 0.1f, new Vec2(0f,0.4f), 0f);
+		headShape.setAsBox(0.4f, 0.1f, new Vec2(0f,0.5f), 0f);
 		headFixture = body.createFixture(headShape, 0f);
 	}
 
@@ -101,8 +101,9 @@ public class LoboGuara extends Player {
 	@Override
 	public void act() {
 		if( contactsHead > 0 && contAct == 0){
-			body.applyAngularImpulse(-1f);
-		} else if( contAct == 0){
+			body.applyLinearImpulse(new Vec2(0f,body.getMass()), body.getWorldCenter());
+			body.applyAngularImpulse(-10f);
+		} else if( contacts > 0 && contAct == 0){
 			float impulse = (7) * body.getMass();
 			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			direction.normalize();
