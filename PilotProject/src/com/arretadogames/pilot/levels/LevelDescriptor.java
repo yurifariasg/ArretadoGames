@@ -46,12 +46,12 @@ public class LevelDescriptor {
 				if (EntityType.BOX.toString().equals(entityType)) {
 					// is it a box ?
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
-							10 - (float) jsonEntity.getDouble("y"),
+							(float) jsonEntity.getDouble("y"),
 							EntityType.BOX, (float) jsonEntity.getDouble("size"));
 				} else if (EntityType.FRUIT.toString().equals(entityType)) {
 					// is it a fruit ?
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
-							10 - (float) jsonEntity.getDouble("y"),
+							(float) jsonEntity.getDouble("y"),
 							EntityType.FRUIT, (float) jsonEntity.getDouble("size"));
 				} else if (EntityType.PLAYER.toString().equals(entityType)) {
 					// is it a player ?
@@ -70,7 +70,7 @@ public class LevelDescriptor {
 					}
 					
 					entity = new PlayerDescriptor((float) jsonEntity.getDouble("x"),
-							10 - (float) jsonEntity.getDouble("y"),
+							(float) jsonEntity.getDouble("y"),
 							EntityType.PLAYER, pNumber);
 					
 				} else {
@@ -88,7 +88,7 @@ public class LevelDescriptor {
 				JSONObject jsonGroundPoint = groundArray.getJSONObject(i);
 				groundDescriptor.addPoint(new Vec2(
 						(float) jsonGroundPoint.getDouble("x"),
-						10 - (float) jsonGroundPoint.getDouble("y")));
+						(float) jsonGroundPoint.getDouble("y")));
 			}
 			
 			return new LevelDescriptor(entities, groundDescriptor);

@@ -10,7 +10,6 @@ import org.jbox2d.common.Vec2;
 
 import android.graphics.Bitmap;
 
-import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Entity;
@@ -59,7 +58,7 @@ public class GameWorld extends GameScreen {
 		sm = new SpriteManager();
 		
 		try {
-			load(LevelManager.loadLevel(GameActivity.getContext().getResources(), R.raw.basic_level));
+			load(LevelManager.loadLevel(0)); // 0: Default Level
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
