@@ -271,14 +271,27 @@ public class GameCamera {
 		float backgroundHeight = background.getHeight() * factor;
 
 		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
+
+		System.out.println("background image: "+background.getWidth()+" "+background.getHeight());
+		System.out.println("background rect: "+backgroundWidth+" "+backgroundHeight);
 		
-		float translate_x = ( center.x / 199.74f ) *
-				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * ( backgroundHeight / DisplaySettings.DISPLAY_HEIGHT ) ) );
+		System.out.println("center x: "+center.x);
+		System.out.println("back width: "+backgroundWidth);
+		System.out.println("back height: "+backgroundHeight);
+		System.out.println("display width: "+DisplaySettings.DISPLAY_WIDTH);
+		System.out.println("display height: "+DisplaySettings.DISPLAY_HEIGHT);
+//		float translate_x = ( center.x / 199.74f ) *
+//				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * ( backgroundHeight / DisplaySettings.DISPLAY_HEIGHT ) ) );
+		float translate_x = ( center.x / 199.74f ) * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH );
+		
+		System.out.println("translate x: "+translate_x);
 		
 		float translate_y = 0;
 		
 		Vec2 translateBackground = new Vec2(translate_x, translate_y);
 		gameCanvas.drawBitmap(background, backgroundRect, true);
+		gameCanvas.drawCameraDebugRect(0, 0, backgroundRect.right, backgroundRect.bottom);
+//		gameCanvas.translate(translate_x, translate_y);
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
