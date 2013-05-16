@@ -11,6 +11,7 @@ import org.jbox2d.common.Vec2;
 import android.graphics.Bitmap;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
@@ -100,10 +101,35 @@ public class GameWorld extends GameScreen {
 			}
 		}
 		
+		// Add Ground
 		Vec2[] groundPoints = new Vec2[ld.getGroundDescriptor().getPoints().size()];
 		ld.getGroundDescriptor().getPoints().toArray(groundPoints);
-		worldEntities.add(new Ground(groundPoints, groundPoints.length));
+		int amountOfPoints = groundPoints.length;
 		
+		Vec2[] vecs = new Vec2[amountOfPoints > DisplaySettings.GROUND_ENTITY_THRESHOLD ? DisplaySettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
+		int internalPointer = 0;
+		for (int i = 0 ; i < amountOfPoints ; i++) {
+			
+			vecs[internalPointer] = groundPoints[i];
+			
+			if (internalPointer == DisplaySettings.GROUND_ENTITY_THRESHOLD - 1) {
+				worldEntities.add(new Ground(vecs, vecs.length));
+				vecs = new Vec2[DisplaySettings.GROUND_ENTITY_THRESHOLD];
+				vecs[0] = groundPoints[i];
+				internalPointer = 1;
+			} else {
+				internalPointer %= DisplaySettings.GROUND_ENTITY_THRESHOLD;
+				internalPointer++;
+			}
+			
+		}
+		
+		if (internalPointer != 0) {
+			Vec2[] lastVec = new Vec2[internalPointer];
+			for (int i = 0 ; i < internalPointer ; i++)
+				lastVec[i] = vecs[i];
+			worldEntities.add(new Ground(lastVec, internalPointer));
+		}
 	}
 	
 	public void free() {

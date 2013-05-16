@@ -20,6 +20,8 @@ public class GameThread extends Thread {
 	private boolean mRun;
 	private GameCanvas gameCanvas;
 	private Game game;
+	
+	private long time;
 
 	/**
 	 * Creates a GameThread
@@ -80,12 +82,26 @@ public class GameThread extends Thread {
 				elapsedTime = 1f / DisplaySettings.TARGET_FPS;
 			
 			// Game Loop
+			if (DisplaySettings.PROFILE_SPEED) {
+				time = getCurrentTime();
+			}
 			game.step(elapsedTime);
+			
+			if (DisplaySettings.PROFILE_SPEED) {
+				System.out.println("Step Time: " + (getCurrentTime() - time));
+				time = getCurrentTime();
+			}
 			
 			if (gameCanvas.initiate()) { // If initiate was successful
 				game.render(gameCanvas, elapsedTime);
 				gameCanvas.flush();
 			}
+			
+			if (DisplaySettings.PROFILE_SPEED) {
+				System.out.println("Render Time: " + (getCurrentTime() - time));
+				time = getCurrentTime();
+			}
+			
 			// End Game Loop
 			
 			// Wait to complete 1/60 of a second

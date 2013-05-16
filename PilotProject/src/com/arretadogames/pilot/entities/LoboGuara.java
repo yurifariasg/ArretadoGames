@@ -53,10 +53,10 @@ public class LoboGuara extends Player {
 		body.setFixedRotation(false);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(0.4f, 0.1f, new Vec2(0f,-0.5f), 0f);
-		footFixture = body.createFixture(footShape, 7f);
+		footFixture = body.createFixture(footShape, 100f);
 		
 		PolygonShape headShape = new PolygonShape();
-		headShape.setAsBox(0.4f, 0.1f, new Vec2(0f,0.4f), 0f);
+		headShape.setAsBox(0.4f, 0.1f, new Vec2(0f,0.5f), 0f);
 		headFixture = body.createFixture(headShape, 0f);
 	}
 
@@ -79,8 +79,8 @@ public class LoboGuara extends Player {
 	public void jump() {
 		sprite.setAnimationState("jump");
 		if( contJump > 0 || contacts <= 0) return;	
-		float impulseX = (8) * body.getMass();
-		Vec2 direction = new Vec2(0f,1f);
+		float impulseX = (5) * body.getMass();
+		Vec2 direction = new Vec2(1,5);
 		direction.normalize();
 		direction.mulLocal(impulseX);
 		body.applyLinearImpulse(direction, body.getWorldCenter());
@@ -89,8 +89,11 @@ public class LoboGuara extends Player {
 	}
 	
 	public void run(){
-		if(contacts > 0 && body.getLinearVelocity().x < 15f){
-			float force = (9) * body.getMass();
+		if(body.getLinearVelocity().x < 2){ 
+			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
+		}
+		if(contacts > 0 && body.getLinearVelocity().x < 10f){
+			float force = (18) * body.getMass();
 			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			direction.normalize();
 			direction.mulLocal(force);
@@ -102,14 +105,15 @@ public class LoboGuara extends Player {
 	@Override
 	public void act() {
 		if( contactsHead > 0 && contAct == 0){
-			body.applyAngularImpulse(-1f);
-		} else if( contAct == 0){
-			float impulse = (7) * body.getMass();
+			body.applyLinearImpulse(new Vec2(0f,2 * body.getMass()), body.getWorldCenter());
+			body.applyAngularImpulse(-0.5f);
+		} else if( contacts > 0 && contAct == 0){
+			float impulse = (5) * body.getMass();
 			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			direction.normalize();
 			direction.mulLocal(impulse);
 			body.applyLinearImpulse(direction, body.getWorldCenter());
-			contAct = 10;
+			contAct = 50;
 		}
 		
 	}
@@ -145,7 +149,6 @@ public class LoboGuara extends Player {
 		for (int i = 0; i < WALKING.length; i++) {
 			frames[i] = ImageLoader.loadImage(WALKING[i]);
 		}
-			
 		return frames;
 	}
 	

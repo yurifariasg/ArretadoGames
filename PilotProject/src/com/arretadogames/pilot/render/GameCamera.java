@@ -325,6 +325,8 @@ public class GameCamera {
 		if ( gameCanvas == null ){
 			gameCanvas = canvas;
 		}
+		
+		gameCanvas.drawBitmap(background, 0, 0);
 
 		if ( DisplaySettings.mockDanilo ){
 			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
