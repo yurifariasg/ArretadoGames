@@ -62,7 +62,6 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		// TODO Auto-generated method stub
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
@@ -72,7 +71,6 @@ public class LoboGuara extends Player {
 		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
 		canvas.restoreState();
-		
 	}
 
 	@Override
