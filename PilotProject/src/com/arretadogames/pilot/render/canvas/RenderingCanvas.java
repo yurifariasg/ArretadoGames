@@ -169,26 +169,27 @@ public class RenderingCanvas implements GameCanvas {
 	public void drawPhysicsLines(Vec2[] lines) {
 		
 		// FIXME Can be optimized
-//		Path path = new Path();
-//		path.moveTo(lines[0].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[1].y * physicsRatio);
-//		for (int i = 1 ; i < lines.length ; i++) {
-//			path.lineTo(lines[i].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i].y * physicsRatio);
-//		}
-//		
-//		path.lineTo(lines[lines.length - 1].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - BOTTOM_MAP * physicsRatio);
-//		path.lineTo(lines[0].x * physicsRatio, DisplaySettings.TARGET_HEIGHT -  BOTTOM_MAP * physicsRatio);
-//		path.lineTo(lines[0].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[1].y * physicsRatio);
-//		
-//		debugPaint.setStyle(Style.FILL);
-//		int oldColor = debugPaint.getColor();
-//		debugPaint.setARGB(255, 124, 60, 3);
-//		canvas.drawPath(path, debugPaint);
-//		debugPaint.setColor(oldColor);
-		
-		for (int i = 1 ; i < lines.length; i++) {
-			canvas.drawLine(lines[i - 1].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i - 1].y * physicsRatio,
-				lines[i].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i].y * physicsRatio, debugPaint);
+		Path path = new Path();
+		path.moveTo(lines[0].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[0].y * physicsRatio);
+		for (int i = 1 ; i < lines.length ; i++) {
+			path.lineTo(lines[i].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i].y * physicsRatio);
 		}
+		
+		path.lineTo(lines[lines.length - 1].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - BOTTOM_MAP * physicsRatio);
+		path.lineTo(lines[0].x * physicsRatio, DisplaySettings.TARGET_HEIGHT -  BOTTOM_MAP * physicsRatio);
+		path.lineTo(lines[0].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[1].y * physicsRatio);
+		
+		debugPaint.setStyle(Style.FILL);
+		int oldColor = debugPaint.getColor();
+		debugPaint.setARGB(255, 124, 60, 3);
+		canvas.drawPath(path, debugPaint);
+		debugPaint.setColor(oldColor);
+		
+		if (DisplaySettings.DRAW_DEBUG_GROUND)
+			for (int i = 1 ; i < lines.length; i++) {
+				canvas.drawLine(lines[i - 1].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i - 1].y * physicsRatio,
+					lines[i].x * physicsRatio, DisplaySettings.TARGET_HEIGHT - lines[i].y * physicsRatio, debugPaint);
+			}
 		
 	}
 
