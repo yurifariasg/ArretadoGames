@@ -35,7 +35,7 @@ public class LoboGuara extends Player {
 
 	private static final int[] JUMP = {R.drawable.lobo_g_jump1,
   		  						  		R.drawable.lobo_g_jump2,
-  		  						  		R.drawable.lobo_g_jump3};
+  		  						  		R.drawable.lobo_g_jump4};
 	
 	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
 				 R.drawable.lobo_guara_act2,
@@ -51,7 +51,7 @@ public class LoboGuara extends Player {
 		contJump = 0;
 		contacts = 0;
 		contactsHead = 0;
-		body.setFixedRotation(true);
+		body.setFixedRotation(false);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(0.7f, 0.1f, new Vec2(0f,-0.5f), 0f);
 		//footFixture = body.createFixture(footShape, 50f);
@@ -81,7 +81,7 @@ public class LoboGuara extends Player {
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - getAngle() / Math.PI), getPosX(), getPosY());
 //		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
-		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
+		RectF rect = new RectF(getPosX()-0.7f, getPosY()+1f, getPosX()+0.71f, getPosY()-0.55f);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
 		canvas.restoreState();
 	}

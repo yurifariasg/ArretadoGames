@@ -33,10 +33,9 @@ public class Box extends Entity {
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
 //		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), size );
-		canvas.restoreState();
-		
 		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
+		canvas.restoreState();
 	}
 
 	@Override
