@@ -279,17 +279,13 @@ public class GameCamera {
 			where_is = 1;
 		}
 		
-//		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
-		int translate_x = (int) (where_is * ( backgroundWidth - ((RenderingCanvas)gameCanvas).getCanvas().getWidth() ));
+		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
 		int translate_y = 0;
 		
-		gameCanvas.fillScreen(255, 255, 255, 255);
-
-//		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
-//		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
-//		backgroundRect, false);
+		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
+		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
+		backgroundRect, false);
 		
-		gameCanvas.drawBitmap(background, -translate_x, translate_y);
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
