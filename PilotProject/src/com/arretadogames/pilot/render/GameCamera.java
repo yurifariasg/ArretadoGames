@@ -282,8 +282,6 @@ public class GameCamera {
 		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
 		int translate_y = 0;
 		
-		gameCanvas.fillScreen(255, 255, 255, 255);
-		
 		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
 		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
 		backgroundRect, false);
