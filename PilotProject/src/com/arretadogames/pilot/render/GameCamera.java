@@ -18,6 +18,7 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.canvas.RenderingCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 public class GameCamera {
 
@@ -82,14 +83,12 @@ public class GameCamera {
 			targetLowerBound = null;
 			targetUpperBound = null;
 			targetTranslator = null;
-			System.out.println("TRANSITION IS STARTED");
+//			System.out.println("TRANSITION IS STARTED");
 		}
 		currentNumberOfPlayers = numberOfPlayers;
 
 		float viewportWidth, viewportHeight, physicsRatio;
 		Vec2 lowerBound, upperBound, translator;
-
-//		if ( transitioning == false || (targetLowerBound == null && targetUpperBound == null && targetTranslator == null) ){
 
 		float maxXDistance = 0;
 		float maxYDistance = 0;
@@ -133,7 +132,7 @@ public class GameCamera {
 
 		if ( maxYDistance <= maxXDistance * 0.5f ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
-			viewportWidth = maxXDistance + 15;//+ 30;
+			viewportWidth = maxXDistance +10;//+ 15;//+ 30;
 			physicsRatio = DisplaySettings.TARGET_WIDTH / viewportWidth;
 			viewportHeight = DisplaySettings.TARGET_HEIGHT / physicsRatio;
 
@@ -142,14 +141,14 @@ public class GameCamera {
 				if ( !calculateWidthFirst ){
 					transitioning = true;
 					startTime = getCurrentTime();
-					System.out.println("TRANSITION IS STARTED");
+//					System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = true;
 			}
 		}
 		else{
 
-			viewportHeight = maxYDistance + 9;//+ 18;
+			viewportHeight = maxYDistance +6;//+ 9;//+ 18;
 			physicsRatio = DisplaySettings.TARGET_HEIGHT / viewportHeight;
 			viewportWidth = DisplaySettings.TARGET_WIDTH / physicsRatio;
 
@@ -158,7 +157,7 @@ public class GameCamera {
 				if ( calculateWidthFirst ){
 					transitioning = true;
 					startTime = getCurrentTime();
-					System.out.println("TRANSITION IS STARTED");
+//					System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = false;
 			}
@@ -202,7 +201,7 @@ public class GameCamera {
 
 			if ( reachedPercentage >= 1 ){
 
-				System.out.println("TRANSITION IS OVER");
+//				System.out.println("TRANSITION IS OVER");
 				transitioning = false;
 				
 				currentLowerBound = new Vec2(targetLowerBound);
@@ -263,16 +262,41 @@ public class GameCamera {
 		float backgroundWidth = background.getWidth() * factor;
 		float backgroundHeight = background.getHeight() * factor;
 
+		if ( backgroundWidth < DisplaySettings.DISPLAY_WIDTH ){
+			factor = (float) Math.ceil(DisplaySettings.DISPLAY_WIDTH / backgroundWidth);
+			backgroundWidth *= factor;
+			backgroundHeight *= factor;
+			System.out.println("yes");
+		}
+		
 		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
 
-//		int translate_x = (int)(( center.x / 199.74f ) *
-//				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * (backgroundHeight / DisplaySettings.DISPLAY_HEIGHT))));
-		int translate_x = (int) (( center.x / 199.74f ) * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
+		float where_is = ( center.x / 199.74f );
+		if ( where_is < 0 ){
+			where_is = 0;
+		}
+		if ( where_is > 1 ){
+			where_is = 1;
+		}
 		
+		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
 		int translate_y = 0;
 		
+		gameCanvas.fillScreen(255, 255, 255, 255);
+
 		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
-				translate_x + (int)DisplaySettings.DISPLAY_WIDTH, translate_y + (int)DisplaySettings.DISPLAY_HEIGHT), backgroundRect, false);
+		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
+		backgroundRect, false);
+		
+		System.out.println("remaining: "+(backgroundWidth - translate_x));
+		System.out.println("backgroundWidth: "+backgroundWidth);
+		System.out.println("width: "+DisplaySettings.DISPLAY_WIDTH);
+		
+//		PREMIADO
+//		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
+//				(int)DisplaySettings.DISPLAY_WIDTH, (int)DisplaySettings.DISPLAY_HEIGHT), 
+//				backgroundRect, false);
+//		gameCanvas.drawBitmap(background, -translate_x, translate_y);
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
