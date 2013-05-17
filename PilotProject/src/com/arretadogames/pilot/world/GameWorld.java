@@ -136,13 +136,36 @@ public class GameWorld extends GameScreen {
 		
 	}
 	
+	private long time;
+	
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 		// Render the World
-
-		gameCamera.render(canvas, timeElapsed);
+		
+		if (DisplaySettings.PROFILE_RENDER_SPEED)
+			time = System.nanoTime()/1000000;
+		if (!pauseScreen.isHidden()) {
+			gameCamera.render(canvas, 0); // Draw a fixed frame
+		} else {
+			gameCamera.render(canvas, timeElapsed);
+		}
+		if (DisplaySettings.PROFILE_RENDER_SPEED) {
+			System.out.println("Camera Render Time: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime()/1000000;
+		}
+		
 		ui.render(canvas, timeElapsed);
+		
+		if (DisplaySettings.PROFILE_RENDER_SPEED) {
+			System.out.println("UI Render Time: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime()/1000000;
+		}
+		
 		pauseScreen.render(canvas, timeElapsed);
+		
+		if (DisplaySettings.PROFILE_RENDER_SPEED) {
+			System.out.println("Pause Screen Render Time: " + (System.nanoTime()/1000000 - time));
+		}
 	}
 	
 	@Override

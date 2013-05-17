@@ -42,6 +42,8 @@ public class GameCamera {
 	private Vec2 targetUpperBound;
 	private Vec2 targetTranslator;
 	private float targetPhysicsRatio;
+	
+	private long time;
 
 	public GameCamera(GameWorld world, Bitmap newBackground){
 
@@ -70,6 +72,9 @@ public class GameCamera {
 
 	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
 	private void determineViewport(float timeElapsed){
+		
+		if (DisplaySettings.PROFILE_GAME_CAMERA)
+			time = System.nanoTime() / 1000000;
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
 
@@ -236,11 +241,21 @@ public class GameCamera {
 				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio)*reachedPercentage;
 			}
 		}
+		
+		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			System.out.println("Calculate Viewport: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime() / 1000000;
+		}
 
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
 		drawBackground(center);
+		
+		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			System.out.println("Draw Background: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime() / 1000000;
+		}
 
 		gameCanvas.saveState();
 		
@@ -250,6 +265,11 @@ public class GameCamera {
 
 		for ( Entity entity : entities ){
 			entity.render(gameCanvas, timeElapsed);
+		}
+		
+		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			System.out.println("Draw Entities: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime() / 1000000;
 		}
 
 		gameCanvas.restoreState();
@@ -282,10 +302,14 @@ public class GameCamera {
 		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
 		int translate_y = 0;
 		
+		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			System.out.println("Calculate Background: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime() / 1000000;
+		}
+		
 		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
 		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
 		backgroundRect, false);
-		
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
