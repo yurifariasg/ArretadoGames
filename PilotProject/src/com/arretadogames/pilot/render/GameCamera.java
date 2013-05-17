@@ -279,24 +279,17 @@ public class GameCamera {
 			where_is = 1;
 		}
 		
-		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
+//		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
+		int translate_x = (int) (where_is * ( backgroundWidth - ((RenderingCanvas)gameCanvas).getCanvas().getWidth() ));
 		int translate_y = 0;
 		
 		gameCanvas.fillScreen(255, 255, 255, 255);
 
-		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
-		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
-		backgroundRect, false);
-		
-		System.out.println("remaining: "+(backgroundWidth - translate_x));
-		System.out.println("backgroundWidth: "+backgroundWidth);
-		System.out.println("width: "+DisplaySettings.DISPLAY_WIDTH);
-		
-//		PREMIADO
 //		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
-//				(int)DisplaySettings.DISPLAY_WIDTH, (int)DisplaySettings.DISPLAY_HEIGHT), 
-//				backgroundRect, false);
-//		gameCanvas.drawBitmap(background, -translate_x, translate_y);
+//		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
+//		backgroundRect, false);
+		
+		gameCanvas.drawBitmap(background, -translate_x, translate_y);
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
