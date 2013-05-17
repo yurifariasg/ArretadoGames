@@ -258,12 +258,12 @@ public class GameCamera {
 
 	private void drawBackground(Vec2 center) {
 
-		float factor = (float) Math.ceil((DisplaySettings.DISPLAY_HEIGHT / background.getHeight()));
+		float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / background.getHeight()));
 		float backgroundWidth = background.getWidth() * factor;
 		float backgroundHeight = background.getHeight() * factor;
 
-		if ( backgroundWidth < DisplaySettings.DISPLAY_WIDTH ){
-			factor = (float) Math.ceil(DisplaySettings.DISPLAY_WIDTH / backgroundWidth);
+		if ( backgroundWidth < DisplaySettings.TARGET_WIDTH ){
+			factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / backgroundWidth);
 			backgroundWidth *= factor;
 			backgroundHeight *= factor;
 			System.out.println("yes");
@@ -281,6 +281,8 @@ public class GameCamera {
 		
 		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
 		int translate_y = 0;
+		
+		gameCanvas.fillScreen(255, 255, 255, 255);
 		
 		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
 		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
