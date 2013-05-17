@@ -124,8 +124,12 @@ public class GameWorld extends GameScreen {
 			
 		}
 		
-		if (internalPointer != 0)
-			worldEntities.add(new Ground(vecs, internalPointer));
+		if (internalPointer != 0) {
+			Vec2[] lastVec = new Vec2[internalPointer];
+			for (int i = 0 ; i < internalPointer ; i++)
+				lastVec[i] = vecs[i];
+			worldEntities.add(new Ground(lastVec, internalPointer));
+		}
 	}
 	
 	public void free() {

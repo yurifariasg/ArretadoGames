@@ -45,28 +45,40 @@ public class LoboGuara extends Player {
 		super(x, y, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
-		body.createFixture(shape,  0f);
+		footFixture = body.createFixture(shape,  7f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
 		contactsHead = 0;
-		body.setFixedRotation(false);
+		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
-		footShape.setAsBox(0.4f, 0.1f, new Vec2(0f,-0.5f), 0f);
-		footFixture = body.createFixture(footShape, 100f);
+		footShape.setAsBox(0.7f, 0.1f, new Vec2(0f,-0.5f), 0f);
+		//footFixture = body.createFixture(footShape, 50f);
 		
 		PolygonShape headShape = new PolygonShape();
-		headShape.setAsBox(0.4f, 0.1f, new Vec2(0f,0.5f), 0f);
-		headFixture = body.createFixture(headShape, 0f);
+		headShape.setAsBox(0.6f, 0.1f, new Vec2(0f,0.5f), 0f);
+		//headFixture = body.createFixture(headShape, 0f);
 	}
 
+	double getAngle(){
+		double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
+		cos = Math.abs(cos);
+		double angle = Math.acos(cos);
+		//System.out.println(cos + " - " + angle);
+		if( body.getLinearVelocity().y < 0 ) angle = angle * -1;
+		angle = Math.min(Math.PI/6,angle);
+		angle = Math.max(-Math.PI/6,angle);
+		return angle;
+	}
+	
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
+		
 		canvas.saveState();
-		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
+		canvas.rotatePhysics((float) (180 * - getAngle() / Math.PI), getPosX(), getPosY());
 //		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
 		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
@@ -77,8 +89,8 @@ public class LoboGuara extends Player {
 	public void jump() {
 		sprite.setAnimationState("jump");
 		if( contJump > 0 || contacts <= 0) return;	
-		float impulseX = (5) * body.getMass();
-		Vec2 direction = new Vec2(1,5);
+		float impulseX = (8) * body.getMass();
+		Vec2 direction = new Vec2(1,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
 		body.applyLinearImpulse(direction, body.getWorldCenter());
@@ -90,8 +102,8 @@ public class LoboGuara extends Player {
 		if(body.getLinearVelocity().x < 2){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
-		if(contacts > 0 && body.getLinearVelocity().x < 10f){
-			float force = (18) * body.getMass();
+		if(contacts > 0 && body.getLinearVelocity().x < 7f){
+			float force = (11) * body.getMass();
 			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			direction.normalize();
 			direction.mulLocal(force);
