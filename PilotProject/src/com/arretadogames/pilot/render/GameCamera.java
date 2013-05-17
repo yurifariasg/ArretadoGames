@@ -265,9 +265,9 @@ public class GameCamera {
 
 		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
 
-		int translate_x = (int)(( center.x / 199.74f ) *
-				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * (backgroundHeight / DisplaySettings.DISPLAY_HEIGHT))));
-//		int translate_x = (int) (( center.x / 199.74f ) * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
+//		int translate_x = (int)(( center.x / 199.74f ) *
+//				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * (backgroundHeight / DisplaySettings.DISPLAY_HEIGHT))));
+		int translate_x = (int) (( center.x / 199.74f ) * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
 		
 		int translate_y = 0;
 		
