@@ -25,6 +25,7 @@ public class SpriteManager {
 			setBoxSprites(sprite, box);
 		}else if(en.getType() == EntityType.FRUIT){
 			Fruit fruit = (Fruit) en;
+//			setFruitSprites(sprite, fruit);
 		}else if(en.getType() == EntityType.GROUND){
 			Ground ground = (Ground) en;
 		}
@@ -60,7 +61,7 @@ public class SpriteManager {
 	}
 	
 	
-	private void setBoxImage(Sprite sprite) {
+	private void setFruitSprites(Sprite sprite, Fruit fruit) {
 		String name = "stopped";
 		Bitmap[] frames = new Bitmap[1];
 		for (int i = 0; i < frames.length; i++) {

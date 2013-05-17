@@ -26,15 +26,16 @@ public class LoboGuara extends Player {
 	private Fixture headFixture;
 	private int contactsHead;
 	
-	private static final int[] WALKING = {R.drawable.lobo_guara1,
-								  		     R.drawable.lobo_guara2,
-								  		     R.drawable.lobo_guara3,
-								  		     R.drawable.lobo_guara4,
-								  		     R.drawable.lobo_guara5,
-								  		     R.drawable.lobo_guara6};
+	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
+								  		     R.drawable.lobo_g_walking2,
+								  		     R.drawable.lobo_g_walking3,
+								  		     R.drawable.lobo_g_walking4,
+								  		     R.drawable.lobo_g_walking5,
+								  		     R.drawable.lobo_g_walking6};
 
-	private static final int[] JUMP = {R.drawable.lobo_guara_jump1,
-  		  						  		R.drawable.lobo_guara_jump2};
+	private static final int[] JUMP = {R.drawable.lobo_g_jump1,
+  		  						  		R.drawable.lobo_g_jump2,
+  		  						  		R.drawable.lobo_g_jump3};
 	
 	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
 				 R.drawable.lobo_guara_act2,
@@ -76,7 +77,6 @@ public class LoboGuara extends Player {
 	
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		// TODO Auto-generated method stub
 //		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
 //				(int)(getPosX() ), (int)(getPosY()+size));
 		
@@ -87,7 +87,6 @@ public class LoboGuara extends Player {
 		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
 		canvas.restoreState();
-		
 	}
 
 	@Override
@@ -181,7 +180,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public float[] getJumpFramesDuration(){
-		return new float[] {0.3f, 0f};
+		return new float[] {0.3f, 0.3f, 0f};
 	}
 
 	@Override

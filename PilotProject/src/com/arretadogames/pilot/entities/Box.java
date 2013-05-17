@@ -4,6 +4,7 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.loading.ImageLoader;
@@ -12,9 +13,10 @@ import com.arretadogames.pilot.render.Sprite;
 
 public class Box extends Entity {
 	
-	private static final int[] STOPPED = {R.drawable.ic_launcher};
+	private static final int[] STOPPED = {R.drawable.box_stopped};
 	private Sprite sprite;
 	private float size;
+	
 	public Box(float x, float y, float size) {
 		super(x, y);
 		this.size = size;
@@ -27,12 +29,14 @@ public class Box extends Entity {
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), getPosX(), getPosY());
 		
 		canvas.saveState();
 		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
-		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), size );
+//		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), size );
 		canvas.restoreState();
+		
+		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
 	}
 
 	@Override
