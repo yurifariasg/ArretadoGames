@@ -10,6 +10,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.config.DisplaySettings;
@@ -132,7 +133,7 @@ public class GameCamera {
 
 		if ( maxYDistance <= maxXDistance * 0.5f ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
-			viewportWidth = maxXDistance + 30;
+			viewportWidth = maxXDistance + 15;//+ 30;
 			physicsRatio = DisplaySettings.TARGET_WIDTH / viewportWidth;
 			viewportHeight = DisplaySettings.TARGET_HEIGHT / physicsRatio;
 
@@ -148,7 +149,7 @@ public class GameCamera {
 		}
 		else{
 
-			viewportHeight = maxYDistance + 18;
+			viewportHeight = maxYDistance + 9;//+ 18;
 			physicsRatio = DisplaySettings.TARGET_HEIGHT / viewportHeight;
 			viewportWidth = DisplaySettings.TARGET_WIDTH / physicsRatio;
 
@@ -164,15 +165,7 @@ public class GameCamera {
 		}
 
 		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
-		if ( DisplaySettings.debugViewport ){
-//			lowerBound.addLocal(new Vec2(3f, 3f));
-		}
-
 		upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
-		if ( DisplaySettings.debugViewport ){
-//			upperBound.subLocal(new Vec2(3f, 3f));
-		}
-
 		translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
 
 		if ( !transitioning ){
@@ -248,9 +241,9 @@ public class GameCamera {
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
-		gameCanvas.saveState();
-
 		drawBackground(center);
+
+		gameCanvas.saveState();
 		
 		gameCanvas.translate(translator.x, translator.y);
 
@@ -272,33 +265,17 @@ public class GameCamera {
 
 		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
 
-		System.out.println("background image: "+background.getWidth()+" "+background.getHeight());
-		System.out.println("background rect: "+backgroundWidth+" "+backgroundHeight);
+		int translate_x = (int)(( center.x / 199.74f ) *
+				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * (backgroundHeight / DisplaySettings.DISPLAY_HEIGHT))));
+//		int translate_x = (int) (( center.x / 199.74f ) * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH ));
 		
-		System.out.println("center x: "+center.x);
-		System.out.println("back width: "+backgroundWidth);
-		System.out.println("back height: "+backgroundHeight);
-		System.out.println("display width: "+DisplaySettings.DISPLAY_WIDTH);
-		System.out.println("display height: "+DisplaySettings.DISPLAY_HEIGHT);
-//		float translate_x = ( center.x / 199.74f ) *
-//				( backgroundWidth - ( DisplaySettings.DISPLAY_WIDTH * ( backgroundHeight / DisplaySettings.DISPLAY_HEIGHT ) ) );
-		float translate_x = ( center.x / 199.74f ) * ( backgroundWidth - DisplaySettings.DISPLAY_WIDTH );
+		int translate_y = 0;
 		
-		System.out.println("translate x: "+translate_x);
-		
-		float translate_y = 0;
-		
-		Vec2 translateBackground = new Vec2(translate_x, translate_y);
-		gameCanvas.drawBitmap(background, backgroundRect, true);
-		gameCanvas.drawCameraDebugRect(0, 0, backgroundRect.right, backgroundRect.bottom);
-//		gameCanvas.translate(translate_x, translate_y);
+		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
+				translate_x + (int)DisplaySettings.DISPLAY_WIDTH, translate_y + (int)DisplaySettings.DISPLAY_HEIGHT), backgroundRect, false);
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
-
-//		if ( DisplaySettings.debugViewport ){
-//			gameCanvas.drawCameraDebugRect(lowerBound.x, lowerBound.y, upperBound.x, upperBound.y);
-//		}
 
 		final Collection<Entity> entities = new ArrayList<Entity>();
 
@@ -326,18 +303,11 @@ public class GameCamera {
 			gameCanvas = canvas;
 		}
 		
-		gameCanvas.drawBitmap(background, 0, 0);
-
-		if ( DisplaySettings.mockDanilo ){
-			System.out.println("danilo da o cu amuado, e se nao da eu cegue");
-		}
-
-
 		determineViewport(timeElapsed);
-
 	}
 
 	private long getCurrentTime() {
+
 		return System.nanoTime()/1000000;
 	}
 
