@@ -61,13 +61,16 @@ public class LoboGuara extends Player {
 	}
 
 	double getAngle(){
-		double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
-		cos = Math.abs(cos);
-		double angle = Math.acos(cos);
-		//System.out.println(cos + " - " + angle);
-		if( body.getLinearVelocity().y < 0 ) angle = angle * -1;
-		angle = Math.min(Math.PI/6,angle);
-		angle = Math.max(-Math.PI/6,angle);
+		double angle = 0;
+		if(body.getLinearVelocity().length() > 0.001){
+			double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
+			cos = Math.abs(cos);
+			angle = Math.acos(cos);
+			//System.out.println(cos + " - " + angle);
+			if( body.getLinearVelocity().y < 0 ) angle = angle * -1;
+			angle = Math.min(Math.PI/6,angle);
+			angle = Math.max(-Math.PI/6,angle);
+		}
 		return angle;
 	}
 	
