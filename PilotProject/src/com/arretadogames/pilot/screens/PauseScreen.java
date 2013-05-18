@@ -1,6 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import android.graphics.Bitmap;
 import android.view.MotionEvent;
 import android.widget.Toast;
 import aurelienribon.tweenengine.Tween;
@@ -30,7 +29,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	private final float ARROW_WIDTH;
 	
-	private Bitmap background;
+	private int backgroundId;
 	private float currentBlackAlpha;
 	private float currentWidth;
 	
@@ -40,24 +39,24 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	public PauseScreen() {
 		isHidden = true;
-		background = ImageLoader.loadImage(R.drawable.pause_menu_bg);
-		ARROW_WIDTH = background.getWidth() - PAUSE_MENU_SIZE;
+		backgroundId = R.drawable.pause_menu_bg;
+		ARROW_WIDTH = ImageLoader.checkBitmapSize(R.drawable.pause_menu_bg)[0] - PAUSE_MENU_SIZE; // 
 		currentWidth = ARROW_WIDTH;
 		currentBlackAlpha = 0;
 		
 		continueBt = new TextImageButton(CONTINUE_BT, 0, 91, this,
-				ImageLoader.loadImage(R.drawable.bt_pause_selected),
-				null,
+				R.drawable.bt_pause_selected,
+				0,
 				"continue");
 		
 		optionsBt = new TextImageButton(OPTIONS_BT, 0, 146, this,
-				ImageLoader.loadImage(R.drawable.bt_pause_selected),
-				null,
+				R.drawable.bt_pause_selected,
+				0,
 				"options");
 		
 		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
-				ImageLoader.loadImage(R.drawable.bt_pause_selected),
-				null,
+				R.drawable.bt_pause_selected,
+				0,
 				"quit");
 	}
 
@@ -65,7 +64,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	public void render(GameCanvas canvas, float timeElapsed) {
 
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
-		canvas.drawBitmap(background, (800 - currentWidth), 1);
+		canvas.drawBitmap(backgroundId, (800 - currentWidth), 1);
 		
 		
 		if (!isHidden) {
@@ -110,7 +109,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	
 	private void hide() {
 		isHidden = true;
-		Tween.to(this, 1, 0.5f).target(ARROW_WIDTH).ease(Quart.IN).start(AnimationManager.getInstance());
+		Tween.to(this, 1, 0.5f).target(ARROW_WIDTH).ease(Quart.OUT).start(AnimationManager.getInstance());
 		Tween.to(this, 2, 0.5f).target(0f).start(AnimationManager.getInstance());
 	}
 

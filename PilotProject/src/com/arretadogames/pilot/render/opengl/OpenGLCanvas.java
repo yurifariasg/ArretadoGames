@@ -4,6 +4,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import org.jbox2d.common.Vec2;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -119,18 +120,6 @@ public class OpenGLCanvas implements GameCanvas {
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, float x, float y) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void drawText(String text, float x, float y, Paint p) {
 		// TODO Auto-generated method stub
 		
@@ -149,22 +138,46 @@ public class OpenGLCanvas implements GameCanvas {
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, RectF dstRect,
+	public void drawBitmap(int imageId, float x, float y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawBitmap(int imageId, float x, float y, Paint paint) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
+			boolean convertFromPhysics) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawBitmap(int imageId, RectF dstRect,
 			boolean convertFromPhysics, Paint paint) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, RectF dstRect,
+	public void drawBitmap(int imageId, RectF dstRect,
 			boolean convertFromPhysics) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, Rect srcRect, RectF dstRect,
-			boolean convertFromPhysics) {
+	public void loadImage(int imageId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void recycleImage(int imageId) {
 		// TODO Auto-generated method stub
 		
 	}

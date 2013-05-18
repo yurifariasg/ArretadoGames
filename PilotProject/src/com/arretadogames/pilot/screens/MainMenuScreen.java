@@ -1,13 +1,11 @@
 package com.arretadogames.pilot.screens;
 
-import android.graphics.Bitmap;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
@@ -20,7 +18,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	private static final int PLAY_BUTTON = 1;
 	
-	private Bitmap background;
 	private ImageButton playButton;
 	private Game game;
 	
@@ -29,10 +26,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	public MainMenuScreen(Game game) {
 		this.game = game;
-		background = ImageLoader.loadImage(R.drawable.menu_background);
 		playButton = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
-				ImageLoader.loadImage(R.drawable.bt_play_selected),
-				ImageLoader.loadImage(R.drawable.bt_play_unselected));
+				R.drawable.bt_play_selected,
+				R.drawable.bt_play_unselected);
 		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
@@ -47,7 +43,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		canvas.scale(currentZoom, currentZoom, DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2);
 		
-		canvas.drawBitmap(background, 0, 0);
+		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
 		playButton.render(canvas, timeElapsed);
 		
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);

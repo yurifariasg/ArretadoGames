@@ -1,20 +1,19 @@
 package com.arretadogames.pilot.render;
 
-import android.graphics.Bitmap;
 
 public class SpriteState {
 	
 	private String name;
 	
-	private Bitmap[] keyframes;
+	private int[] keyframesIds;
 	private float[] keyFrameDuration;
 	
 	private int currentKeyFrameIndex = -1;
 	private float currentFrameTimeLeft = 0;
 	
-	public SpriteState(String name, Bitmap[] keyframes, float[] keyFrameDuration) {
+	public SpriteState(String name, int[] keyframesIds, float[] keyFrameDuration) {
 		this.name = name;
-		this.keyframes = keyframes;
+		this.keyframesIds = keyframesIds;
 		this.keyFrameDuration = keyFrameDuration;
 		this.currentKeyFrameIndex = 0;
 		this.currentFrameTimeLeft = keyFrameDuration[currentKeyFrameIndex];
@@ -24,7 +23,7 @@ public class SpriteState {
 		return this.name;
 	}
 	
-	public Bitmap getCurrentFrame(float timeElapsed) {
+	public int getCurrentFrame(float timeElapsed) {
 		if (keyFrameDuration[currentKeyFrameIndex] > 0) {
 			float currentTimeElapsed = timeElapsed;
 			while (currentTimeElapsed > 0){
@@ -38,20 +37,20 @@ public class SpriteState {
 				}
 			}
 		}
-		return keyframes[currentKeyFrameIndex];
+		return keyframesIds[currentKeyFrameIndex];
 	}
 
 	private void nextFrame() {
 		currentKeyFrameIndex++;
-		if (currentKeyFrameIndex >= keyframes.length)
+		if (currentKeyFrameIndex >= keyframesIds.length)
 			currentKeyFrameIndex = 0;
 		currentFrameTimeLeft = keyFrameDuration[currentKeyFrameIndex];
 	}
 	
-	public void release() {
-		for (int i = 0 ; i < keyframes.length ; i++)
-			keyframes[i].recycle();
-		keyframes = null;
+	public void release() { // This method is no longer needed
+		for (int i = 0 ; i < keyframesIds.length ; i++)
+			keyframesIds[i] = 0;
+		keyframesIds = null;
 	}
 	
 }

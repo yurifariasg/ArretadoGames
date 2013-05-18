@@ -1,6 +1,5 @@
 package com.arretadogames.pilot.ui;
 
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -41,16 +40,16 @@ public class TextImageButton extends ImageButton {
 	 *            Text to be rendered
 	 */
 	public TextImageButton(int id, float x, float y, GameButtonListener listener,
-			Bitmap selectedImage, Bitmap unselectedImage, String text) {
-		super(id, x, y, listener, selectedImage, unselectedImage);
+			int selectedImageId, int unselectedImageId, String text) {
+		super(id, x, y, listener, selectedImageId, unselectedImageId);
 		this.text = text;
 		createPaints();
 	}
 
 	public TextImageButton(int id, float x, float y, GameButtonListener listener,
-			Bitmap selectedImage, Bitmap unselectedImage, String text, Paint textPaint, 
+			int selectedImageId, int unselectedImageId, String text, Paint textPaint, 
 						Paint strokePaint) {
-		super(id, x, y, listener, selectedImage, unselectedImage);
+		super(id, x, y, listener, selectedImageId, unselectedImageId);
 		this.text = text;
 		this.textPaint = textPaint;
 		this.strokePaint = strokePaint;

@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.render;
 
-import android.graphics.Bitmap;
-
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
@@ -35,7 +33,7 @@ public class SpriteManager {
 	private void setPlayerSprites(Sprite sprite, Player player){
 
 		String name = "walking";
-		Bitmap[] frames = player.getWalkFrames();
+		int[] frames = player.getWalkFrames();
 		float[] framesDur = player.getWalkFramesDuration();
 		sprite.setAnimationState(name);
 		sprite.addState(new SpriteState(name, frames, framesDur));
@@ -54,7 +52,7 @@ public class SpriteManager {
 	
 	private void setBoxSprites(Sprite sprite, Box box) {
 		String name = "stopped";
-		Bitmap[] frames = box.getStoppedFrames();
+		int[] frames = box.getStoppedFrames();
 		float[] framesDur = box.getStoppedFramesDuration();
 		sprite.setAnimationState(name);
 		sprite.addState(new SpriteState(name, frames, framesDur));
@@ -63,7 +61,7 @@ public class SpriteManager {
 	
 	private void setFruitSprites(Sprite sprite, Fruit fruit) {
 		String name = "stopped";
-		Bitmap[] frames = new Bitmap[1];
+		int[] frames = new int[1];
 		for (int i = 0; i < frames.length; i++) {
 //			frames[i] = ImageLoader.loadImage(BOX_STOPPED[i]);			
 		}
@@ -73,7 +71,7 @@ public class SpriteManager {
 	
 	private void setGroundImage(Sprite sprite) {
 		String name = "stopped";
-		Bitmap[] frames = new Bitmap[1];
+		int[] frames = new int[1];
 		for (int i = 0; i < frames.length; i++) {
 //			frames[i] = ImageLoader.loadImage(BOX_STOPPED[i]);			
 		}

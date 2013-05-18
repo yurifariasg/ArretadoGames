@@ -23,6 +23,14 @@ public abstract class Button {
 		isSelected = false;
 	}
 	
+	public void setWidth(float width) {
+		this.width = width;
+	}
+	
+	public void setHeight(float height) {
+		this.height = height;
+	}
+	
 	public abstract void render(GameCanvas canvas, float timeElapsed);
 	
 	public void input(InputEventHandler event) {

@@ -1,6 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -30,7 +29,8 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	private float currentZoom;
 	private float currentAngle;
 	private int currentBitmapAlpha;
-	private Bitmap logo;
+	private int logoId;
+	private int[] logoSize;
 	
 	private Game game;
 	private Paint paintBitmap;
@@ -38,7 +38,8 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	public SplashScreen(Game game) {
 		animationStarted = false;
 		this.game = game;
-		logo = ImageLoader.loadImage(R.drawable.logo);
+		logoId = R.drawable.logo;
+		logoSize = ImageLoader.checkBitmapSize(R.drawable.logo);
 		paintBitmap = new Paint();
 		paintBitmap.setAntiAlias(true);
 	}
@@ -61,7 +62,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		canvas.restoreState();
 
 		paintBitmap.setAlpha(currentBitmapAlpha);
-		canvas.drawBitmap(logo, centerX - logo.getWidth() / 2, centerY - logo.getHeight() / 2, paintBitmap);
+		canvas.drawBitmap(logoId, centerX - logoSize[0] / 2, centerY - logoSize[1] / 2, paintBitmap);
 		
 		
 		canvas.restoreState();

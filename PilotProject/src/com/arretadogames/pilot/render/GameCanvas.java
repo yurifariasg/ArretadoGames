@@ -2,7 +2,6 @@ package com.arretadogames.pilot.render;
 
 import org.jbox2d.common.Vec2;
 
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -132,7 +131,7 @@ public interface GameCanvas {
 	 * @param y
 	 *            y coordinate
 	 */
-	public void drawBitmap(Bitmap bitmap, float x, float y);
+	public void drawBitmap(int imageId, float x, float y);
 
 	/**
 	 * Draws the given bitmap on the given coordinates
@@ -147,17 +146,21 @@ public interface GameCanvas {
 	 *            paint to be used when drawing
 	 * 
 	 */
-	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) ;
+	public void drawBitmap(int imageId, float x, float y, Paint paint) ;
 	
-	public void drawBitmap(Bitmap bitmap, Rect srcRect, RectF dstRect, boolean convertFromPhysics) ;
+	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect, boolean convertFromPhysics) ;
 
-	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics, Paint paint) ;
+	public void drawBitmap(int imageId, RectF dstRect, boolean convertFromPhysics, Paint paint) ;
 	
-	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics);
+	public void drawBitmap(int imageId, RectF dstRect, boolean convertFromPhysics);
 	
 	public void drawText(String text, float x, float y, Paint p);
 	
 	public void fillScreen(float a, float r, float g, float b);
 
 	public void drawRect(Rect rect, int argb);
+	
+	public void loadImage(int imageId);
+	
+	public void recycleImage(int imageId);
 }

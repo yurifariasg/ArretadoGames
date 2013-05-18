@@ -6,13 +6,9 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.loading.ImageLoader;
-import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
 
@@ -158,12 +154,8 @@ public class LoboGuara extends Player {
 	}
 
 	@Override
-	public Bitmap[] getWalkFrames() {
-		Bitmap[] frames = new Bitmap[WALKING.length];
-		for (int i = 0; i < WALKING.length; i++) {
-			frames[i] = ImageLoader.loadImage(WALKING[i]);
-		}
-		return frames;
+	public int[] getWalkFrames() {
+		return WALKING;
 	}
 	
 	public float[] getWalkFramesDuration(){
@@ -171,12 +163,8 @@ public class LoboGuara extends Player {
 	}
 
 	@Override
-	public Bitmap[] getJumpFrames() {
-		Bitmap[] frames = new Bitmap[JUMP.length];
-		for (int i = 0; i < JUMP.length; i++) {
-			frames[i] = ImageLoader.loadImage(JUMP[i]);
-		}
-		return frames;
+	public int[] getJumpFrames() {
+		return JUMP;
 	}
 	
 	public float[] getJumpFramesDuration(){
@@ -184,7 +172,7 @@ public class LoboGuara extends Player {
 	}
 
 	@Override
-	public Bitmap[] getActFrames() {
+	public int[] getActFrames() {
 		return null;
 		//TODO
 /*		Bitmap[] frames = new Bitmap[ACT.length];

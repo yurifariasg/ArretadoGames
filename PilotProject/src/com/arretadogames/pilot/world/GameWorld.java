@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.jbox2d.common.Vec2;
 
-import android.graphics.Bitmap;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
@@ -24,7 +22,6 @@ import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LevelManager;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
-import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.GameCanvas;
@@ -39,7 +36,7 @@ import com.arretadogames.pilot.screens.PauseScreen;
  */
 public class GameWorld extends GameScreen {
 	
-	private Bitmap background;
+	private int backgroundId;
 	
 	private GameWorldUI ui;
 	private PhysicalWorld pWorld;
@@ -51,10 +48,10 @@ public class GameWorld extends GameScreen {
 	private SpriteManager sm;
 	
 	public GameWorld() {
-		background = ImageLoader.loadImage(R.drawable.stage_background);
+		backgroundId = R.drawable.stage_background;
 		pWorld = PhysicalWorld.getInstance();
 		ui = new GameWorldUI(this);
-		gameCamera = new GameCamera(this, background);
+		gameCamera = new GameCamera(this, backgroundId);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		

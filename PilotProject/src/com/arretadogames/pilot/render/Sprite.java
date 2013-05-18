@@ -2,8 +2,6 @@ package com.arretadogames.pilot.render;
 
 import java.util.HashMap;
 
-import android.graphics.Bitmap;
-
 public class Sprite {
 	
 	private HashMap<String, SpriteState> spriteStates;
@@ -18,7 +16,7 @@ public class Sprite {
 		spriteStates.put(spriteAnimation.getName(), spriteAnimation);
 	}
 	
-	public Bitmap getCurrentFrame(float timeElapsed) {
+	public int getCurrentFrame(float timeElapsed) {
 		return spriteStates.get(currentState).getCurrentFrame(timeElapsed);
 	}
 	

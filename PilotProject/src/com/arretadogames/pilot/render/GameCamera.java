@@ -9,7 +9,6 @@ import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -18,13 +17,12 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.canvas.RenderingCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;
 	private GameCanvas gameCanvas = null;
-	private Bitmap background = null;
+	private int backgroundId;
 	
 	private boolean calculateWidthFirst;
 	private int currentNumberOfPlayers;
@@ -45,10 +43,10 @@ public class GameCamera {
 	
 	private long time;
 
-	public GameCamera(GameWorld world, Bitmap newBackground){
+	public GameCamera(GameWorld world, int backgroundId){
 
-		this(world, 250);//Default is 1.5 seconds
-		background = newBackground;
+		this(world, 250f);//Default is 1.5 seconds
+		this.backgroundId = backgroundId;
 	}
 
 	public GameCamera(GameWorld world, float setTransitionDuration){
@@ -278,9 +276,9 @@ public class GameCamera {
 
 	private void drawBackground(Vec2 center) {
 
-		float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / background.getHeight()));
-		float backgroundWidth = background.getWidth() * factor;
-		float backgroundHeight = background.getHeight() * factor;
+		float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / 480)); // FIXME: background.getHeight()
+		float backgroundWidth = 800 * factor; // FIXME: background.getWidth()
+		float backgroundHeight = 480 * factor; // FIXME: background.getHeight()
 
 		if ( backgroundWidth < DisplaySettings.TARGET_WIDTH ){
 			factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / backgroundWidth);
@@ -307,7 +305,7 @@ public class GameCamera {
 			time = System.nanoTime() / 1000000;
 		}
 		
-		gameCanvas.drawBitmap(background, new Rect(translate_x, translate_y, 
+		gameCanvas.drawBitmap(backgroundId, new Rect(translate_x, translate_y, 
 		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
 		backgroundRect, false);
 	}

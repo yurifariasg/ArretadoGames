@@ -13,5 +13,14 @@ public class ImageLoader {
 //		options.inDensity = Bitp
 		return BitmapFactory.decodeResource(GameActivity.getContext().getResources(), resourceId, options);
 	}
+	
+	public static int[] checkBitmapSize(int resourceId) {
+		int[] size = new int[2];
+		Bitmap b = BitmapFactory.decodeResource(GameActivity.getContext().getResources(), resourceId, null);
+		size[0] = b.getWidth();
+		size[1] = b.getHeight();
+		b.recycle();
+		return size;
+	}
 
 }

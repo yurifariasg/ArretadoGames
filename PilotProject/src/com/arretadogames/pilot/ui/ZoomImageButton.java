@@ -1,6 +1,5 @@
 package com.arretadogames.pilot.ui;
 
-import android.graphics.Bitmap;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenManager;
@@ -16,9 +15,9 @@ public class ZoomImageButton extends ImageButton implements TweenAccessor<ZoomIm
 	private boolean isFirstSelected;
 
 	public ZoomImageButton(int id, float x, float y,
-			GameButtonListener listener, Bitmap selectedImage,
-			Bitmap unselectedImage) {
-		super(id, x, y, listener, selectedImage, unselectedImage);
+			GameButtonListener listener, int selectedImageId,
+			int unselectedImageId) {
+		super(id, x, y, listener, selectedImageId, unselectedImageId);
 		tweenManager = new TweenManager();
 		currentZoom = 1f;
 		isFirstSelected = false;

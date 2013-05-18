@@ -11,7 +11,6 @@ import com.arretadogames.pilot.loop.GameThread;
 public class RenderingSurface extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private GameThread gameThread;
-	private boolean surfaceIsCreated;
 	
 	/**
 	* Default SurfaceView Creator
@@ -23,7 +22,6 @@ public class RenderingSurface extends SurfaceView implements SurfaceHolder.Callb
 	*/
 	public RenderingSurface(GameActivity activity) {
 		super(activity.getApplicationContext());
-		surfaceIsCreated = false;
 		
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
@@ -48,7 +46,6 @@ public class RenderingSurface extends SurfaceView implements SurfaceHolder.Callb
 	
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		surfaceIsCreated = true;
 		if (gameThread == null) {
 			startGameThread();
 		}
@@ -64,7 +61,6 @@ public class RenderingSurface extends SurfaceView implements SurfaceHolder.Callb
 	
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		surfaceIsCreated = false;
 		if (gameThread != null) {
 			gameThread.setRunning(false);
 			gameThread = null;

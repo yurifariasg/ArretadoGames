@@ -11,9 +11,11 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.SparseArray;
 import android.view.SurfaceHolder;
 
 import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
 
 /**
@@ -28,6 +30,8 @@ public class RenderingCanvas implements GameCanvas {
 	private Paint defaultPaint;
 	private Paint debugPaint;
 	private float physicsRatio;
+	
+	private SparseArray<Bitmap> bitmaps;
 
 	public RenderingCanvas(SurfaceHolder surfaceHolder) {
 		this.surfaceHolder = surfaceHolder;
@@ -38,6 +42,8 @@ public class RenderingCanvas implements GameCanvas {
 
 		debugPaint = new Paint();
 		debugPaint.setColor(Color.RED);
+		
+		bitmaps = new SparseArray<Bitmap>();
 	}
 
 	/**
@@ -242,8 +248,8 @@ public class RenderingCanvas implements GameCanvas {
 	 * @param y
 	 *            y coordinate
 	 */
-	public void drawBitmap(Bitmap bitmap, float x, float y) {
-		drawBitmap(bitmap, x, y, defaultPaint);
+	public void drawBitmap(int imageId, float x, float y) {
+		drawBitmap(imageId, x, y, defaultPaint);
 	}
 
 	/**
@@ -259,7 +265,7 @@ public class RenderingCanvas implements GameCanvas {
 	 *            paint to be used when drawing
 	 * 
 	 */
-	public void drawBitmap(Bitmap bitmap, float x, float y, Paint paint) {
+	public void drawBitmap(int imageId, float x, float y, Paint paint) {
 //		Rect rs = new Rect();
 //		RectF rd = new RectF();
 //		rs.left = rs.top = 0;
@@ -279,7 +285,9 @@ public class RenderingCanvas implements GameCanvas {
 //		restoreState();
 //		canvas.drawBitmap(bitmap, rs, rd, paint);
 //		bitmap.setDensity(Bitmap.DENSITY_NONE);
-		canvas.drawBitmap(bitmap, x, y, paint);
+		if (bitmaps.get(imageId) == null)
+			loadImage(imageId);
+		canvas.drawBitmap(bitmaps.get(imageId), x, y, paint);
 //		canvas.drawBitmap(bitmap, null, rd, paint);
 	}
 	
@@ -298,12 +306,12 @@ public class RenderingCanvas implements GameCanvas {
 		canvas.drawRect(rect, p);
 	}
 	
-	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics) {
-		drawBitmap(bitmap, dstRect, convertFromPhysics, defaultPaint);
+	public void drawBitmap(int imageId, RectF dstRect, boolean convertFromPhysics) {
+		drawBitmap(imageId, dstRect, convertFromPhysics, defaultPaint);
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, RectF dstRect, boolean convertFromPhysics, Paint paint) {
+	public void drawBitmap(int imageId, RectF dstRect, boolean convertFromPhysics, Paint paint) {
 		
 		if (convertFromPhysics) {
 			dstRect.left *= physicsRatio;
@@ -313,12 +321,14 @@ public class RenderingCanvas implements GameCanvas {
 			dstRect.bottom *= physicsRatio;
 			dstRect.bottom = DisplaySettings.TARGET_HEIGHT - dstRect.bottom;
 		}
-		
-		canvas.drawBitmap(bitmap, null, dstRect, paint);
+
+		if (bitmaps.get(imageId) == null)
+			loadImage(imageId);
+		canvas.drawBitmap(bitmaps.get(imageId), null, dstRect, paint);
 	}
 	
 	@Override
-	public void drawBitmap(Bitmap bitmap, Rect srcRect, RectF dstRect, boolean convertFromPhysics) {
+	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect, boolean convertFromPhysics) {
 		
 		if (convertFromPhysics) {
 			dstRect.left *= physicsRatio;
@@ -328,7 +338,19 @@ public class RenderingCanvas implements GameCanvas {
 			dstRect.bottom *= physicsRatio;
 			dstRect.bottom = DisplaySettings.TARGET_HEIGHT - dstRect.bottom;
 		}
+		if (bitmaps.get(imageId) == null)
+			loadImage(imageId);
 		
-		canvas.drawBitmap(bitmap, srcRect, dstRect, defaultPaint);
+		canvas.drawBitmap(bitmaps.get(imageId), srcRect, dstRect, defaultPaint);
+	}
+
+	@Override
+	public void loadImage(int imageId) {
+		bitmaps.append(imageId, ImageLoader.loadImage(imageId));
+	}
+
+	@Override
+	public void recycleImage(int imageId) {
+		bitmaps.remove(imageId);
 	}
 }

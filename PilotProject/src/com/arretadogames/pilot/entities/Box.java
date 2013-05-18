@@ -3,11 +3,9 @@ package com.arretadogames.pilot.entities;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
 
@@ -48,12 +46,8 @@ public class Box extends Entity {
 		return EntityType.BOX;
 	}
 	
-	public Bitmap[] getStoppedFrames() {
-		Bitmap[] frames = new Bitmap[STOPPED.length];
-		for (int i = 0; i < STOPPED.length; i++) {
-			frames[i] = ImageLoader.loadImage(STOPPED[i]);
-		}
-		return frames;
+	public int[] getStoppedFrames() {
+		return STOPPED;
 	}
 	
 	public float[] getStoppedFramesDuration(){
