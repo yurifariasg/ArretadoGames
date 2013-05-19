@@ -2,6 +2,7 @@ package com.arretadogames.pilot.screens;
 
 import aurelienribon.tweenengine.TweenAccessor;
 
+import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
@@ -65,7 +66,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		System.exit(0);
-		
 	}
 
 	@Override

@@ -88,7 +88,7 @@ public class GameThread extends Thread {
 			game.step(elapsedTime);
 			
 			if (DisplaySettings.PROFILE_SPEED) {
-				System.out.println("Step Time: " + (getCurrentTime() - time));
+				Log.d("Profile", "Step Time: " + (getCurrentTime() - time));
 				time = getCurrentTime();
 			}
 			
@@ -98,7 +98,7 @@ public class GameThread extends Thread {
 			}
 			
 			if (DisplaySettings.PROFILE_SPEED) {
-				System.out.println("Render Time: " + (getCurrentTime() - time));
+				Log.d("Profile", "Render Time: " + (getCurrentTime() - time));
 				time = getCurrentTime();
 			}
 			

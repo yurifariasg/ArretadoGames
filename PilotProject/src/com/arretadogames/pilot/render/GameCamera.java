@@ -11,6 +11,7 @@ import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
@@ -241,7 +242,7 @@ public class GameCamera {
 		}
 		
 		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			System.out.println("Calculate Viewport: " + (System.nanoTime()/1000000 - time));
+			Log.d("Profling", "Calculate Viewport: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime() / 1000000;
 		}
 
@@ -251,7 +252,7 @@ public class GameCamera {
 		drawBackground(center);
 		
 		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			System.out.println("Draw Background: " + (System.nanoTime()/1000000 - time));
+			Log.d("Profling", "Draw Background: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime() / 1000000;
 		}
 
@@ -266,7 +267,7 @@ public class GameCamera {
 		}
 		
 		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			System.out.println("Draw Entities: " + (System.nanoTime()/1000000 - time));
+			Log.d("Profling", "Draw Entities: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime() / 1000000;
 		}
 
@@ -301,7 +302,7 @@ public class GameCamera {
 		int translate_y = 0;
 		
 		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			System.out.println("Calculate Background: " + (System.nanoTime()/1000000 - time));
+			Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime() / 1000000;
 		}
 		

@@ -13,7 +13,7 @@ import android.graphics.RectF;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.canvas.RenderingCanvas;
+import com.arretadogames.pilot.render.opengl.OpenGLCanvas;
 
 public class LoboGuara extends Player {
 	
@@ -81,10 +81,12 @@ public class LoboGuara extends Player {
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
 		RectF rect = new RectF(
-				(- 0.7f* RenderingCanvas.physicsRatio), // Top Left
-				(- 1f * RenderingCanvas.physicsRatio), // Top Top Left
-				(0.71f * RenderingCanvas.physicsRatio), // Bottom Right
-				(0.55f * RenderingCanvas.physicsRatio)); // Bottom Right
+				(- 0.7f* OpenGLCanvas.physicsRatio), // Top Left
+				(- 1f * OpenGLCanvas.physicsRatio), // Top Top Left
+				(0.71f * OpenGLCanvas.physicsRatio), // Bottom Right
+				(0.55f * OpenGLCanvas.physicsRatio)); // Bottom Right
+		
+//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.CYAN);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 		

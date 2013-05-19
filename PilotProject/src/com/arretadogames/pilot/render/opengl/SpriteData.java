@@ -27,6 +27,14 @@ public class SpriteData {
 		this.textureId = textureId;
 	}
 	
+	public int getTextureWidth() {
+		return textureWidth;
+	}
+	
+	public int getTextureHeight() {
+		return textureHeight;
+	}
+	
 	public int getTextureID() {
 		return textureId;
 	}

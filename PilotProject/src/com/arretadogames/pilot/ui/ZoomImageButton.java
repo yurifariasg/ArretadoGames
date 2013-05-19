@@ -36,6 +36,7 @@ public class ZoomImageButton extends ImageButton implements TweenAccessor<ZoomIm
 		}
 		
 		canvas.saveState();
+		
 		canvas.scale(currentZoom, currentZoom, x + width / 2, y + height / 2);
 		
 		super.render(canvas, timeElapsed);

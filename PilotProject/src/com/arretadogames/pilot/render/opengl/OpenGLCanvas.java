@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -13,12 +14,13 @@ import org.jbox2d.common.Vec2;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.opengl.GLUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.GameCanvas;
 
@@ -27,6 +29,9 @@ public class OpenGLCanvas implements GameCanvas {
 	private GL10 gl;
 	private static SparseArray<SpriteData> textures = new SparseArray<SpriteData>();
 	
+	private Rect arbritaryRect = new Rect();
+	public static float physicsRatio = 25;
+	
 	
 	public OpenGLCanvas(GL10 gl) {
 		this.gl = gl;
@@ -34,6 +39,7 @@ public class OpenGLCanvas implements GameCanvas {
 
 	@Override
 	public void setPhysicsRatio(float newRatio) {
+		physicsRatio = newRatio;
 	}
 
 	@Override
@@ -46,6 +52,11 @@ public class OpenGLCanvas implements GameCanvas {
 		gl.glRotatef(-180, 1, 0, 0);
 		
 		fillScreen(255, 0, 0, 0);
+//		DisplaySettings.WIDTH_RATIO = DisplaySettings.DISPLAY_WIDTH / DisplaySettings.TARGET_WIDTH;
+//		DisplaySettings.HEIGHT_RATIO = DisplaySettings.DISPLAY_HEIGHT / DisplaySettings.TARGET_HEIGHT;
+		
+//		gl.glPushMatrix();
+//		gl.glScalef(DisplaySettings.WIDTH_RATIO, DisplaySettings.HEIGHT_RATIO, 0f);
 		
 		
 		/* OpenGL 2.0 */
@@ -61,6 +72,7 @@ public class OpenGLCanvas implements GameCanvas {
 	@Override
 	public void flush() {
 		// TODO Auto-generated method stub
+//		gl.glPopMatrix();
 		
 	}
 
@@ -83,13 +95,17 @@ public class OpenGLCanvas implements GameCanvas {
 
 	@Override
 	public void rotatePhysics(float degrees) {
-		// TODO Check if this really works
-		rotate(degrees);
+		rotate(degrees); // TODO: Method should be removed
 	}
 
 	@Override
 	public void drawDebugRect(int x, int y, int x2, int y2) {
 		// TODO Auto-generated method stub
+		arbritaryRect.left = x;
+		arbritaryRect.top = y;
+		arbritaryRect.right = x2;
+		arbritaryRect.bottom = y2;
+		drawRect(arbritaryRect, Color.RED);
 	}
 
 	@Override
@@ -100,23 +116,139 @@ public class OpenGLCanvas implements GameCanvas {
 	@Override
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength) {
-		// TODO Auto-generated method stub
+		drawPhysicsDebugRect(centerX, centerY, sideLength, Color.RED);
 	}
 
 	@Override
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength, int color) {
-		// TODO Auto-generated method stub
+		arbritaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
+		arbritaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
+//		arbritaryRect.top = (int) ((centerY - sideLength / 2) * physicsRatio);
+		arbritaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
+		arbritaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
+//		arbritaryRect.bottom = (int) ((centerY + sideLength / 2) * physicsRatio);
+		System.out.println("Drawing PhysicsDebugRect: " + (arbritaryRect.toShortString()));
+		drawRect(arbritaryRect, color);
 	}
+	
+	private final float GROUND_BOTTOM = -10;
 
 	@Override
 	public void drawPhysicsLines(Vec2[] lines) {
-		// TODO Auto-generated method stub
+		
+//		for (int i = 1 ; i < lines.length ; i++)
+//			drawPhysicsLine(lines[0].x, lines[0].y, lines[1].x, lines[1].y);
+		
+//		gl.glLineWidth(2.5); 
+//		gl.glColor3f(1.0, 0.0, 0.0);
+//		gl.glBegin(GL_LINES);
+//		gl.glVert
+//		gl.glVertex3f(0.0, 0.0, 0.0);
+//		gl.glVertex3f(15, 0, 0);
+//		gl.glEnd();
+		
+		System.out.println("Lines Length: " + lines.length);
+		
+		Vec2 vertices[] = lines;
+    	int cont = vertices.length + 3;
+    	float[] squareCoords = new float[3*cont];
+
+    	// Ultimo
+    	squareCoords[0] = vertices[0].x * physicsRatio;
+    	squareCoords[1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[2] = 0.0f;
+    	
+    	for( int i = 0; i < vertices.length; i++){
+    		squareCoords[3 + 3*i] = vertices[i].x * physicsRatio;
+    		squareCoords[3 + 3*i+1] = DisplaySettings.TARGET_HEIGHT - vertices[i].y * physicsRatio;
+    		squareCoords[3 + 3*i+2] = 0.0f;
+    		Log.d("vert", vertices[i].x + " "  + vertices[i].y);
+    	}
+    	
+    	// Penultimo
+    	squareCoords[3 + 3 * vertices.length] = vertices[vertices.length - 1].x * physicsRatio;
+    	squareCoords[3 + 3 * vertices.length + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[3 + 3 * vertices.length + 2] = 0.0f;
+
+    	// Ultimo
+    	squareCoords[3 + 3 * (vertices.length + 1)] = vertices[0].x * physicsRatio;
+    	squareCoords[3 + 3 * (vertices.length + 1) + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[3 + 3 * (vertices.length + 1) + 2] = 0.0f;
+    	
+    	System.out.println("VertexArray: " + Arrays.toString(vertices));
+    	System.out.println("VertexArray: " + Arrays.toString(squareCoords));
+    	
+    	
+    	short[] drawOrder = new short[12]; // FIXME : fix this shit...
+    	int i = 0;
+    	drawOrder[i++] = 0;
+    	drawOrder[i++] = 1;
+    	drawOrder[i++] = 2;
+    	
+    	drawOrder[i++] = 0;
+    	drawOrder[i++] = 2;
+    	drawOrder[i++] = 3;
+    	
+    	drawOrder[i++] = 0;
+    	drawOrder[i++] = 3;
+    	drawOrder[i++] = 4;
+    	
+    	drawOrder[i++] = 0;
+    	drawOrder[i++] = 4;
+    	drawOrder[i++] = 5;
+    	
+        // initialize vertex byte buffer for shape coordinates
+        ByteBuffer bb = ByteBuffer.allocateDirect(
+        // (# of coordinate values * 4 bytes per float)
+                squareCoords.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        FloatBuffer vertexBuffer = bb.asFloatBuffer();
+        vertexBuffer.put(squareCoords);
+        vertexBuffer.position(0);
+
+        // initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(
+        // (# of coordinate values * 2 bytes per short)
+                drawOrder.length * 2);
+        dlb.order(ByteOrder.nativeOrder());
+        ShortBuffer drawListBuffer = dlb.asShortBuffer();
+        drawListBuffer.put(drawOrder);
+        drawListBuffer.position(0);
+        
+        gl.glColor4f(1, 1, 1, 1);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawElements(GL10.GL_TRIANGLE_STRIP, drawOrder.length, GL10.GL_UNSIGNED_SHORT, drawListBuffer);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		
+		
 	}
 
 	@Override
 	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
-		// TODO Auto-generated method stub
+		float[] vertices = {x1, y1, 0, x2, y2, 0};
+		short[] indices = {0, 1, 0};
+		
+        ByteBuffer vbb  = ByteBuffer.allocateDirect(vertices.length * 4);
+        vbb.order(ByteOrder.nativeOrder());
+        FloatBuffer vertexBuffer = vbb.asFloatBuffer();
+        vertexBuffer.put(vertices);
+        vertexBuffer.position(0);
+
+        ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
+        ibb.order(ByteOrder.nativeOrder());
+        ShortBuffer indexBuffer = ibb.asShortBuffer();
+        indexBuffer.put(indices);
+        indexBuffer.position(0);
+
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glLineWidth(2);
+        gl.glColor4f(1, 0, 0, 1);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glDrawElements(GL10.GL_LINES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        
 	}
 
 	@Override
@@ -245,6 +377,12 @@ public class OpenGLCanvas implements GameCanvas {
 		saveState();
 		gl.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
 		translate(x, y);
+
+		if (textures.get(imageId) == null)
+			loadImage(imageId);
+		SpriteData texture = textures.get(imageId);
+		texture.clear();
+		texture.addSprite(new Rect(0, 0, texture.getTextureWidth(), texture.getTextureHeight()));
 		drawBitmap(imageId);
 		restoreState();
 	}
@@ -252,22 +390,42 @@ public class OpenGLCanvas implements GameCanvas {
 	@Override
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
 			boolean convertFromPhysics) {
-		// TODO Auto-generated method stub
+		if (textures.get(imageId) == null)
+			loadImage(imageId);
+		SpriteData tex = textures.get(imageId);
 		
+		if (convertFromPhysics) {
+			arbritaryRect.left = (int) (dstRect.left * physicsRatio);
+			arbritaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
+			arbritaryRect.right = (int) (dstRect.right * physicsRatio);
+			arbritaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
+		} else {
+			arbritaryRect.left = (int) dstRect.left;
+			arbritaryRect.top = (int) dstRect.top;
+			arbritaryRect.right = (int) dstRect.right;
+			arbritaryRect.bottom = (int) dstRect.bottom;
+		}
+		tex.clear();
+		if (srcRect == null)
+			tex.addSprite(arbritaryRect);
+		else
+			tex.addSprite(srcRect, arbritaryRect);
+		
+		textures.append(imageId, tex);
+		
+		drawBitmap(imageId);
 	}
 
 	@Override
 	public void drawBitmap(int imageId, RectF dstRect,
 			boolean convertFromPhysics, Paint paint) {
-		// TODO Auto-generated method stub
-		
+		drawBitmap(imageId, null, dstRect, convertFromPhysics);
 	}
 
 	@Override
 	public void drawBitmap(int imageId, RectF dstRect,
 			boolean convertFromPhysics) {
-		// TODO Auto-generated method stub
-		
+		drawBitmap(imageId, null, dstRect, convertFromPhysics);
 	}
 
 	@Override
@@ -319,8 +477,7 @@ public class OpenGLCanvas implements GameCanvas {
 
 	@Override
 	public void translatePhysics(float posX, float posY) {
-		// TODO Auto-generated method stub
-		
+		gl.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
 
 }

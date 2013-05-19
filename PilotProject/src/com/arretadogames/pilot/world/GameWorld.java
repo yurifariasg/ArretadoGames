@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.jbox2d.common.Vec2;
 
+import android.util.Log;
+
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
@@ -147,21 +149,21 @@ public class GameWorld extends GameScreen {
 			gameCamera.render(canvas, timeElapsed);
 		}
 		if (DisplaySettings.PROFILE_RENDER_SPEED) {
-			System.out.println("Camera Render Time: " + (System.nanoTime()/1000000 - time));
+			Log.d("Profile", "Camera Render Time: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime()/1000000;
 		}
 		
 		ui.render(canvas, timeElapsed);
 		
 		if (DisplaySettings.PROFILE_RENDER_SPEED) {
-			System.out.println("UI Render Time: " + (System.nanoTime()/1000000 - time));
+			Log.d("Profile", "UI Render Time: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime()/1000000;
 		}
 		
 		pauseScreen.render(canvas, timeElapsed);
 		
 		if (DisplaySettings.PROFILE_RENDER_SPEED) {
-			System.out.println("Pause Screen Render Time: " + (System.nanoTime()/1000000 - time));
+			Log.d("Profile", "Pause Screen Render Time: " + (System.nanoTime()/1000000 - time));
 		}
 	}
 	

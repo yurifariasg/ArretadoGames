@@ -48,7 +48,6 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-		// TODO Auto-generated method stub
 		canvas.fillScreen(255, 0, 0, 0);
 		
 		canvas.saveState();
@@ -67,9 +66,6 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		canvas.drawBitmap(logoId, centerX - logoSize[0] / 2, centerY - logoSize[1] / 2, paintBitmap);
 		
 		canvas.restoreState();
-		
-		
-//		canvas.restoreState();
 		
 	}
 

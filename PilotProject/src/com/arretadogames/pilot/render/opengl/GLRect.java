@@ -38,17 +38,6 @@ public class GLRect {
 		vertices[9] = right;
 		vertices[10] = top;
 		vertices[11] = 0f;
-//		vertices.add((float) top);
-//		vertices.add(0f);
-//		vertices.add((float) left);
-//		vertices.add((float) bottom);
-//		vertices.add(0f);
-//		vertices.add((float) right);
-//		vertices.add((float) bottom);
-//		vertices.add(0f);
-//		vertices.add((float) right);
-//		vertices.add((float) top);
-//		vertices.add(0f);
 		
         ByteBuffer vbb  = ByteBuffer.allocateDirect(this.vertices.length * 4);
         vbb.order(ByteOrder.nativeOrder());

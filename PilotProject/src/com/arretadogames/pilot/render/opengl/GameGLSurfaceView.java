@@ -4,6 +4,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -41,10 +43,19 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		
 		// Set OnTouchListener
 		setOnTouchListener(activity);
+		
+		getHolder().setFixedSize((int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
+		if (DisplaySettings.DISPLAY_WIDTH == -1 || DisplaySettings.DISPLAY_HEIGHT == -1) {
+			DisplaySettings.DISPLAY_WIDTH = getWidth();
+			DisplaySettings.DISPLAY_HEIGHT = getHeight();
+			DisplaySettings.WIDTH_RATIO = DisplaySettings.DISPLAY_WIDTH / DisplaySettings.TARGET_WIDTH;
+			DisplaySettings.HEIGHT_RATIO = DisplaySettings.DISPLAY_HEIGHT / DisplaySettings.TARGET_HEIGHT;
+		}
+		
 		if (Game.getInstance() != null) {
 			run(gl);
 		}
@@ -72,10 +83,9 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		Game.getInstance().step(elapsedTime);
 		
 		if (DisplaySettings.PROFILE_SPEED) {
-			System.out.println("Step Speed: " + (getCurrentTime() - time));
+			Log.d("Profile", "Step Speed: " + (getCurrentTime() - time));
 			time = getCurrentTime();
 		}
-			
 		
 		if (gameCanvas.initiate()) { // If initiate was successful
 			Game.getInstance().render(gameCanvas, elapsedTime);
@@ -83,7 +93,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		}
 		
 		if (DisplaySettings.PROFILE_SPEED) {
-			System.out.println("Render Speed: " + (getCurrentTime() - time));
+			Log.d("Profile", "Render Speed: " + (getCurrentTime() - time));
 		}
 		
 		// End Game Loop
@@ -115,12 +125,15 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		// Sets the current view port to the new size.
 		gl.glViewport(0, 0, width, height);
+//		gl.glViewport(0, 0, 800, 480);
 		// Select the projection matrix
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		// Reset the projection matrix
 		gl.glLoadIdentity();
 		// Orthographic mode for 2d
-		gl.glOrthof(0, width, -height, 0, -1, 8);
+//		gl.glOrthof(0, width, -height, 0, -1, 8);
+//		gl.glOrthof(0, DisplaySettings.TARGET_WIDTH, -DisplaySettings.TARGET_HEIGHT, 0, -1, 8);
+		GLU.gluOrtho2D(gl, 0, width, -height, 0);
 		// Select the modelview matrix
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		// Reset the modelview matrix
