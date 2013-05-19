@@ -6,11 +6,14 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.canvas.RenderingCanvas;
 
 public class LoboGuara extends Player {
 	
@@ -73,16 +76,18 @@ public class LoboGuara extends Player {
 	
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
-//		canvas.drawDebugRect((int)getPosX(), (int)getPosY(),
-//				(int)(getPosX() ), (int)(getPosY()+size));
-		
 		
 		canvas.saveState();
-		canvas.rotatePhysics((float) (180 * - getAngle() / Math.PI), getPosX(), getPosY());
-//		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), 1f, Color.BLUE);
-		RectF rect = new RectF(getPosX()-0.7f, getPosY()+1f, getPosX()+0.71f, getPosY()-0.55f);
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
+		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
+		RectF rect = new RectF(
+				(- 0.7f* RenderingCanvas.physicsRatio), // Top Left
+				(- 1f * RenderingCanvas.physicsRatio), // Top Top Left
+				(0.71f * RenderingCanvas.physicsRatio), // Bottom Right
+				(0.55f * RenderingCanvas.physicsRatio)); // Bottom Right
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
+		
 	}
 
 	@Override

@@ -16,12 +16,19 @@ public class SpriteData {
 	private int textureHeight;
 
 	private int argb;
+	
+	private int textureId;
 
-	public SpriteData(int rgba) {
+	public SpriteData(int rgba, int textureId) {
 		vertices = new ArrayList<Float>();
 		indices = new ArrayList<Short>();
 		textureCoords = new ArrayList<Float>();
 		this.argb = rgba;
+		this.textureId = textureId;
+	}
+	
+	public int getTextureID() {
+		return textureId;
 	}
 
 	public void setDimensions(int width, int height) {
@@ -51,6 +58,10 @@ public class SpriteData {
 		for (int i = 0; i < f.length; i++) {
 			textureCoords.add(f[i]);
 		}
+	}
+	
+	public void addSprite(Rect dst) {
+		addSprite(new Rect(0, 0, textureWidth, textureHeight), dst);
 	}
 
 	// SIMPLE

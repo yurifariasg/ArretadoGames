@@ -259,10 +259,10 @@ public class SpriteBatcher implements Renderer {
 
 					// CONVERT RGBA TO SEPERATE VALUES
 					int color = currentSpriteData.getARGB();
-					float r = (float) Color.red(color) / 255;
-					float g = (float) Color.green(color) / 255;
-					float b = (float) Color.blue(color) / 255;
-					float a = (float) Color.alpha(color) / 255;
+					float r = Color.red(color) / 255f;
+					float g = Color.green(color) / 255f;
+					float b = Color.blue(color) / 255f;
+					float a = Color.alpha(color) / 255f;
 
 					// DRAW COMMAND
 					gl.glColor4f(r, g, b, a);

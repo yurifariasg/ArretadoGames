@@ -59,7 +59,7 @@ public abstract class Texture {
 		SpriteData spriteData = spriteDatas.get(DEFAULT_ARGB);
 		if (spriteData==null){
 			// Create it
-			spriteData = new SpriteData(DEFAULT_ARGB);
+			spriteData = new SpriteData(DEFAULT_ARGB, -1); // FIXME: -1 doesnt exist
 			spriteDatas.put(DEFAULT_ARGB, spriteData);
 			spriteData.setDimensions(width, height);
 		}
@@ -70,7 +70,7 @@ public abstract class Texture {
 		SpriteData spriteData = spriteDatas.get(argb);
 		if (spriteData==null){
 			// Create it
-			spriteData = new SpriteData(argb);
+			spriteData = new SpriteData(argb, -1); // FIXME: -1 doesnt exist
 			spriteDatas.put(argb, spriteData);
 			spriteData.setDimensions(width, height);
 		}

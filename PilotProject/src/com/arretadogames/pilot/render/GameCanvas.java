@@ -3,7 +3,6 @@ package com.arretadogames.pilot.render;
 import org.jbox2d.common.Vec2;
 
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -52,12 +51,8 @@ public interface GameCanvas {
 	 * 
 	 * @param degrees
 	 *            Degrees to rotate
-	 * @param x
-	 *            X Coordinate of the point
-	 * @param y
-	 *            Y Coordinate of the point
 	 */
-	public void rotate(float degrees, float x, float y);
+	public void rotate(float degrees);
 
 	/**
 	 * Rotates the canvas on the given point the amount of given degrees. All X
@@ -70,7 +65,7 @@ public interface GameCanvas {
 	 * @param y
 	 *            Y Coordinate of the point
 	 */
-	public void rotatePhysics(float degrees, float x, float y);
+	public void rotatePhysics(float degrees);
 
 	/**
 	 * Draws a debugging rect at the given location
@@ -110,16 +105,6 @@ public interface GameCanvas {
 	 * operations
 	 */
 	public void restoreState();
-
-	/**
-	 * Rotates the canvas on the given point by the given angle
-	 * 
-	 * @param angle
-	 *            Rotate the amount of degrees
-	 * @param point
-	 *            Rotates on this given point
-	 */
-	public void rotate(float angle, Point point);
 
 	/**
 	 * Draws the given bitmap on the given coordinates
@@ -163,4 +148,6 @@ public interface GameCanvas {
 	public void loadImage(int imageId);
 	
 	public void recycleImage(int imageId);
+
+	public void translatePhysics(float dx, float dy);
 }

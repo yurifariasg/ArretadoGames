@@ -31,7 +31,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		super(activity);
 
 		// Specifies the use of OpenGL 2.0
-		setEGLContextClientVersion(2);
+		setEGLContextClientVersion(1);
 
 		// Specifies the Renderer and starts the Rendering Thread
 		setRenderer(this);
@@ -46,30 +46,46 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		if (Game.getInstance() != null) {
-			run();
+			run(gl);
 		}
 
 	}
+	private long frameEndedTime;
+	private long time;
 	
-	public void run() {
+	public void run(GL10 gl) {
 		/*
 		 * This method runs the Game Loop and manage the time between each frame
 		 */
-		long frameEndedTime = getCurrentTime();
-		long frameCurrentTime;
+		if (frameEndedTime == 0)
+			frameEndedTime = getCurrentTime();
 		
-		gameCanvas = new OpenGLCanvas();
+		gameCanvas = new OpenGLCanvas(gl);
 
-		frameCurrentTime = getCurrentTime();
-		float elapsedTime = (frameCurrentTime - frameEndedTime)/1000.f;
+		long frameCurrentTime = getCurrentTime();
+		float elapsedTime = (frameCurrentTime - frameEndedTime) / 1000f;
+		
+		if (DisplaySettings.PROFILE_SPEED)
+			time = getCurrentTime();
 		
 		// Game Loop
 		Game.getInstance().step(elapsedTime);
+		
+		if (DisplaySettings.PROFILE_SPEED) {
+			System.out.println("Step Speed: " + (getCurrentTime() - time));
+			time = getCurrentTime();
+		}
+			
 		
 		if (gameCanvas.initiate()) { // If initiate was successful
 			Game.getInstance().render(gameCanvas, elapsedTime);
 			gameCanvas.flush();
 		}
+		
+		if (DisplaySettings.PROFILE_SPEED) {
+			System.out.println("Render Speed: " + (getCurrentTime() - time));
+		}
+		
 		// End Game Loop
 		
 		// Wait to complete 1/60 of a second
@@ -97,10 +113,44 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
+		// Sets the current view port to the new size.
+		gl.glViewport(0, 0, width, height);
+		// Select the projection matrix
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		// Reset the projection matrix
+		gl.glLoadIdentity();
+		// Orthographic mode for 2d
+		gl.glOrthof(0, width, -height, 0, -1, 8);
+		// Select the modelview matrix
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		// Reset the modelview matrix
+		gl.glLoadIdentity();
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+		// SETTINGS
+		// Set the background color to black ( rgba ).
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+
+		// DRAWING SETUP
+		// NOTES: As we are always drawing with textures and viewing our
+		// elements from the same side all the time we can leave all these
+		// settings on the whole time
+		// Enable face culling.
+		gl.glEnable(GL10.GL_CULL_FACE);
+		// What faces to remove with the face culling.
+		gl.glCullFace(GL10.GL_BACK);
+		// Enabled the vertices buffer for writing and to be used during
+		// rendering.
+//		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		// Telling OpenGL to enable textures.
+//		gl.glEnable(GL10.GL_TEXTURE_2D);
+		// Tell OpenGL to enable the use of UV coordinates.
+//		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		// Blending on
+		gl.glEnable(GL10.GL_BLEND);
+		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	@Override

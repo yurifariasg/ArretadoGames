@@ -54,18 +54,22 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		canvas.saveState();
 		float centerX = DisplaySettings.TARGET_WIDTH / 2;
 		float centerY = DisplaySettings.TARGET_HEIGHT / 2;
-		canvas.rotate(currentAngle, centerX, centerY);
+		canvas.translate(centerX, centerY);
+		canvas.rotate(currentAngle);
+		canvas.translate(-centerX, -centerY);
 		
 		canvas.saveState();
-		canvas.scale(2, currentZoom, centerX, centerY);
+		canvas.scale(2, currentZoom, 400, 180 + (300 - 180) / 2);
 		canvas.drawRect(new Rect(0, 180, 800, 300), Color.argb(255, 255, 255, 255));
 		canvas.restoreState();
-
+		
 		paintBitmap.setAlpha(currentBitmapAlpha);
 		canvas.drawBitmap(logoId, centerX - logoSize[0] / 2, centerY - logoSize[1] / 2, paintBitmap);
 		
-		
 		canvas.restoreState();
+		
+		
+//		canvas.restoreState();
 		
 	}
 

@@ -3,11 +3,15 @@ package com.arretadogames.pilot.entities;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.canvas.RenderingCanvas;
 
 public class Box extends Entity {
 	
@@ -29,10 +33,15 @@ public class Box extends Entity {
 	public void render(GameCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
-		canvas.rotatePhysics((float) (180 * - body.getAngle() / Math.PI), getPosX(), getPosY());
-//		canvas.drawPhysicsDebugRect(getPosX(), getPosY(), size );
-		RectF rect = new RectF(getPosX()-0.5f, getPosY()+0.5f, getPosX()+0.5f, getPosY()-0.5f);
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, true);
+		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
+		RectF rect = new RectF(
+				(- 0.5f* RenderingCanvas.physicsRatio), // Top Left
+				(- 0.5f * RenderingCanvas.physicsRatio), // Top Top Left
+				(0.5f * RenderingCanvas.physicsRatio), // Bottom Right
+				(0.5f * RenderingCanvas.physicsRatio)); // Bottom Right
+		
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 	}
 

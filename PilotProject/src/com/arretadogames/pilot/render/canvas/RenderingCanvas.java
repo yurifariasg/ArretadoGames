@@ -29,7 +29,7 @@ public class RenderingCanvas implements GameCanvas {
 
 	private Paint defaultPaint;
 	private Paint debugPaint;
-	private float physicsRatio;
+	public static float physicsRatio;
 	
 	private SparseArray<Bitmap> bitmaps;
 
@@ -111,8 +111,8 @@ public class RenderingCanvas implements GameCanvas {
 	 * @param y
 	 *            Y Coordinate of the point
 	 */
-	public void rotate(float degrees, float x, float y) {
-		canvas.rotate(degrees, x, y);
+	public void rotate(float degrees) {
+		canvas.rotate(degrees % 360, 0, 0);
 	}
 
 	/**
@@ -126,8 +126,9 @@ public class RenderingCanvas implements GameCanvas {
 	 * @param y
 	 *            Y Coordinate of the point
 	 */
-	public void rotatePhysics(float degrees, float x, float y) {
-		canvas.rotate(degrees, x * physicsRatio, DisplaySettings.TARGET_HEIGHT - y * physicsRatio);
+	public void rotatePhysics(float degrees) {
+//		canvas.rotate(degrees, x * physicsRatio, DisplaySettings.TARGET_HEIGHT - y * physicsRatio);
+		rotate(degrees);
 	}
 
 	/**
@@ -214,7 +215,7 @@ public class RenderingCanvas implements GameCanvas {
 	 * This should be done before rotating or translating operations
 	 */
 	public void saveState() {
-		canvas.save();
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
 	}
 
 	/**
@@ -235,7 +236,7 @@ public class RenderingCanvas implements GameCanvas {
 	 *            Rotates on this given point
 	 */
 	public void rotate(float angle, Point point) {
-		canvas.rotate(angle, point.x, point.y);
+//		canvas.rotate(angle, point.x, point.y);
 	}
 
 	/**
@@ -324,7 +325,7 @@ public class RenderingCanvas implements GameCanvas {
 
 		if (bitmaps.get(imageId) == null)
 			loadImage(imageId);
-		canvas.drawBitmap(bitmaps.get(imageId), null, dstRect, paint);
+		canvas.drawBitmap(bitmaps.get(imageId), null, new RectF(dstRect.left, dstRect.top, dstRect.right, dstRect.bottom), new Paint());
 	}
 	
 	@Override
@@ -352,5 +353,10 @@ public class RenderingCanvas implements GameCanvas {
 	@Override
 	public void recycleImage(int imageId) {
 		bitmaps.remove(imageId);
+	}
+
+	@Override
+	public void translatePhysics(float dx, float dy) {
+		canvas.translate(dx * physicsRatio, DisplaySettings.TARGET_HEIGHT - dy * physicsRatio);
 	}
 }
