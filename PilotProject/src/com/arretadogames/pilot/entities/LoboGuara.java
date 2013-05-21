@@ -16,14 +16,14 @@ import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.OpenGLCanvas;
 
 public class LoboGuara extends Player {
-	
+
 	private Sprite sprite;
 	private int contJump;
 	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
 	private final float MAX_JUMP_VELOCITY = 8;
-	private final float MAX_RUN_VELOCITY = 10;
+	private final float MAX_RUN_VELOCITY = 8;
 	private float JUMP_ACELERATION = 6;
 	private float RUN_ACELERATION = 13;
 	
@@ -60,7 +60,7 @@ public class LoboGuara extends Player {
 
 	double getAngle(){
 		double angle = 0;
-		if(body.getLinearVelocity().length() > 0.1){
+		if(body.getLinearVelocity().length() > 1){
 			double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
 			cos = Math.abs(cos);
 			angle = Math.acos(cos);
@@ -78,7 +78,7 @@ public class LoboGuara extends Player {
 	public void jump() {
 		sprite.setAnimationState("jump");
 		if( contJump > 0 || contacts <= 0) return;	
-		float impulseX = (Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass());
+		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
 		Vec2 direction = new Vec2(1,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
