@@ -31,7 +31,6 @@ public class Box extends Entity {
 		body.setFixedRotation(false);
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 		

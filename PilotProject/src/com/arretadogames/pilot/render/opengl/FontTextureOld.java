@@ -1,25 +1,17 @@
 package com.arretadogames.pilot.render.opengl;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
-
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.opengl.GLUtils;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
-public class FontTexture {
+public class FontTextureOld extends Texture {
 	// Font texture for drawing text
 
 	// General
@@ -45,9 +37,7 @@ public class FontTexture {
 	private int padX = 2;
 	private int padY = 2;
 
-	private SpriteData spriteData;
-
-	public FontTexture(Typeface tf) {
+	public FontTextureOld(Typeface tf) {
 		this.tf = tf;
 	}
 
@@ -60,14 +50,9 @@ public class FontTexture {
 		this.padX = params.getPadX();
 		this.padY = params.getPadY();
 	}
-	
-	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb) {
-		scale = 1;
-		
-		if (spriteData == null)  {// Not created
-			createTexture(gl);
-		}
-		
+
+	public void drawText(GL10 gl, String text, int x, int y, float scale,
+			int argb) {
 		// Draw text centred at x,y
 		// Get width of text
 		int textWidth = 0;
@@ -81,13 +66,12 @@ public class FontTexture {
 		y -= fontHeight;
 
 		// No cycle through and draw text
-		System.out.println("Cell Width: " + cellWidth);
 		int scaledCellWidth = (int) (scale * cellWidth);
 		int scaledCellHeight = (int) (scale * cellHeight);
 		Rect src;
 		Rect dst = new Rect();
 		int charNumber;
-		for (int i = 0; i < 1; i++) { // text.length(0
+		for (int i = 0; i < text.length(); i++) {
 			// Source rect
 			charNumber = (int) text.charAt(i);
 			src = characterRects.get(charNumber);
@@ -102,25 +86,15 @@ public class FontTexture {
 			dst.set(x, y, x + scaledCellWidth, y + scaledCellHeight);
 
 			// Add sprite
-			System.out.println("SourceRect: " + src.toShortString() + " DestRect: " + dst.toShortString());
-			spriteData.clear();
-//			spriteData.addSprite(new Rect(0, 0, 300, 300), dst); // FIXME doesnt have one
-			spriteData.addSprite(src, new Rect(0, 0, 800, 480));
-			
+			getARGBSpriteData(argb).addSprite(src, dst);
+
 			// Move forward CHAR WIDTH (not cell width)
 			x += charWidth;
-			draw(gl);
 		}
 	}
-	
-	
-	private void createTexture(GL10 gl) {
-		loadBitmap(gl, getBitmap());
-	}
-	
-	int textureSize;
-	
-	public Bitmap getBitmap() {
+
+	@Override
+	public Bitmap getBitmap(Resources resources) {
 		// We use the font to create a sprite atlas containing every letter,
 		// then we return the sprite atlas bitmap to be used as the texture.
 
@@ -173,7 +147,7 @@ public class FontTexture {
 		// Number of chars = 95
 		// Square root (round up) = 10 x 10 grid
 		// Max size = 256 / 10 = 25.6 (24?)
-	    textureSize = 0;
+		int textureSize = 0;
 		if (maxSize <= 24) // IF Max Size is 24 or Less
 			textureSize = 256;
 		else if (maxSize <= 40) // ELSE IF Max Size is 40 or Less
@@ -217,121 +191,5 @@ public class FontTexture {
 		}
 
 		return bitmap;
-	}
-	
-	// Load Bitmap
-	private void loadBitmap(GL10 gl, Bitmap bitmapToLoad) {
-		IntBuffer t = IntBuffer.allocate(1);
-		gl.glGenTextures(1, t);
-		int texture_id = t.get(0);
-		
-		spriteData = new SpriteData(Color.WHITE, texture_id);
-		
-//		gl.glEnable(GL10.GL_TEXTURE_2D);
-
-		// Working with textureId
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
-
-		// SETTINGS
-		// Scale up if the texture is smaller.
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-				GL10.GL_LINEAR);
-		// Scale down if the mesh is smaller.
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-				GL10.GL_LINEAR);
-		// Clamp to edge behaviour at edge of texture (repeats last pixel)
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
-				GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
-				GL10.GL_CLAMP_TO_EDGE);
-
-		// Attach bitmap to current texture
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmapToLoad, 0);
-
-		// Add dimensional info to spritedata
-		spriteData.setDimensions(textureSize, textureSize);
-//		texture.addSprite(new Rect(0, 0, bitmapToLoad.getWidth(), bitmapToLoad.getHeight()));
-//		textures.append(imageId, texture);
-		
-//		gl.glDisable(GL10.GL_TEXTURE_2D);
-	}
-	
-	private void draw(GL10 gl) {
-		// CONVERT INTO ARRAY
-		float[] vertices = spriteData.getVertices();
-		short[] indices = spriteData.getIndices();
-		float[] textureCoords = spriteData.getTextureCoords();
-		
-		
-		// ONLY DRAW IF ALL NOT NULL
-		if (vertices != null && indices != null
-				&& textureCoords != null) {
-			// CREATE BUFFERS - these are just containers for sending
-			// the
-			// draw information we have already collected to OpenGL
-
-			// Vertex buffer (position information of every draw
-			// command)
-			ByteBuffer vbb = ByteBuffer
-					.allocateDirect(vertices.length * 4);
-			vbb.order(ByteOrder.nativeOrder());
-			FloatBuffer vertexBuffer = vbb.asFloatBuffer();
-			vertexBuffer.put(vertices);
-			vertexBuffer.position(0);
-
-			// Index buffer (which vertices go together to make the
-			// elements)
-			ByteBuffer ibb = ByteBuffer
-					.allocateDirect(indices.length * 2);
-			ibb.order(ByteOrder.nativeOrder());
-			ShortBuffer indexBuffer = ibb.asShortBuffer();
-			indexBuffer.put(indices);
-			indexBuffer.position(0);
-
-			// How to paste the texture over each element so that the
-			// right
-			// image is shown
-			ByteBuffer tbb = ByteBuffer
-					.allocateDirect(textureCoords.length * 4);
-			tbb.order(ByteOrder.nativeOrder());
-			FloatBuffer textureBuffer = tbb.asFloatBuffer();
-			textureBuffer.put(textureCoords);
-			textureBuffer.position(0);
-
-			// CONVERT RGBA TO SEPERATE VALUES
-//					int color = currentSpriteData.getARGB();
-//					float r = Color.red(color) / 255f;
-//					float g = Color.green(color) / 255f;
-//					float b = Color.blue(color) / 255f;
-//					float a = Color.alpha(color) / 255f;
-
-			// DRAW COMMAND
-			
-			gl.glEnable(GL10.GL_TEXTURE_2D);
-			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-//					gl.glEnableClientState(GL10.GL_CO);
-			
-//					gl.glColor4f(r, g, b, a);
-			// Tell OpenGL where our texture is located.
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, spriteData.getTextureID());
-			// Telling OpenGL where our textureCoords are.
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-			// Specifies the location and data format of the array of
-			// vertex
-			// coordinates to use when rendering.
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-			// Draw elements command using indices so it knows which
-			// vertices go together to form each element
-			gl.glDrawElements(GL10.GL_TRIANGLES, indices.length,
-					GL10.GL_UNSIGNED_SHORT, indexBuffer);
-
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-			
-			// Clear spriteData
-//					currentSpriteData.clear();
-		}
 	}
 }

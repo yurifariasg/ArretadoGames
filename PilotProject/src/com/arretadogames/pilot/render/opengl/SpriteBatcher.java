@@ -96,7 +96,7 @@ public class SpriteBatcher implements Renderer {
 						continue;
 					}
 					// Store font texture
-					texture = new FontTexture(tf);
+					texture = new FontTextureOld(tf);
 					texturesByResourceId.put(resourceIds[i], texture);
 					drawOrder.add(texture);
 				} else {
@@ -344,8 +344,8 @@ public class SpriteBatcher implements Renderer {
 	 */
 	public void setFontParams(int resourceId, FontParams params) {
 		Texture texture = texturesByResourceId.get(resourceId);
-		if (texture != null && texture.getClass() == FontTexture.class) {
-			FontTexture fontTexture = (FontTexture) texture;
+		if (texture != null && texture.getClass() == FontTextureOld.class) {
+			FontTextureOld fontTexture = (FontTextureOld) texture;
 			fontTexture.setParams(params);
 		} else {
 			Log.w(TAG,
@@ -443,9 +443,9 @@ public class SpriteBatcher implements Renderer {
 		Texture texture = texturesByResourceId.get(resourceId);
 		if (texture != null) {
 			// Try casting to a FontTexture
-			FontTexture fontTexture = null;
+			FontTextureOld fontTexture = null;
 			try {
-				fontTexture = (FontTexture) texture;
+				fontTexture = (FontTextureOld) texture;
 			} catch (ClassCastException e) {
 				Log.e(TAG,
 						"Error: Tried to drawText() with non-font resourceId!",

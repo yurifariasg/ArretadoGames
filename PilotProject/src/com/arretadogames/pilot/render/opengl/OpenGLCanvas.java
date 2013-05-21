@@ -6,6 +6,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -16,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.opengl.GLUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -28,6 +30,7 @@ public class OpenGLCanvas implements GameCanvas {
 	
 	private GL10 gl;
 	private static SparseArray<SpriteData> textures = new SparseArray<SpriteData>();
+	private static HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
 	
 	private Rect arbritaryRect = new Rect();
 	public static float physicsRatio = 25;
@@ -128,7 +131,6 @@ public class OpenGLCanvas implements GameCanvas {
 		arbritaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
 		arbritaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
 //		arbritaryRect.bottom = (int) ((centerY + sideLength / 2) * physicsRatio);
-		System.out.println("Drawing PhysicsDebugRect: " + (arbritaryRect.toShortString()));
 		drawRect(arbritaryRect, color);
 	}
 	
@@ -148,8 +150,6 @@ public class OpenGLCanvas implements GameCanvas {
 //		gl.glVertex3f(15, 0, 0);
 //		gl.glEnd();
 		
-		System.out.println("Lines Length: " + lines.length);
-		
 		Vec2 vertices[] = lines;
     	int cont = vertices.length + 3;
     	float[] squareCoords = new float[3*cont];
@@ -163,7 +163,6 @@ public class OpenGLCanvas implements GameCanvas {
     		squareCoords[3 + 3*i] = vertices[i].x * physicsRatio;
     		squareCoords[3 + 3*i+1] = DisplaySettings.TARGET_HEIGHT - vertices[i].y * physicsRatio;
     		squareCoords[3 + 3*i+2] = 0.0f;
-    		Log.d("vert", vertices[i].x + " "  + vertices[i].y);
     	}
     	
     	// Penultimo
@@ -175,10 +174,6 @@ public class OpenGLCanvas implements GameCanvas {
     	squareCoords[3 + 3 * (vertices.length + 1)] = vertices[0].x * physicsRatio;
     	squareCoords[3 + 3 * (vertices.length + 1) + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
     	squareCoords[3 + 3 * (vertices.length + 1) + 2] = 0.0f;
-    	
-    	System.out.println("VertexArray: " + Arrays.toString(vertices));
-    	System.out.println("VertexArray: " + Arrays.toString(squareCoords));
-    	
     	
     	short[] drawOrder = new short[12]; // FIXME : fix this shit...
     	int i = 0;
@@ -263,7 +258,18 @@ public class OpenGLCanvas implements GameCanvas {
 
 	@Override
 	public void drawText(String text, float x, float y, Paint p) {
-		// TODO Auto-generated method stub
+		p.getTypeface();
+		p.getTextSize();
+		p.getColor();
+		if (fontTextures.get(p.getTypeface()) == null)
+			createFont(p.getTypeface());
+		
+		fontTextures.get(p.getTypeface()).drawText(gl, text, (int) x, (int) y, p.getTextSize(), p.getColor());
+	}
+
+	private void createFont(Typeface typeface) {
+		FontTexture fontTexture = new FontTexture(typeface);
+		fontTextures.put(typeface, fontTexture);
 	}
 
 	@Override
@@ -433,8 +439,10 @@ public class OpenGLCanvas implements GameCanvas {
 		
 		// Get bitmap
 		Bitmap bitmap = ImageLoader.loadImage(imageId);
-		
-		
+		loadImage(imageId, bitmap);
+	}
+	
+	private void loadImage(int imageId, Bitmap bitmapToLoad) { /* We also load Bitmaps in FontTexture */
 		IntBuffer t = IntBuffer.allocate(1);
 		gl.glGenTextures(1, t);
 		int texture_id = t.get(0);
@@ -460,11 +468,11 @@ public class OpenGLCanvas implements GameCanvas {
 				GL10.GL_CLAMP_TO_EDGE);
 
 		// Attach bitmap to current texture
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmapToLoad, 0);
 
 		// Add dimensional info to spritedata
-		texture.setDimensions(bitmap.getWidth(), bitmap.getHeight());
-		texture.addSprite(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
+		texture.setDimensions(bitmapToLoad.getWidth(), bitmapToLoad.getHeight());
+		texture.addSprite(new Rect(0, 0, bitmapToLoad.getWidth(), bitmapToLoad.getHeight()));
 		textures.append(imageId, texture);
 //		gl.glDisable(GL10.GL_TEXTURE_2D);
 	}
