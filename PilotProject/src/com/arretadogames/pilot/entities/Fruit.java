@@ -49,7 +49,8 @@ public class Fruit extends Entity {
 				(size/2 * GLCanvas.physicsRatio), // Bottom Right
 				(size/2 * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.RED);
+		canvas.drawRect(rect.left, rect.top,
+				rect.right, rect.bottom, Color.RED);
 //		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 	}

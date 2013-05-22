@@ -59,7 +59,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		
 		canvas.saveState();
 		canvas.scale(2, currentZoom, 400, 180 + (300 - 180) / 2);
-		canvas.drawRect(new Rect(0, 180, 800, 300), Color.argb(255, 255, 255, 255));
+		canvas.drawRect(0, 180, 800, 300, Color.WHITE);
 		canvas.restoreState();
 		
 		paintBitmap.setAlpha(currentBitmapAlpha);

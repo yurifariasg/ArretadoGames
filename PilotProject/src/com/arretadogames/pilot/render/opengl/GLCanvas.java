@@ -26,22 +26,19 @@ import com.arretadogames.pilot.loading.ImageLoader;
 public class GLCanvas {
 	
 	private GL10 gl;
-	private static SparseArray<SpriteData> textures = new SparseArray<SpriteData>();
+	private static SparseArray<GLImage> textures = new SparseArray<GLImage>();
 	private static HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
 	
 	private Rect arbritaryRect = new Rect();
 	public static float physicsRatio = 25;
 	
-	
-	public GLCanvas(GL10 gl) {
+	public void setGLInterface(GL10 gl) {
 		this.gl = gl;
 	}
-
 	
 	public void setPhysicsRatio(float newRatio) {
 		physicsRatio = newRatio;
 	}
-
 	
 	public boolean initiate() {
 		
@@ -64,10 +61,6 @@ public class GLCanvas {
 	}
 
 	
-	public void flush() {
-	}
-
-	
 	public void translate(float dx, float dy) {
 		gl.glTranslatef(dx, dy, 0);
 	}
@@ -84,24 +77,13 @@ public class GLCanvas {
 		gl.glRotatef(degrees, 0, 0, 1);
 	}
 
-	
-	public void rotatePhysics(float degrees) {
-		rotate(degrees); // TODO: Method should be removed
-	}
-
-	
 	public void drawDebugRect(int x, int y, int x2, int y2) {
-		// TODO Auto-generated method stub
 		arbritaryRect.left = x;
 		arbritaryRect.top = y;
 		arbritaryRect.right = x2;
 		arbritaryRect.bottom = y2;
-		drawRect(arbritaryRect, Color.RED);
-	}
-
-	
-	public void drawCameraDebugRect(float x, float y, float x2, float y2) {
-		// TODO Auto-generated method stub
+		
+		GLRect.draw(gl, x, y, x2, y2, Color.RED);
 	}
 
 	
@@ -109,21 +91,19 @@ public class GLCanvas {
 			float sideLength) {
 		drawPhysicsDebugRect(centerX, centerY, sideLength, Color.RED);
 	}
-
 	
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength, int color) {
 		arbritaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
 		arbritaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
-//		arbritaryRect.top = (int) ((centerY - sideLength / 2) * physicsRatio);
 		arbritaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
 		arbritaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
-//		arbritaryRect.bottom = (int) ((centerY + sideLength / 2) * physicsRatio);
-		drawRect(arbritaryRect, color);
+		
+		GLRect.draw(gl, arbritaryRect.left, arbritaryRect.top, arbritaryRect.right,
+				arbritaryRect.bottom, color);
 	}
 	
-	private final float GROUND_BOTTOM = -10;
-
+	private final float GROUND_BOTTOM = -10; // FIXME : Check this
 	
 	public void drawPhysicsLines(Vec2[] lines) {
 		
@@ -188,53 +168,23 @@ public class GLCanvas {
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
         
-        gl.glColor4f(0.54f, 0.28f, 0.15f, 1f);
+        gl.glColor4f(0.54f, 0.28f, 0.15f, 1f); // Brown
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
         gl.glDrawElements(GL10.GL_TRIANGLE_STRIP, drawOrder.length, GL10.GL_UNSIGNED_SHORT, drawListBuffer);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glColor4f(1,1,1,1);
 		
-		
 	}
 
-	
-	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
-		float[] vertices = {x1, y1, 0, x2, y2, 0};
-		short[] indices = {0, 1, 0};
-		
-        ByteBuffer vbb  = ByteBuffer.allocateDirect(vertices.length * 4);
-        vbb.order(ByteOrder.nativeOrder());
-        FloatBuffer vertexBuffer = vbb.asFloatBuffer();
-        vertexBuffer.put(vertices);
-        vertexBuffer.position(0);
-
-        ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
-        ibb.order(ByteOrder.nativeOrder());
-        ShortBuffer indexBuffer = ibb.asShortBuffer();
-        indexBuffer.put(indices);
-        indexBuffer.position(0);
-
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glLineWidth(2);
-        gl.glColor4f(1, 0, 0, 1);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glDrawElements(GL10.GL_LINES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        
-	}
-
-	
 	public void saveState() {
 		gl.glPushMatrix();
 	}
-
 	
 	public void restoreState() {
 		gl.glPopMatrix();
 	}
 
-	
 	public void drawText(String text, float x, float y, Paint p, boolean centered) {
 		if (fontTextures.get(p.getTypeface()) == null)
 			createFont(p.getTypeface());
@@ -247,100 +197,26 @@ public class GLCanvas {
 		fontTextures.put(typeface, fontTexture);
 	}
 
-	
 	public void fillScreen(float a, float r, float g, float b) {
 		gl.glClearColor(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
 
-	
-	public void drawRect(Rect rect, int argb) {
-		gl.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
-		GLRect glRect = GLRect.create(rect);
-		glRect.draw(gl);
+	public void drawRect(float left, float top, float right, float bottom, int color) {
+		GLRect.draw(gl, left, top, right, bottom, color);
 	}
 
-	
 	public void drawBitmap(int imageId, float x, float y) {
 		saveState();
-		gl.glColor4f(1, 1, 1, 1);
 		translate(x, y);
-		drawBitmap(imageId);
+		if (textures.get(imageId) == null)
+			loadImage(imageId);
+		
+		if (textures.get(imageId) == null)
+			loadImage(imageId);
+		GLImage texture = textures.get(imageId);
+		GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
 		restoreState();
 	}
-	
-	private void drawBitmap(int imageId) {
-		SpriteData currentSpriteData = textures.get(imageId);
-		if (currentSpriteData == null) {
-			loadImage(imageId);
-			currentSpriteData = textures.get(imageId);
-		}
-		
-		// CONVERT INTO ARRAY
-		float[] vertices = currentSpriteData.getVertices();
-		short[] indices = currentSpriteData.getIndices();
-		float[] textureCoords = currentSpriteData.getTextureCoords();
-		
-		
-		// ONLY DRAW IF ALL NOT NULL
-		if (vertices != null && indices != null
-				&& textureCoords != null) {
-			// CREATE BUFFERS - these are just containers for sending
-			// the
-			// draw information we have already collected to OpenGL
-
-			// Vertex buffer (position information of every draw
-			// command)
-			ByteBuffer vbb = ByteBuffer
-					.allocateDirect(vertices.length * 4);
-			vbb.order(ByteOrder.nativeOrder());
-			FloatBuffer vertexBuffer = vbb.asFloatBuffer();
-			vertexBuffer.put(vertices);
-			vertexBuffer.position(0);
-
-			// Index buffer (which vertices go together to make the
-			// elements)
-			ByteBuffer ibb = ByteBuffer
-					.allocateDirect(indices.length * 2);
-			ibb.order(ByteOrder.nativeOrder());
-			ShortBuffer indexBuffer = ibb.asShortBuffer();
-			indexBuffer.put(indices);
-			indexBuffer.position(0);
-
-			// How to paste the texture over each element so that the
-			// right
-			// image is shown
-			ByteBuffer tbb = ByteBuffer
-					.allocateDirect(textureCoords.length * 4);
-			tbb.order(ByteOrder.nativeOrder());
-			FloatBuffer textureBuffer = tbb.asFloatBuffer();
-			textureBuffer.put(textureCoords);
-			textureBuffer.position(0);
-
-			// DRAW COMMAND
-			
-			gl.glEnable(GL10.GL_TEXTURE_2D);
-			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-			
-			// Tell OpenGL where our texture is located.
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, currentSpriteData.getTextureID());
-			// Telling OpenGL where our textureCoords are.
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-			// Specifies the location and data format of the array of
-			// vertex
-			// coordinates to use when rendering.
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-			// Draw elements command using indices so it knows which
-			// vertices go together to form each element
-			gl.glDrawElements(GL10.GL_TRIANGLES, indices.length,
-					GL10.GL_UNSIGNED_SHORT, indexBuffer);
-
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-		}
-	}
-
 	
 	public void drawBitmap(int imageId, float x, float y, Paint paint) {
 		saveState();
@@ -349,19 +225,16 @@ public class GLCanvas {
 
 		if (textures.get(imageId) == null)
 			loadImage(imageId);
-		SpriteData texture = textures.get(imageId);
-		texture.clear();
-		texture.addSprite(new Rect(0, 0, texture.getTextureWidth(), texture.getTextureHeight()));
-		drawBitmap(imageId);
-		restoreState();
+		
+		GLImage texture = textures.get(imageId);
+		GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
 	}
-
 	
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
 			boolean convertFromPhysics) {
 		if (textures.get(imageId) == null)
 			loadImage(imageId);
-		SpriteData tex = textures.get(imageId);
+		GLImage tex = textures.get(imageId);
 		gl.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
@@ -375,15 +248,8 @@ public class GLCanvas {
 			arbritaryRect.right = (int) dstRect.right;
 			arbritaryRect.bottom = (int) dstRect.bottom;
 		}
-		tex.clear();
-		if (srcRect == null)
-			tex.addSprite(arbritaryRect);
-		else
-			tex.addSprite(srcRect, arbritaryRect);
 		
-		textures.append(imageId, tex);
-		
-		drawBitmap(imageId);
+		GLTexture.draw(gl, null, arbritaryRect, tex);
 	}
 
 	
@@ -400,7 +266,6 @@ public class GLCanvas {
 
 	
 	public void loadImage(int imageId) {
-		
 		// Get bitmap
 		Bitmap bitmap = ImageLoader.loadImage(imageId);
 		loadImage(imageId, bitmap);
@@ -411,7 +276,7 @@ public class GLCanvas {
 		gl.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
-		SpriteData texture = new SpriteData(Color.WHITE, texture_id);
+		GLImage texture = new GLImage(texture_id);
 		
 		// Working with textureId
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
@@ -434,16 +299,12 @@ public class GLCanvas {
 
 		// Add dimensional info to spritedata
 		texture.setDimensions(bitmapToLoad.getWidth(), bitmapToLoad.getHeight());
-		texture.addSprite(new Rect(0, 0, bitmapToLoad.getWidth(), bitmapToLoad.getHeight()));
 		textures.append(imageId, texture);
 	}
-
 	
 	public void recycleImage(int imageId) {
 		// TODO Auto-generated method stub
-		
 	}
-
 	
 	public void translatePhysics(float posX, float posY) {
 		gl.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);

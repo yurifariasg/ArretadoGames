@@ -51,6 +51,8 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		// Set OnTouchListener
 		setOnTouchListener(activity);
 		
+		gameCanvas = new GLCanvas();
+		
 		getHolder().setFixedSize((int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
 		
 		if (DisplaySettings.SHOW_FPS) {
@@ -89,8 +91,6 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		 */
 		if (frameEndedTime == 0)
 			frameEndedTime = getCurrentTime();
-		
-		gameCanvas = new GLCanvas(gl);
 
 		long frameCurrentTime = getCurrentTime();
 		float elapsedTime = (frameCurrentTime - frameEndedTime) / 1000f;
@@ -105,11 +105,10 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 			Log.d("Profile", "Step Speed: " + (getCurrentTime() - time));
 			time = getCurrentTime();
 		}
-		
-		if (gameCanvas.initiate()) { // If initiate was successful
-			Game.getInstance().render(gameCanvas, elapsedTime);
-			gameCanvas.flush();
-		}
+
+		gameCanvas.setGLInterface(gl);
+		gameCanvas.initiate();
+		Game.getInstance().render(gameCanvas, elapsedTime);
 		
 		if (DisplaySettings.PROFILE_SPEED) {
 			Log.d("Profile", "Render Speed: " + (getCurrentTime() - time));
@@ -130,10 +129,8 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		}
 		
 		if (DisplaySettings.SHOW_FPS) {
-			
 			fpsBuffer[fpsCounter] = (1000f/(getCurrentTime() - frameCurrentTime));
 			fpsCounter = ++fpsCounter % fpsBuffer.length;
-			
 			gameCanvas.drawText("FPS: " + getAverageFPS(), 30, 20, fpsPaint, true);
 		}
 		

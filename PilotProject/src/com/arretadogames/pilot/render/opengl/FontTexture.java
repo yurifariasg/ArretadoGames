@@ -44,7 +44,7 @@ public class FontTexture {
 	private int padX = 2;
 	private int padY = 2;
 
-	private SpriteData spriteData;
+	private GLImage spriteData;
 
 	public FontTexture(Typeface tf) {
 		this.tf = tf;
@@ -91,12 +91,10 @@ public class FontTexture {
 			// Destination rect
 			dst.set(x, y, x + scaledCellWidth, y + scaledCellHeight);
 
-			// Add sprite
-			spriteData.clear();
-			spriteData.addSprite(src,dst);
+			// Draw
+			GLTexture.draw(gl, src, dst, spriteData);
 			// Move forward CHAR WIDTH (not cell width)
 			x += charWidth * scale;
-			draw(gl);
 		}
 		gl.glColor4f(1,1,1,1);
 	}
@@ -213,10 +211,8 @@ public class FontTexture {
 		gl.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
-		spriteData = new SpriteData(Color.WHITE, texture_id);
+		spriteData = new GLImage(texture_id);
 		
-//		gl.glEnable(GL10.GL_TEXTURE_2D);
-
 		// Working with textureId
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
 
@@ -238,86 +234,6 @@ public class FontTexture {
 
 		// Add dimensional info to spritedata
 		spriteData.setDimensions(textureSize, textureSize);
-//		texture.addSprite(new Rect(0, 0, bitmapToLoad.getWidth(), bitmapToLoad.getHeight()));
-//		textures.append(imageId, texture);
-		
-//		gl.glDisable(GL10.GL_TEXTURE_2D);
 	}
 	
-	private void draw(GL10 gl) {
-		// CONVERT INTO ARRAY
-		float[] vertices = spriteData.getVertices();
-		short[] indices = spriteData.getIndices();
-		float[] textureCoords = spriteData.getTextureCoords();
-		
-		
-		// ONLY DRAW IF ALL NOT NULL
-		if (vertices != null && indices != null
-				&& textureCoords != null) {
-			// CREATE BUFFERS - these are just containers for sending
-			// the
-			// draw information we have already collected to OpenGL
-
-			// Vertex buffer (position information of every draw
-			// command)
-			ByteBuffer vbb = ByteBuffer
-					.allocateDirect(vertices.length * 4);
-			vbb.order(ByteOrder.nativeOrder());
-			FloatBuffer vertexBuffer = vbb.asFloatBuffer();
-			vertexBuffer.put(vertices);
-			vertexBuffer.position(0);
-
-			// Index buffer (which vertices go together to make the
-			// elements)
-			ByteBuffer ibb = ByteBuffer
-					.allocateDirect(indices.length * 2);
-			ibb.order(ByteOrder.nativeOrder());
-			ShortBuffer indexBuffer = ibb.asShortBuffer();
-			indexBuffer.put(indices);
-			indexBuffer.position(0);
-
-			// How to paste the texture over each element so that the
-			// right
-			// image is shown
-			ByteBuffer tbb = ByteBuffer
-					.allocateDirect(textureCoords.length * 4);
-			tbb.order(ByteOrder.nativeOrder());
-			FloatBuffer textureBuffer = tbb.asFloatBuffer();
-			textureBuffer.put(textureCoords);
-			textureBuffer.position(0);
-
-			// CONVERT RGBA TO SEPERATE VALUES
-//					int color = currentSpriteData.getARGB();
-//					float r = Color.red(color) / 255f;
-//					float g = Color.green(color) / 255f;
-//					float b = Color.blue(color) / 255f;
-//					float a = Color.alpha(color) / 255f;
-
-			// DRAW COMMAND
-			
-			gl.glEnable(GL10.GL_TEXTURE_2D);
-			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-//					gl.glEnableClientState(GL10.GL_CO);
-			
-//					gl.glColor4f(r, g, b, a);
-			// Tell OpenGL where our texture is located.
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, spriteData.getTextureID());
-			// Telling OpenGL where our textureCoords are.
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-			// Specifies the location and data format of the array of
-			// vertex
-			// coordinates to use when rendering.
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-			// Draw elements command using indices so it knows which
-			// vertices go together to form each element
-			gl.glDrawElements(GL10.GL_TRIANGLES, indices.length,
-					GL10.GL_UNSIGNED_SHORT, indexBuffer);
-
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-			
-		}
-	}
 }
