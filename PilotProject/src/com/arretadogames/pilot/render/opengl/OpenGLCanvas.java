@@ -374,6 +374,7 @@ public class OpenGLCanvas implements GameCanvas {
 		if (textures.get(imageId) == null)
 			loadImage(imageId);
 		SpriteData tex = textures.get(imageId);
+		gl.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
 			arbritaryRect.left = (int) (dstRect.left * physicsRatio);
