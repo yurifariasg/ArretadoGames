@@ -4,7 +4,7 @@ public class DisplaySettings {
 	
 	public static final float TARGET_WIDTH = 800f;
 	public static final float TARGET_HEIGHT = 480f;
-	public static final float TARGET_FPS = 60f;
+	public static final float TARGET_FPS = 70f;
 	
 	public static float DISPLAY_WIDTH = -1;
 	public static float DISPLAY_HEIGHT = -1;
@@ -24,4 +24,6 @@ public class DisplaySettings {
 	public static final int GROUND_ENTITY_THRESHOLD = 3;
 	public static final boolean DRAW_DEBUG_GROUND = true;
 
+	public static final boolean SHOW_FPS = true;
+	public static final int FPS_AVG_BUFFER_SIZE = 10;
 }
