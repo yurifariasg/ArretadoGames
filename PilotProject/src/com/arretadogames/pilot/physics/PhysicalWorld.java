@@ -1,4 +1,8 @@
 package com.arretadogames.pilot.physics;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -14,11 +18,13 @@ import com.arretadogames.pilot.entities.Entity;
 public class PhysicalWorld implements ContactListener {
 	private static PhysicalWorld gworld;
 	World world;
+	private Collection<Entity> deadEntities;
 	
 	private PhysicalWorld() {
 		world = new World(new Vec2(0.0f,-10.0f));
 		world.setContactListener(this);
 		world.setAllowSleep(true);
+		deadEntities = new ArrayList<Entity>();
 	}
 	
 	public static PhysicalWorld getInstance() {
@@ -79,5 +85,21 @@ public class PhysicalWorld implements ContactListener {
 
 	public void step(float timeElapsed) {
 		world.step(timeElapsed, 8, 10);
+	}
+
+	public void addDeadEntity(Entity e) {
+		deadEntities.add(e);
+	}
+	
+	public void clearDeadEntities(){
+		deadEntities.clear();
+	}
+	
+	public Iterator<Entity> getDeadEntities(){
+		return deadEntities.iterator();
+	}
+	
+	public void destroyEntity(Entity e){
+		world.destroyBody(e.body);
 	}
 }

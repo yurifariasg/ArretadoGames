@@ -11,6 +11,7 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.OpenGLCanvas;
@@ -36,6 +37,7 @@ public class Fruit extends Entity {
 		super.beginContact(e, contact);
 		if(e.getType() == EntityType.PLAYER ){
 			System.out.println("Encostou fruta");
+			PhysicalWorld.getInstance().addDeadEntity(this);
 		}
 	}
 

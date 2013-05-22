@@ -14,7 +14,7 @@ import com.arretadogames.pilot.render.Sprite;
 public abstract class Entity implements Renderable {
 	public Body body;
 	protected World world;
-	
+
 	public Entity(float x, float y) {
 		world = PhysicalWorld.getInstance().getWorld();
 		BodyDef bd = new BodyDef();
@@ -51,4 +51,5 @@ public abstract class Entity implements Renderable {
 	public abstract EntityType getType();
 	
 	public abstract void setSprite(Sprite sprite);
+	
 }
