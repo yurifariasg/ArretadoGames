@@ -1,13 +1,13 @@
 package com.arretadogames.pilot.entities;
 
+
+
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
@@ -16,14 +16,16 @@ import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.OpenGLCanvas;
 
 public class LoboGuara extends Player {
-	
+
 	private Sprite sprite;
 	private int contJump;
 	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
-	private Fixture headFixture;
-	private int contactsHead;
+	private final float MAX_JUMP_VELOCITY = 8;
+	private final float MAX_RUN_VELOCITY = 8;
+	private float JUMP_ACELERATION = 6;
+	private float RUN_ACELERATION = 13;
 	
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
@@ -45,24 +47,20 @@ public class LoboGuara extends Player {
 		super(x, y, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
-		footFixture = body.createFixture(shape,  7f);
+		footFixture = body.createFixture(shape,  4f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
-		contactsHead = 0;
 		body.setFixedRotation(false);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(0.7f, 0.1f, new Vec2(0f,-0.5f), 0f);
 		//footFixture = body.createFixture(footShape, 50f);
 		
-		PolygonShape headShape = new PolygonShape();
-		headShape.setAsBox(0.6f, 0.1f, new Vec2(0f,0.5f), 0f);
-		//headFixture = body.createFixture(headShape, 0f);
 	}
 
 	double getAngle(){
 		double angle = 0;
-		if(body.getLinearVelocity().length() > 0.001){
+		if(body.getLinearVelocity().length() > 1){
 			double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
 			cos = Math.abs(cos);
 			angle = Math.acos(cos);
@@ -74,29 +72,13 @@ public class LoboGuara extends Player {
 		return angle;
 	}
 	
-	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
-		
-		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY());
-		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		RectF rect = new RectF(
-				(- 0.7f* OpenGLCanvas.physicsRatio), // Top Left
-				(- 1f * OpenGLCanvas.physicsRatio), // Top Top Left
-				(0.71f * OpenGLCanvas.physicsRatio), // Bottom Right
-				(0.55f * OpenGLCanvas.physicsRatio)); // Bottom Right
-		
-//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.CYAN);
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
-		canvas.restoreState();
-		
-	}
+	
 
 	@Override
 	public void jump() {
 		sprite.setAnimationState("jump");
 		if( contJump > 0 || contacts <= 0) return;	
-		float impulseX = (8) * body.getMass();
+		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
 		Vec2 direction = new Vec2(1,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
@@ -109,9 +91,10 @@ public class LoboGuara extends Player {
 		if(body.getLinearVelocity().x < 2){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
-		if(contacts > 0 && body.getLinearVelocity().x < 7f){
-			float force = (11) * body.getMass();
-			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
+			float force = (RUN_ACELERATION) * body.getMass();
+			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
 			direction.mulLocal(force);
 			body.applyForceToCenter(direction);
@@ -121,10 +104,7 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void act() {
-		if( contactsHead > 0 && contAct == 0){
-			body.applyLinearImpulse(new Vec2(0f,2 * body.getMass()), body.getWorldCenter());
-			body.applyAngularImpulse(-0.5f);
-		} else if( contacts > 0 && contAct == 0){
+	if( contacts > 0 && contAct == 0){
 			float impulse = (5) * body.getMass();
 			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			direction.normalize();
@@ -132,7 +112,6 @@ public class LoboGuara extends Player {
 			body.applyLinearImpulse(direction, body.getWorldCenter());
 			contAct = 50;
 		}
-		
 	}
 
 	@Override
@@ -147,16 +126,12 @@ public class LoboGuara extends Player {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			sprite.setAnimationState("walking");
 			contacts++;
-		} else if(contact.m_fixtureA.equals(headFixture) || contact.m_fixtureB.equals(headFixture)){
-			contactsHead++;
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			contacts--;
-		} else if (contact.m_fixtureA.equals(headFixture) || contact.m_fixtureB.equals(headFixture)){
-			contactsHead--;
 		}
 	}
 
@@ -195,5 +170,23 @@ public class LoboGuara extends Player {
 	
 	public void setSprite(Sprite sprite){
 		this.sprite = sprite;
+	}
+	
+	@Override
+	public void render(GameCanvas canvas, float timeElapsed) {
+		
+		canvas.saveState();
+		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
+		RectF rect = new RectF(
+				(- 0.7f* OpenGLCanvas.physicsRatio), // Top Left
+				(- 1f * OpenGLCanvas.physicsRatio), // Top Top Left
+				(0.71f * OpenGLCanvas.physicsRatio), // Bottom Right
+				(0.55f * OpenGLCanvas.physicsRatio)); // Bottom Right
+		
+//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.CYAN);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.restoreState();
+		
 	}
 }

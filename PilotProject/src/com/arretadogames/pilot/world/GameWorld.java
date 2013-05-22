@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jbox2d.common.Vec2;
@@ -58,7 +59,7 @@ public class GameWorld extends GameScreen {
 		sm = new SpriteManager();
 		
 		try {
-			load(LevelManager.loadLevel(0)); // 0: Default Level
+			load(LevelManager.loadLevel(1)); // 0: Default Level
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -177,6 +178,17 @@ public class GameWorld extends GameScreen {
 			ui.step(timeElapsed);
 			pWorld.step(timeElapsed);
 		}
+		removeDeadEntities();
+	}
+	
+	private void removeDeadEntities(){
+		Iterator<Entity> it = pWorld.getDeadEntities();
+		while(it.hasNext()){
+			Entity e = it.next();
+			pWorld.destroyEntity(e);
+			worldEntities.remove(e);
+		}
+		pWorld.clearDeadEntities();
 	}
 
 	@Override
