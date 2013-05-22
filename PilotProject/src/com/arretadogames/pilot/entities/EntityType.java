@@ -2,7 +2,7 @@ package com.arretadogames.pilot.entities;
 
 public enum EntityType {
 	
-	BOX("box"), FRUIT("fruit"),	GROUND("ground"), PLAYER("player");
+	BOX("box"), FRUIT("fruit"),	GROUND("ground"), PLAYER("player"), FIRE("fire");
 	
 	private String name;
 	
