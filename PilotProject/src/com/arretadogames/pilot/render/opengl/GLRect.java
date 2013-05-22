@@ -7,25 +7,54 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.Color;
 
 public class GLRect {
 
-    private short[] indices = {0,1,2,0,2,3};
+    protected static final short[] INDICES = {0,1,2,0,2,3};
     
-	private float vertices[]={
-	        -1.0f, 1.0f, 0.0f,
-	        -1.0f,-1.0f,0.0f,
-	        1.0f,-1.0f,0.0f,
-	        1.0f,1.0f,0.0f
-	    };
+    protected static float vertices[] = new float[12];
 
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer indexBuffer;
+    protected static FloatBuffer vertexBuffer;
+    protected static ShortBuffer indexBuffer;
+    
+    protected static void createIndicesBuffer() {
+        ByteBuffer ibb = ByteBuffer.allocateDirect(INDICES.length * 2);
+        ibb.order(ByteOrder.nativeOrder());
+        indexBuffer = ibb.asShortBuffer();
+        indexBuffer.put(INDICES);
+        indexBuffer.position(0);
+    }
 
-    private GLRect(float left, float top, float right, float bottom){
-    	
+    private static void draw(GL10 gl){
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer); // Sets Vertex Buffer
+        gl.glDrawElements(GL10.GL_TRIANGLES, INDICES.length, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+    }
+	
+	public static void draw(GL10 gl, float left, float top, float right, float bottom, int color) {
+		if (indexBuffer == null)
+			createIndicesBuffer();
+		
+		fillVertices(left, top, right, bottom);
+		
+		if (vertexBuffer == null) {
+	        ByteBuffer vbb  = ByteBuffer.allocateDirect(vertices.length * 4);
+	        vbb.order(ByteOrder.nativeOrder());
+	        vertexBuffer = vbb.asFloatBuffer();
+		}
+		vertexBuffer.clear();
+        vertexBuffer.put(vertices);
+        vertexBuffer.position(0);
+
+		gl.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
+				Color.blue(color) / 255f, Color.alpha(color) / 255f);
+        draw(gl);
+        gl.glColor4f(1, 1, 1, 1);
+	}
+
+	protected static void fillVertices(float left, float top, float right, float bottom) {
 		vertices[0] = left;
 		vertices[1] = top;
 		vertices[2] = 0f;
@@ -38,42 +67,5 @@ public class GLRect {
 		vertices[9] = right;
 		vertices[10] = top;
 		vertices[11] = 0f;
-		
-        ByteBuffer vbb  = ByteBuffer.allocateDirect(this.vertices.length * 4);
-        vbb.order(ByteOrder.nativeOrder());
-        vertexBuffer = vbb.asFloatBuffer();
-        vertexBuffer.put(vertices);
-        vertexBuffer.position(0);
-
-        ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
-        ibb.order(ByteOrder.nativeOrder());
-        indexBuffer = ibb.asShortBuffer();
-        indexBuffer.put(indices);
-        indexBuffer.position(0);
-    }
-
-    public void draw(GL10 gl){
-//        gl.glFrontFace(GL10.GL_CCW);
-//        gl.glEnable(GL10.GL_CULL_FACE);
-//        gl.glCullFace(GL10.GL_BACK);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-//        gl.glDisable(GL10.GL_CULL_FACE);
-    }
-	
-	
-	public static GLRect create(Rect rect) {
-		return create(rect.left, rect.top, rect.right, rect.bottom);
 	}
-	
-	public static GLRect create(RectF rect) {
-		return create(rect.left, rect.top, rect.right, rect.bottom);
-	}
-	
-	private static GLRect create(float left, float top, float right, float bottom) {
-		return new GLRect(left, top, right, bottom);
-	}
-
 }

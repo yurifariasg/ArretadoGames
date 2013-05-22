@@ -74,9 +74,10 @@ public class Game implements TweenAccessor<Game> {
 		}
 		
 		if (transitionStateOn) {
-			canvas.drawRect(transitionRect, Color.rgb(0, 0, 0));
+			canvas.drawRect(transitionRect.left, transitionRect.top,
+					transitionRect.right, transitionRect.bottom,
+					Color.rgb(0, 0, 0));
 		}
-
 	}
 
 	/**
