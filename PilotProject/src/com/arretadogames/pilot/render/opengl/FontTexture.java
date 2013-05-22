@@ -61,8 +61,7 @@ public class FontTexture {
 		this.padY = params.getPadY();
 	}
 	
-	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb) {
-		scale = 1;
+	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb, boolean centered) {
 		
 		if (spriteData == null)  {// Not created
 			createTexture(gl);
@@ -74,20 +73,20 @@ public class FontTexture {
 		int charWidth;
 		for (int i = 0; i < text.length(); i++) {
 			charWidth = charWidths.get((int) text.charAt(i));
-			textWidth += charWidth;
+			textWidth += charWidth * scale;
 		}
 		// Adjust to centre text about x,y
 		x -= textWidth / 2;
-		y -= fontHeight;
+		y -= fontHeight / 2;
 
 		// No cycle through and draw text
-		System.out.println("Cell Width: " + cellWidth);
 		int scaledCellWidth = (int) (scale * cellWidth);
 		int scaledCellHeight = (int) (scale * cellHeight);
 		Rect src;
 		Rect dst = new Rect();
 		int charNumber;
-		for (int i = 0; i < 1; i++) { // text.length(0
+		gl.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
+		for (int i = 0; i < text.length() ; i++) {
 			// Source rect
 			charNumber = (int) text.charAt(i);
 			src = characterRects.get(charNumber);
@@ -97,20 +96,20 @@ public class FontTexture {
 				src = characterRects.get(text.charAt(charUnknown));
 				charWidth = charWidths.get(text.charAt(charUnknown));
 			}
+			src = new Rect(src);
+			src.right -= 1; // Adjust
 
 			// Destination rect
 			dst.set(x, y, x + scaledCellWidth, y + scaledCellHeight);
 
 			// Add sprite
-			System.out.println("SourceRect: " + src.toShortString() + " DestRect: " + dst.toShortString());
 			spriteData.clear();
-//			spriteData.addSprite(new Rect(0, 0, 300, 300), dst); // FIXME doesnt have one
-			spriteData.addSprite(src, new Rect(0, 0, 800, 480));
-			
+			spriteData.addSprite(src,dst);
 			// Move forward CHAR WIDTH (not cell width)
-			x += charWidth;
+			x += charWidth * scale;
 			draw(gl);
 		}
+		gl.glColor4f(1,1,1,1);
 	}
 	
 	
@@ -206,8 +205,8 @@ public class FontTexture {
 			s[0] = c;
 			canvas.drawText(s, 0, 1, x, y, paint);
 			// Store source rectangle
-			characterRects.put((int) c, new Rect(x, y - cellHeight, x
-					+ cellWidth, y));
+			characterRects.put((int) c, new Rect(x, (int) (y - cellHeight * 0.7), x
+					+ cellWidth, (int) (y + cellHeight * 0.3)));
 			// Increment and wrap at end of line
 			x += cellWidth;
 			if ((x + cellWidth) > textureSize) {
@@ -330,8 +329,6 @@ public class FontTexture {
 			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			gl.glDisable(GL10.GL_TEXTURE_2D);
 			
-			// Clear spriteData
-//					currentSpriteData.clear();
 		}
 	}
 }

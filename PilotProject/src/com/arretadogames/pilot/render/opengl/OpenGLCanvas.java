@@ -139,17 +139,6 @@ public class OpenGLCanvas implements GameCanvas {
 	@Override
 	public void drawPhysicsLines(Vec2[] lines) {
 		
-//		for (int i = 1 ; i < lines.length ; i++)
-//			drawPhysicsLine(lines[0].x, lines[0].y, lines[1].x, lines[1].y);
-		
-//		gl.glLineWidth(2.5); 
-//		gl.glColor3f(1.0, 0.0, 0.0);
-//		gl.glBegin(GL_LINES);
-//		gl.glVert
-//		gl.glVertex3f(0.0, 0.0, 0.0);
-//		gl.glVertex3f(15, 0, 0);
-//		gl.glEnd();
-		
 		Vec2 vertices[] = lines;
     	int cont = vertices.length + 3;
     	float[] squareCoords = new float[3*cont];
@@ -211,11 +200,12 @@ public class OpenGLCanvas implements GameCanvas {
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
         
-        gl.glColor4f(1, 1, 1, 1);
+        gl.glColor4f(0.54f, 0.28f, 0.15f, 1f);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
         gl.glDrawElements(GL10.GL_TRIANGLE_STRIP, drawOrder.length, GL10.GL_UNSIGNED_SHORT, drawListBuffer);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glColor4f(1,1,1,1);
 		
 		
 	}
@@ -257,14 +247,11 @@ public class OpenGLCanvas implements GameCanvas {
 	}
 
 	@Override
-	public void drawText(String text, float x, float y, Paint p) {
-		p.getTypeface();
-		p.getTextSize();
-		p.getColor();
+	public void drawText(String text, float x, float y, Paint p, boolean centered) {
 		if (fontTextures.get(p.getTypeface()) == null)
 			createFont(p.getTypeface());
 		
-		fontTextures.get(p.getTypeface()).drawText(gl, text, (int) x, (int) y, p.getTextSize(), p.getColor());
+		fontTextures.get(p.getTypeface()).drawText(gl, text, (int) x, (int) y, p.getTextSize(), p.getColor(), centered);
 	}
 
 	private void createFont(Typeface typeface) {
@@ -341,21 +328,12 @@ public class OpenGLCanvas implements GameCanvas {
 			textureBuffer.put(textureCoords);
 			textureBuffer.position(0);
 
-			// CONVERT RGBA TO SEPERATE VALUES
-//			int color = currentSpriteData.getARGB();
-//			float r = Color.red(color) / 255f;
-//			float g = Color.green(color) / 255f;
-//			float b = Color.blue(color) / 255f;
-//			float a = Color.alpha(color) / 255f;
-
 			// DRAW COMMAND
 			
 			gl.glEnable(GL10.GL_TEXTURE_2D);
 			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-//			gl.glEnableClientState(GL10.GL_CO);
 			
-//			gl.glColor4f(r, g, b, a);
 			// Tell OpenGL where our texture is located.
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, currentSpriteData.getTextureID());
 			// Telling OpenGL where our textureCoords are.
@@ -372,9 +350,6 @@ public class OpenGLCanvas implements GameCanvas {
 			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			gl.glDisable(GL10.GL_TEXTURE_2D);
-			
-			// Clear spriteData
-//			currentSpriteData.clear();
 		}
 	}
 
@@ -399,6 +374,7 @@ public class OpenGLCanvas implements GameCanvas {
 		if (textures.get(imageId) == null)
 			loadImage(imageId);
 		SpriteData tex = textures.get(imageId);
+		gl.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
 			arbritaryRect.left = (int) (dstRect.left * physicsRatio);
@@ -449,8 +425,6 @@ public class OpenGLCanvas implements GameCanvas {
 		
 		SpriteData texture = new SpriteData(Color.WHITE, texture_id);
 		
-//		gl.glEnable(GL10.GL_TEXTURE_2D);
-
 		// Working with textureId
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
 
@@ -474,7 +448,6 @@ public class OpenGLCanvas implements GameCanvas {
 		texture.setDimensions(bitmapToLoad.getWidth(), bitmapToLoad.getHeight());
 		texture.addSprite(new Rect(0, 0, bitmapToLoad.getWidth(), bitmapToLoad.getHeight()));
 		textures.append(imageId, texture);
-//		gl.glDisable(GL10.GL_TEXTURE_2D);
 	}
 
 	@Override

@@ -3,6 +3,8 @@ package com.arretadogames.pilot.render.opengl;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.util.Log;
@@ -22,6 +24,11 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer {
 	
 	private OpenGLCanvas gameCanvas;
+	
+	// FPS Settings
+	private float[] fpsBuffer;
+	private int fpsCounter;
+	private Paint fpsPaint;
 
 	/**
 	 * Creates a GameGLSurfaceView using the given context
@@ -45,6 +52,18 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		setOnTouchListener(activity);
 		
 		getHolder().setFixedSize((int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
+		
+		if (DisplaySettings.SHOW_FPS) {
+			fpsBuffer = new float[DisplaySettings.FPS_AVG_BUFFER_SIZE];
+			for (int i = 0 ; i < fpsBuffer.length ; i++) {
+				fpsBuffer[i] = 0; // initialize all 0
+			}
+			fpsCounter = 0;
+			
+			fpsPaint = new Paint();
+			fpsPaint.setColor(Color.RED);
+			fpsPaint.setTextSize(0.5f);
+		}
 	}
 
 	@Override
@@ -110,7 +129,23 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 			}
 		}
 		
+		if (DisplaySettings.SHOW_FPS) {
+			
+			fpsBuffer[fpsCounter] = (1000f/(getCurrentTime() - frameCurrentTime));
+			fpsCounter = ++fpsCounter % fpsBuffer.length;
+			
+			gameCanvas.drawText("FPS: " + getAverageFPS(), 30, 20, fpsPaint, true);
+		}
+		
 		frameEndedTime = frameCurrentTime;
+	}
+	
+	private int getAverageFPS() {
+		float sum = 0;
+		for (int i = 0 ; i < fpsBuffer.length ; i++) {
+			sum += fpsBuffer[i];
+		}
+		return (int) (sum / fpsBuffer.length);
 	}
 	
 	private long getCurrentTime() {
@@ -125,14 +160,11 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		// Sets the current view port to the new size.
 		gl.glViewport(0, 0, width, height);
-//		gl.glViewport(0, 0, 800, 480);
 		// Select the projection matrix
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		// Reset the projection matrix
 		gl.glLoadIdentity();
 		// Orthographic mode for 2d
-//		gl.glOrthof(0, width, -height, 0, -1, 8);
-//		gl.glOrthof(0, DisplaySettings.TARGET_WIDTH, -DisplaySettings.TARGET_HEIGHT, 0, -1, 8);
 		GLU.gluOrtho2D(gl, 0, width, -height, 0);
 		// Select the modelview matrix
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
@@ -154,14 +186,8 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		gl.glEnable(GL10.GL_CULL_FACE);
 		// What faces to remove with the face culling.
 		gl.glCullFace(GL10.GL_BACK);
-		// Enabled the vertices buffer for writing and to be used during
-		// rendering.
-//		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		// Telling OpenGL to enable textures.
-//		gl.glEnable(GL10.GL_TEXTURE_2D);
-		// Tell OpenGL to enable the use of UV coordinates.
-//		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		// Blending on
+		
+		// Enable Transparency
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}

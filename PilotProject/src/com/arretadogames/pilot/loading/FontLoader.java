@@ -13,11 +13,11 @@ public class FontLoader {
 	
 	// Object Variables
 	private HashMap<Fonts, Typeface> fonts;
-	private int fontSize;
+	private float fontSize;
 	
 	private FontLoader(Context c) {
 		
-		fontSize = 45; //c.getResources().getDimensionPixelSize(45); // FIXME add to r.dimens
+		fontSize = 1.5f; // Default
 
 		fonts = new HashMap<Fonts, Typeface>();
 		fonts.put(Fonts.TRANSMETALS,
@@ -27,7 +27,7 @@ public class FontLoader {
 		
 	}
 	
-	public int getFontSize() {
+	public float getFontSize() {
 		return fontSize;
 	}
 	

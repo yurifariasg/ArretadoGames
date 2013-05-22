@@ -293,7 +293,7 @@ public class RenderingCanvas implements GameCanvas {
 	}
 	
 	
-	public void drawText(String text, float x, float y, Paint p) {
+	public void drawText(String text, float x, float y, Paint p, boolean centered) {
 		canvas.drawText(text, x, y, p);
 	}
 	

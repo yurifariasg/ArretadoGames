@@ -19,8 +19,6 @@ public class TextImageButton extends ImageButton {
 	private Paint strokePaint;
 	private String text = "";
 	
-	private Point textPos = null;
-
 	/**
 	 * Creates a TextImageButton based on the given position and Images
 	 * 
@@ -56,30 +54,19 @@ public class TextImageButton extends ImageButton {
 	}
 	
 	private void createPaints() {
-		int textSize = FontLoader.getInstance().getFontSize();
+		float textSize = FontLoader.getInstance().getFontSize();
 
 		textPaint = new Paint();
-//		textPaint.setARGB(255, 255, 98, 61);
 		textPaint.setARGB(255, 255, 255, 255);
 		textPaint.setAntiAlias(true);
 		textPaint.setTextSize(textSize);
 		textPaint.setTypeface(FontLoader.getInstance().getFont(Fonts.TRANSMETALS));
-
-//		strokePaint = new Paint();
-//		strokePaint.setARGB(255, 172, 51, 22);
-//		strokePaint.setAntiAlias(true);
-//		strokePaint.setStrokeWidth(3);
-//		strokePaint.setTextSize(textSize);
-//		strokePaint.setStyle(Style.STROKE);
-//		strokePaint.setTypeface(FontLoader.getInstance().getFont(Fonts.TRANSMETALS));
 	}
 
 	@Override
 	public void render(GameCanvas canvas, float timeElapsed) {
 		super.render(canvas, timeElapsed);
-		
-		textPos = centerTextOnCanvas(textPaint, x, y, width, height, text);
-		canvas.drawText(text, textPos.x, textPos.y, textPaint);
+		canvas.drawText(text, x + width / 2, y + height / 2.5f, textPaint, true);
 	}
 	
 	public static Point centerTextOnCanvas(Paint paint, float x, float y, float width, float height, String text) {

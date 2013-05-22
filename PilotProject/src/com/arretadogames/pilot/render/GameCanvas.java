@@ -139,7 +139,7 @@ public interface GameCanvas {
 	
 	public void drawBitmap(int imageId, RectF dstRect, boolean convertFromPhysics);
 	
-	public void drawText(String text, float x, float y, Paint p);
+	public void drawText(String text, float x, float y, Paint p, boolean centered);
 	
 	public void fillScreen(float a, float r, float g, float b);
 
