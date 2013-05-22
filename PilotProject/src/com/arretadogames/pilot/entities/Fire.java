@@ -40,8 +40,9 @@ public class Fire extends Entity{
 				(width/2 * GLCanvas.physicsRatio), // Bottom Right
 				(height/2 * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.YELLOW);
+		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.YELLOW);
 		canvas.restoreState();
+		
 	}
 
 	@Override
