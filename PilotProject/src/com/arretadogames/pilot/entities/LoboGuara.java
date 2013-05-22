@@ -22,8 +22,8 @@ public class LoboGuara extends Player {
 	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 8;
-	private final float MAX_RUN_VELOCITY = 8;
+	private final float MAX_JUMP_VELOCITY = 7;
+	private final float MAX_RUN_VELOCITY = 4;
 	private float JUMP_ACELERATION = 6;
 	private float RUN_ACELERATION = 13;
 	
@@ -47,7 +47,7 @@ public class LoboGuara extends Player {
 		super(x, y, number);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
-		footFixture = body.createFixture(shape,  4f);
+		footFixture = body.createFixture(shape,  3f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
@@ -88,7 +88,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public void run(){
-		if(body.getLinearVelocity().x < 2){ 
+		if(body.getLinearVelocity().x < 1){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
 		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
@@ -106,7 +106,8 @@ public class LoboGuara extends Player {
 	public void act() {
 	if( contacts > 0 && contAct == 0){
 			float impulse = (5) * body.getMass();
-			Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
+			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
 			direction.mulLocal(impulse);
 			body.applyLinearImpulse(direction, body.getWorldCenter());
