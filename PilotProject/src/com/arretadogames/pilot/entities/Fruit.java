@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -16,6 +17,9 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 public class Fruit extends Entity {
 
 	private float size;
+	private Sprite sprite;
+	private static final int[] STOPPED = {R.drawable.apple1,
+		     							  R.drawable.apple2};
 	
 	public Fruit(float x, float y, float size) {
 		super(x, y);
@@ -44,13 +48,13 @@ public class Fruit extends Entity {
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
 		RectF rect = new RectF(
-				(- size/2 * GLCanvas.physicsRatio), // Top Left
-				(- size/2 * GLCanvas.physicsRatio), // Top Left
-				(size/2 * GLCanvas.physicsRatio), // Bottom Right
-				(size/2 * GLCanvas.physicsRatio)); // Bottom Right
+				(- size * GLCanvas.physicsRatio), // Top Left
+				(- size * GLCanvas.physicsRatio), // Top Left
+				(size * GLCanvas.physicsRatio), // Bottom Right
+				(size * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.RED);
-//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.RED);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 	}
 
@@ -64,9 +68,17 @@ public class Fruit extends Entity {
 	public EntityType getType() {
 		return EntityType.FRUIT;
 	}
+	
+	public int[] getStoppedFrames() {
+		return STOPPED;
+	}
+	
+	public float[] getStoppedFramesDuration(){
+		return new float[] {0.3f, 0.3f};
+	}
 
-	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(Sprite sprite){
+		this.sprite = sprite;
 	}
 
 }

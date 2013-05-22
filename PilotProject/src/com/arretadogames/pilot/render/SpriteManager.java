@@ -23,7 +23,7 @@ public class SpriteManager {
 			setBoxSprites(sprite, box);
 		}else if(en.getType() == EntityType.FRUIT){
 			Fruit fruit = (Fruit) en;
-//			setFruitSprites(sprite, fruit);
+			setFruitSprites(sprite, fruit);
 		}else if(en.getType() == EntityType.GROUND){
 			Ground ground = (Ground) en;
 		}
@@ -61,11 +61,9 @@ public class SpriteManager {
 	
 	private void setFruitSprites(Sprite sprite, Fruit fruit) {
 		String name = "stopped";
-		int[] frames = new int[1];
-		for (int i = 0; i < frames.length; i++) {
-//			frames[i] = ImageLoader.loadImage(BOX_STOPPED[i]);			
-		}
-		float[] framesDur = {1f};
+		int[] frames = fruit.getStoppedFrames();
+		float[] framesDur = fruit.getStoppedFramesDuration();
+		sprite.setAnimationState(name);
 		sprite.addState(new SpriteState(name, frames, framesDur));
 	}
 	
