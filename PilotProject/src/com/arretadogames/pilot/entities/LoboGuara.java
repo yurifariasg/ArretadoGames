@@ -90,7 +90,7 @@ public class LoboGuara extends Player {
 	}
 	
 	public void run(){
-		if(body.getLinearVelocity().x < 1){ 
+		if(body.getLinearVelocity().x < 1.5){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
 		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
