@@ -15,7 +15,7 @@ import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
 
 public class SplashScreen extends GameScreen implements TweenAccessor<SplashScreen> {
@@ -47,7 +47,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	
 	
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.fillScreen(255, 0, 0, 0);
 		
 		canvas.saveState();

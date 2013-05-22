@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import android.R;
 import android.util.Log;
 
 public class SpriteParser {

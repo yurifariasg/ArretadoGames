@@ -18,11 +18,12 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;
-	private GameCanvas gameCanvas = null;
+	private GLCanvas gameCanvas = null;
 	private int backgroundId;
 	
 	private boolean calculateWidthFirst;
@@ -333,7 +334,7 @@ public class GameCamera {
 		return entities;
 	}
 
-	public void render(final GameCanvas canvas, final float timeElapsed) {
+	public void render(final GLCanvas canvas, final float timeElapsed) {
 
 		if ( gameCanvas == null ){
 			gameCanvas = canvas;

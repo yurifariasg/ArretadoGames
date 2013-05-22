@@ -10,7 +10,7 @@ import aurelienribon.tweenengine.TweenCallback;
 
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
@@ -55,7 +55,7 @@ public class Game implements TweenAccessor<Game> {
 	 * @param timeElapsed
 	 *            Time Elapsed since last frame
 	 */
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		
 		AnimationManager.getInstance().update(timeElapsed);
 		

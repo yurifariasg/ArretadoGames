@@ -8,7 +8,6 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -49,16 +48,6 @@ public class FontTexture {
 
 	public FontTexture(Typeface tf) {
 		this.tf = tf;
-	}
-
-	protected void setParams(FontParams params) {
-		this.size = params.getSize();
-		this.colour = params.getArgb();
-		this.charStart = params.getcharStart();
-		this.charEnd = params.getCharEnd();
-		this.charUnknown = params.getCharUnknown();
-		this.padX = params.getPadX();
-		this.padY = params.getPadY();
 	}
 	
 	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb, boolean centered) {

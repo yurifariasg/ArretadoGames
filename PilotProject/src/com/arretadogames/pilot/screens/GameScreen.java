@@ -1,6 +1,6 @@
 package com.arretadogames.pilot.screens;
 
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 /**
  * GameScreen class represents a Screen in the Game<br>
@@ -18,7 +18,7 @@ public abstract class GameScreen {
 	 * @param timeElapsed
 	 *            Time Elapsed from last frame
 	 */
-	public abstract void render(GameCanvas canvas, float timeElapsed);
+	public abstract void render(GLCanvas canvas, float timeElapsed);
 
 	/**
 	 * Performs a Step in the Screen's logic

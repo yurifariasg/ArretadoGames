@@ -11,7 +11,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.TextImageButton;
@@ -61,7 +61,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	}
 
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.drawBitmap(backgroundId, (800 - currentWidth), 1);

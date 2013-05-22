@@ -8,10 +8,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.render.canvas.RenderingSurface;
 import com.arretadogames.pilot.render.opengl.GameGLSurfaceView;
 import com.arretadogames.pilot.screens.InputEventHandler;
 
@@ -33,11 +31,7 @@ public class GameActivity extends Activity implements OnTouchListener {
 		FontLoader.create(context); // Create the FontLoader
 		Game.getInstance(); // Create Game
 		
-		if (DisplaySettings.USE_OPENGL) {
-			renderingSurface = new GameGLSurfaceView(this);
-		} else {
-			renderingSurface = new RenderingSurface(this);
-		}
+		renderingSurface = new GameGLSurfaceView(this);
 		setContentView(renderingSurface);
 	}
 	

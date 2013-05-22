@@ -23,7 +23,7 @@ import com.arretadogames.pilot.screens.InputEventHandler;
  */
 public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer {
 	
-	private OpenGLCanvas gameCanvas;
+	private GLCanvas gameCanvas;
 	
 	// FPS Settings
 	private float[] fpsBuffer;
@@ -90,7 +90,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		if (frameEndedTime == 0)
 			frameEndedTime = getCurrentTime();
 		
-		gameCanvas = new OpenGLCanvas(gl);
+		gameCanvas = new GLCanvas(gl);
 
 		long frameCurrentTime = getCurrentTime();
 		float elapsedTime = (frameCurrentTime - frameEndedTime) / 1000f;

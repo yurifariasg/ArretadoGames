@@ -27,8 +27,8 @@ import com.arretadogames.pilot.levels.LevelManager;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
-import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.SpriteManager;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
@@ -139,7 +139,7 @@ public class GameWorld extends GameScreen {
 	private long time;
 	
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		// Render the World
 		
 		if (DisplaySettings.PROFILE_RENDER_SPEED)

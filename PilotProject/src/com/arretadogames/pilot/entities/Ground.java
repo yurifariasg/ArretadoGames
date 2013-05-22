@@ -4,8 +4,8 @@ import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 
-import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Ground extends Entity {
 	
@@ -21,7 +21,7 @@ public class Ground extends Entity {
 	}
 
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.drawPhysicsLines(vec);
 	}
 

@@ -1,7 +1,7 @@
 package com.arretadogames.pilot.ui;
 
 import com.arretadogames.pilot.loading.ImageLoader;
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class ImageButton extends Button {
 	
@@ -35,7 +35,7 @@ public class ImageButton extends Button {
 	}
 
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		if (isSelected && selectedImageId != 0) {
 			canvas.drawBitmap(selectedImageId, x, y);
 		} else if (unselectedImageId != 0) {

@@ -8,13 +8,10 @@ import org.jbox2d.dynamics.contacts.Contact;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
-import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.GameCanvas;
 import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.OpenGLCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Fruit extends Entity {
 
@@ -42,15 +39,15 @@ public class Fruit extends Entity {
 	}
 
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
 		RectF rect = new RectF(
-				(- size/2 * OpenGLCanvas.physicsRatio), // Top Left
-				(- size/2 * OpenGLCanvas.physicsRatio), // Top Left
-				(size/2 * OpenGLCanvas.physicsRatio), // Bottom Right
-				(size/2 * OpenGLCanvas.physicsRatio)); // Bottom Right
+				(- size/2 * GLCanvas.physicsRatio), // Top Left
+				(- size/2 * GLCanvas.physicsRatio), // Top Left
+				(size/2 * GLCanvas.physicsRatio), // Bottom Right
+				(size/2 * GLCanvas.physicsRatio)); // Bottom Right
 		
 		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.RED);
 //		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);

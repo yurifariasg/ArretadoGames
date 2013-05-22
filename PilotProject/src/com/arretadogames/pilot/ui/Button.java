@@ -2,7 +2,7 @@ package com.arretadogames.pilot.ui;
 
 import android.view.MotionEvent;
 
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.InputEventHandler;
 
 public abstract class Button {
@@ -31,7 +31,7 @@ public abstract class Button {
 		this.height = height;
 	}
 	
-	public abstract void render(GameCanvas canvas, float timeElapsed);
+	public abstract void render(GLCanvas canvas, float timeElapsed);
 	
 	public void input(InputEventHandler event) {
 		

@@ -2,12 +2,11 @@ package com.arretadogames.pilot.screens;
 
 import aurelienribon.tweenengine.TweenAccessor;
 
-import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.ZoomImageButton;
@@ -36,7 +35,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	}
 
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
 		

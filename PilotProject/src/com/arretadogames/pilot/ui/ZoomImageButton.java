@@ -4,7 +4,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenManager;
 
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class ZoomImageButton extends ImageButton implements TweenAccessor<ZoomImageButton> {
 
@@ -24,7 +24,7 @@ public class ZoomImageButton extends ImageButton implements TweenAccessor<ZoomIm
 	}
 	
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		tweenManager.update(timeElapsed);
 		
 		if (isSelected && !isFirstSelected) {

@@ -6,7 +6,7 @@ import android.graphics.Rect;
 
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.Fonts;
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 /**
  *	TextImageButton class implements a ImageButton with a styled text centered on it<br>
@@ -64,7 +64,7 @@ public class TextImageButton extends ImageButton {
 	}
 
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		super.render(canvas, timeElapsed);
 		canvas.drawText(text, x + width / 2, y + height / 2.5f, textPaint, true);
 	}

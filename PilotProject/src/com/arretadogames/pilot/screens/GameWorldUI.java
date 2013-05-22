@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.PlayerNumber;
-import com.arretadogames.pilot.render.GameCanvas;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 
 public class GameWorldUI extends GameScreen {
@@ -16,7 +16,7 @@ public class GameWorldUI extends GameScreen {
 	}
 
 	@Override
-	public void render(GameCanvas canvas, float timeElapsed) {
+	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.drawBitmap(R.drawable.ui_buttons, 0, 380);
 	}
 

@@ -5,7 +5,6 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -19,14 +18,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.opengl.GLUtils;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.loading.ImageLoader;
-import com.arretadogames.pilot.render.GameCanvas;
 
-public class OpenGLCanvas implements GameCanvas {
+public class GLCanvas {
 	
 	private GL10 gl;
 	private static SparseArray<SpriteData> textures = new SparseArray<SpriteData>();
@@ -36,16 +33,16 @@ public class OpenGLCanvas implements GameCanvas {
 	public static float physicsRatio = 25;
 	
 	
-	public OpenGLCanvas(GL10 gl) {
+	public GLCanvas(GL10 gl) {
 		this.gl = gl;
 	}
 
-	@Override
+	
 	public void setPhysicsRatio(float newRatio) {
 		physicsRatio = newRatio;
 	}
 
-	@Override
+	
 	public boolean initiate() {
 		
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -55,12 +52,6 @@ public class OpenGLCanvas implements GameCanvas {
 		gl.glRotatef(-180, 1, 0, 0);
 		
 		fillScreen(255, 0, 0, 0);
-//		DisplaySettings.WIDTH_RATIO = DisplaySettings.DISPLAY_WIDTH / DisplaySettings.TARGET_WIDTH;
-//		DisplaySettings.HEIGHT_RATIO = DisplaySettings.DISPLAY_HEIGHT / DisplaySettings.TARGET_HEIGHT;
-		
-//		gl.glPushMatrix();
-//		gl.glScalef(DisplaySettings.WIDTH_RATIO, DisplaySettings.HEIGHT_RATIO, 0f);
-		
 		
 		/* OpenGL 2.0 */
 		// Clears the screen and depth buffer.
@@ -72,36 +63,33 @@ public class OpenGLCanvas implements GameCanvas {
 		return true;
 	}
 
-	@Override
+	
 	public void flush() {
-		// TODO Auto-generated method stub
-//		gl.glPopMatrix();
-		
 	}
 
-	@Override
+	
 	public void translate(float dx, float dy) {
 		gl.glTranslatef(dx, dy, 0);
 	}
 
-	@Override
+	
 	public void scale(float sx, float sy, float px, float py) {
 		gl.glTranslatef(px, py, 0);
 		gl.glScalef(sx, sy, 0);
 		gl.glTranslatef(-px, -py, 0);
 	}
 
-	@Override
+	
 	public void rotate(float degrees) {
 		gl.glRotatef(degrees, 0, 0, 1);
 	}
 
-	@Override
+	
 	public void rotatePhysics(float degrees) {
 		rotate(degrees); // TODO: Method should be removed
 	}
 
-	@Override
+	
 	public void drawDebugRect(int x, int y, int x2, int y2) {
 		// TODO Auto-generated method stub
 		arbritaryRect.left = x;
@@ -111,18 +99,18 @@ public class OpenGLCanvas implements GameCanvas {
 		drawRect(arbritaryRect, Color.RED);
 	}
 
-	@Override
+	
 	public void drawCameraDebugRect(float x, float y, float x2, float y2) {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
+	
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength) {
 		drawPhysicsDebugRect(centerX, centerY, sideLength, Color.RED);
 	}
 
-	@Override
+	
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength, int color) {
 		arbritaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
@@ -136,7 +124,7 @@ public class OpenGLCanvas implements GameCanvas {
 	
 	private final float GROUND_BOTTOM = -10;
 
-	@Override
+	
 	public void drawPhysicsLines(Vec2[] lines) {
 		
 		Vec2 vertices[] = lines;
@@ -210,7 +198,7 @@ public class OpenGLCanvas implements GameCanvas {
 		
 	}
 
-	@Override
+	
 	public void drawPhysicsLine(float x1, float y1, float x2, float y2) {
 		float[] vertices = {x1, y1, 0, x2, y2, 0};
 		short[] indices = {0, 1, 0};
@@ -236,17 +224,17 @@ public class OpenGLCanvas implements GameCanvas {
         
 	}
 
-	@Override
+	
 	public void saveState() {
 		gl.glPushMatrix();
 	}
 
-	@Override
+	
 	public void restoreState() {
 		gl.glPopMatrix();
 	}
 
-	@Override
+	
 	public void drawText(String text, float x, float y, Paint p, boolean centered) {
 		if (fontTextures.get(p.getTypeface()) == null)
 			createFont(p.getTypeface());
@@ -259,19 +247,19 @@ public class OpenGLCanvas implements GameCanvas {
 		fontTextures.put(typeface, fontTexture);
 	}
 
-	@Override
+	
 	public void fillScreen(float a, float r, float g, float b) {
 		gl.glClearColor(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
 
-	@Override
+	
 	public void drawRect(Rect rect, int argb) {
 		gl.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
 		GLRect glRect = GLRect.create(rect);
 		glRect.draw(gl);
 	}
 
-	@Override
+	
 	public void drawBitmap(int imageId, float x, float y) {
 		saveState();
 		gl.glColor4f(1, 1, 1, 1);
@@ -353,7 +341,7 @@ public class OpenGLCanvas implements GameCanvas {
 		}
 	}
 
-	@Override
+	
 	public void drawBitmap(int imageId, float x, float y, Paint paint) {
 		saveState();
 		gl.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
@@ -368,7 +356,7 @@ public class OpenGLCanvas implements GameCanvas {
 		restoreState();
 	}
 
-	@Override
+	
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
 			boolean convertFromPhysics) {
 		if (textures.get(imageId) == null)
@@ -398,19 +386,19 @@ public class OpenGLCanvas implements GameCanvas {
 		drawBitmap(imageId);
 	}
 
-	@Override
+	
 	public void drawBitmap(int imageId, RectF dstRect,
 			boolean convertFromPhysics, Paint paint) {
 		drawBitmap(imageId, null, dstRect, convertFromPhysics);
 	}
 
-	@Override
+	
 	public void drawBitmap(int imageId, RectF dstRect,
 			boolean convertFromPhysics) {
 		drawBitmap(imageId, null, dstRect, convertFromPhysics);
 	}
 
-	@Override
+	
 	public void loadImage(int imageId) {
 		
 		// Get bitmap
@@ -450,13 +438,13 @@ public class OpenGLCanvas implements GameCanvas {
 		textures.append(imageId, texture);
 	}
 
-	@Override
+	
 	public void recycleImage(int imageId) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void translatePhysics(float posX, float posY) {
 		gl.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
