@@ -191,6 +191,12 @@ public class GameWorld extends GameScreen {
 			Entity e = it.next();
 			pWorld.destroyEntity(e);
 			worldEntities.remove(e);
+			for ( PlayerNumber p : players.keySet() ){
+				if ( players.get(p).equals(e) ){
+					players.remove(p);
+					break;
+				}
+			}
 		}
 		pWorld.clearDeadEntities();
 	}
