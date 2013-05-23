@@ -4,11 +4,13 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.contacts.Contact;
 
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -16,17 +18,17 @@ public class Fire extends Entity{
 
 	private float height;
 	private float width;
+	private float velocity = 3;
 	
 	public Fire(float x, float y) {
 		super(x, y);
 		PolygonShape shape = new PolygonShape();
 		width = 1;
-		height = 1;
+		height = 50;
 		shape.setAsBox(width/2, height/2);
-		Fixture f = body.createFixture(shape,  0f);
+		Fixture f = body.createFixture(shape,  1f);
 		f.setSensor(true);
-		body.setType(BodyType.DYNAMIC);
-		body.setLinearVelocity(new Vec2(1,0));
+		body.setType(BodyType.KINEMATIC);
 	}
 
 	@Override
@@ -44,11 +46,16 @@ public class Fire extends Entity{
 		canvas.restoreState();
 		
 	}
+	
+	@Override
+	public void endContact(Entity e, Contact contact) {
+		super.endContact(e, contact);
+		PhysicalWorld.getInstance().addDeadEntity(e);
+	}
 
 	@Override
 	public void step(float timeElapsed) {
-		// TODO Auto-generated method stub
-		
+		body.setLinearVelocity(new Vec2(velocity ,0));
 	}
 
 	@Override

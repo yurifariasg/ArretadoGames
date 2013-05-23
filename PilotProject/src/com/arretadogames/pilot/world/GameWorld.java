@@ -16,6 +16,7 @@ import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
+import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.LoboGuara;
@@ -72,6 +73,9 @@ public class GameWorld extends GameScreen {
 	private void createEntities(LevelDescriptor ld) {
 		players = new HashMap<PlayerNumber, Player>();
 		worldEntities = new ArrayList<Entity>();
+		
+		//TODO fzr direito
+		worldEntities.add(new Fire(0,0));
 		
 		List<EntityDescriptor> entities = ld.getEntities();
 		for (EntityDescriptor entityDescriptor : entities) {
@@ -173,7 +177,7 @@ public class GameWorld extends GameScreen {
 		// TODO: Perform a World Step
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
-			for (Player p : players.values())
+			for (Entity p : worldEntities)
 				p.step(timeElapsed);
 			ui.step(timeElapsed);
 			pWorld.step(timeElapsed);
