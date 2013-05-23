@@ -12,8 +12,10 @@ import com.arretadogames.pilot.render.Sprite;
 
 
 public abstract class Entity implements Renderable {
+	
 	public Body body;
 	protected World world;
+	private boolean isDead;
 
 	public Entity(float x, float y) {
 		world = PhysicalWorld.getInstance().getWorld();
@@ -24,6 +26,15 @@ public abstract class Entity implements Renderable {
 		body.setUserData(this);
 		body.setSleepingAllowed(true);
 		body.setAwake(false);
+		isDead = false;
+	}
+	
+	public boolean isAlive() {
+		return !isDead;
+	}
+	
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
 	}
 	
 	public void addFixture(FixtureDef fd){

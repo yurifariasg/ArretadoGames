@@ -53,6 +53,11 @@ public class LevelDescriptor {
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.FRUIT, (float) jsonEntity.getDouble("size"));
+				} else if (EntityType.FINALFLAG.toString().equals(entityType)) {
+					// is it a fruit ?
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.FINALFLAG, (float) jsonEntity.getDouble("size"));
 				} else if (EntityType.PLAYER.toString().equals(entityType)) {
 					// is it a player ?
 					PlayerNumber pNumber;

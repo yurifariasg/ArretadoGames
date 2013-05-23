@@ -5,14 +5,24 @@ package com.arretadogames.pilot.entities;
 public abstract class Player extends Entity {
 	
 	private PlayerNumber playerNumber;
+	private boolean hasFinished; /* Player has finished level */
 
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
 		this.playerNumber = playerNumber;
+		hasFinished = false;
 	}
 	
 	public PlayerNumber getNumber() {
 		return playerNumber;
+	}
+	
+	public void setFinished(boolean hasFinished) {
+		this.hasFinished = hasFinished;
+	}
+	
+	public boolean hasFinished() {
+		return hasFinished;
 	}
 
 	@Override

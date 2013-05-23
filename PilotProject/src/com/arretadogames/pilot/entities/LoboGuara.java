@@ -81,7 +81,8 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void jump() {
-		if( contJump > 0 || contacts <= 0) return;
+		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0)
+			return;
 		sprite.setAnimationState("jump");
 		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
 		Vec2 direction = new Vec2(1,6);
@@ -109,7 +110,10 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void act() {
-	if( contacts > 0 && contAct == 0){
+		if (hasFinished() || !isAlive())
+			return;
+		
+		if( contacts > 0 && contAct == 0){
 			float impulse = (5) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
@@ -122,6 +126,11 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void step(float timeElapsed) {
+		if (hasFinished() || !isAlive()) {
+			body.setLinearVelocity(new Vec2());
+			return;
+		}
+		
 		if(contJump > 0) contJump--;
 		if(contAct > 0 ) contAct--;
 		run();

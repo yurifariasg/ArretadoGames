@@ -16,6 +16,7 @@ import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
+import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
@@ -92,6 +93,9 @@ public class GameWorld extends GameScreen {
 			case PLAYER:
 				entity = new LoboGuara(entityDescriptor.getX(), entityDescriptor.getY(),
 						((PlayerDescriptor)entityDescriptor).getPlayerNumber());
+				break;
+			case FINALFLAG:
+				entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
 				break;
 			default:
 				break;
