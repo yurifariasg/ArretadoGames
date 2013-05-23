@@ -3,6 +3,7 @@ package com.arretadogames.pilot.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
@@ -99,21 +100,29 @@ public class GameCamera {
 		float maxYDistance = 0;
 		Vec2 center = new Vec2();
 
-		for ( int i=0; i<numberOfPlayers; i++ ){
+		Iterator<PlayerNumber> iiterator = players.keySet().iterator();
+		while ( iiterator.hasNext() ){
+//		for ( int i=0; i<numberOfPlayers; i++ ){
 
-			float x = players.get(PlayerNumber.values()[i]).getPosX();
-			float y = players.get(PlayerNumber.values()[i]).getPosY();
+			PlayerNumber i = iiterator.next();
+			
+			float x = players.get(i).getPosX();
+			float y = players.get(i).getPosY();
 
 			center.addLocal(x, y);
 
-			for ( int j=0; j<numberOfPlayers; j++ ){
+			Iterator<PlayerNumber> jiterator = players.keySet().iterator();
+			while ( jiterator.hasNext() ){
+//			for ( int j=0; j<numberOfPlayers; j++ ){
 
-				if ( i == j ){
+				PlayerNumber j = jiterator.next();
+				
+				if ( i.equals(j) ){
 					continue;
 				}
 
-				float x2 = players.get(PlayerNumber.values()[j]).getPosX();
-				float y2 = players.get(PlayerNumber.values()[j]).getPosY();
+				float x2 = players.get(j).getPosX();
+				float y2 = players.get(j).getPosY();
 
 				float currentXDistance = Math.abs(x - x2);
 				float currentYDistance = Math.abs(y - y2);
