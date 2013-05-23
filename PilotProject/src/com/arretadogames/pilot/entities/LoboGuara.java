@@ -2,10 +2,14 @@ package com.arretadogames.pilot.entities;
 
 
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
@@ -26,6 +30,7 @@ public class LoboGuara extends Player {
 	private final float MAX_RUN_VELOCITY = 4;
 	private float JUMP_ACELERATION = 6;
 	private float RUN_ACELERATION = 13;
+	Collection<Body> bodiesContact;
 	
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
@@ -50,7 +55,7 @@ public class LoboGuara extends Player {
 		CircleShape shape = new CircleShape();
 		shape.setRadius(0.5f);
 		footFixture = body.createFixture(shape,  3f);
-		footFixture.setFriction(0f);
+		footFixture.setFriction(0.3f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
@@ -60,6 +65,7 @@ public class LoboGuara extends Player {
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
 		
+		bodiesContact = new HashSet<Body>();
 	}
 
 	double getAngle(){
@@ -90,8 +96,15 @@ public class LoboGuara extends Player {
 		direction.mulLocal(impulseX);
 		body.applyLinearImpulse(direction, body.getWorldCenter());
 		contJump = 5;
-//		System.out.println("Jump Player 1");
+		applyReturn(direction);
 	}
+	
+	private void applyReturn(Vec2 impulse){
+		for(Body b : bodiesContact){
+			b.applyLinearImpulse(impulse.mul(-1/bodiesContact.size()), body.getWorldCenter());
+		}
+	}
+	
 	
 	public void run(){
 		if(body.getLinearVelocity().x < 1.5){ 
@@ -127,7 +140,6 @@ public class LoboGuara extends Player {
 	@Override
 	public void step(float timeElapsed) {
 		if (hasFinished() || !isAlive()) {
-			body.setLinearVelocity(new Vec2());
 			return;
 		}
 		
@@ -145,12 +157,14 @@ public class LoboGuara extends Player {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			sprite.setAnimationState("walking");
 			contacts++;
+			bodiesContact.add(e.body);
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			contacts--;
+			bodiesContact.remove(e.body);
 		}
 		if(contacts==0){
 			sprite.setAnimationState("jump");
