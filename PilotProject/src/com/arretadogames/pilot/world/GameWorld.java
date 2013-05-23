@@ -60,7 +60,7 @@ public class GameWorld extends GameScreen {
 		sm = new SpriteManager();
 		
 		try {
-			load(LevelManager.loadLevel(1)); // 0: Default Level
+			load(LevelManager.loadLevel(0)); // 0: Default Level
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

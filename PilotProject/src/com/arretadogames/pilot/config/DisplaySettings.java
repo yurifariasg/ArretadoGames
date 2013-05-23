@@ -5,6 +5,7 @@ public class DisplaySettings {
 	public static final float TARGET_WIDTH = 800f;
 	public static final float TARGET_HEIGHT = 480f;
 	public static final float TARGET_FPS = 70f;
+	public static final float PHYSICS_STEP = 1f/60f; // Use Negative to use Dynamic Time
 	
 	public static float DISPLAY_WIDTH = -1;
 	public static float DISPLAY_HEIGHT = -1;
@@ -15,8 +16,7 @@ public class DisplaySettings {
 	public static final boolean debugViewport = true;
 	public static final boolean mockDanilo = false;
 	
-	public static final boolean USE_DYNAMIC_TIME = false;
-	public static final boolean PROFILE_SPEED = false;
+	public static final boolean PROFILE_SPEED = true;
 	public static final boolean PROFILE_RENDER_SPEED = false;
 	public static final boolean PROFILE_GAME_CAMERA = false;
 	

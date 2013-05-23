@@ -12,6 +12,7 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.Joint;
 
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
 
 
@@ -84,7 +85,8 @@ public class PhysicalWorld implements ContactListener {
 	}
 
 	public void step(float timeElapsed) {
-		world.step(timeElapsed, 8, 10);
+		world.step(DisplaySettings.PHYSICS_STEP < 0 ?
+				timeElapsed : DisplaySettings.PHYSICS_STEP, 8, 10);
 	}
 
 	public void addDeadEntity(Entity e) {
