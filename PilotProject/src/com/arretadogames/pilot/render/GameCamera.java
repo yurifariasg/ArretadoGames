@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
@@ -286,6 +287,8 @@ public class GameCamera {
 
 	private void drawBackground(Vec2 center) {
 
+		backgroundId = R.drawable.paradise2;
+		
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
 		
@@ -297,7 +300,12 @@ public class GameCamera {
 			factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / backgroundWidth);
 			backgroundWidth *= factor;
 			backgroundHeight *= factor;
+			System.out.println("(*) WID: "+backgroundWidth+" HEI: "+backgroundHeight);
 		}
+		else{
+			System.out.println("WID: "+backgroundWidth+" HEI: "+backgroundHeight);
+		}
+		
 		
 		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
 
@@ -312,11 +320,13 @@ public class GameCamera {
 		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
 		int translate_y = 0;
 
+		System.out.println("("+where_is*100+")% - "+translate_x);
+		
 		if (DisplaySettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime() / 1000000;
 		}
-		
+//		gameCanvas.fillScreen(255, 255, 255, 255);
 		gameCanvas.drawBitmap(backgroundId, new Rect(translate_x, translate_y, 
 		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
 		backgroundRect, false);
