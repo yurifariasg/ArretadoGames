@@ -59,7 +59,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             posX = groundPos.get(i)[0];
             posY = groundPos.get(i)[1];
             if (i == 0)
-                g.drawLine(0, 480, posX, posY);
+                g.drawLine(0, 950, posX, posY);
             else
                 g.drawLine( groundPos.get(i-1)[0], groundPos.get(i-1)[1], posX, posY);
         }
@@ -75,7 +75,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
 
     public void drawBox(int x,int y){
-        boxPos.add(new Box(x, y, 100));
+        boxPos.add(new Box(x, y, 60));
         repaint();
     }
     

@@ -199,10 +199,10 @@ public class LevelEditorView extends FrameView {
         );
         gameCanvas1Layout.setVerticalGroup(
             gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 498, Short.MAX_VALUE)
+            .addGap(0, 998, Short.MAX_VALUE)
         );
 
-        jScrollInternalPanel.add(gameCanvas1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, 500));
+        jScrollInternalPanel.add(gameCanvas1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, 1000));
 
         jScrollPane1.setViewportView(jScrollInternalPanel);
 
