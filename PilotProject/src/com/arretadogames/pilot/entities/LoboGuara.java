@@ -2,6 +2,7 @@ package com.arretadogames.pilot.entities;
 
 
 
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
@@ -44,20 +45,25 @@ public class LoboGuara extends Player {
 	
 	public LoboGuara(float x, float y, PlayerNumber number) {
 		super(x, y, number);
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
+		//PolygonShape shape = new PolygonShape();
+		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
+		CircleShape shape = new CircleShape();
+		shape.setRadius(0.5f);
 		footFixture = body.createFixture(shape,  3f);
+		footFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
-		body.setFixedRotation(false);
+		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
-		footShape.setAsBox(0.7f, 0.1f, new Vec2(0f,-0.5f), 0f);
-		//footFixture = body.createFixture(footShape, 50f);
+		footShape.setAsBox(0.5f, 0.1f, new Vec2(0f,-0.4f), 0f);
+		footFixture = body.createFixture(footShape, 0f);
+		footFixture.setSensor(true);
 		
 	}
 
 	double getAngle(){
+		//return body.getAngle();
 		double angle = 0;
 		if(body.getLinearVelocity().length() > 1){
 			double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
@@ -75,8 +81,8 @@ public class LoboGuara extends Player {
 
 	@Override
 	public void jump() {
+		if( contJump > 0 || contacts <= 0) return;
 		sprite.setAnimationState("jump");
-		if( contJump > 0 || contacts <= 0) return;	
 		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
 		Vec2 direction = new Vec2(1,6);
 		direction.normalize();
@@ -119,10 +125,14 @@ public class LoboGuara extends Player {
 		if(contJump > 0) contJump--;
 		if(contAct > 0 ) contAct--;
 		run();
+		//if(contacts > 0) body.setFixedRotation(false);
+		//else {
+		//	body.setFixedRotation(true);
+		//	body.setAngularVelocity(0f);
+		//}
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
-		sprite.setAnimationState("walking");
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			sprite.setAnimationState("walking");
 			contacts++;
@@ -132,6 +142,9 @@ public class LoboGuara extends Player {
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			contacts--;
+		}
+		if(contacts==0){
+			sprite.setAnimationState("jump");
 		}
 	}
 
