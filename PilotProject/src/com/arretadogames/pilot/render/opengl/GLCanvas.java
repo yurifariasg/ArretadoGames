@@ -249,7 +249,7 @@ public class GLCanvas {
 			arbritaryRect.bottom = (int) dstRect.bottom;
 		}
 		
-		GLTexture.draw(gl, null, arbritaryRect, tex);
+		GLTexture.draw(gl, srcRect, arbritaryRect, tex);
 	}
 
 	

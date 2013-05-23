@@ -18,6 +18,7 @@ import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.world.GameWorld;
@@ -102,7 +103,6 @@ public class GameCamera {
 
 		Iterator<PlayerNumber> iiterator = players.keySet().iterator();
 		while ( iiterator.hasNext() ){
-//		for ( int i=0; i<numberOfPlayers; i++ ){
 
 			PlayerNumber i = iiterator.next();
 			
@@ -113,7 +113,6 @@ public class GameCamera {
 
 			Iterator<PlayerNumber> jiterator = players.keySet().iterator();
 			while ( jiterator.hasNext() ){
-//			for ( int j=0; j<numberOfPlayers; j++ ){
 
 				PlayerNumber j = jiterator.next();
 				
@@ -287,15 +286,17 @@ public class GameCamera {
 
 	private void drawBackground(Vec2 center) {
 
-		float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / 480)); // FIXME: background.getHeight()
-		float backgroundWidth = 800 * factor; // FIXME: background.getWidth()
-		float backgroundHeight = 480 * factor; // FIXME: background.getHeight()
+		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
+		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
+		
+		float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / backgroundImageHeight));
+		float backgroundWidth = backgroundImageWidth * factor;
+		float backgroundHeight = backgroundImageHeight * factor;
 
 		if ( backgroundWidth < DisplaySettings.TARGET_WIDTH ){
 			factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / backgroundWidth);
 			backgroundWidth *= factor;
 			backgroundHeight *= factor;
-			System.out.println("yes");
 		}
 		
 		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
@@ -310,7 +311,7 @@ public class GameCamera {
 		
 		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
 		int translate_y = 0;
-		
+
 		if (DisplaySettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime() / 1000000;
