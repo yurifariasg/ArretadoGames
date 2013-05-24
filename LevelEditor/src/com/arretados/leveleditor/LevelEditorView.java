@@ -132,6 +132,7 @@ public class LevelEditorView extends FrameView {
         jTextWidthValue = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        Flag = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -238,6 +239,14 @@ public class LevelEditorView extends FrameView {
             }
         });
 
+        Flag.setText(resourceMap.getString("Flag.text")); // NOI18N
+        Flag.setName("Flag"); // NOI18N
+        Flag.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FlagActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -245,6 +254,7 @@ public class LevelEditorView extends FrameView {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Flag, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
                     .addComponent(activateBoxBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
@@ -274,7 +284,9 @@ public class LevelEditorView extends FrameView {
                         .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Flag)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextWidthValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -363,7 +375,9 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 }//GEN-LAST:event_activateAppleActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JSONGenerator json = new JSONGenerator(gameCanvas1.getBoxPos(), gameCanvas1.getFruitPos(), gameCanvas1.getLinesPos(), gameCanvas1.getPlayersPos());
+        JSONGenerator json = new JSONGenerator(gameCanvas1.getBoxPos(),
+                gameCanvas1.getFruitPos(), gameCanvas1.getLinesPos(),
+                gameCanvas1.getPlayersPos(), gameCanvas1.getFlag());
         try {
           File file = new File("level.json");
           BufferedWriter output = new BufferedWriter(new FileWriter(file));
@@ -398,7 +412,12 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
         gameCanvas1.mode = DrawMode.PLAYER;
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void FlagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FlagActionPerformed
+        gameCanvas1.mode = DrawMode.FLAG;
+    }//GEN-LAST:event_FlagActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Flag;
     private javax.swing.JButton activateApple;
     private javax.swing.JButton activateBoxBtn;
     private javax.swing.JButton activateGroundBtn;

@@ -13,6 +13,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="Flag" pref="89" max="32767" attributes="0"/>
                       <Component id="jButton3" pref="89" max="32767" attributes="0"/>
                       <Component id="jButton1" alignment="0" pref="89" max="32767" attributes="1"/>
                       <Component id="activateBoxBtn" alignment="0" pref="89" max="32767" attributes="1"/>
@@ -45,7 +46,9 @@
                           <Component id="clearScrBtn" min="-2" pref="32" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton3" min="-2" pref="31" max="-2" attributes="0"/>
-                          <EmptySpace pref="45" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="Flag" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="16" max="32767" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jTextWidthValue" min="-2" max="-2" attributes="0"/>
@@ -206,6 +209,15 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="Flag">
+          <Properties>
+            <Property name="text" type="java.lang.String" resourceKey="Flag.text"/>
+            <Property name="name" type="java.lang.String" value="Flag" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="FlagActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

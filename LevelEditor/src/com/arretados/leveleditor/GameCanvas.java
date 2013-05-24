@@ -6,6 +6,7 @@
 package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fruit;
 import com.arretados.leveleditor.entities.Player;
 import java.awt.Color;
@@ -27,7 +28,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     private List<Fruit> fruitPos = new ArrayList<Fruit>();
     private List<Player> playerPos = new ArrayList<Player>();
     private List<int[]> groundPos = new ArrayList<int[]>();
-    DrawMode mode = DrawMode.BOX;
+    public DrawMode mode = DrawMode.BOX;
+    private Flag flag;
 
     public GameCanvas() {
         addMouseListener(this);
@@ -50,6 +52,9 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         for (int i = 0; i < fruitPos.size(); i++){
             fruitPos.get(i).drawMyself(g);
         }
+        
+        if (flag != null)
+            flag.drawMyself(g);
 
         int posX,posY;
         posX = 0;
@@ -97,6 +102,15 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         repaint();
     }
     
+    private void drawFlag(int x, int y) {
+        flag = new Flag(x,y,10);
+        repaint();
+    }
+    
+    public Flag getFlag(){
+        return flag;
+    }
+    
     public List<Box> getBoxPos(){
         return boxPos;
     }
@@ -118,6 +132,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         this.fruitPos = new ArrayList<Fruit>();
         this.boxPos = new ArrayList<Box>();
         this.playerPos = new ArrayList<Player>();
+        this.flag = null;
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -138,6 +153,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 
             case PLAYER:
                 drawPlayer(e.getX(), e.getY());
+            break;
+                
+            case FLAG:
+                drawFlag(e.getX(), e.getY());
             break;
 
             default: 
@@ -185,6 +204,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public void mouseMoved(MouseEvent e) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
 }
 
 

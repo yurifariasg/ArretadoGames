@@ -6,6 +6,7 @@ package com.arretados.leveleditor.parsers;
 
 import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fruit;
 import com.arretados.leveleditor.entities.Player;
 import java.util.HashMap;
@@ -25,16 +26,17 @@ public class JSONGenerator {
     private List<Fruit> fruits;
     private List<int[]> groundLines;
     private List<Player> players;
+    private Flag flag;
 
-    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<int[]> groundLines, List<Player> players) {
+    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<int[]> groundLines, List<Player> players, Flag flag) {
         this.boxes = boxes;
         this.fruits = fruits;
         this.groundLines = groundLines;
         this.players = players;
+        this.flag = flag;
     }
     
     public JSONObject generateJson(){
-        
         HashMap<String, JSONArray> hm = createMap();
         return new JSONObject(hm);
     }
@@ -43,6 +45,7 @@ public class JSONGenerator {
         final String TYPE_BOX = "box";
         final String TYPE_FRUIT = "fruit";
         final String TYPE_PLAYER = "player";
+        final String TYPE_FLAG = "finalflag";
         
         HashMap<String, JSONArray> hm = new HashMap<String, JSONArray>();
         JSONArray jArrayEntities = new JSONArray();        
@@ -53,6 +56,7 @@ public class JSONGenerator {
             jPlayerObj.put("number", i+1);
             jPlayerObj.put("x", Utils.convertPixelToMeter(players.get(i).getX()));
             jPlayerObj.put("y", 10-Utils.convertPixelToMeter(players.get(i).getY()));
+            
             jArrayEntities.add(jPlayerObj);
         }    
         
@@ -75,7 +79,13 @@ public class JSONGenerator {
             jObj.put("size", Utils.convertPixelToMeter(fruits.get(i).getSize()));
             
             jArrayEntities.add(jObj);
-        }        
+        }
+        
+        JSONObject jObjFlag = new JSONObject();
+        jObjFlag.put("type", TYPE_FLAG);
+        jObjFlag.put("x", Utils.convertPixelToMeter(flag.getX()));
+        jObjFlag.put("y", 10-Utils.convertPixelToMeter(flag.getY()));
+        jArrayEntities.add(jObjFlag);
         
         hm.put("entities", jArrayEntities);
         JSONArray jArrayGround = new JSONArray();
