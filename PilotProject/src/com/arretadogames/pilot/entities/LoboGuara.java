@@ -100,8 +100,11 @@ public class LoboGuara extends Player {
 	}
 	
 	private void applyReturn(Vec2 impulse){
+		int quant = bodiesContact.size() * 3;
 		for(Body b : bodiesContact){
-			b.applyLinearImpulse(impulse.mul(-1/bodiesContact.size()), body.getWorldCenter());
+			b.applyLinearImpulse(impulse.mul(-1/quant), b.getWorldCenter());
+			b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(-0.5f,-0.6f)));
+			b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(0.5f,-0.6f)));
 		}
 	}
 	
