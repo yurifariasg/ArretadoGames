@@ -40,7 +40,7 @@ public class FinalFlag extends Entity {
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
 		if(e.getType() == EntityType.PLAYER ){
-			((Player)e).setFinished(true); // Finished Stage
+			((Player)e).setFinished(false); // Finished Stage
 		}
 	}
 

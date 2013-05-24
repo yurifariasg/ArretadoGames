@@ -50,7 +50,7 @@ public class GameCamera {
 
 	public GameCamera(GameWorld world, int backgroundId){
 
-		this(world, 250f);//Default is 1.5 seconds
+		this(world, 2500f);//Default is 250 milliseconds
 		this.backgroundId = backgroundId;
 	}
 
@@ -292,12 +292,12 @@ public class GameCamera {
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
 		
-		float where_is = ( center.x / 199.74f );
-		if ( where_is < 0 ){
-			where_is = 0;
+		float pos_rel_to_map = ( center.x / 199.74f );
+		if ( pos_rel_to_map < 0 ){
+			pos_rel_to_map = 0;
 		}
-		if ( where_is > 1 ){
-			where_is = 1;
+		if ( pos_rel_to_map > 1 ){
+			pos_rel_to_map = 1;
 		}
 		
 		if ( backgroundImageWidth > DisplaySettings.TARGET_WIDTH && backgroundImageHeight > DisplaySettings.TARGET_HEIGHT ){
@@ -310,36 +310,37 @@ public class GameCamera {
 				factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / backgroundWidth);
 				backgroundWidth *= factor;
 				backgroundHeight *= factor;
-				System.out.println("(*) WID: "+backgroundWidth+" HEI: "+backgroundHeight);
-			}
-			else{
-				System.out.println("WID: "+backgroundWidth+" HEI: "+backgroundHeight);
 			}
 
+			RectF displayRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
 
-			RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
-
-			int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
+			int translate_x = (int) (pos_rel_to_map * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
 			int translate_y = 0;
 
+			Rect showRect = new Rect(translate_x, translate_y, 
+					translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight);
+			
 			if (DisplaySettings.PROFILE_GAME_CAMERA) {
 				Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
 				time = System.nanoTime() / 1000000;
 			}
 			
 			gameCanvas.fillScreen(255, 255, 255, 255);
-			gameCanvas.drawBitmap(backgroundId, new Rect(translate_x, translate_y,
-					translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight),
-			backgroundRect, false);
+			gameCanvas.drawBitmap(backgroundId, showRect,
+			displayRect, false);
 			
 		}
 		else{
 			
 			RectF displayRect = new RectF(0f, 0f, DisplaySettings.TARGET_WIDTH, DisplaySettings.TARGET_HEIGHT);
-			int backgroundWidth = (backgroundImageWidth / 3);
-			int backgroundHeight = (backgroundImageHeight / 3);
-			int translate_x = (int) (where_is * ( backgroundImageWidth - backgroundWidth));
+			
+			int backgroundHeight = backgroundImageHeight;
+			int backgroundWidth = backgroundHeight * (int)(DisplaySettings.TARGET_WIDTH / DisplaySettings.TARGET_HEIGHT);
+			
+			int translate_x = (int) (pos_rel_to_map * ( backgroundImageWidth - backgroundWidth));
 			int translate_y = 0;
+
+			Rect showRect = new Rect(translate_x, translate_y, translate_x + backgroundWidth, backgroundHeight + translate_y);
 
 			if (DisplaySettings.PROFILE_GAME_CAMERA) {
 				Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
@@ -347,7 +348,6 @@ public class GameCamera {
 			}
 			
 			gameCanvas.fillScreen(255, 255, 255, 255);
-			Rect showRect = new Rect(translate_x, translate_y, translate_x + backgroundWidth, backgroundHeight + translate_y);
 			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
 
 		}
