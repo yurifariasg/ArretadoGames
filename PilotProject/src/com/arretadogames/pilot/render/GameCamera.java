@@ -287,7 +287,7 @@ public class GameCamera {
 
 	private void drawBackground(Vec2 center) {
 
-		backgroundId = R.drawable.paradise5;
+		backgroundId = R.drawable.dark;
 		
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
