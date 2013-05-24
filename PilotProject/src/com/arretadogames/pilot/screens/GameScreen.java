@@ -1,13 +1,10 @@
 package com.arretadogames.pilot.screens;
 
-import javax.microedition.khronos.opengles.GL10;
-
-import android.view.MotionEvent;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 /**
  * GameScreen class represents a Screen in the Game<br>
  * It has all operations that support a screen
- * 
  */
 public abstract class GameScreen {
 	// For now this class is abstract because we are going to add some
@@ -21,7 +18,7 @@ public abstract class GameScreen {
 	 * @param timeElapsed
 	 *            Time Elapsed from last frame
 	 */
-	public abstract void render(GL10 gl, float timeElapsed);
+	public abstract void render(GLCanvas canvas, float timeElapsed);
 
 	/**
 	 * Performs a Step in the Screen's logic
@@ -37,6 +34,16 @@ public abstract class GameScreen {
 	 * @param event
 	 *            MotionEvent / Input Event to be handled
 	 */
-	public abstract void input(MotionEvent event);
+	public abstract void input(InputEventHandler event);
+	
+	/**
+	 * Handles the event for when the user press the physical back button
+	 */
+	public abstract void onBackPressed();
+	
+	/**
+	 * Handles the pause event, when the user receives a call or locks the screen
+	 */
+	public abstract void onPause();
 
 }
