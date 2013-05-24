@@ -23,6 +23,8 @@ import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LevelManager;
@@ -31,6 +33,7 @@ import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.SpriteManager;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.screens.GameOverScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
@@ -40,6 +43,8 @@ import com.arretadogames.pilot.screens.PauseScreen;
  * GameWorld class represents the World in our Game
  */
 public class GameWorld extends GameScreen {
+	
+	private static final int LEVEL_INDEX = 0; /* Level to load */
 	
 	private int backgroundId;
 	
@@ -51,6 +56,8 @@ public class GameWorld extends GameScreen {
 	private PauseScreen pauseScreen;
 	
 	private SpriteManager sm;
+	
+	private long time;
 	
 	public GameWorld() {
 		backgroundId = R.drawable.stage_background;
@@ -144,8 +151,6 @@ public class GameWorld extends GameScreen {
 		
 	}
 	
-	private long time;
-	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		// Render the World
@@ -187,6 +192,14 @@ public class GameWorld extends GameScreen {
 			pWorld.step(timeElapsed);
 		}
 		removeDeadEntities();
+		
+		boolean hasFinished = true;
+		for (Player p : players.values()) {
+			hasFinished &= (p.hasFinished() || !p.isAlive()); // if all have finished or dead
+		}
+		
+		if (hasFinished)
+			onLevelFinished();
 	}
 	
 	private void removeDeadEntities(){
@@ -248,4 +261,17 @@ public class GameWorld extends GameScreen {
 		return worldEntities;
 	}
 	
+	private boolean finishWorld = false;
+	
+	public void onLevelFinished() {
+		if (finishWorld)
+			return;
+		finishWorld = true;
+		boolean won = false;
+		for (Player p : players.values()) // At least one finished
+			won |= p.hasFinished();
+		
+		((GameOverScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(won, players);
+		Game.getInstance().goTo(GameState.GAME_OVER);
+	}
 }

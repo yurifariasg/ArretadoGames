@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.game;
 
+import java.util.HashMap;
+
 import android.graphics.Color;
 import android.graphics.Rect;
 import aurelienribon.tweenengine.BaseTween;
@@ -11,6 +13,8 @@ import aurelienribon.tweenengine.TweenCallback;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.screens.GameOverScreen;
+import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
@@ -28,10 +32,8 @@ public class Game implements TweenAccessor<Game> {
 	private static Game game;
 
 	private GameState currentState;
-	private GameWorld gameWorld;
-
-	private MainMenuScreen mainMenu;
-	private SplashScreen splashScreen;
+	
+	private HashMap<GameState, GameScreen> gameScreens;
 	
 	private boolean transitionStateOn;
 	private Rect transitionRect;
@@ -40,11 +42,17 @@ public class Game implements TweenAccessor<Game> {
 	
 	private Game() {
 		currentState = GameState.SPLASH;
-		gameWorld = new GameWorld();
-		mainMenu = new MainMenuScreen(this);
-		splashScreen = new SplashScreen(this);
+		gameScreens = new HashMap<GameState, GameScreen>();
+		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
+		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen(this));
+		gameScreens.put(GameState.SPLASH, new SplashScreen(this));
+		gameScreens.put(GameState.GAME_OVER, new GameOverScreen());
 		transitionStateOn = false;
 		resetWorld = false;
+	}
+	
+	public GameScreen getScreen(GameState state) {
+		return gameScreens.get(state);
 	}
 
 	/**
@@ -59,19 +67,7 @@ public class Game implements TweenAccessor<Game> {
 		
 		AnimationManager.getInstance().update(timeElapsed);
 		
-		switch (currentState) {
-		case RUNNING_GAME:
-			gameWorld.render(canvas, timeElapsed);
-			break;
-		case MAIN_MENU:
-			mainMenu.render(canvas, timeElapsed);
-			break;
-		case SPLASH:
-			splashScreen.render(canvas, timeElapsed);
-			break;
-		default:
-			break;
-		}
+		getScreen(currentState).render(canvas, timeElapsed);
 		
 		if (transitionStateOn) {
 			canvas.drawRect(transitionRect.left, transitionRect.top,
@@ -89,25 +85,12 @@ public class Game implements TweenAccessor<Game> {
 	public void step(float timeElapsed) {
 		if (resetWorld) {
 			PhysicalWorld.restart();
-			gameWorld.free();
-			gameWorld = new GameWorld();
+			((GameWorld) gameScreens.get(GameState.RUNNING_GAME)).free();
+			gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 			resetWorld = false;
 		}
 		
-		switch (currentState) {
-		case RUNNING_GAME:
-			gameWorld.step(timeElapsed);
-			break;
-		case MAIN_MENU:
-			mainMenu.step(timeElapsed);
-			break;
-		case SPLASH:
-			splashScreen.step(timeElapsed);
-			break;
-		default:
-			break;
-		}
-
+		gameScreens.get(currentState).step(timeElapsed);
 	}
 
 	/**
@@ -120,20 +103,7 @@ public class Game implements TweenAccessor<Game> {
 		if (transitionStateOn)
 			return; // Input Disabled when Transition
 
-		switch (currentState) {
-		case RUNNING_GAME:
-			gameWorld.input(event);
-			break;
-		case MAIN_MENU:
-			mainMenu.input(event);
-			break;
-		case SPLASH:
-			splashScreen.input(event);
-			break;
-		default:
-			break;
-		}
-
+		gameScreens.get(currentState).input(event);
 	}
 
 	/**
@@ -152,16 +122,7 @@ public class Game implements TweenAccessor<Game> {
 	}
 
 	public void onBackPressed() {
-		switch (currentState) {
-		case RUNNING_GAME:
-			gameWorld.onBackPressed();
-			break;
-		case MAIN_MENU:
-			mainMenu.onBackPressed();
-			break;
-		default:
-			break;
-		}
+		gameScreens.get(currentState).onBackPressed();
 	}
 	
 	public static Game getInstance() {
@@ -225,5 +186,4 @@ public class Game implements TweenAccessor<Game> {
 	public void resetWorld() {
 		resetWorld = true;
 	}
-
 }

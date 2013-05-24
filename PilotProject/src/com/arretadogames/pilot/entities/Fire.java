@@ -18,7 +18,7 @@ public class Fire extends Entity{
 
 	private float height;
 	private float width;
-	private float velocity = 3;
+	private float velocity = 4f;
 	
 	public Fire(float x, float y) {
 		super(x, y);
