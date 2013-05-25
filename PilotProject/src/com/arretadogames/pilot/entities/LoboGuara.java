@@ -85,7 +85,6 @@ public class LoboGuara extends Player {
 	
 	
 
-	@Override
 	public void jump() {
 		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0)
 			return;
@@ -124,7 +123,6 @@ public class LoboGuara extends Player {
 //		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
-	@Override
 	public void act() {
 		if (hasFinished() || !isAlive())
 			return;
@@ -144,6 +142,16 @@ public class LoboGuara extends Player {
 	public void step(float timeElapsed) {
 		if (hasFinished() || !isAlive()) {
 			return;
+		}
+		
+		if (jumpActive) {
+			jump();
+			jumpActive = false;
+		}
+		
+		if (actActive) {
+			act();
+			actActive = false;
 		}
 		
 		if(contJump > 0) contJump--;

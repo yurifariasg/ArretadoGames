@@ -31,25 +31,29 @@ public class GameWorldUI extends GameScreen {
 		
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
-			pressButtons(event.getX(), event.getY());
+			pressButtons(event.getX(), event.getY(), true);
+		} else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
+			pressButtons(event.getX(), event.getY(), false);
 		}
+		
+		
 		
 	}
 	
-	private void pressButtons(float x, float y) {
+	private void pressButtons(float x, float y, boolean pressed) {
 		if (y > 380) {
 			if (x < 200) {
 				// Jump 1
-				gWorld.jumpPlayer(PlayerNumber.ONE);
+				gWorld.getPlayers().get(PlayerNumber.ONE).setJumping(pressed);
 			} else if (x < 400) {
 				// Act 1
-				gWorld.actPlayer(PlayerNumber.ONE);
+				gWorld.getPlayers().get(PlayerNumber.ONE).setAct(pressed);
 			} else if (x < 600) {
 				// Jump 2
-				gWorld.jumpPlayer(PlayerNumber.TWO);
+				gWorld.getPlayers().get(PlayerNumber.TWO).setJumping(pressed);
 			} else {
 				// Act 2
-				gWorld.actPlayer(PlayerNumber.TWO);
+				gWorld.getPlayers().get(PlayerNumber.TWO).setAct(pressed);
 			}
 		}
 	}

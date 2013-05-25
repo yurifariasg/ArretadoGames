@@ -21,7 +21,6 @@ import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.Liana;
-//import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -40,6 +39,7 @@ import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
+//import com.arretadogames.pilot.entities.Liana;
 
 /**
  * GameWorld class represents the World in our Game
@@ -240,19 +240,6 @@ public class GameWorld extends GameScreen {
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
-	}
-	
-	public void jumpPlayer(PlayerNumber number) {
-		Player p = players.get(number);
-		if (p != null)
-			p.jump();
-		
-	}
-	
-	public void actPlayer(PlayerNumber number) {
-		Player p = players.get(number);
-		if (p != null)
-			p.act();
 	}
 	
 	public HashMap<PlayerNumber, Player> getPlayers(){
