@@ -8,6 +8,7 @@ import java.nio.ShortBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Color;
+import android.opengl.GLES11;
 
 public class GLRect {
 
@@ -27,10 +28,10 @@ public class GLRect {
     }
 
     private static void draw(GL10 gl){
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer); // Sets Vertex Buffer
-        gl.glDrawElements(GL10.GL_TRIANGLES, INDICES.length, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer); // Sets Vertex Buffer
+        GLES11.glDrawElements(GL10.GL_TRIANGLES, INDICES.length, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
+        GLES11.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 	
 	public static void draw(GL10 gl, float left, float top, float right, float bottom, int color) {
@@ -48,10 +49,10 @@ public class GLRect {
         vertexBuffer.put(vertices);
         vertexBuffer.position(0);
 
-		gl.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
+		GLES11.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
 				Color.blue(color) / 255f, Color.alpha(color) / 255f);
         draw(gl);
-        gl.glColor4f(1, 1, 1, 1);
+        GLES11.glColor4f(1, 1, 1, 1);
 	}
 
 	protected static void fillVertices(float left, float top, float right, float bottom) {

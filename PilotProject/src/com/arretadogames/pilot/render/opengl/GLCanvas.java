@@ -17,6 +17,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.opengl.GLES11;
 import android.opengl.GLUtils;
 import android.util.SparseArray;
 
@@ -42,11 +43,11 @@ public class GLCanvas {
 	
 	public boolean initiate() {
 		
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		GLES11.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		// Replace the current matrix with the identity matrix
-		gl.glLoadIdentity();
+		GLES11.glLoadIdentity();
 		// Rotate world by 180 around x axis so positive y is down (like canvas)
-		gl.glRotatef(-180, 1, 0, 0);
+		GLES11.glRotatef(-180, 1, 0, 0);
 		
 		fillScreen(255, 0, 0, 0);
 		
@@ -62,19 +63,19 @@ public class GLCanvas {
 
 	
 	public void translate(float dx, float dy) {
-		gl.glTranslatef(dx, dy, 0);
+		GLES11.glTranslatef(dx, dy, 0);
 	}
 
 	
 	public void scale(float sx, float sy, float px, float py) {
-		gl.glTranslatef(px, py, 0);
-		gl.glScalef(sx, sy, 0);
-		gl.glTranslatef(-px, -py, 0);
+		GLES11.glTranslatef(px, py, 0);
+		GLES11.glScalef(sx, sy, 0);
+		GLES11.glTranslatef(-px, -py, 0);
 	}
 
 	
 	public void rotate(float degrees) {
-		gl.glRotatef(degrees, 0, 0, 1);
+		GLES11.glRotatef(degrees, 0, 0, 1);
 	}
 
 	public void drawDebugRect(int x, int y, int x2, int y2) {
@@ -168,21 +169,21 @@ public class GLCanvas {
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
         
-        gl.glColor4f(0.54f, 0.28f, 0.15f, 1f); // Brown
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glDrawElements(GL10.GL_TRIANGLE_STRIP, drawOrder.length, GL10.GL_UNSIGNED_SHORT, drawListBuffer);
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glColor4f(1,1,1,1);
+        GLES11.glColor4f(0.54f, 0.28f, 0.15f, 1f); // Brown
+        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        GLES11.glDrawElements(GL10.GL_TRIANGLE_STRIP, drawOrder.length, GL10.GL_UNSIGNED_SHORT, drawListBuffer);
+        GLES11.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        GLES11.glColor4f(1,1,1,1);
 		
 	}
 
 	public void saveState() {
-		gl.glPushMatrix();
+		GLES11.glPushMatrix();
 	}
 	
 	public void restoreState() {
-		gl.glPopMatrix();
+		GLES11.glPopMatrix();
 	}
 
 	public void drawText(String text, float x, float y, Paint p, boolean centered) {
@@ -198,7 +199,7 @@ public class GLCanvas {
 	}
 
 	public void fillScreen(float a, float r, float g, float b) {
-		gl.glClearColor(r / 255f, g / 255f, b / 255f, a / 255f);
+		GLES11.glClearColor(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
 
 	public void drawRect(float left, float top, float right, float bottom, int color) {
@@ -220,7 +221,7 @@ public class GLCanvas {
 	
 	public void drawBitmap(int imageId, float x, float y, Paint paint) {
 		saveState();
-		gl.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
+		GLES11.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
 		translate(x, y);
 
 		if (textures.get(imageId) == null)
@@ -235,7 +236,7 @@ public class GLCanvas {
 		if (textures.get(imageId) == null)
 			loadImage(imageId);
 		GLImage tex = textures.get(imageId);
-		gl.glColor4f(1, 1, 1, 1);
+		GLES11.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
 			arbritaryRect.left = (int) (dstRect.left * physicsRatio);
@@ -273,25 +274,25 @@ public class GLCanvas {
 	
 	private void loadImage(int imageId, Bitmap bitmapToLoad) { /* We also load Bitmaps in FontTexture */
 		IntBuffer t = IntBuffer.allocate(1);
-		gl.glGenTextures(1, t);
+		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
 		GLImage texture = new GLImage(texture_id);
 		
 		// Working with textureId
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
+		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
 
 		// SETTINGS
 		// Scale up if the texture is smaller.
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
 				GL10.GL_LINEAR);
 		// Scale down if the mesh is smaller.
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
 				GL10.GL_LINEAR);
 		// Clamp to edge behaviour at edge of texture (repeats last pixel)
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
 				GL10.GL_CLAMP_TO_EDGE);
-//		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+//		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
 //				GL10.GL_CLAMP_TO_EDGE);
 
 		// Attach bitmap to current texture
@@ -307,7 +308,7 @@ public class GLCanvas {
 	}
 	
 	public void translatePhysics(float posX, float posY) {
-		gl.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
+		GLES11.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
 
 }
