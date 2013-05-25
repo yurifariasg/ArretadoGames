@@ -120,7 +120,6 @@ public class LoboGuara extends Player {
 			direction.mulLocal(force);
 			body.applyForceToCenter(direction);
 		}
-//		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
 	public void act() {
@@ -143,25 +142,13 @@ public class LoboGuara extends Player {
 		if (hasFinished() || !isAlive()) {
 			return;
 		}
-		
 		if (jumpActive) {
 			jump();
 			jumpActive = false;
 		}
-		
-		if (actActive) {
-			act();
-			actActive = false;
-		}
-		
 		if(contJump > 0) contJump--;
 		if(contAct > 0 ) contAct--;
 		run();
-		//if(contacts > 0) body.setFixedRotation(false);
-		//else {
-		//	body.setFixedRotation(true);
-		//	body.setAngularVelocity(0f);
-		//}
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
@@ -231,7 +218,6 @@ public class LoboGuara extends Player {
 				(0.71f * GLCanvas.physicsRatio), // Bottom Right
 				(0.55f * GLCanvas.physicsRatio)); // Bottom Right
 		
-//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.CYAN);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 		
