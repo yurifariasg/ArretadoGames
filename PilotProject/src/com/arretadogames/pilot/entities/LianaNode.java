@@ -35,7 +35,7 @@ public class LianaNode extends Entity {
 		fd.friction = 0.2f;
 
 		body.setType(BodyType.DYNAMIC);
-		body.createFixture(fd);
+		body.createFixture(fd).setSensor(true);
 
 	}
 
@@ -48,7 +48,7 @@ public class LianaNode extends Entity {
 	public void beginContact(Entity e, Contact contact) {
 		System.out.println("akee");
 		super.beginContact(e, contact);
-		if(e.getType() == EntityType.PLAYER){
+		if(e.getType() == EntityType.PLAYER && ((Player)e).actActive){
 			liana.playerContact(e,this);
 		}
 		
