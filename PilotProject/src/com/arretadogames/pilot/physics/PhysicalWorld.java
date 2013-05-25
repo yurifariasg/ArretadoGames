@@ -102,6 +102,6 @@ public class PhysicalWorld implements ContactListener {
 	}
 	
 	public void destroyEntity(Entity e){
-		world.destroyBody(e.body);
+		e.destroyBody();
 	}
 }

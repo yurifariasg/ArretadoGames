@@ -20,6 +20,7 @@ import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
+import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -84,7 +85,7 @@ public class GameWorld extends GameScreen {
 		
 		//TODO fzr direito
 		worldEntities.add(new Fire(0,0));
-		
+		worldEntities.add(new Liana(25,9));
 		List<EntityDescriptor> entities = ld.getEntities();
 		for (EntityDescriptor entityDescriptor : entities) {
 			Entity entity = null;

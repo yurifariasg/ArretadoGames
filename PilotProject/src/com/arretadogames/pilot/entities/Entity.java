@@ -62,5 +62,9 @@ public abstract class Entity implements Renderable {
 	public abstract EntityType getType();
 	
 	public abstract void setSprite(Sprite sprite);
+
+	public void destroyBody() {
+		world.destroyBody(body);
+	}
 	
 }
