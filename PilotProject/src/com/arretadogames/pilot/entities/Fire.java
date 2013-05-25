@@ -48,7 +48,7 @@ public class Fire extends Entity{
 	}
 	
 	@Override
-	public void endContact(Entity e, Contact contact) {
+	public void beginContact(Entity e, Contact contact) {
 		super.endContact(e, contact);
 		PhysicalWorld.getInstance().addDeadEntity(e);
 	}
