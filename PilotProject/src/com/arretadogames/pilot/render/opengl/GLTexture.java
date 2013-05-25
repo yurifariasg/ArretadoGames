@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Rect;
+import android.opengl.GLES11;
 
 public class GLTexture extends GLRect {
 	
@@ -19,26 +20,45 @@ public class GLTexture extends GLRect {
     private static void draw(GL10 gl){
     	
     	// DRAW COMMAND
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		GLES11.glEnable(GL10.GL_TEXTURE_2D);
+		GLES11.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		
 		// Tell OpenGL where our texture is located.
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, image.getTextureID());
+		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, image.getTextureID());
 		// Telling OpenGL where our textureCoords are.
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
+		GLES11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
 		// Specifies the location and data format of the array of
 		// vertex
 		// coordinates to use when rendering.
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
 		// Draw elements command using indices so it knows which
 		// vertices go together to form each element
-		gl.glDrawElements(GL10.GL_TRIANGLES, INDICES.length,
+		GLES11.glDrawElements(GL10.GL_TRIANGLES, INDICES.length,
 				GL10.GL_UNSIGNED_SHORT, indexBuffer);
+		
+		// 0,0 ---
+		/*
+		 * vertices[0] = left;
+		vertices[1] = top;
+		vertices[2] = 0f;
+		vertices[3] = left;
+		vertices[4] = bottom;
+		vertices[5] = 0f;
+		vertices[6] = right;
+		vertices[7] = bottom;
+		vertices[8] = 0f;
+		vertices[9] = right;
+		vertices[10] = top;
+		vertices[11] = 0f;
+		 */
+
+//		((GL11Ext)gl).glDrawTexfOES(vertices[0], vertices[4], 0, vertices[6] - vertices[0], vertices[4] - vertices[1]);
+//		((GL11Ext) gl).glDrawTexfOES(160, 240, 0, 64, 64);
 	
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
+		GLES11.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		GLES11.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		GLES11.glDisable(GL10.GL_TEXTURE_2D);
     	
     }
     
@@ -132,9 +152,9 @@ public class GLTexture extends GLRect {
         vertexBuffer.position(0);
         
         
-//        gl.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
+//        GLES11.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
 //				Color.blue(color) / 255f, Color.alpha(color) / 255f);
         draw(gl);
-        gl.glColor4f(1, 1, 1, 1);
+        GLES11.glColor4f(1, 1, 1, 1);
 	}
 }
