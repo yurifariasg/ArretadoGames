@@ -61,12 +61,6 @@ public class FinalFlag extends Entity {
 	}
 
 	@Override
-	public void step(float timeElapsed) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public EntityType getType() {
 		return EntityType.FINALFLAG;
 	}

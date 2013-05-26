@@ -1,6 +1,7 @@
 package com.arretadogames.pilot.physics;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.jbox2d.callbacks.ContactImpulse;
@@ -25,7 +26,7 @@ public class PhysicalWorld implements ContactListener {
 		world = new World(new Vec2(0.0f,-10.0f));
 		world.setContactListener(this);
 		world.setAllowSleep(true);
-		deadEntities = new ArrayList<Entity>();
+		deadEntities = Collections.synchronizedCollection(new ArrayList<Entity>());
 	}
 	
 	public static PhysicalWorld getInstance() {

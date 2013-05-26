@@ -24,6 +24,7 @@ import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
@@ -53,6 +54,7 @@ public class GameWorld extends GameScreen {
 	private GameWorldUI ui;
 	private PhysicalWorld pWorld;
 	private Collection<Entity> worldEntities;
+	private Collection<Steppable> steppables;
 	private HashMap<PlayerNumber, Player> players;
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
@@ -83,6 +85,7 @@ public class GameWorld extends GameScreen {
 	private void createEntities(LevelDescriptor ld) {
 		players = new HashMap<PlayerNumber, Player>();
 		worldEntities = new ArrayList<Entity>();
+		steppables = new ArrayList<Steppable>();
 		
 		//TODO fzr direito
 		worldEntities.add(new Fire(0,0));
@@ -147,6 +150,12 @@ public class GameWorld extends GameScreen {
 				lastVec[i] = vecs[i];
 			worldEntities.add(new Ground(lastVec, internalPointer));
 		}
+		
+		for(Entity e : worldEntities){
+			if(e instanceof Steppable){
+				steppables.add((Steppable) e);
+			}
+		}
 	}
 	
 	public void free() {
@@ -188,7 +197,7 @@ public class GameWorld extends GameScreen {
 		// TODO: Perform a World Step
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
-			for (Entity p : worldEntities)
+			for (Steppable p : steppables)
 				p.step(timeElapsed);
 			ui.step(timeElapsed);
 			pWorld.step(timeElapsed);
@@ -210,6 +219,7 @@ public class GameWorld extends GameScreen {
 			Entity e = it.next();
 			pWorld.destroyEntity(e);
 			worldEntities.remove(e);
+			if(e instanceof Steppable) steppables.remove((Steppable)e);
 			for ( PlayerNumber p : players.keySet() ){
 				if ( players.get(p).equals(e) ){
 					players.remove(p);

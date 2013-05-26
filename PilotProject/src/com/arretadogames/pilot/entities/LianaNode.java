@@ -15,7 +15,7 @@ import android.graphics.RectF;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class LianaNode extends Entity {
+public class LianaNode extends Entity implements Steppable{
 
 	private float height;
 	private float width;
@@ -41,12 +41,11 @@ public class LianaNode extends Entity {
 
 	@Override
 	public void step(float timeElapsed) {
-		body.applyForce((new Vec2(-5,0)).mul(body.getMass()), new Vec2(body.getWorldCenter().x,body.getWorldCenter().y-height/2));
+		body.applyLinearImpulse((new Vec2(-0.1f,0)).mul(body.getMass()), new Vec2(body.getWorldCenter().x,body.getWorldCenter().y));
 	}
 	
 	@Override
 	public void beginContact(Entity e, Contact contact) {
-		System.out.println("akee");
 		super.beginContact(e, contact);
 		if(e.getType() == EntityType.PLAYER && ((Player)e).actActive){
 			liana.playerContact(e,this);

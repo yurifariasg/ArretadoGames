@@ -42,10 +42,6 @@ public class Box extends Entity {
 		canvas.restoreState();
 	}
 
-	@Override
-	public void step(float timeElapsed) {
-		// TODO Box Logic
-	}
 
 	@Override
 	public EntityType getType() {

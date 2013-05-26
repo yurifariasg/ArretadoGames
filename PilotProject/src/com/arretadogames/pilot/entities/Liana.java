@@ -23,37 +23,36 @@ import android.util.Pair;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class Liana extends Entity {
+public class Liana extends Entity implements Steppable{
 
 	private ArrayList<LianaNode> elements;
 	private Collection<Player> conectedPlayers;
 	private Collection<Joint> joints;
 	Collection< Pair<Player, LianaNode> > toCreateJoints;
-	
+
 	public Liana(float x, float y, float size) {
 		super(x, y);
 		conectedPlayers = new HashSet<Player>();
 		joints = new ArrayList<Joint>();
 		elements = new ArrayList<LianaNode>();
 		toCreateJoints = new ArrayList<Pair<Player,LianaNode>>();
-		
+
 		PolygonShape sini = new PolygonShape();
 		sini.setAsBox(0.1f,0.1f);
 		body.createFixture(sini,0f);
 		body.setType(BodyType.STATIC);
-		
+
 		RevoluteJointDef jd = new RevoluteJointDef();
 		jd.collideConnected = false;
-		
+
 		Body prevBody = body;
-		
+
 		float height = 0.4f;
 		int quant = (int)(size/height);
 		float width = 0.1f;
 		float gap = 0.05f;
 		for (int i = 0; i < quant; ++i){
 			LianaNode ln = new LianaNode(x, y -(height-2*gap)/2 - i*(height-2*gap), width, height,this);
-//			ln.body.setUserData(this);
 			Vec2 anchor = new Vec2(x, y - i*(height-2*gap));
 			jd.initialize(prevBody, ln.body, anchor);
 			world.createJoint(jd);
@@ -62,14 +61,15 @@ public class Liana extends Entity {
 		}
 	}
 
-	
+
 
 	@Override
 	public void step(float timeElapsed) {
-		for(LianaNode ln : elements){
-			ln.step(timeElapsed);
+		if(joints.isEmpty()){
+			for(LianaNode ln : elements){
+				ln.step(timeElapsed);
+			}
 		}
-		
 		createJoints();	
 		removeJoints();
 	}
@@ -85,7 +85,7 @@ public class Liana extends Entity {
 				createJoint(player, node);
 			}
 		}
-		
+
 		toCreateJoints.clear();
 	}
 
@@ -96,7 +96,7 @@ public class Liana extends Entity {
 		for(Player player : conectedPlayers){
 			if(!player.actActive){
 				toLeave.add(player);
-				
+
 				Collection<Joint> toDestroy = new ArrayList<Joint>();
 				for(Joint joint : joints){
 					if(((Player)joint.getBodyA().getUserData()).equals(player)){
@@ -151,12 +151,11 @@ public class Liana extends Entity {
 				(- 0.1f * GLCanvas.physicsRatio), // Top Left
 				(0.1f * GLCanvas.physicsRatio), // Bottom Right
 				(0.1f * GLCanvas.physicsRatio)); // Bottom Right
-		
+
 		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.WHITE);
 		canvas.restoreState();
-		
 	}
-	
+
 	@Override
 	public void destroyBody() {
 		super.destroyBody();

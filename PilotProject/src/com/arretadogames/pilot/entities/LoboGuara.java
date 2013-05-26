@@ -19,7 +19,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class LoboGuara extends Player {
+public class LoboGuara extends Player implements Steppable{
 
 	private Sprite sprite;
 	private int contJump;

@@ -57,8 +57,6 @@ public abstract class Entity implements Renderable {
 		
 	}
 	
-	public abstract void step(float timeElapsed);
-	
 	public abstract EntityType getType();
 	
 	public abstract void setSprite(Sprite sprite);
