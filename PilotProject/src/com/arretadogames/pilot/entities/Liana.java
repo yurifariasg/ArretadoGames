@@ -29,8 +29,12 @@ public class Liana extends Entity implements Steppable{
 	private Collection<Player> conectedPlayers;
 	private Collection<Joint> joints;
 	Collection< Pair<Player, LianaNode> > toCreateJoints;
+	private final float HEIGHT = 0.4f;
+	private final float WIDTH = 0.1f;
+	private final float GAP = 0.05f;
+	private Joint joint;
 
-	public Liana(float x, float y, float size) {
+	private Liana(float x, float y) {
 		super(x, y);
 		conectedPlayers = new HashSet<Player>();
 		joints = new ArrayList<Joint>();
@@ -39,26 +43,65 @@ public class Liana extends Entity implements Steppable{
 
 		PolygonShape sini = new PolygonShape();
 		sini.setAsBox(0.1f,0.1f);
-		body.createFixture(sini,0f);
+		body.createFixture(sini,0f).setSensor(true);
 		body.setType(BodyType.STATIC);
-
+	}
+	
+	/**
+	 * 
+	 * @param x x coordinate of the top end
+	 * @param y y coordinate of the top end
+	 * @param xf x coordinate of the bottom end
+	 * @param yf y coordinate of the bottom end
+	 * @param size 
+	 */
+	public Liana(float x, float y, float xf, float yf, float size) {
+		this(x, y);
+		createChain(x, y, xf, yf, size);
+	}
+	
+	public Liana(float x, float y, float xf, float yf) {
+		this(x, y);
+		Vec2 ini = new Vec2(x,y);
+		Vec2 fin = new Vec2(xf,yf);
+		float size = (ini.sub(fin)).length() + 1*HEIGHT;
+		createChain(x, y, xf, yf, size);
+	}
+	
+	private void createChain(float x, float y, float xf, float yf, float size){
+		
 		RevoluteJointDef jd = new RevoluteJointDef();
 		jd.collideConnected = false;
 
 		Body prevBody = body;
-
-		float height = 0.4f;
-		int quant = (int)(size/height);
-		float width = 0.1f;
-		float gap = 0.05f;
+		int quant = (int)(size/(HEIGHT-2*GAP));
 		for (int i = 0; i < quant; ++i){
-			LianaNode ln = new LianaNode(x, y -(height-2*gap)/2 - i*(height-2*gap), width, height,this);
-			Vec2 anchor = new Vec2(x, y - i*(height-2*gap));
+			LianaNode ln = new LianaNode(x, y -(HEIGHT-2*GAP)/2 - i*(HEIGHT-2*GAP), WIDTH, HEIGHT,this);
+			Vec2 anchor = new Vec2(x, y - i*(HEIGHT-2*GAP));
 			jd.initialize(prevBody, ln.body, anchor);
 			world.createJoint(jd);
 			elements.add(ln);
 			prevBody = ln.body;
 		}
+		
+		BodyDef bd = new BodyDef();
+		bd.position.set(xf ,yf);
+		Body body2 = world.createBody(bd);
+		body2.setSleepingAllowed(true);
+		body2.setAwake(false);
+		body2.setType(BodyType.STATIC);
+		
+//		PolygonShape sini = new PolygonShape();
+//		sini.setAsBox(0.1f,0.1f);
+//		body2.createFixture(sini,0.1f);
+		
+		RevoluteJointDef jd2 = new RevoluteJointDef();
+		jd2.bodyA = body2;
+		jd2.bodyB = prevBody;
+		jd2.collideConnected = false;
+		jd2.localAnchorA.set(new Vec2());
+		jd2.localAnchorB.set(new Vec2());
+		joint = world.createJoint(jd2);
 	}
 
 
@@ -67,8 +110,11 @@ public class Liana extends Entity implements Steppable{
 	public void step(float timeElapsed) {
 		if(joints.isEmpty()){
 			for(LianaNode ln : elements){
-				ln.step(timeElapsed);
+//				ln.step(timeElapsed);
 			}
+		} else if( joint != null){
+			world.destroyJoint(joint);
+			joint = null;
 		}
 		createJoints();	
 		removeJoints();

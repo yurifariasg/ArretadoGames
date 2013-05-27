@@ -89,7 +89,7 @@ public class GameWorld extends GameScreen {
 		
 		//TODO fzr direito
 		worldEntities.add(new Fire(0,0));
-		worldEntities.add(new Liana(25,9,4));
+		worldEntities.add(new Liana(25,9,23,7));
 		List<EntityDescriptor> entities = ld.getEntities();
 		for (EntityDescriptor entityDescriptor : entities) {
 			Entity entity = null;
