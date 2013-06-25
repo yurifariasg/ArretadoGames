@@ -22,6 +22,7 @@ import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
+import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.entities.Steppable;
@@ -90,6 +91,7 @@ public class GameWorld extends GameScreen {
 		//TODO fzr direito
 		worldEntities.add(new Fire(0,0));
 		worldEntities.add(new Liana(25,9,23,7));
+		worldEntities.add(new OneWayWall(30,6.5f));
 		List<EntityDescriptor> entities = ld.getEntities();
 		for (EntityDescriptor entityDescriptor : entities) {
 			Entity entity = null;

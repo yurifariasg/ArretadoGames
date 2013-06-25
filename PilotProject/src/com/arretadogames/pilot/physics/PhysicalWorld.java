@@ -81,8 +81,10 @@ public class PhysicalWorld implements ContactListener {
 
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
-		// TODO Auto-generated method stub
-		
+		Entity a = (Entity)contact.m_fixtureA.getBody().getUserData();
+		Entity b = (Entity)contact.m_fixtureB.getBody().getUserData();
+		a.preSolve(contact, oldManifold);
+		b.preSolve(contact, oldManifold);
 	}
 
 	public void step(float timeElapsed) {
