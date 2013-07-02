@@ -14,6 +14,7 @@ import android.util.Log;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
+import com.arretadogames.pilot.entities.Coin;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.FinalFlag;
@@ -110,6 +111,9 @@ public class GameWorld extends GameScreen {
 				break;
 			case FINALFLAG:
 				entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
+				break;
+			case COIN:
+				entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
 				break;
 			default:
 				break;

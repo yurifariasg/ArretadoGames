@@ -9,6 +9,8 @@ public abstract class Player extends Entity {
 	
 	protected boolean jumpActive;
 	protected boolean actActive;
+	
+	private int acquiredCoins;
 
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
@@ -43,6 +45,18 @@ public abstract class Player extends Entity {
 //	public abstract void act();
 	public void setAct(boolean isAct) {
 		this.actActive = isAct;
+	}
+	
+	public void addCoins(int amount) {
+		acquiredCoins += amount;
+	}
+	
+	public void resetCoins() {
+		acquiredCoins = 0;
+	}
+	
+	public int getCoins() {
+		return acquiredCoins;
 	}
 	
 	public abstract int[] getWalkFrames();

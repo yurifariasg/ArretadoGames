@@ -1,6 +1,7 @@
 package com.arretadogames.pilot.render;
 
 import com.arretadogames.pilot.entities.Box;
+import com.arretadogames.pilot.entities.Coin;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Fruit;
@@ -26,10 +27,21 @@ public class SpriteManager {
 			setFruitSprites(sprite, fruit);
 		}else if(en.getType() == EntityType.GROUND){
 			Ground ground = (Ground) en;
+		}else if(en.getType() == EntityType.COIN){
+			Coin coin = (Coin) en;
+			setCoinSprites(sprite);
 		}
 		return sprite;
 	}
 	
+	private void setCoinSprites(Sprite sprite) {
+		String name = "stopped";
+		int[] frames = Coin.FRAMES;
+		float[] framesDur = Coin.DURATION;
+		sprite.setAnimationState(name);
+		sprite.addState(new SpriteState(name, frames, framesDur));
+	}
+
 	private void setPlayerSprites(Sprite sprite, Player player){
 
 		String name = "walking";
