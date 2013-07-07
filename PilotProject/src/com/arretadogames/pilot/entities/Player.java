@@ -1,16 +1,29 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.world.GameWorld;
+
 
 
 public abstract class Player extends Entity {
 	
 	private PlayerNumber playerNumber;
 	private boolean hasFinished; /* Player has finished level */
+	
+	protected boolean jumpActive;
+	protected boolean actActive;
+	
+	private int acquiredCoins;
+	private int deathCount;
+	private int timeFinished;
 
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
 		this.playerNumber = playerNumber;
 		hasFinished = false;
+		jumpActive = false;
+		actActive = false;
 	}
 	
 	public PlayerNumber getNumber() {
@@ -18,6 +31,8 @@ public abstract class Player extends Entity {
 	}
 	
 	public void setFinished(boolean hasFinished) {
+		if (!hasFinished() && hasFinished) // Was not finished before, now it is
+			timeFinished = ((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).getTotalElapsedTime();
 		this.hasFinished = hasFinished;
 	}
 	
@@ -30,9 +45,45 @@ public abstract class Player extends Entity {
 		return EntityType.PLAYER;
 	}
 	
-	public abstract void jump();
+//	public abstract void jump();
+	public void setJumping(boolean isJumping) {
+		this.jumpActive = isJumping;
+	}
 	
-	public abstract void act();
+//	public abstract void act();
+	public void setAct(boolean isAct) {
+		this.actActive = isAct;
+	}
+	
+	@Override
+	public void setDead(boolean isDead) {
+		if (isAlive() && isDead) // Was alive, now is dead
+			deathCount++;
+		
+		super.setDead(isDead);
+	}
+	
+	public int getDeathCount() {
+		return deathCount;
+	}
+	
+	public int getTimeFinished() {
+		if (hasFinished())
+			return timeFinished;
+		return 0;
+	}
+	
+	public void addCoins(int amount) {
+		acquiredCoins += amount;
+	}
+	
+	public void resetCoins() {
+		acquiredCoins = 0;
+	}
+	
+	public int getCoins() {
+		return acquiredCoins;
+	}
 	
 	public abstract int[] getWalkFrames();
 	

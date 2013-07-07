@@ -2,7 +2,9 @@
     package="com.arretadogames.pilot"
     android:versionCode="1"
     android:versionName="1.0" >
-
+	
+    <uses-feature android:glEsVersion="0x00010001" android:required="true" />
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
@@ -27,7 +29,5 @@
         
         
     </application>
-    
-    <!-- <uses-feature android:glEsVersion="0x00020000" android:required="true" /> -->
 
 </manifest>

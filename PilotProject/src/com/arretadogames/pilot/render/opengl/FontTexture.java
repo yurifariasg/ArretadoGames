@@ -1,12 +1,9 @@
 package com.arretadogames.pilot.render.opengl;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11Ext;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -14,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.opengl.GLES11;
 import android.opengl.GLUtils;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -74,7 +72,7 @@ public class FontTexture {
 		Rect src;
 		Rect dst = new Rect();
 		int charNumber;
-		gl.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
+		GLES11.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
 		for (int i = 0; i < text.length() ; i++) {
 			// Source rect
 			charNumber = (int) text.charAt(i);
@@ -96,7 +94,7 @@ public class FontTexture {
 			// Move forward CHAR WIDTH (not cell width)
 			x += charWidth * scale;
 		}
-		gl.glColor4f(1,1,1,1);
+		GLES11.glColor4f(1,1,1,1);
 	}
 	
 	
@@ -208,25 +206,25 @@ public class FontTexture {
 	// Load Bitmap
 	private void loadBitmap(GL10 gl, Bitmap bitmapToLoad) {
 		IntBuffer t = IntBuffer.allocate(1);
-		gl.glGenTextures(1, t);
+		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
 		spriteData = new GLImage(texture_id);
 		
 		// Working with textureId
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
+		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
 
 		// SETTINGS
 		// Scale up if the texture is smaller.
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
 				GL10.GL_LINEAR);
 		// Scale down if the mesh is smaller.
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
 				GL10.GL_LINEAR);
 		// Clamp to edge behaviour at edge of texture (repeats last pixel)
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
 				GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
 				GL10.GL_CLAMP_TO_EDGE);
 
 		// Attach bitmap to current texture

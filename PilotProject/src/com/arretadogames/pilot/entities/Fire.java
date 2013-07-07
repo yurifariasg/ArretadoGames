@@ -14,7 +14,7 @@ import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class Fire extends Entity{
+public class Fire extends Entity implements Steppable{
 
 	private float height;
 	private float width;
@@ -48,7 +48,7 @@ public class Fire extends Entity{
 	}
 	
 	@Override
-	public void endContact(Entity e, Contact contact) {
+	public void beginContact(Entity e, Contact contact) {
 		super.endContact(e, contact);
 		PhysicalWorld.getInstance().addDeadEntity(e);
 	}

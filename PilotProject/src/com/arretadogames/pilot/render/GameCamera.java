@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
@@ -50,7 +51,7 @@ public class GameCamera {
 
 	public GameCamera(GameWorld world, int backgroundId){
 
-		this(world, 250f);//Default is 1.5 seconds
+		this(world, 2500f);//Default is 250 milliseconds
 		this.backgroundId = backgroundId;
 	}
 
@@ -72,6 +73,14 @@ public class GameCamera {
 		targetPhysicsRatio = 0;
 		startTime = 0;
 	}
+	
+	private int getNumberOfAlivePlayers(Collection<Player> players) {
+		int alive = 0;
+		for (Player p : players)
+			if (p.isAlive())
+				alive++;
+		return alive;
+	}
 
 	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
 	private void determineViewport(float timeElapsed){
@@ -81,7 +90,7 @@ public class GameCamera {
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
 
-		int numberOfPlayers = players.keySet().size();
+		int numberOfPlayers = getNumberOfAlivePlayers(players.values());
 		if ( currentNumberOfPlayers == -1 ){
 			currentNumberOfPlayers = numberOfPlayers;
 		}
@@ -106,6 +115,8 @@ public class GameCamera {
 		while ( iiterator.hasNext() ){
 
 			PlayerNumber i = iiterator.next();
+			if (!players.get(i).isAlive())
+				continue;
 			
 			float x = players.get(i).getPosX();
 			float y = players.get(i).getPosY();
@@ -117,7 +128,7 @@ public class GameCamera {
 
 				PlayerNumber j = jiterator.next();
 				
-				if ( i.equals(j) ){
+				if ( i.equals(j) || !players.get(j).isAlive() ){
 					continue;
 				}
 
@@ -287,49 +298,70 @@ public class GameCamera {
 
 	private void drawBackground(Vec2 center) {
 
-		backgroundId = R.drawable.paradise2;
+		backgroundId = R.drawable.dark;
 		
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
 		
-		float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / backgroundImageHeight));
-		float backgroundWidth = backgroundImageWidth * factor;
-		float backgroundHeight = backgroundImageHeight * factor;
+		float pos_rel_to_map = ( center.x / 199.74f );
+		if ( pos_rel_to_map < 0 ){
+			pos_rel_to_map = 0;
+		}
+		if ( pos_rel_to_map > 1 ){
+			pos_rel_to_map = 1;
+		}
+		
+		if ( backgroundImageWidth > DisplaySettings.TARGET_WIDTH && backgroundImageHeight > DisplaySettings.TARGET_HEIGHT ){
 
-		if ( backgroundWidth < DisplaySettings.TARGET_WIDTH ){
-			factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / backgroundWidth);
-			backgroundWidth *= factor;
-			backgroundHeight *= factor;
-			System.out.println("(*) WID: "+backgroundWidth+" HEI: "+backgroundHeight);
+			float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / backgroundImageHeight));
+			float backgroundWidth = backgroundImageWidth * factor;
+			float backgroundHeight = backgroundImageHeight * factor;
+
+			if ( backgroundWidth < DisplaySettings.TARGET_WIDTH ){
+				factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / backgroundWidth);
+				backgroundWidth *= factor;
+				backgroundHeight *= factor;
+			}
+
+			RectF displayRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
+
+			int translate_x = (int) (pos_rel_to_map * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
+			int translate_y = 0;
+
+			Rect showRect = new Rect(translate_x, translate_y, 
+					translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight);
+			
+			if (DisplaySettings.PROFILE_GAME_CAMERA) {
+				Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
+				time = System.nanoTime() / 1000000;
+			}
+			
+			gameCanvas.fillScreen(255, 255, 255, 255);
+			gameCanvas.drawBitmap(backgroundId, showRect,
+			displayRect, false);
+			
 		}
 		else{
-			System.out.println("WID: "+backgroundWidth+" HEI: "+backgroundHeight);
-		}
-		
-		
-		RectF backgroundRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
+			
+			RectF displayRect = new RectF(0f, 0f, DisplaySettings.TARGET_WIDTH, DisplaySettings.TARGET_HEIGHT);
+			
+			int backgroundHeight = backgroundImageHeight;
+			int backgroundWidth = backgroundHeight * (int)(DisplaySettings.TARGET_WIDTH / DisplaySettings.TARGET_HEIGHT);
+			
+			int translate_x = (int) (pos_rel_to_map * ( backgroundImageWidth - backgroundWidth));
+			int translate_y = 0;
 
-		float where_is = ( center.x / 199.74f );
-		if ( where_is < 0 ){
-			where_is = 0;
-		}
-		if ( where_is > 1 ){
-			where_is = 1;
-		}
-		
-		int translate_x = (int) (where_is * ( backgroundWidth - DisplaySettings.TARGET_WIDTH ));
-		int translate_y = 0;
+			Rect showRect = new Rect(translate_x, translate_y, translate_x + backgroundWidth, backgroundHeight + translate_y);
 
-		System.out.println("("+where_is*100+")% - "+translate_x);
-		
-		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
-			time = System.nanoTime() / 1000000;
+			if (DisplaySettings.PROFILE_GAME_CAMERA) {
+				Log.d("Profiling", "Calculate Background: " + (System.nanoTime()/1000000 - time));
+				time = System.nanoTime() / 1000000;
+			}
+			
+			gameCanvas.fillScreen(255, 255, 255, 255);
+			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
+
 		}
-//		gameCanvas.fillScreen(255, 255, 255, 255);
-		gameCanvas.drawBitmap(backgroundId, new Rect(translate_x, translate_y, 
-		translate_x + (int)backgroundWidth, translate_y + (int)backgroundHeight), 
-		backgroundRect, false);
 	}
 
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {

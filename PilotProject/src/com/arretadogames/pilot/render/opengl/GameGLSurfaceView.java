@@ -3,8 +3,10 @@ package com.arretadogames.pilot.render.opengl;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.opengl.GLES11;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.util.Log;
@@ -29,6 +31,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	private float[] fpsBuffer;
 	private int fpsCounter;
 	private Paint fpsPaint;
+	private Activity activity;
 
 	/**
 	 * Creates a GameGLSurfaceView using the given context
@@ -38,34 +41,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	 */
 	public GameGLSurfaceView(GameActivity activity) {
 		super(activity);
-
-		// Specifies the use of OpenGL 2.0
-		setEGLContextClientVersion(1);
-
-		// Specifies the Renderer and starts the Rendering Thread
-		setRenderer(this);
-
-		// Render the view only when there is a change in the drawing data
-//		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-		
-		// Set OnTouchListener
-		setOnTouchListener(activity);
-		
-		gameCanvas = new GLCanvas();
-		
-		getHolder().setFixedSize((int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
-		
-		if (DisplaySettings.SHOW_FPS) {
-			fpsBuffer = new float[DisplaySettings.FPS_AVG_BUFFER_SIZE];
-			for (int i = 0 ; i < fpsBuffer.length ; i++) {
-				fpsBuffer[i] = 0; // initialize all 0
-			}
-			fpsCounter = 0;
-			
-			fpsPaint = new Paint();
-			fpsPaint.setColor(Color.RED);
-			fpsPaint.setTextSize(0.5f);
-		}
+		this.activity = activity;
 	}
 
 	@Override
@@ -156,37 +132,37 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		// Sets the current view port to the new size.
-		gl.glViewport(0, 0, width, height);
+		GLES11.glViewport(0, 0, width, height);
 		// Select the projection matrix
-		gl.glMatrixMode(GL10.GL_PROJECTION);
+		GLES11.glMatrixMode(GL10.GL_PROJECTION);
 		// Reset the projection matrix
-		gl.glLoadIdentity();
+		GLES11.glLoadIdentity();
 		// Orthographic mode for 2d
 		GLU.gluOrtho2D(gl, 0, width, -height, 0);
 		// Select the modelview matrix
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		GLES11.glMatrixMode(GL10.GL_MODELVIEW);
 		// Reset the modelview matrix
-		gl.glLoadIdentity();
+		GLES11.glLoadIdentity();
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// SETTINGS
 		// Set the background color to black ( rgba ).
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+		GLES11.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 
 		// DRAWING SETUP
 		// NOTES: As we are always drawing with textures and viewing our
 		// elements from the same side all the time we can leave all these
 		// settings on the whole time
 		// Enable face culling.
-		gl.glEnable(GL10.GL_CULL_FACE);
+		GLES11.glEnable(GL10.GL_CULL_FACE);
 		// What faces to remove with the face culling.
-		gl.glCullFace(GL10.GL_BACK);
+		GLES11.glCullFace(GL10.GL_BACK);
 		
 		// Enable Transparency
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES11.glEnable(GL10.GL_BLEND);
+		GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	@Override
@@ -197,5 +173,35 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	public boolean onTouchEvent(MotionEvent event) {
 		Game.getInstance().input(new InputEventHandler(event));
 		return super.onTouchEvent(event);
+	}
+
+	public void init() {
+		// Specifies the use of OpenGL 2.0
+		setEGLContextClientVersion(1);
+
+		// Specifies the Renderer and starts the Rendering Thread
+		setRenderer(this);
+
+		// Render the view only when there is a change in the drawing data
+//				setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+		
+		// Set OnTouchListener
+		setOnTouchListener((GameActivity)activity);
+		
+		gameCanvas = new GLCanvas();
+		
+		getHolder().setFixedSize((int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
+		
+		if (DisplaySettings.SHOW_FPS) {
+			fpsBuffer = new float[DisplaySettings.FPS_AVG_BUFFER_SIZE];
+			for (int i = 0 ; i < fpsBuffer.length ; i++) {
+				fpsBuffer[i] = 0; // initialize all 0
+			}
+			fpsCounter = 0;
+			
+			fpsPaint = new Paint();
+			fpsPaint.setColor(Color.RED);
+			fpsPaint.setTextSize(0.5f);
+		}
 	}
 }

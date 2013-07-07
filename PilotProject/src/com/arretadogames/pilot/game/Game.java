@@ -13,7 +13,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.screens.GameOverScreen;
+import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
@@ -41,12 +41,12 @@ public class Game implements TweenAccessor<Game> {
 	private boolean resetWorld;
 	
 	private Game() {
-		currentState = GameState.SPLASH;
+		currentState = GameState.RUNNING_GAME;
 		gameScreens = new HashMap<GameState, GameScreen>();
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen(this));
 		gameScreens.put(GameState.SPLASH, new SplashScreen(this));
-		gameScreens.put(GameState.GAME_OVER, new GameOverScreen());
+		gameScreens.put(GameState.GAME_OVER, new EndScreen());
 		transitionStateOn = false;
 		resetWorld = false;
 	}

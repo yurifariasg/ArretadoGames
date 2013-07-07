@@ -14,15 +14,19 @@ import android.util.Log;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
+import com.arretadogames.pilot.entities.Coin;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
+import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
+import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
@@ -33,11 +37,12 @@ import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.SpriteManager;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.screens.GameOverScreen;
+import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
+//import com.arretadogames.pilot.entities.Liana;
 
 /**
  * GameWorld class represents the World in our Game
@@ -51,11 +56,13 @@ public class GameWorld extends GameScreen {
 	private GameWorldUI ui;
 	private PhysicalWorld pWorld;
 	private Collection<Entity> worldEntities;
+	private Collection<Steppable> steppables;
 	private HashMap<PlayerNumber, Player> players;
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
 	
 	private SpriteManager sm;
+	private float totalElapsedSeconds;
 	
 	private long time;
 	
@@ -66,6 +73,7 @@ public class GameWorld extends GameScreen {
 		gameCamera = new GameCamera(this, backgroundId);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
+		totalElapsedSeconds = 0;
 		
 		try {
 			load(LevelManager.loadLevel(0)); // 0: Default Level
@@ -81,10 +89,12 @@ public class GameWorld extends GameScreen {
 	private void createEntities(LevelDescriptor ld) {
 		players = new HashMap<PlayerNumber, Player>();
 		worldEntities = new ArrayList<Entity>();
+		steppables = new ArrayList<Steppable>();
 		
 		//TODO fzr direito
 		worldEntities.add(new Fire(0,0));
-		
+		worldEntities.add(new Liana(25,9,23,7));
+		worldEntities.add(new OneWayWall(30,6.5f));
 		List<EntityDescriptor> entities = ld.getEntities();
 		for (EntityDescriptor entityDescriptor : entities) {
 			Entity entity = null;
@@ -103,6 +113,9 @@ public class GameWorld extends GameScreen {
 				break;
 			case FINALFLAG:
 				entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
+				break;
+			case COIN:
+				entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
 				break;
 			default:
 				break;
@@ -145,6 +158,12 @@ public class GameWorld extends GameScreen {
 				lastVec[i] = vecs[i];
 			worldEntities.add(new Ground(lastVec, internalPointer));
 		}
+		
+		for(Entity e : worldEntities){
+			if(e instanceof Steppable){
+				steppables.add((Steppable) e);
+			}
+		}
 	}
 	
 	public void free() {
@@ -181,12 +200,18 @@ public class GameWorld extends GameScreen {
 		}
 	}
 	
+	public int getTotalElapsedTime() {
+		return (int) (totalElapsedSeconds);
+	}
+	
 	@Override
 	public void step(float timeElapsed) {
+		totalElapsedSeconds += timeElapsed;
+		
 		// TODO: Perform a World Step
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
-			for (Entity p : worldEntities)
+			for (Steppable p : steppables)
 				p.step(timeElapsed);
 			ui.step(timeElapsed);
 			pWorld.step(timeElapsed);
@@ -208,9 +233,11 @@ public class GameWorld extends GameScreen {
 			Entity e = it.next();
 			pWorld.destroyEntity(e);
 			worldEntities.remove(e);
+			if(e instanceof Steppable) steppables.remove((Steppable)e);
 			for ( PlayerNumber p : players.keySet() ){
 				if ( players.get(p).equals(e) ){
-					players.remove(p);
+					players.get(p).setDead(true);
+					//players.remove(p); @yuri: NEVER remove a player! Just check if he's alive
 					break;
 				}
 			}
@@ -240,19 +267,6 @@ public class GameWorld extends GameScreen {
 		// TODO Auto-generated method stub
 	}
 	
-	public void jumpPlayer(PlayerNumber number) {
-		Player p = players.get(number);
-		if (p != null)
-			p.jump();
-		
-	}
-	
-	public void actPlayer(PlayerNumber number) {
-		Player p = players.get(number);
-		if (p != null)
-			p.act();
-	}
-	
 	public HashMap<PlayerNumber, Player> getPlayers(){
 		return players;
 	}
@@ -267,11 +281,8 @@ public class GameWorld extends GameScreen {
 		if (finishWorld)
 			return;
 		finishWorld = true;
-		boolean won = false;
-		for (Player p : players.values()) // At least one finished
-			won |= p.hasFinished();
 		
-		((GameOverScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(won, players);
+		((EndScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(players);
 		Game.getInstance().goTo(GameState.GAME_OVER);
 	}
 }

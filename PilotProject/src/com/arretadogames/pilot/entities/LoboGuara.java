@@ -19,7 +19,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class LoboGuara extends Player {
+public class LoboGuara extends Player implements Steppable{
 
 	private Sprite sprite;
 	private int contJump;
@@ -85,7 +85,6 @@ public class LoboGuara extends Player {
 	
 	
 
-	@Override
 	public void jump() {
 		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0)
 			return;
@@ -121,10 +120,8 @@ public class LoboGuara extends Player {
 			direction.mulLocal(force);
 			body.applyForceToCenter(direction);
 		}
-//		body.setLinearVelocity(new Vec2(5, body.getLinearVelocity().y));
 	}
 
-	@Override
 	public void act() {
 		if (hasFinished() || !isAlive())
 			return;
@@ -145,15 +142,13 @@ public class LoboGuara extends Player {
 		if (hasFinished() || !isAlive()) {
 			return;
 		}
-		
+		if (jumpActive) {
+			jump();
+			jumpActive = false;
+		}
 		if(contJump > 0) contJump--;
 		if(contAct > 0 ) contAct--;
 		run();
-		//if(contacts > 0) body.setFixedRotation(false);
-		//else {
-		//	body.setFixedRotation(true);
-		//	body.setAngularVelocity(0f);
-		//}
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
@@ -223,7 +218,6 @@ public class LoboGuara extends Player {
 				(0.71f * GLCanvas.physicsRatio), // Bottom Right
 				(0.55f * GLCanvas.physicsRatio)); // Bottom Right
 		
-//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.CYAN);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 		

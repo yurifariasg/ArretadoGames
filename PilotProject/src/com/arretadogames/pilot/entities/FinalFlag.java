@@ -6,17 +6,14 @@ import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class FinalFlag extends Entity {
 
-	private Sprite sprite;
 	private static final int[] STOPPED = {R.drawable.apple1,
 		     							  R.drawable.apple2};
 	
@@ -61,12 +58,6 @@ public class FinalFlag extends Entity {
 	}
 
 	@Override
-	public void step(float timeElapsed) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public EntityType getType() {
 		return EntityType.FINALFLAG;
 	}
@@ -80,7 +71,6 @@ public class FinalFlag extends Entity {
 	}
 
 	public void setSprite(Sprite sprite){
-		this.sprite = sprite;
 	}
 
 }
