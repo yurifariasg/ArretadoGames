@@ -6,6 +6,7 @@ package com.arretados.leveleditor.parsers;
 
 import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fruit;
 import com.arretados.leveleditor.entities.Player;
@@ -24,13 +25,15 @@ public class JSONGenerator {
     
     private List<Box> boxes;
     private List<Fruit> fruits;
+    private List<Coin> coins;
     private List<int[]> groundLines;
     private List<Player> players;
     private Flag flag;
 
-    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<int[]> groundLines, List<Player> players, Flag flag) {
+    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<Coin> coins, List<int[]> groundLines, List<Player> players, Flag flag) {
         this.boxes = boxes;
         this.fruits = fruits;
+        this.coins = coins;
         this.groundLines = groundLines;
         this.players = players;
         this.flag = flag;
@@ -44,6 +47,7 @@ public class JSONGenerator {
     public HashMap<String, JSONArray> createMap(){
         final String TYPE_BOX = "box";
         final String TYPE_FRUIT = "fruit";
+        final String TYPE_COIN = "coin";
         final String TYPE_PLAYER = "player";
         final String TYPE_FLAG = "finalflag";
         
@@ -77,6 +81,17 @@ public class JSONGenerator {
             jObj.put("x", Utils.convertPixelToMeter(fruits.get(i).getX()));
             jObj.put("y", 10-Utils.convertPixelToMeter(fruits.get(i).getY()));
             jObj.put("size", Utils.convertPixelToMeter(fruits.get(i).getSize()));
+            
+            jArrayEntities.add(jObj);
+        }
+        
+        for (int i = 0; i < coins.size(); i++){
+            
+            JSONObject jObj = new JSONObject();
+            jObj.put("type", TYPE_COIN);
+            jObj.put("x", Utils.convertPixelToMeter(coins.get(i).getX()));
+            jObj.put("y", 10-Utils.convertPixelToMeter(coins.get(i).getY()));
+            jObj.put("size", Utils.convertPixelToMeter(coins.get(i).getSize()));
             
             jArrayEntities.add(jObj);
         }

@@ -6,6 +6,7 @@
 package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fruit;
 import com.arretados.leveleditor.entities.Player;
@@ -26,6 +27,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     
     private List<Box> boxPos = new ArrayList<Box>();
     private List<Fruit> fruitPos = new ArrayList<Fruit>();
+    private List<Coin> coinPos = new ArrayList<Coin>();
     private List<Player> playerPos = new ArrayList<Player>();
     private List<int[]> groundPos = new ArrayList<int[]>();
     public DrawMode mode = DrawMode.BOX;
@@ -51,6 +53,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
 
         for (int i = 0; i < fruitPos.size(); i++){
             fruitPos.get(i).drawMyself(g);
+        }
+        
+        for (int i = 0; i < coinPos.size(); i++){
+            coinPos.get(i).drawMyself(g);
         }
         
         if (flag != null)
@@ -89,6 +95,11 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         repaint();
     }
     
+    public void drawCoin(int x, int y){
+        coinPos.add(new Coin(x, y, 25));
+        repaint();
+    }
+    
     public void drawGroundLine(int x,int y){
         int lastPointX = 0;
         
@@ -119,6 +130,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         return fruitPos;
     }
     
+    public List<Coin> getCoinsPos(){
+        return coinPos;
+    }
+    
     public List<int[]> getLinesPos(){
         return groundPos;
     }
@@ -130,6 +145,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public void clearObjectsList(){
         this.groundPos = new ArrayList<int[]>();
         this.fruitPos = new ArrayList<Fruit>();
+        this.coinPos = new ArrayList<Coin>();
         this.boxPos = new ArrayList<Box>();
         this.playerPos = new ArrayList<Player>();
         this.flag = null;
@@ -145,6 +161,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
 
             case FRUIT:
                 drawApple(e.getX(), e.getY());
+            break;
+                
+            case COIN:
+                drawCoin(e.getX(), e.getY());
             break;
 
             case LINE:
@@ -185,6 +205,12 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             case FRUIT:
                 fruitPos.get(fruitPos.size()-1).setX(e.getX());
                 fruitPos.get(fruitPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+                
+            case COIN:
+                coinPos.get(coinPos.size()-1).setX(e.getX());
+                coinPos.get(coinPos.size()-1).setY(e.getY());
                 repaint();
             break;
                 
