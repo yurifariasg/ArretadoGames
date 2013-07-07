@@ -13,6 +13,8 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Coin extends Entity {
 	
+	private static final int DEFAULT_VALUE = 10;
+	
 	public final static int[] FRAMES = {
 		R.drawable.coin_1_1,R.drawable.coin_1_2,R.drawable.coin_1_3,R.drawable.coin_1_4,
 		R.drawable.coin_2_1,R.drawable.coin_2_2,R.drawable.coin_2_3,R.drawable.coin_2_4,
@@ -28,9 +30,14 @@ public class Coin extends Entity {
 	
 	private Sprite sprite;
 	private int value;
-
+	
 	public Coin(float x, float y, int value) {
 		super(x, y);
+		
+		if (value == 0)
+			this.value = DEFAULT_VALUE;
+		else
+			this.value = value;
 		
 		CircleShape shape = new CircleShape();
 		shape.setRadius(0.5f);
@@ -67,9 +74,7 @@ public class Coin extends Entity {
 	@Override
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
-		System.out.println("Colidiu");
 		if (e.getType() == EntityType.PLAYER && isAlive()) {
-			System.out.println("com player");
 			Player p = (Player) e;
 			p.addCoins(value);
 			setDead(true);

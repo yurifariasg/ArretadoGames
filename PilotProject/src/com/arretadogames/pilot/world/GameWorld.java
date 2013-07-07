@@ -37,7 +37,7 @@ import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.SpriteManager;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.screens.GameOverScreen;
+import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
@@ -62,6 +62,7 @@ public class GameWorld extends GameScreen {
 	private PauseScreen pauseScreen;
 	
 	private SpriteManager sm;
+	private float totalElapsedSeconds;
 	
 	private long time;
 	
@@ -72,6 +73,7 @@ public class GameWorld extends GameScreen {
 		gameCamera = new GameCamera(this, backgroundId);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
+		totalElapsedSeconds = 0;
 		
 		try {
 			load(LevelManager.loadLevel(0)); // 0: Default Level
@@ -198,8 +200,14 @@ public class GameWorld extends GameScreen {
 		}
 	}
 	
+	public int getTotalElapsedTime() {
+		return (int) (totalElapsedSeconds);
+	}
+	
 	@Override
 	public void step(float timeElapsed) {
+		totalElapsedSeconds += timeElapsed;
+		
 		// TODO: Perform a World Step
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
@@ -228,7 +236,8 @@ public class GameWorld extends GameScreen {
 			if(e instanceof Steppable) steppables.remove((Steppable)e);
 			for ( PlayerNumber p : players.keySet() ){
 				if ( players.get(p).equals(e) ){
-					players.remove(p);
+					players.get(p).setDead(true);
+					//players.remove(p); @yuri: NEVER remove a player! Just check if he's alive
 					break;
 				}
 			}
@@ -272,11 +281,8 @@ public class GameWorld extends GameScreen {
 		if (finishWorld)
 			return;
 		finishWorld = true;
-		boolean won = false;
-		for (Player p : players.values()) // At least one finished
-			won |= p.hasFinished();
 		
-		((GameOverScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(won, players);
+		((EndScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(players);
 		Game.getInstance().goTo(GameState.GAME_OVER);
 	}
 }

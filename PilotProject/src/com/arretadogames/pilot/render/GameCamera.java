@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
@@ -72,6 +73,14 @@ public class GameCamera {
 		targetPhysicsRatio = 0;
 		startTime = 0;
 	}
+	
+	private int getNumberOfAlivePlayers(Collection<Player> players) {
+		int alive = 0;
+		for (Player p : players)
+			if (p.isAlive())
+				alive++;
+		return alive;
+	}
 
 	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
 	private void determineViewport(float timeElapsed){
@@ -81,7 +90,7 @@ public class GameCamera {
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
 
-		int numberOfPlayers = players.keySet().size();
+		int numberOfPlayers = getNumberOfAlivePlayers(players.values());
 		if ( currentNumberOfPlayers == -1 ){
 			currentNumberOfPlayers = numberOfPlayers;
 		}
@@ -106,6 +115,8 @@ public class GameCamera {
 		while ( iiterator.hasNext() ){
 
 			PlayerNumber i = iiterator.next();
+			if (!players.get(i).isAlive())
+				continue;
 			
 			float x = players.get(i).getPosX();
 			float y = players.get(i).getPosY();
@@ -117,7 +128,7 @@ public class GameCamera {
 
 				PlayerNumber j = jiterator.next();
 				
-				if ( i.equals(j) ){
+				if ( i.equals(j) || !players.get(j).isAlive() ){
 					continue;
 				}
 

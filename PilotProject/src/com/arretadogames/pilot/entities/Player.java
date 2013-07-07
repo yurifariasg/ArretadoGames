@@ -1,5 +1,9 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.world.GameWorld;
+
 
 
 public abstract class Player extends Entity {
@@ -11,6 +15,8 @@ public abstract class Player extends Entity {
 	protected boolean actActive;
 	
 	private int acquiredCoins;
+	private int deathCount;
+	private int timeFinished;
 
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
@@ -25,6 +31,8 @@ public abstract class Player extends Entity {
 	}
 	
 	public void setFinished(boolean hasFinished) {
+		if (!hasFinished() && hasFinished) // Was not finished before, now it is
+			timeFinished = ((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).getTotalElapsedTime();
 		this.hasFinished = hasFinished;
 	}
 	
@@ -45,6 +53,24 @@ public abstract class Player extends Entity {
 //	public abstract void act();
 	public void setAct(boolean isAct) {
 		this.actActive = isAct;
+	}
+	
+	@Override
+	public void setDead(boolean isDead) {
+		if (isAlive() && isDead) // Was alive, now is dead
+			deathCount++;
+		
+		super.setDead(isDead);
+	}
+	
+	public int getDeathCount() {
+		return deathCount;
+	}
+	
+	public int getTimeFinished() {
+		if (hasFinished())
+			return timeFinished;
+		return 0;
 	}
 	
 	public void addCoins(int amount) {
