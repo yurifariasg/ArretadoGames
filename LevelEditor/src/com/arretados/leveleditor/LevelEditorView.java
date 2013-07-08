@@ -250,6 +250,11 @@ public class LevelEditorView extends FrameView {
 
         jButton5.setText("OneWay-Wall");
         jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Coin");
         jButton4.setName("jButton4"); // NOI18N
@@ -395,8 +400,8 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JSONGenerator json = new JSONGenerator(gameCanvas1.getBoxPos(),
                 gameCanvas1.getFruitPos(), gameCanvas1.getCoinsPos(),
-                gameCanvas1.getLinesPos(), gameCanvas1.getPlayersPos(),
-                gameCanvas1.getFlag());
+                gameCanvas1.getOneWayPos(), gameCanvas1.getLinesPos(), 
+                gameCanvas1.getPlayersPos(), gameCanvas1.getFlag());
         try {
           File file = new File("level.json");
           BufferedWriter output = new BufferedWriter(new FileWriter(file));
@@ -438,6 +443,10 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         gameCanvas1.mode = DrawMode.COIN;
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        gameCanvas1.mode = DrawMode.ONEWAY_WALL;
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Flag;

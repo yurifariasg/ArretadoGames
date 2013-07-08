@@ -9,6 +9,7 @@ import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fruit;
+import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -28,6 +29,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     private List<Box> boxPos = new ArrayList<Box>();
     private List<Fruit> fruitPos = new ArrayList<Fruit>();
     private List<Coin> coinPos = new ArrayList<Coin>();
+    private List<OneWayWall> oneWayPos = new ArrayList<OneWayWall>();
     private List<Player> playerPos = new ArrayList<Player>();
     private List<int[]> groundPos = new ArrayList<int[]>();
     public DrawMode mode = DrawMode.BOX;
@@ -53,6 +55,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
 
         for (int i = 0; i < fruitPos.size(); i++){
             fruitPos.get(i).drawMyself(g);
+        }
+        
+        for (int i = 0; i < oneWayPos.size(); i++){
+            oneWayPos.get(i).drawMyself(g);
         }
         
         for (int i = 0; i < coinPos.size(); i++){
@@ -100,6 +106,11 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         repaint();
     }
     
+    public void drawOneWay(int x, int y){
+        oneWayPos.add(new OneWayWall(x, y, 100));
+        repaint();
+    }
+    
     public void drawGroundLine(int x,int y){
         int lastPointX = 0;
         
@@ -134,6 +145,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         return coinPos;
     }
     
+    public List<OneWayWall> getOneWayPos(){
+        return oneWayPos;
+    }
+    
     public List<int[]> getLinesPos(){
         return groundPos;
     }
@@ -146,6 +161,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         this.groundPos = new ArrayList<int[]>();
         this.fruitPos = new ArrayList<Fruit>();
         this.coinPos = new ArrayList<Coin>();
+        this.oneWayPos = new ArrayList<OneWayWall>();
         this.boxPos = new ArrayList<Box>();
         this.playerPos = new ArrayList<Player>();
         this.flag = null;
@@ -165,6 +181,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 
             case COIN:
                 drawCoin(e.getX(), e.getY());
+            break;
+                
+            case ONEWAY_WALL:
+                drawOneWay(e.getX(), e.getY());
             break;
 
             case LINE:
@@ -214,10 +234,24 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 repaint();
             break;
                 
+            case ONEWAY_WALL:
+                oneWayPos.get(oneWayPos.size()-1).setX(e.getX());
+                oneWayPos.get(oneWayPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+                
             case PLAYER:
                 playerPos.get(playerPos.size()-1).setX(e.getX());
                 playerPos.get(playerPos.size()-1).setY(e.getY());
                 repaint();
+            break;
+                
+            case FLAG:
+                if (this.flag != null){
+                    flag.setX(e.getX());
+                    flag.setY(e.getY());
+                    repaint();
+                }
             break;
 
             default: 
