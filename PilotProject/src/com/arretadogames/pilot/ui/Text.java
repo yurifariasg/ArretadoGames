@@ -64,4 +64,8 @@ public class Text implements Renderable {
 	    		(int) (y + height / 2 + (bounds.bottom-bounds.top) / 2));
 	}*/
 
+	public void setText(String text) {
+		this.text = text;
+	}
+
 }
