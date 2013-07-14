@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.entities;
 
+import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -68,6 +69,9 @@ public abstract class Entity implements Renderable {
 
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		
+	}
+
+	public void postSolve(Contact contact, ContactImpulse impulse) {
 	}
 	
 }

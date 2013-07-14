@@ -13,24 +13,26 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
+import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class LoboGuara extends Player implements Steppable{
+public class AraraAzul extends Player implements Steppable{
 
 	private Sprite sprite;
 	private int contJump;
-	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
 	private final float MAX_JUMP_VELOCITY = 7;
 	private final float MAX_RUN_VELOCITY = 4;
-	private float JUMP_ACELERATION = 6;
-	private float RUN_ACELERATION = 13;
+	private float JUMP_ACELERATION = 5;
+	private float RUN_ACELERATION = 10;
 	Collection<Body> bodiesContact;
+	private float k = 25f;
+	private boolean doubleJump;
 	
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
@@ -48,20 +50,20 @@ public class LoboGuara extends Player implements Steppable{
 				 R.drawable.lobo_guara_act3,
 				 };*/
 	
-	public LoboGuara(float x, float y, PlayerNumber number) {
+	public AraraAzul(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
-		shape.setRadius(0.5f);
+		shape.setRadius(0.3f);
 		footFixture = body.createFixture(shape,  3f);
-		footFixture.setFriction(0.3f);
+		footFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
-		footShape.setAsBox(0.5f, 0.1f, new Vec2(0f,-0.4f), 0f);
+		footShape.setAsBox(0.3f, 0.1f, new Vec2(0f,-0.4f), 0f);
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
 		
@@ -86,10 +88,16 @@ public class LoboGuara extends Player implements Steppable{
 	
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0)
+		if (hasFinished() || !isAlive() || contJump > 0 || (contacts <= 0 && !doubleJump))
 			return;
+		if(contacts <= 0 && doubleJump){
+			doubleJump = false;
+		} else {
+			doubleJump = true;
+		}
 		sprite.setAnimationState("jump");
-		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
+//		Math.max(Math.min(,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)
+		float impulseX = (JUMP_ACELERATION-body.getLinearVelocity().y) * body.getMass();
 		Vec2 direction = new Vec2(1,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
@@ -122,16 +130,14 @@ public class LoboGuara extends Player implements Steppable{
 		}
 	}
 
-	public void act() {	
-		if( contacts > 0 && contAct == 0){
-			float impulse = (5) * body.getMass();
-			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
-			Vec2 direction = new Vec2(1,0);
-			direction.normalize();
-			direction.mulLocal(impulse);
-			body.applyLinearImpulse(direction, body.getWorldCenter());
-			contAct = 50;
-		}
+	public void act() {
+		if (hasFinished() || !isAlive())
+			return;
+		float vel = body.getLinearVelocity().y;
+		Vec2 force = new Vec2(0,k * vel * vel);
+		if( vel > 0 ) force.negateLocal();
+		body.applyForce(force, body.getWorldCenter());
+		System.out.println("acting");
 	}
 
 	@Override
@@ -147,7 +153,6 @@ public class LoboGuara extends Player implements Steppable{
 			act();
 		}
 		if(contJump > 0) contJump--;
-		if(contAct > 0 ) contAct--;
 		run();
 	}
 	
@@ -213,12 +218,13 @@ public class LoboGuara extends Player implements Steppable{
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
 		RectF rect = new RectF(
-				(- 0.7f* GLCanvas.physicsRatio), // Top Left
-				(- 1f * GLCanvas.physicsRatio), // Top Top Left
-				(0.71f * GLCanvas.physicsRatio), // Bottom Right
-				(0.55f * GLCanvas.physicsRatio)); // Bottom Right
+				(- 0.3f * GLCanvas.physicsRatio), // Top Left
+				(- 0.3f * GLCanvas.physicsRatio), // Top Left
+				(0.3f * GLCanvas.physicsRatio), // Bottom Right
+				(0.3f * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.drawBitmap(R.drawable.ave, rect, false);
+//		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.BLACK);
 		canvas.restoreState();
 		
 	}

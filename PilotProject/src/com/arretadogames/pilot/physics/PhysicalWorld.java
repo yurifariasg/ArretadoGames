@@ -75,8 +75,10 @@ public class PhysicalWorld implements ContactListener {
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		// TODO Auto-generated method stub
-		
+		Entity a = (Entity)contact.m_fixtureA.getBody().getUserData();
+		Entity b = (Entity)contact.m_fixtureB.getBody().getUserData();
+		a.postSolve(contact, impulse);
+		b.postSolve(contact, impulse);
 	}
 
 	@Override
