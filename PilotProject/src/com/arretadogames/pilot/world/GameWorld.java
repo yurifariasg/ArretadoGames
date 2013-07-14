@@ -14,6 +14,7 @@ import android.util.Log;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Box;
+import com.arretadogames.pilot.entities.Breakable;
 import com.arretadogames.pilot.entities.Coin;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
@@ -93,8 +94,9 @@ public class GameWorld extends GameScreen {
 		
 		//TODO fzr direito
 		worldEntities.add(new Fire(0,0));
-		worldEntities.add(new Liana(25,9,23,7));
-		worldEntities.add(new OneWayWall(30,6.5f));
+//		worldEntities.add(new Liana(25,9,23,7));
+//		worldEntities.add(new OneWayWall(30,6.5f));
+		worldEntities.add(new Breakable(30,6.5f,0.5f,3f,0,false));
 		List<EntityDescriptor> entities = ld.getEntities();
 		for (EntityDescriptor entityDescriptor : entities) {
 			Entity entity = null;
