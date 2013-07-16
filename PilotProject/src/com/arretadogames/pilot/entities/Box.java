@@ -3,6 +3,7 @@ package com.arretadogames.pilot.entities;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 
+import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
@@ -32,10 +33,10 @@ public class Box extends Entity {
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
 		RectF rect = new RectF(
-				(- 0.5f * GLCanvas.physicsRatio), // Top Left
-				(- 0.5f * GLCanvas.physicsRatio), // Top Left
-				(0.5f * GLCanvas.physicsRatio), // Bottom Right
-				(0.5f * GLCanvas.physicsRatio)); // Bottom Right
+				(- size/2 * GLCanvas.physicsRatio), // Top Left
+				(- size/2 * GLCanvas.physicsRatio), // Top Left
+				(size/2 * GLCanvas.physicsRatio), // Bottom Right
+				(size/2 * GLCanvas.physicsRatio)); // Bottom Right
 		
 //		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.RED);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
