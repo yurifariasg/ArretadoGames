@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.entities;
 
+import java.util.HashSet;
+
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.WorldManifold;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -18,11 +20,11 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class OneWayWall extends Entity{
 
-	private boolean flagC;
 	private Fixture m_platformFixture;
 	private float width;
 	private float height;
 	final private WorldManifold worldManifold = new WorldManifold();
+	private HashSet<Contact> contactSet;
 	
 	public OneWayWall(float x, float y) {
 		super(x, y);
@@ -32,10 +34,10 @@ public class OneWayWall extends Entity{
 		shape.setAsBox(width/2, height/2);
 		m_platformFixture = body.createFixture(shape,  1f);
 		body.setType(BodyType.KINEMATIC);
+		contactSet = new HashSet<Contact>();
 	}
 
 	public void beginContact(Entity e, Contact contact) {
-		System.out.println("comeco");
 		Fixture fixtureA = contact.getFixtureA();
 		Fixture fixtureB = contact.getFixtureB();
 
@@ -50,7 +52,7 @@ public class OneWayWall extends Entity{
 			otherFixture = fixtureA;
 		}
 
-		if ( platformFixture == null){
+		if ( platformFixture == null || otherFixture.isSensor()){
 			return;
 		}
 
@@ -75,16 +77,17 @@ public class OneWayWall extends Entity{
 		              return;
 		      }
 		}
+		if(numPoints == 0) return;
 		contact.setEnabled(false);
-		flagC = false;
+		contactSet.add(contact);
 	}
 
 	public void endContact(Entity e, Contact contact) {
-		flagC = true;
+		contactSet.remove(contact);
 	}
 
 	public void preSolve(Contact contact, Manifold oldManifold){
-		if( flagC == false ) contact.setEnabled(false);
+		if(contactSet.contains(contact))contact.setEnabled(false);
 	}
 
 	@Override
