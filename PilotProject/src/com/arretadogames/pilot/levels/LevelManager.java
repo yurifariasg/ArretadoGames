@@ -11,7 +11,8 @@ import android.content.res.Resources;
 public class LevelManager {
 	
 	// List of Levels
-	private static final int[] LEVELS_RESOURCES = {R.raw.basic_level, R.raw.second_level};
+	private static final int[] LEVELS_RESOURCES = {R.raw.basic_level, R.raw.second_level,
+		R.raw.first_stage, R.raw.second_stage, R.raw.third_stage};
 	
 	private static LevelDescriptor loadLevel(Resources res, int levelResource) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(res.openRawResource(levelResource)));
