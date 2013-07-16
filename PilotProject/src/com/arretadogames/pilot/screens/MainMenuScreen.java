@@ -91,7 +91,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	}
 	
 	private void startGame() {
-		game.goTo(GameState.RUNNING_GAME);
+		game.goTo(GameState.SELECTION);
 		currentBlackAlpha = 0;
 		currentZoom = 1;
 	}

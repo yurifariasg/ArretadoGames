@@ -2,8 +2,11 @@ package com.arretadogames.pilot.screens;
 
 import android.view.MotionEvent;
 import android.widget.Toast;
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Quart;
 
 import com.arretadogames.pilot.GameActivity;
@@ -148,6 +151,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			pScreen.currentBlackAlpha = newValues[0];
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void onClick(int buttonId) {
 		
@@ -159,8 +163,17 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			Toast.makeText(GameActivity.getContext(), "Not Implemented YET!", Toast.LENGTH_SHORT).show();
 			break;
 		case QUIT_BT:
-			Game.getInstance().resetWorld();
 			Game.getInstance().goTo(GameState.MAIN_MENU);
+			
+			Timeline.createSequence().delay(1.5f).push( // TODO @yuri: FIX THIS
+			Tween.from(this, 0, 2).call(new TweenCallback() {
+				
+				@Override
+				public void onEvent(int arg0, BaseTween<?> arg1) {
+					Game.getInstance().resetWorld();
+				}
+			})).start(AnimationManager.getInstance());
+			
 			break;
 		default:
 			break;

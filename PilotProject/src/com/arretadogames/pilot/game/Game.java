@@ -17,6 +17,7 @@ import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
+import com.arretadogames.pilot.screens.SelectionScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
@@ -41,12 +42,13 @@ public class Game implements TweenAccessor<Game> {
 	private boolean resetWorld;
 	
 	private Game() {
-		currentState = GameState.RUNNING_GAME;
+		currentState = GameState.MAIN_MENU;
 		gameScreens = new HashMap<GameState, GameScreen>();
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen(this));
 		gameScreens.put(GameState.SPLASH, new SplashScreen(this));
 		gameScreens.put(GameState.GAME_OVER, new EndScreen());
+		gameScreens.put(GameState.SELECTION, new SelectionScreen());
 		transitionStateOn = false;
 		resetWorld = false;
 	}
@@ -117,6 +119,10 @@ public class Game implements TweenAccessor<Game> {
 	}
 	
 	private void changeState(GameState state) {
+		
+		if (state == GameState.RUNNING_GAME) // TODO: arrumar maneira melhor de fazer isso
+			((GameWorld)getScreen(GameState.RUNNING_GAME)).initialize();
+		
 		if (state != null)
 			currentState = state;
 	}

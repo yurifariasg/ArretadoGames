@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.entities.AraraAzul;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Breakable;
 import com.arretadogames.pilot.entities.Coin;
@@ -25,6 +26,7 @@ import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.OneWayWall;
+import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.entities.Steppable;
@@ -59,6 +61,7 @@ public class GameWorld extends GameScreen {
 	private Collection<Entity> worldEntities;
 	private Collection<Steppable> steppables;
 	private HashMap<PlayerNumber, Player> players;
+	private HashMap<PlayerNumber, PlayableCharacter> selectedCharacters;
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
 	
@@ -66,6 +69,8 @@ public class GameWorld extends GameScreen {
 	private float totalElapsedSeconds;
 	
 	private long time;
+	
+	private boolean isInitialized;
 	
 	public GameWorld() {
 		backgroundId = R.drawable.stage_background;
@@ -75,16 +80,27 @@ public class GameWorld extends GameScreen {
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		totalElapsedSeconds = 0;
+		isInitialized = false;
+	}
+	
+	public void initialize() {
+		if (isInitialized)
+			return;
 		
 		try {
 			load(LevelManager.loadLevel(0)); // 0: Default Level
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		isInitialized = true;
 	}
 	
 	public void load(LevelDescriptor ld) {
 		createEntities(ld);
+	}
+	
+	public void setSelectedCharacters(HashMap<PlayerNumber, PlayableCharacter> selectedCharacters) {
+		this.selectedCharacters = selectedCharacters;
 	}
 	
 	private void createEntities(LevelDescriptor ld) {
@@ -110,7 +126,7 @@ public class GameWorld extends GameScreen {
 						entityDescriptor.getSize());
 				break;
 			case PLAYER:
-				entity = new LoboGuara(entityDescriptor.getX(), entityDescriptor.getY(),
+				entity = createPlayerCharacter(entityDescriptor.getX(), entityDescriptor.getY(),
 						((PlayerDescriptor)entityDescriptor).getPlayerNumber());
 				break;
 			case FINALFLAG:
@@ -168,6 +184,23 @@ public class GameWorld extends GameScreen {
 		}
 	}
 	
+	private Entity createPlayerCharacter(float x, float y,
+			PlayerNumber playerNumber) {
+		
+		PlayableCharacter chosenCharacter = selectedCharacters.get(playerNumber);
+		switch (chosenCharacter) {
+		
+		case LOBO_GUARA:
+			return new LoboGuara(x, y, playerNumber);
+		case ARARA_AZUL:
+			return new AraraAzul(x, y, playerNumber);
+		default:
+			break;
+		}
+		
+		return null;
+	}
+
 	public void free() {
 		
 	}
@@ -208,6 +241,9 @@ public class GameWorld extends GameScreen {
 	
 	@Override
 	public void step(float timeElapsed) {
+		if (!isInitialized)
+			initialize();
+		
 		totalElapsedSeconds += timeElapsed;
 		
 		// TODO: Perform a World Step

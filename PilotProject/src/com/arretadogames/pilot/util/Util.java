@@ -15,5 +15,9 @@ public class Util {
 	public static float convertToSeconds(float nanoTime) {
 		return nanoTime / 1000000f;
 	}
+	
+	public static float distance(float x, float y, float x2, float y2) {
+		return (float) Math.sqrt((x - x2) * (x - x2)  + (y - y2) * (y - y2));
+	}
 
 }

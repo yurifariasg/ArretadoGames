@@ -27,8 +27,16 @@ public abstract class Button {
 		this.width = width;
 	}
 	
+	public float getWidth() {
+		return width;
+	}
+	
 	public void setHeight(float height) {
 		this.height = height;
+	}
+	
+	public float getHeight() {
+		return height;
 	}
 	
 	public abstract void render(GLCanvas canvas, float timeElapsed);

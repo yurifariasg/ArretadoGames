@@ -81,16 +81,12 @@ public class GameWorldUI extends GameScreen {
 
 	@Override
 	public void input(InputEventHandler event) { // FIX : Detect several inputs
-		
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
 			pressButtons(event.getX(), event.getY(), true);
 		} else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
 			pressButtons(event.getX(), event.getY(), false);
 		}
-		
-		
-		
 	}
 	
 	private void pressButtons(float x, float y, boolean pressed) {
