@@ -55,7 +55,7 @@ public class LoboGuara extends Player implements Steppable{
 		CircleShape shape = new CircleShape();
 		shape.setRadius(0.5f);
 		footFixture = body.createFixture(shape,  3f);
-		footFixture.setFriction(0.3f);
+		footFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		contacts = 0;

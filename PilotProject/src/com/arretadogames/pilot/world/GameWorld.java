@@ -27,6 +27,7 @@ import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.entities.Pulley;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
@@ -96,7 +97,14 @@ public class GameWorld extends GameScreen {
 		worldEntities.add(new Fire(0,0));
 //		worldEntities.add(new Liana(25,9,23,7));
 //		worldEntities.add(new OneWayWall(30,6.5f));
-		worldEntities.add(new Breakable(30,6.5f,0.2f,2f,0,false));
+		worldEntities.add(new Breakable(37,7.5f,0.2f,2f,0,false));
+		Entity a = new Box(26,6.3f, 0.7f);
+		a.setSprite(sm.getSprite(a));
+		Entity b = new Box(32,7f, 1.5f);
+		b.setSprite(sm.getSprite(b));
+		worldEntities.add(a);
+		worldEntities.add(b);
+		worldEntities.add(new Pulley(a, new Vec2(26,6.3f), b, new Vec2(32,6.5f), new Vec2(28,7f), new Vec2(32,8.5f), 5));
 		List<EntityDescriptor> entities = ld.getEntities();
 		for (EntityDescriptor entityDescriptor : entities) {
 			Entity entity = null;
