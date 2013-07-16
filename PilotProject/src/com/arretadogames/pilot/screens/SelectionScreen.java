@@ -128,20 +128,31 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN ||
 				action == MotionEvent.ACTION_MOVE) {
-			pressButtons(event.getX(), event.getY(), true);
+			pressButtons(event.getX(), event.getY(), true, event.getEvent().getPointerId(0));
 		} else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
-			pressButtons(event.getX(), event.getY(), false);
+			
+			final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) 
+	                >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+	        final int pointerId = event.getEvent().getPointerId(pointerIndex);
+			pressButtons(event.getX(), event.getY(), false, pointerId);
 		}
 		
 		startButton.input(event);
 	}
 
-	private void pressButtons(float x, float y, boolean pressed) {
+	private void pressButtons(float x, float y, boolean pressed, int pointerId) {
+		
+		for (int i = 0 ; i < selectors.length ; i++) {
+			if (selectors[i].collides(x, y) && selectors[i].hasCapturedPointer(pointerId)) {
+				selectors[i].touch(x, y, !pressed, pointerId);
+				return;
+			}
+		}
 		
 		for (int i = 0 ; i < selectors.length ; i++) {
 			if (selectors[i].collides(x, y)) {
-				selectors[i].touch(x, y, !pressed);
-				break;
+				selectors[i].touch(x, y, !pressed, pointerId);
+				return;
 			}
 		}
 	}
@@ -194,10 +205,19 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 			}
 			
 			canvas.drawBitmap(imageId, selectorRect, false);
-			
 		}
 		
-		public void touch(float x, float y, boolean toRelease) {
+		public boolean hasCapturedPointer(int pointerId) {
+			return this.pointerId == pointerId;
+		}
+		
+		public void touch(float x, float y, boolean toRelease, int pointerId) {
+			
+			if (this.pointerId == -1)
+				this.pointerId = pointerId;
+			if (this.pointerId != pointerId)
+				return;
+			
 			// Update Position
 			selectorRect.set(x - selectorRect.width() / 2, y - selectorRect.height() / 2,
 					x + selectorRect.width() / 2, y + selectorRect.height() / 2);
@@ -212,6 +232,7 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 				spot = newSpot;
 				spot.selector = this;
 				selectorRect.set(spot.rect);
+				this.pointerId = -1;
 			}
 		}
 
