@@ -6,6 +6,11 @@ import android.annotation.SuppressLint;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.widget.Toast;
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.TweenManager;
 
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
@@ -17,6 +22,7 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.util.Util;
@@ -167,8 +173,10 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 	}
 	
 	
-	private class PlayerSelector implements Renderable, Steppable {
+	private class PlayerSelector implements Renderable, Steppable, TweenAccessor<PlayerSelector> {
 		
+		private static final int ZOOM = 0;
+		private static final int ROTATION = 1;
 		PlayerNumber player;
 		CharacterSpot spot;
 		RectF selectorRect;
@@ -177,11 +185,25 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 		// Animation Attr (current zoom and rotation)
 		private float cZoom;
 		private float cRotation;
+		private Tween rotationTween;
+		
 		
 		boolean isPlaced;
 		
 		public PlayerSelector() {
 			isPlaced = true;
+			cZoom = 1;
+			cRotation = 0;
+			
+			final PlayerSelector itself = this;
+			
+			rotationTween = Tween.call(new TweenCallback() {
+				
+				@Override
+				public void onEvent(int arg0, BaseTween<?> arg1) {
+					Tween.to(itself, PlayerSelector.ROTATION, 0.1f).targetRelative(10f).start(AnimationManager.getInstance());
+				}
+			}).repeat(Tween.INFINITY, 0.1f);
 		}
 		
 		public boolean collides(float x, float y) {
@@ -204,7 +226,18 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 				break;
 			}
 			
-			canvas.drawBitmap(imageId, selectorRect, false);
+//			if (isPlaced) {
+//				canvas.drawBitmap(imageId, selectorRect, false);
+//			} else {
+				canvas.saveState();
+				canvas.translate(selectorRect.centerX(), selectorRect.centerY());
+				canvas.rotate(cRotation % 360);
+				canvas.translate(-selectorRect.centerX(), -selectorRect.centerY());
+				canvas.scale(cZoom, cZoom, selectorRect.centerX(), selectorRect.centerY());
+				canvas.drawBitmap(imageId, selectorRect, false);
+				
+				canvas.restoreState();
+//			}
 		}
 		
 		public boolean hasCapturedPointer(int pointerId) {
@@ -222,6 +255,11 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 			selectorRect.set(x - selectorRect.width() / 2, y - selectorRect.height() / 2,
 					x + selectorRect.width() / 2, y + selectorRect.height() / 2);
 			
+			if (!isPlaced && toRelease)
+				startReleaseAnimation();
+			if (isPlaced && !toRelease)
+				startPressAnimation();
+			
 			isPlaced = toRelease;
 			updateSpots();
 			
@@ -234,6 +272,20 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 				selectorRect.set(spot.rect);
 				this.pointerId = -1;
 			}
+		}
+
+		public void startPressAnimation() {
+			Tween.to(this, PlayerSelector.ZOOM, 0.25f).target(0.3f).start(AnimationManager.getInstance());
+			if (rotationTween.isStarted())
+				rotationTween.resume();
+			else
+				rotationTween.start(AnimationManager.getInstance());
+		}
+
+		public void startReleaseAnimation() {
+			Tween.to(this, PlayerSelector.ZOOM, 0.25f).target(1f).start(AnimationManager.getInstance());
+			rotationTween.pause();
+			Tween.to(this, PlayerSelector.ROTATION, 0.1f).target(0f).start(AnimationManager.getInstance());
 		}
 
 		private CharacterSpot findClosestSpot(float x, float y) {
@@ -253,6 +305,33 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 
 		private void updateSpots() {
 			
+		}
+
+		@Override
+		public int getValues(PlayerSelector pSelector, int type, float[] returnValues) {
+			
+			switch (type) {
+			case PlayerSelector.ZOOM:
+				returnValues[0] = pSelector.cZoom;
+				break;
+			case PlayerSelector.ROTATION:
+				returnValues[0] = pSelector.cRotation;
+				break;
+			}
+			
+			return 1;
+		}
+
+		@Override
+		public void setValues(PlayerSelector pSelector, int type, float[] newValues) {
+			switch (type) {
+			case PlayerSelector.ZOOM:
+				pSelector.cZoom = newValues[0];
+				break;
+			case PlayerSelector.ROTATION:
+				pSelector.cRotation = newValues[0];
+				break;
+			}
 		}
 	}
 	
