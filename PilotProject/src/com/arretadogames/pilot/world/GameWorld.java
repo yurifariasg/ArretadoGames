@@ -53,7 +53,7 @@ import com.arretadogames.pilot.screens.PauseScreen;
  */
 public class GameWorld extends GameScreen {
 	
-	private static final int LEVEL_INDEX = 0; /* Level to load */
+	private static final int LEVEL_INDEX = 2; /* Level to load it starts from 2 until 4*/
 	
 	private int backgroundId;
 	
