@@ -24,9 +24,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private Game game;
 	
 	// Main Menu Screens
+	private SettingsScreen settingsScreen;
+	
 	
 	private float currentBlackAlpha;
 	private float currentZoom;
+	private State currentState;
 	
 	public MainMenuScreen(Game game) {
 		this.game = game;
@@ -41,6 +44,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
+		
+		currentState = State.MAIN;
+		settingsScreen = new SettingsScreen(this);
 	}
 
 	@Override
@@ -53,8 +59,14 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		canvas.scale(currentZoom, currentZoom, DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2);
 		
 		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
-		settingsBt.render(canvas, timeElapsed);
-		playBt.render(canvas, timeElapsed);
+		
+		
+		if (currentState == State.MAIN) {
+			settingsBt.render(canvas, timeElapsed);
+			playBt.render(canvas, timeElapsed);
+		} else if (currentState == State.SETTINGS) {
+			settingsScreen.render(canvas, timeElapsed);
+		}
 		
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		
@@ -68,8 +80,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 	@Override
 	public void input(InputEventHandler event) {
-		playBt.input(event);
-		settingsBt.input(event);
+		if (currentState == State.MAIN) {
+			playBt.input(event);
+			settingsBt.input(event);
+		} else if (currentState == State.SETTINGS) {
+			settingsScreen.input(event);
+		}
 	}
 
 	@Override
@@ -98,6 +114,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 //			}).start(AnimationManager.getInstance());
 			startGame();
 			break;
+		case SETTINGS_BUTTON:
+			currentState = State.SETTINGS;
+			break;
 		}
 	}
 	
@@ -124,6 +143,14 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		} else if (tweenType == BLACK_ALPHA_PROPERTY) {
 			target.currentBlackAlpha = newValues[0];
 		}
+	}
+	
+	public void setState(State newState) {
+		currentState = newState;
+	}
+	
+	public enum State {
+		MAIN, SETTINGS;
 	}
 
 

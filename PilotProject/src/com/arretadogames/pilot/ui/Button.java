@@ -69,7 +69,7 @@ public abstract class Button {
 		}
 	}
 	
-	private boolean pressed(float x, float y) {
+	protected boolean pressed(float x, float y) {
 		if (x > this.x && x < this.x + width) {
 			// Is on X Range
 			if (y > this.y && y < this.y + height) {

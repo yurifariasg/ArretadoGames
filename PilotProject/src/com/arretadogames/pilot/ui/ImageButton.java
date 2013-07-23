@@ -5,8 +5,8 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class ImageButton extends Button {
 	
-	private int selectedImageId;
-	private int unselectedImageId;
+	protected int selectedImageId;
+	protected int unselectedImageId;
 
 	/**
 	 * Creates a ImageButton based on the given position and Images<br>

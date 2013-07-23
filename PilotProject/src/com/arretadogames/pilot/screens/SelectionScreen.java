@@ -10,7 +10,6 @@ import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenManager;
 
 import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.R;
@@ -174,6 +173,8 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 		
 		private static final int ZOOM = 0;
 		private static final int ROTATION = 1;
+		private static final int POSITION = 2;
+		
 		PlayerNumber player;
 		CharacterSpot spot;
 		RectF selectorRect;
@@ -198,7 +199,6 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 				
 				@Override
 				public void onEvent(int arg0, BaseTween<?> arg1) {
-					System.out.println("Tweening");
 					Tween.to(itself, PlayerSelector.ROTATION, 0.1f).targetRelative(10f).start(AnimationManager.getInstance());
 				}
 			}).repeat(Tween.INFINITY, 0.1f);
@@ -267,17 +267,21 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 				spot.selector = null;
 				spot = newSpot;
 				spot.selector = this;
-				selectorRect.set(spot.rect);
 				this.pointerId = -1;
+				
+				Tween.to(this, PlayerSelector.POSITION, 0.2f).target(spot.rect.centerX(), spot.rect.centerY()).start(AnimationManager.getInstance());
+//				selectorRect.set(spot.rect);
+				
 			}
 		}
 
 		public void startPressAnimation() {
 			Tween.to(this, PlayerSelector.ZOOM, 0.25f).target(0.3f).start(AnimationManager.getInstance());
-			if (rotationTween.isStarted())
+			if (rotationTween.isStarted()) {
 				rotationTween.resume();
-			else
+			} else {
 				rotationTween.start(AnimationManager.getInstance());
+			}
 		}
 
 		public void startReleaseAnimation() {
@@ -292,7 +296,7 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 			float closestDistance = Util.distance(x, y, closestSpot.rect.centerX(), closestSpot.rect.centerY());
 			for (int i = 0 ; i < spots.length ; i++) {
 				if (closestDistance > Util.distance(x, y, spots[i].rect.centerX(), spots[i].rect.centerY()) &&
-						!spots[i].isAvailable()) {
+						spots[i].isAvailable()) {
 					closestSpot = spots[i];
 					closestDistance = Util.distance(x, y, spots[i].rect.centerX(), spots[i].rect.centerY());
 				}
@@ -311,13 +315,16 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 			switch (type) {
 			case PlayerSelector.ZOOM:
 				returnValues[0] = pSelector.cZoom;
-				break;
+				return 1;
 			case PlayerSelector.ROTATION:
 				returnValues[0] = pSelector.cRotation;
-				break;
+				return 1;
+			case PlayerSelector.POSITION:
+				returnValues[0] = pSelector.selectorRect.centerX();
+				returnValues[1] = pSelector.selectorRect.centerY();
+				return 2;
 			}
-			
-			return 1;
+			return 0;
 		}
 
 		@Override
@@ -328,6 +335,14 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 				break;
 			case PlayerSelector.ROTATION:
 				pSelector.cRotation = newValues[0];
+				break;
+			case PlayerSelector.POSITION:
+				RectF oldR = new RectF(pSelector.selectorRect);
+				pSelector.selectorRect.set(
+						newValues[0] - oldR.width() / 2,
+						newValues[1] - oldR.height() / 2,
+						newValues[0] + oldR.width() / 2,
+						newValues[1] + oldR.height() / 2);
 				break;
 			}
 		}
@@ -342,12 +357,10 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 
 		@Override
 		public void step(float timeElapsed) {
-//			rect.
 		}
 
 		public boolean isAvailable() {
-			return ((character == PlayableCharacter.LOBO_GUARA || character == PlayableCharacter.ARARA_AZUL) &&
-					selector != null);
+			return (selector == null);
 		}
 
 		@Override
@@ -373,10 +386,6 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 			}
 			
 			canvas.drawBitmap(imageId, rect, false);
-		}
-		
-		public boolean collides(float x, float y) {
-			return rect.contains(x, y);
 		}
 	}
 
