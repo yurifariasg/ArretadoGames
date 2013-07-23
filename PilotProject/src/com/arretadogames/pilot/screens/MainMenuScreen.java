@@ -17,18 +17,27 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private final static int BLACK_ALPHA_PROPERTY = 2;
 	
 	private static final int PLAY_BUTTON = 1;
+	private static final int SETTINGS_BUTTON = 2;
 	
-	private ImageButton playButton;
+	private ImageButton playBt;
+	private ImageButton settingsBt;
 	private Game game;
+	
+	// Main Menu Screens
 	
 	private float currentBlackAlpha;
 	private float currentZoom;
 	
 	public MainMenuScreen(Game game) {
 		this.game = game;
-		playButton = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
+		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
 				R.drawable.bt_play_selected,
 				R.drawable.bt_play_unselected);
+		
+		settingsBt = new ImageButton(SETTINGS_BUTTON,
+				700, 390, this,
+				R.drawable.bt_settings_selected,
+				R.drawable.bt_settings_unselected);
 		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
@@ -44,7 +53,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		canvas.scale(currentZoom, currentZoom, DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2);
 		
 		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
-		playButton.render(canvas, timeElapsed);
+		settingsBt.render(canvas, timeElapsed);
+		playBt.render(canvas, timeElapsed);
 		
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		
@@ -58,7 +68,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 	@Override
 	public void input(InputEventHandler event) {
-		playButton.input(event);
+		playBt.input(event);
+		settingsBt.input(event);
 	}
 
 	@Override

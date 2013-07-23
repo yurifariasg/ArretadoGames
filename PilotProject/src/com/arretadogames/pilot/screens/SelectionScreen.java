@@ -62,9 +62,6 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 	@SuppressLint("NewApi")
 	private void initializeSpots() {
 		
-		final int SPOT_WIDTH = 200;
-		final int SPOT_HEIGHT = 200;
-		
 		final float CENTER_X = DisplaySettings.TARGET_WIDTH / 2;
 		final float CENTER_Y = DisplaySettings.TARGET_HEIGHT / 2;
 		
@@ -201,6 +198,7 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 				
 				@Override
 				public void onEvent(int arg0, BaseTween<?> arg1) {
+					System.out.println("Tweening");
 					Tween.to(itself, PlayerSelector.ROTATION, 0.1f).targetRelative(10f).start(AnimationManager.getInstance());
 				}
 			}).repeat(Tween.INFINITY, 0.1f);
