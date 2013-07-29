@@ -21,7 +21,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	private ImageButton playBt;
 	private ImageButton settingsBt;
-	private Game game;
 	
 	// Main Menu Screens
 	private SettingsScreen settingsScreen;
@@ -31,8 +30,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private float currentZoom;
 	private State currentState;
 	
-	public MainMenuScreen(Game game) {
-		this.game = game;
+	public MainMenuScreen() {
 		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
 				R.drawable.bt_play_selected,
 				R.drawable.bt_play_unselected);
@@ -121,7 +119,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	}
 	
 	private void startGame() {
-		game.goTo(GameState.SELECTION);
+		Game.getInstance().goTo(GameState.LEVEL_SELECTION);
 		currentBlackAlpha = 0;
 		currentZoom = 1;
 	}

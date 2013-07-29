@@ -3,34 +3,58 @@ package com.arretadogames.pilot.levels;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import com.arretadogames.pilot.GameActivity;
-import com.arretadogames.pilot.R;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.res.Resources;
+import android.util.Log;
+
+import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.util.parsers.LevelParser;
 
 
 public class LevelManager {
 	
-	// List of Levels
-	private static final int[] LEVELS_RESOURCES = {R.raw.basic_level, R.raw.second_level,
-		R.raw.first_stage, R.raw.second_stage, R.raw.third_stage};
+	private static List<LevelDescriptor> levels = null;
 	
-	private static LevelDescriptor loadLevel(Resources res, int levelResource) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(res.openRawResource(levelResource)));
+	private static boolean loadLevel(Resources res, LevelDescriptor level) {
 		
-		String jsonString = "";
-		String line = null;
-		while ((line = br.readLine()) != null) {
-			jsonString += line;
+		try {
+			int rawRes = LevelTable.LEVELS[level.getId()];
+			BufferedReader br = new BufferedReader(new InputStreamReader(res.openRawResource(rawRes)));
+			
+			String jsonString = "";
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				jsonString += line;
+			}
+			return LevelParser.parseJSON(jsonString, level);
+		} catch (IOException ioException) {
+			Log.e("Level Loading Error", ioException.getMessage());
+			return false;
 		}
-		return LevelDescriptor.parseJSON(jsonString);
 	}
 	
 	public static int getLevelsCount() {
-		return LEVELS_RESOURCES.length;
+		return LevelTable.LEVELS.length;
 	}
 	
-	public static LevelDescriptor loadLevel(int index) throws IOException {
-		return loadLevel(GameActivity.getContext().getResources(), LEVELS_RESOURCES[index]);
+	public static boolean loadLevel(LevelDescriptor level) {
+		return loadLevel(GameActivity.getContext().getResources(), level);
+	}
+
+	public static List<LevelDescriptor> getLevels() {
+		if (levels == null)
+			loadlevels();
+		return levels;
+	}
+
+	private static void loadlevels() {
+		// Load Levels from DB and place them at levels variable
+		
+		// For now - DummyLevel:
+		levels = new ArrayList<LevelDescriptor>();
+		levels.add(new LevelDescriptor(0));
 	}
 
 }

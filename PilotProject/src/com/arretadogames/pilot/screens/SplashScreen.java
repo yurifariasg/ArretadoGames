@@ -32,12 +32,10 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	private int logoId;
 	private int[] logoSize;
 	
-	private Game game;
 	private Paint paintBitmap;
 	
-	public SplashScreen(Game game) {
+	public SplashScreen() {
 		animationStarted = false;
-		this.game = game;
 		logoId = R.drawable.logo;
 		logoSize = ImageLoader.checkBitmapSize(R.drawable.logo);
 		paintBitmap = new Paint();
@@ -177,7 +175,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	}
 	
 	private void startMainMenu() {
-		game.goTo(GameState.MAIN_MENU);
+		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}
 
 }

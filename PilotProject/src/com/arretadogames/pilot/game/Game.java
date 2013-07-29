@@ -16,8 +16,9 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.InputEventHandler;
+import com.arretadogames.pilot.screens.LevelSelectionScreen;
 import com.arretadogames.pilot.screens.MainMenuScreen;
-import com.arretadogames.pilot.screens.SelectionScreen;
+import com.arretadogames.pilot.screens.CharacterSelectionScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
@@ -42,13 +43,14 @@ public class Game implements TweenAccessor<Game> {
 	private boolean resetWorld;
 	
 	private Game() {
-		currentState = GameState.MAIN_MENU;
+		currentState = GameState.LEVEL_SELECTION;
 		gameScreens = new HashMap<GameState, GameScreen>();
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
-		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen(this));
-		gameScreens.put(GameState.SPLASH, new SplashScreen(this));
+		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen());
+		gameScreens.put(GameState.SPLASH, new SplashScreen());
 		gameScreens.put(GameState.GAME_OVER, new EndScreen());
-		gameScreens.put(GameState.SELECTION, new SelectionScreen());
+		gameScreens.put(GameState.CHARACTER_SELECTION, new CharacterSelectionScreen());
+		gameScreens.put(GameState.LEVEL_SELECTION, new LevelSelectionScreen());
 		transitionStateOn = false;
 		resetWorld = false;
 	}
@@ -120,8 +122,8 @@ public class Game implements TweenAccessor<Game> {
 	
 	private void changeState(GameState state) {
 		
-		if (state == GameState.RUNNING_GAME) // TODO: arrumar maneira melhor de fazer isso
-			((GameWorld)getScreen(GameState.RUNNING_GAME)).initialize();
+//		if (state == GameState.RUNNING_GAME) // TODO: arrumar maneira melhor de fazer isso
+//			((GameWorld)getScreen(GameState.RUNNING_GAME)).initialize();
 		
 		if (state != null)
 			currentState = state;

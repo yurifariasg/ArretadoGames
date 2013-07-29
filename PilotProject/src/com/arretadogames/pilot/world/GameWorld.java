@@ -1,6 +1,5 @@
 package com.arretadogames.pilot.world;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,9 +22,7 @@ import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
-import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
-import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -35,7 +32,6 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
-import com.arretadogames.pilot.levels.LevelManager;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
@@ -72,6 +68,7 @@ public class GameWorld extends GameScreen {
 	private long time;
 	
 	private boolean isInitialized;
+	private LevelDescriptor level;
 	
 	public GameWorld() {
 		backgroundId = R.drawable.stage_background;
@@ -85,23 +82,17 @@ public class GameWorld extends GameScreen {
 	}
 	
 	public void initialize() {
-		if (isInitialized)
+		if (isInitialized || selectedCharacters == null || level == null)
 			return;
 		
-		try {
-			load(LevelManager.loadLevel(0)); // 0: Default Level
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		load(level); 
 		isInitialized = true;
 	}
 	
-	public void load(LevelDescriptor ld) {
+	private void load(LevelDescriptor ld) {
+		if (!ld.isLoaded())
+			ld.load();
 		createEntities(ld);
-	}
-	
-	public void setSelectedCharacters(HashMap<PlayerNumber, PlayableCharacter> selectedCharacters) {
-		this.selectedCharacters = selectedCharacters;
 	}
 	
 	private void createEntities(LevelDescriptor ld) {
@@ -249,8 +240,8 @@ public class GameWorld extends GameScreen {
 	
 	@Override
 	public void step(float timeElapsed) {
-		if (!isInitialized)
-			initialize();
+//		if (!isInitialized)
+//			initialize(); 
 		
 		totalElapsedSeconds += timeElapsed;
 		
@@ -330,5 +321,13 @@ public class GameWorld extends GameScreen {
 		
 		((EndScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(players);
 		Game.getInstance().goTo(GameState.GAME_OVER);
+	}
+
+	public void setLevel(LevelDescriptor level) {
+		this.level = level;
+	}
+	
+	public void setSelectedCharacters(HashMap<PlayerNumber, PlayableCharacter> selectedCharacters) {
+		this.selectedCharacters = selectedCharacters;
 	}
 }

@@ -27,7 +27,7 @@ import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.util.Util;
 import com.arretadogames.pilot.world.GameWorld;
 
-public class SelectionScreen extends GameScreen implements GameButtonListener {
+public class CharacterSelectionScreen extends GameScreen implements GameButtonListener {
 	
 	private final RectF BASE_RECT = new RectF(0, 0, 220, 220);
 	
@@ -36,7 +36,7 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 	
 	private ImageButton startButton;
 	
-	public SelectionScreen() {
+	public CharacterSelectionScreen() {
 		initializeSelectors();
 		initializeSpots();
 		
@@ -120,8 +120,6 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 
 	@Override
 	public void step(float timeElapsed) {
-		for (int i = 0 ; i < selectors.length ; i++)
-			selectors[i].step(timeElapsed);
 	}
 
 	// TODO: Enable Multi touch
@@ -169,7 +167,7 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 	}
 	
 	
-	private class PlayerSelector implements Renderable, Steppable, TweenAccessor<PlayerSelector> {
+	private class PlayerSelector implements Renderable, TweenAccessor<PlayerSelector> {
 		
 		private static final int ZOOM = 0;
 		private static final int ROTATION = 1;
@@ -208,10 +206,6 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 			return selectorRect.contains(x, y);
 		}
 
-		@Override
-		public void step(float timeElapsed) {
-		}
-		
 		@Override
 		public void render(GLCanvas canvas, float timeElapsed) {
 			int imageId = -1;
@@ -348,17 +342,12 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 		}
 	}
 	
-	private class CharacterSpot implements Renderable, Steppable {
+	private class CharacterSpot implements Renderable {
 		
 		RectF rect;
 		PlayerSelector selector = null;
 		PlayableCharacter character;
 		
-
-		@Override
-		public void step(float timeElapsed) {
-		}
-
 		public boolean isAvailable() {
 			return (selector == null);
 		}
@@ -405,6 +394,7 @@ public class SelectionScreen extends GameScreen implements GameButtonListener {
 		}
 		
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
+		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
 		
 		
