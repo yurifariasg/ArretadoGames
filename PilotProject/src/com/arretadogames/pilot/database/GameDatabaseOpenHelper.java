@@ -33,24 +33,14 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
         ContentValues values = new ContentValues();
         
         values.put(GameDatabase.KEY_LEVEL_ID, 0);
-        values.put(GameDatabase.BEST_LEVEL_COINS, 10);
-        values.put(GameDatabase.BEST_LEVEL_TIME, 15);
+        values.put(GameDatabase.BEST_LEVEL_COINS, -1);
+        values.put(GameDatabase.BEST_LEVEL_TIME, 100);
         values.put(GameDatabase.BEST_LEVEL_COINS_PLAYER, 1);
-        values.put(GameDatabase.BEST_LEVEL_TIME_PLAYER, 2);        
+        values.put(GameDatabase.BEST_LEVEL_TIME_PLAYER, 1);        
         values.put(GameDatabase.LEVEL_ENABLED, true);        
         
         db.insert(LEVEL_TABLE_CREATE, null, values);
         
-        values = new ContentValues();
-        
-        values.put(GameDatabase.KEY_LEVEL_ID, 1);
-        values.put(GameDatabase.BEST_LEVEL_COINS, 10);
-        values.put(GameDatabase.BEST_LEVEL_TIME, 15);
-        values.put(GameDatabase.BEST_LEVEL_COINS_PLAYER, 1);
-        values.put(GameDatabase.BEST_LEVEL_TIME_PLAYER, 2);        
-        values.put(GameDatabase.LEVEL_ENABLED, true);
-        
-        db.insert(LEVEL_TABLE_CREATE, null, values);
     }
 
     @Override

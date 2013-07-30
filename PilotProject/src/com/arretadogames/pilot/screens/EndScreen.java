@@ -72,15 +72,29 @@ public class EndScreen extends GameScreen {
 		Player p1 = players.get(PlayerNumber.ONE);
 		Player p2 = players.get(PlayerNumber.TWO);
 		
-		if (ld.getBestCoins() < p1.getCoins())
-			GameDatabase.getInstance().setBestCoins(p1.getCoins(), ld.getId(), 1/*p1.getId()*/);
-		if (ld.getBestCoins() < p2.getCoins())
-			GameDatabase.getInstance().setBestCoins(p2.getCoins(), ld.getId(), 2/*p1.getId()*/);
-		
-		if (ld.getBestTime() > p1.getTimeFinished())
-			GameDatabase.getInstance().setBestTime(p1.getTimeFinished(), ld.getId(), 1);
-		if (ld.getBestTime() > p2.getTimeFinished())
-			GameDatabase.getInstance().setBestTime(p2.getTimeFinished(), ld.getId(), 2);
+		for (int i = 0; i<3; i++){
+			System.out.println("FUNFOU? "+GameDatabase.getInstance().getAllLevels().get(i).getBestCoins()+ " " + i);
+		}
+		System.out.println("#1 p2 = " + p2.getCoins() + " < " + "p1 = " + p1.getCoins());
+		if (p2.getCoins() < p1.getCoins()){//#1
+			System.out.println("P1 melhor que P2");
+			System.out.println("#2 ld = " + ld.getBestCoins() + " < " + "p1 = " + p1.getCoins());
+			if (ld.getBestCoins() < p1.getCoins()){//#2
+				ld.setBestCoins(p1.getCoins());
+				GameDatabase.getInstance().setBestCoins(p1.getCoins(), ld.getId(), 1/*p1.getId()*/);
+				System.out.println("salvou greatest: "+p1.getCoins());
+			}else{
+				System.out.println("nao salvou");
+			}			
+			
+		}else{
+			System.out.println("P2 melhor que P1");
+			if (ld.getBestCoins() < p2.getCoins()){
+				ld.setBestCoins(p2.getCoins());
+				GameDatabase.getInstance().setBestCoins(p2.getCoins(), ld.getId(), 2/*p2.getId()*/);
+			}
+		}
+		// TIME TODO
 		
 		initializePlayerInfo(130, p1);
 		initializePlayerInfo(680, p2);
