@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.util.parsers.LevelParser;
 
 
@@ -51,13 +52,7 @@ public class LevelManager {
 
 	private static void loadlevels() {
 		// Load Levels from DB and place them at levels variable
-		
-		// For now - DummyLevel:
-		levels = new ArrayList<LevelDescriptor>();
-		levels.add(new LevelDescriptor(0));
-		levels.add(new LevelDescriptor(1));
-		levels.add(new LevelDescriptor(2));
-		levels.add(new LevelDescriptor(3));
+		levels = GameDatabase.getInstance().getAllLevels();
 	}
 
 }

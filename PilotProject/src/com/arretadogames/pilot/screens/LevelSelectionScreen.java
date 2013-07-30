@@ -219,6 +219,19 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 			canvas.drawText(String.valueOf(index), drawRect.centerX(),
 					drawRect.centerY(), textPaint, true);
 			canvas.restoreState();
+			
+			if (zoom == 2) {
+				
+				int bestCoins = levels.get(currentIndex).getBestCoins();
+				canvas.drawText("Coins: " +
+						(bestCoins == -1 ? "?" : String.valueOf(bestCoins)), drawRect.centerX(),
+						drawRect.centerY() + 130, textPaint, true);
+				
+				int bestTime = levels.get(currentIndex).getBestTime();
+				canvas.drawText("Time: " +
+						(bestTime == -1 ? "?" : String.valueOf(bestTime)), drawRect.centerX(),
+						drawRect.centerY() + 160, textPaint, true);
+			}
 		}
 	}
 	

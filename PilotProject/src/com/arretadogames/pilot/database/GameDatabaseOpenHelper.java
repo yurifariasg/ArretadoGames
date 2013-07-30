@@ -34,13 +34,12 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
         
         values.put(GameDatabase.KEY_LEVEL_ID, 0);
         values.put(GameDatabase.BEST_LEVEL_COINS, -1);
-        values.put(GameDatabase.BEST_LEVEL_TIME, 100);
+        values.put(GameDatabase.BEST_LEVEL_TIME, -1);
         values.put(GameDatabase.BEST_LEVEL_COINS_PLAYER, 1);
         values.put(GameDatabase.BEST_LEVEL_TIME_PLAYER, 1);        
         values.put(GameDatabase.LEVEL_ENABLED, true);        
         
-        db.insert(LEVEL_TABLE_CREATE, null, values);
-        
+        db.insert(GameDatabase.LEVEL_TABLE_NAME, null, values);
     }
 
     @Override
