@@ -55,6 +55,9 @@ public class LevelManager {
 		// For now - DummyLevel:
 		levels = new ArrayList<LevelDescriptor>();
 		levels.add(new LevelDescriptor(0));
+		levels.add(new LevelDescriptor(1));
+		levels.add(new LevelDescriptor(2));
+		levels.add(new LevelDescriptor(3));
 	}
 
 }
