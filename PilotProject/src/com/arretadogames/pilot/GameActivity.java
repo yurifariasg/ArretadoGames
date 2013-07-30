@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.render.opengl.GameGLSurfaceView;
@@ -30,6 +31,7 @@ public class GameActivity extends Activity implements OnTouchListener {
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext(); // Sets the Context for external use
 		FontLoader.create(context); // Create the FontLoader
+		GameDatabase.createDatabase(getApplicationContext());
 		Game.getInstance(); // Create Game
 		
 		renderingSurface = new GameGLSurfaceView(this);

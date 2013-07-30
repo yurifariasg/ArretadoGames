@@ -42,7 +42,6 @@ import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
-//import com.arretadogames.pilot.entities.Liana;
 
 /**
  * GameWorld class represents the World in our Game
@@ -319,7 +318,7 @@ public class GameWorld extends GameScreen {
 			return;
 		finishWorld = true;
 		
-		((EndScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(players);
+		((EndScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(players, level);
 		Game.getInstance().goTo(GameState.GAME_OVER);
 	}
 

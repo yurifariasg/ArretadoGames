@@ -7,10 +7,36 @@ public class LevelDescriptor {
 	private List<EntityDescriptor> entities;
 	private GroundDescriptor groundDescriptor;
 	private int id;
+	private int bestCoins;
+	private int bestTime;
+	private boolean isEnabled;
 	
+	public int getBestCoins() {
+		return bestCoins;
+	}
+
+	public void setBestCoins(int bestCoins) {
+		this.bestCoins = bestCoins;
+	}
+
+	public int getBestTime() {
+		return bestTime;
+	}
+
+	public void setBestTime(int bestTime) {
+		this.bestTime = bestTime;
+	}
+
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
+
 	/* Id here means Index on the LEVEL_TABLE */
-	public LevelDescriptor(int id /* TODO: Add other parameters */) {
-		// Add Database data here
+	public LevelDescriptor(int id) {
 		this.id = id;
 	}
 	
