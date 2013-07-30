@@ -43,7 +43,7 @@ public class Game implements TweenAccessor<Game> {
 	private boolean resetWorld;
 	
 	private Game() {
-		currentState = GameState.LEVEL_SELECTION;
+		currentState = GameState.SPLASH;
 		gameScreens = new HashMap<GameState, GameScreen>();
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen());
