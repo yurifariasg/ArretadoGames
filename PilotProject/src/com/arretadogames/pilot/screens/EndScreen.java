@@ -9,10 +9,12 @@ import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.Text;
 
@@ -28,6 +30,7 @@ public class EndScreen extends GameScreen {
 	private HashMap<PlayerNumber, Player> players;
 	private Paint textPaint;
 	private int backgroundId;
+	private LevelDescriptor ld;
 	
 	private List<Text> playerInformation;
 	
@@ -48,9 +51,10 @@ public class EndScreen extends GameScreen {
 		hasWon = false;
 	}
 	
-	public void initialize(HashMap<PlayerNumber, Player> players) {
+	public void initialize(HashMap<PlayerNumber, Player> players, LevelDescriptor ld) {
 		reset();
 		
+		this.ld = ld;
 		for (Player p : players.values())
 			hasWon |= p.isAlive(); // At least one alive
 		
@@ -65,8 +69,21 @@ public class EndScreen extends GameScreen {
 
 	private void initializeInfo() {
 		playerInformation = new ArrayList<Text>();
-		initializePlayerInfo(130, players.get(PlayerNumber.ONE));
-		initializePlayerInfo(680, players.get(PlayerNumber.TWO));
+		Player p1 = players.get(PlayerNumber.ONE);
+		Player p2 = players.get(PlayerNumber.TWO);
+		
+		if (ld.getBestCoins() < p1.getCoins())
+			GameDatabase.getInstance().setBestCoins(p1.getCoins(), ld.getId(), 1/*p1.getId()*/);
+		if (ld.getBestCoins() < p2.getCoins())
+			GameDatabase.getInstance().setBestCoins(p2.getCoins(), ld.getId(), 2/*p1.getId()*/);
+		
+		if (ld.getBestTime() > p1.getTimeFinished())
+			GameDatabase.getInstance().setBestTime(p1.getTimeFinished(), ld.getId(), 1);
+		if (ld.getBestTime() > p2.getTimeFinished())
+			GameDatabase.getInstance().setBestTime(p2.getTimeFinished(), ld.getId(), 2);
+		
+		initializePlayerInfo(130, p1);
+		initializePlayerInfo(680, p2);
 		
 	}
 
@@ -84,9 +101,6 @@ public class EndScreen extends GameScreen {
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
 				currentY, "Time: " + player.getTimeFinished() + "s", 1f));
 		currentY += PLAYER_INFO_Y_SPACING;
-		
-		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Deaths: " + player.getDeathCount(), 1f));
 		
 	}
 
@@ -118,7 +132,6 @@ public class EndScreen extends GameScreen {
 			
 			// Go To Main Menu
 			Game.getInstance().goTo(GameState.MAIN_MENU);
-			
 		}
 	}
 
