@@ -79,7 +79,6 @@ public class JSONGenerator {
         }
         
         for (int i = 0; i < fruits.size(); i++){
-            
             JSONObject jObj = new JSONObject();
             jObj.put("type", TYPE_FRUIT);
             jObj.put("x", Utils.convertPixelToMeter(fruits.get(i).getX()));

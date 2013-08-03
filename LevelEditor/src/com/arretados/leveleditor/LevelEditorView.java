@@ -44,6 +44,7 @@ public class LevelEditorView extends FrameView {
             }
         });
         jTextWidthValue.setText("???");
+        jTextHeigthValue.setText("???");
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -135,6 +136,8 @@ public class LevelEditorView extends FrameView {
         jButton2 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jTextHeigthValue = new javax.swing.JTextField();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -192,7 +195,7 @@ public class LevelEditorView extends FrameView {
 
         gameCanvas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         gameCanvas1.setName("gameCanvas1"); // NOI18N
-        gameCanvas1.setPreferredSize(new java.awt.Dimension(1500, 289));
+        gameCanvas1.setPreferredSize(new java.awt.Dimension(1500, 1000));
 
         javax.swing.GroupLayout gameCanvas1Layout = new javax.swing.GroupLayout(gameCanvas1);
         gameCanvas1.setLayout(gameCanvas1Layout);
@@ -205,7 +208,7 @@ public class LevelEditorView extends FrameView {
             .addGap(0, 998, Short.MAX_VALUE)
         );
 
-        jScrollInternalPanel.add(gameCanvas1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, -1, 1000));
+        jScrollInternalPanel.add(gameCanvas1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, -1, -1));
 
         jScrollPane1.setViewportView(jScrollInternalPanel);
 
@@ -264,6 +267,12 @@ public class LevelEditorView extends FrameView {
             }
         });
 
+        jLabel2.setText("Heigth");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
+        jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -273,16 +282,18 @@ public class LevelEditorView extends FrameView {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                     .addComponent(activateBoxBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .addComponent(Flag, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
-                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                     .addComponent(activateGroundBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                     .addComponent(activateApple, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(Flag, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1181, Short.MAX_VALUE)
                 .addContainerGap())
@@ -292,7 +303,7 @@ public class LevelEditorView extends FrameView {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(activateBoxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -305,7 +316,7 @@ public class LevelEditorView extends FrameView {
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
                         .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Flag, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -313,11 +324,15 @@ public class LevelEditorView extends FrameView {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextWidthValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextHeigthValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGap(6, 6, 6))))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -427,13 +442,25 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String value = jTextWidthValue.getText();
-        int newX = 0;
+        String wValue = jTextWidthValue.getText();
+        String hValue = jTextHeigthValue.getText();
+        
+        int newW = 0;
+        int newH = 0;
         try{
-            if (value.length() > 0){
-                newX = Integer.parseInt(value);
+            if (wValue.length() > 0){
+                newW = Integer.parseInt(wValue);
             }
-            gameCanvas1.setPreferredSize(new Dimension(newX, gameCanvas1.getSize().height));
+            if (hValue.length() > 0){
+                newH = Integer.parseInt(hValue);
+            }
+            
+            Dimension d = new Dimension(newW, newH);
+            
+            jScrollInternalPanel.setPreferredSize(d);
+            gameCanvas1.setPreferredSize(d);
+            
+            jScrollInternalPanel.revalidate();
             jScrollPane1.revalidate();
             gameCanvas1.revalidate();
             gameCanvas1.repaint();
@@ -461,8 +488,10 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jScrollInternalPanel;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextHeigthValue;
     private javax.swing.JTextField jTextWidthValue;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
