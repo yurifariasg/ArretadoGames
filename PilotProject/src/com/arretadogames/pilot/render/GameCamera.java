@@ -27,7 +27,6 @@ import com.arretadogames.pilot.world.GameWorld;
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;
-	private GLCanvas gameCanvas = null;
 	private int backgroundId;
 	
 	private boolean calculateWidthFirst;
@@ -83,7 +82,7 @@ public class GameCamera {
 	}
 
 	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
-	private void determineViewport(float timeElapsed){
+	private void determineViewport(GLCanvas gameCanvas, float timeElapsed){
 		
 		if (DisplaySettings.PROFILE_GAME_CAMERA)
 			time = System.nanoTime() / 1000000;
@@ -270,7 +269,7 @@ public class GameCamera {
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
-		drawBackground(center);
+		drawBackground(gameCanvas, center);
 		
 		if (DisplaySettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Draw Background: " + (System.nanoTime()/1000000 - time));
@@ -296,7 +295,7 @@ public class GameCamera {
 
 	}
 
-	private void drawBackground(Vec2 center) {
+	private void drawBackground(GLCanvas gameCanvas, Vec2 center) {
 
 		backgroundId = R.drawable.dark;
 		
@@ -387,12 +386,7 @@ public class GameCamera {
 	}
 
 	public void render(final GLCanvas canvas, final float timeElapsed) {
-
-		if ( gameCanvas == null ){
-			gameCanvas = canvas;
-		}
-		
-		determineViewport(timeElapsed);
+		determineViewport(canvas, timeElapsed);
 	}
 
 	private long getCurrentTime() {

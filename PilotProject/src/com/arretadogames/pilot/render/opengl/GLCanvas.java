@@ -27,8 +27,8 @@ import com.arretadogames.pilot.loading.ImageLoader;
 public class GLCanvas {
 	
 	private GL10 gl;
-	private static SparseArray<GLImage> textures = new SparseArray<GLImage>();
-	private static HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
+	private SparseArray<GLImage> textures = new SparseArray<GLImage>();
+	private HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
 	
 	private Rect arbritaryRect = new Rect();
 	public static float physicsRatio = 25;
