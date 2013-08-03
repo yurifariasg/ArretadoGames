@@ -89,7 +89,7 @@ public class Game implements TweenAccessor<Game> {
 	public void step(float timeElapsed) {
 		if (resetWorld) {
 			PhysicalWorld.restart();
-			((GameWorld) gameScreens.get(GameState.RUNNING_GAME)).free();
+			((GameWorld) gameScreens.get(GameState.RUNNING_GAME)).destroyResources();
 			gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 			resetWorld = false;
 		}
@@ -120,19 +120,21 @@ public class Game implements TweenAccessor<Game> {
 		startTransitionAnimation(state);
 	}
 	
+	
 	private void changeState(GameState state) {
-		
-//		if (state == GameState.RUNNING_GAME) // TODO: arrumar maneira melhor de fazer isso
-//			((GameWorld)getScreen(GameState.RUNNING_GAME)).initialize();
-		
 		if (state != null)
 			currentState = state;
 	}
-
+	
+	// TODO @yuri: remove these methods
 	public void onBackPressed() {
 		gameScreens.get(currentState).onBackPressed();
 	}
 	
+	/**
+	 * Gets the only and single instance of Game
+	 * @return Game
+	 */
 	public static Game getInstance() {
 		if (game == null)
 			game = new Game();
@@ -164,6 +166,9 @@ public class Game implements TweenAccessor<Game> {
 		}
 	}
 	
+	/*
+	 * (Synchronous method) Starts the transition to the given GameState
+	 */
 	private void startTransitionAnimation(final GameState state) {
 		transitionStateOn = true;
 		
@@ -190,8 +195,27 @@ public class Game implements TweenAccessor<Game> {
 				}))
 				.start(AnimationManager.getInstance());
 	}
+	
 
+	/**
+	 * (Asynchronous method) Sets a flag to reset world on the next frame
+	 */
 	public void resetWorld() {
 		resetWorld = true;
+	}
+
+	/**
+	 * (Asynchronous method) Causes the Game to pause
+	 */
+	public void onPause() {
+		if (currentState == GameState.RUNNING_GAME) {
+			((GameWorld)getScreen(GameState.RUNNING_GAME)).onPause();
+		}
+	}
+	
+	/**
+	 * (Asynchronous method) Causes the Game to resume
+	 */
+	public void onResume() {
 	}
 }

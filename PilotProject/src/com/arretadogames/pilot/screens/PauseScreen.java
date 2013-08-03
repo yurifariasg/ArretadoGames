@@ -103,14 +103,14 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 		
 	}
 	
-	private void show() {
+	public void show() {
 		isHidden = false;
 		Tween.to(this, 1, 0.5f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).ease(Quart.OUT).start(AnimationManager.getInstance());
 		Tween.to(this, 2, 0.5f).target(150f).start(AnimationManager.getInstance());
 		
 	}
 	
-	private void hide() {
+	public void hide() {
 		isHidden = true;
 		Tween.to(this, 1, 0.5f).target(ARROW_WIDTH).ease(Quart.OUT).start(AnimationManager.getInstance());
 		Tween.to(this, 2, 0.5f).target(0f).start(AnimationManager.getInstance());

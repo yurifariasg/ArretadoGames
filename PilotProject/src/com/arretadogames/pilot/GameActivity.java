@@ -5,7 +5,6 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
@@ -23,7 +22,6 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 public class GameActivity extends Activity implements OnTouchListener {
 	
 	private static Context context;
-	
 	private GameGLSurfaceView renderingSurface;
 	
 	@Override
@@ -43,8 +41,10 @@ public class GameActivity extends Activity implements OnTouchListener {
 	protected void onPause() {
 		// TODO Handles the Paused Operation into Activity
 		// http://developer.android.com/reference/android/app/Activity.html
-		((GLSurfaceView) renderingSurface).onPause();
 		super.onPause();
+		((GLSurfaceView) renderingSurface).onPause();
+		Game.getInstance().onPause();
+//		setContentView(null);
 	}
 	
 	@Override
@@ -52,7 +52,11 @@ public class GameActivity extends Activity implements OnTouchListener {
 		// TODO Handles the Resume Operation into Activity
 		// http://developer.android.com/reference/android/app/Activity.html
 		super.onResume();
-		((GLSurfaceView) renderingSurface).onResume();
+//		((GLSurfaceView) renderingSurface).onResume();
+		renderingSurface = new GameGLSurfaceView(this);
+		renderingSurface.init();
+		Game.getInstance().onResume();
+		setContentView(renderingSurface);
 	}
 	
 	@Override

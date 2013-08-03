@@ -47,9 +47,6 @@ import com.arretadogames.pilot.screens.PauseScreen;
  * GameWorld class represents the World in our Game
  */
 public class GameWorld extends GameScreen {
-	
-	private static final int LEVEL_INDEX = 2; /* Level to load it starts from 2 until 4*/
-	
 	private int backgroundId;
 	
 	private GameWorldUI ui;
@@ -199,18 +196,12 @@ public class GameWorld extends GameScreen {
 		return null;
 	}
 
-	public void free() {
-		
-	}
-	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		// Render the World
-		
 		if (DisplaySettings.PROFILE_RENDER_SPEED)
 			time = System.nanoTime()/1000000;
 		if (!pauseScreen.isHidden()) {
-			gameCamera.render(canvas, 0); // Draw a fixed frame
+			gameCamera.render(canvas, 0); // Draw a fixed frame - Dont move anything
 		} else {
 			gameCamera.render(canvas, timeElapsed);
 		}
@@ -239,12 +230,8 @@ public class GameWorld extends GameScreen {
 	
 	@Override
 	public void step(float timeElapsed) {
-//		if (!isInitialized)
-//			initialize(); 
-		
 		totalElapsedSeconds += timeElapsed;
 		
-		// TODO: Perform a World Step
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
 			for (Steppable p : steppables)
@@ -283,7 +270,6 @@ public class GameWorld extends GameScreen {
 
 	@Override
 	public void input(InputEventHandler event) {
-		// TODO Handle Inputs
 		pauseScreen.input(event);
 		if (pauseScreen.isHidden())
 			ui.input(event);
@@ -291,16 +277,16 @@ public class GameWorld extends GameScreen {
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		if (pauseScreen.isHidden())
-			ui.onBackPressed();
+			pauseScreen.show();
 		else
-			pauseScreen.onBackPressed();
+			pauseScreen.hide();
 	}
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
+		if (pauseScreen.isHidden())
+			pauseScreen.show();
 	}
 	
 	public HashMap<PlayerNumber, Player> getPlayers(){
@@ -328,5 +314,10 @@ public class GameWorld extends GameScreen {
 	
 	public void setSelectedCharacters(HashMap<PlayerNumber, PlayableCharacter> selectedCharacters) {
 		this.selectedCharacters = selectedCharacters;
+	}
+
+	public void destroyResources() {
+		// TODO Auto-generated method stub
+		
 	}
 }
