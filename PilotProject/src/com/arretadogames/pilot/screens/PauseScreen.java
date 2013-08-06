@@ -117,14 +117,6 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	}
 
 	@Override
-	public void onBackPressed() {
-		if (isHidden)
-			show();
-		else
-			hide();
-	}
-
-	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		

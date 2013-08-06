@@ -87,12 +87,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	}
 
 	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		System.exit(0);
-	}
-
-	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		

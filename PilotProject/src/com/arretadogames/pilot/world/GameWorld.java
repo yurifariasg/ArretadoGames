@@ -276,14 +276,6 @@ public class GameWorld extends GameScreen {
 	}
 
 	@Override
-	public void onBackPressed() {
-		if (pauseScreen.isHidden())
-			pauseScreen.show();
-		else
-			pauseScreen.hide();
-	}
-
-	@Override
 	public void onPause() {
 		if (pauseScreen.isHidden())
 			pauseScreen.show();

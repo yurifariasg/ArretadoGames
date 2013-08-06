@@ -156,10 +156,6 @@ public class EndScreen extends GameScreen {
 	}
 
 	@Override
-	public void onBackPressed() {
-	}
-
-	@Override
 	public void onPause() {
 	}
 

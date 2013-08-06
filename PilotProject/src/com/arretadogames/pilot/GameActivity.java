@@ -69,9 +69,13 @@ public class GameActivity extends Activity implements OnTouchListener {
 	@Override
 	public void onBackPressed() {
 		// TODO Handles the Back Button input from a Physical Button
-		Game.getInstance().onBackPressed();
+//		Game.getInstance().onBackPressed();
 	}
 	
+	/**
+	 * Gets the context associated with this activity
+	 * @return Context
+	 */
 	public static Context getContext() {
 		return context;
 	}

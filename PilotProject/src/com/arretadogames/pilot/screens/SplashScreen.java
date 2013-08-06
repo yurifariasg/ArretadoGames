@@ -84,12 +84,6 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	}
 
 	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		

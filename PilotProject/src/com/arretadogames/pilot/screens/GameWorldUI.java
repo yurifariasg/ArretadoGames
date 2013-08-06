@@ -118,11 +118,6 @@ public class GameWorldUI extends GameScreen {
 	}
 
 	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 	}
