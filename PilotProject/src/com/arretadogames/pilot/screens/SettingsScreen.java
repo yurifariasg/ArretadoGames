@@ -55,20 +55,10 @@ public class SettingsScreen extends GameScreen implements GameButtonListener {
 	}
 
 	@Override
-	public void onBackPressed() {
-		mainMenu.setState(MainMenuScreen.State.MAIN);
-	}
-
-	@Override
 	public void onPause() {
 	}
 
 	@Override
 	public void onClick(int buttonId) {
-		onBackPressed();
 	}
-	
-	
-	
-
 }

@@ -157,11 +157,6 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		}
 	}
 
-
-	@Override
-	public void onBackPressed() {
-	}
-
 	@Override
 	public void onPause() {
 	}

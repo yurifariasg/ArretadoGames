@@ -37,11 +37,6 @@ public abstract class GameScreen {
 	public abstract void input(InputEventHandler event);
 	
 	/**
-	 * Handles the event for when the user press the physical back button
-	 */
-	public abstract void onBackPressed();
-	
-	/**
 	 * Handles the pause event, when the user receives a call or locks the screen
 	 */
 	public abstract void onPause();

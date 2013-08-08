@@ -24,7 +24,8 @@ import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
 
 /**
- * Game class represents our Game
+ * Game class represents our Game.
+ * This entity should hold all information related to <b>Game Logic</b>
  */
 public class Game implements TweenAccessor<Game> {
 	
@@ -42,6 +43,9 @@ public class Game implements TweenAccessor<Game> {
 	
 	private boolean resetWorld;
 	
+	/**
+	 * Creates a Game
+	 */
 	private Game() {
 		currentState = GameState.SPLASH;
 		gameScreens = new HashMap<GameState, GameScreen>();
@@ -55,6 +59,12 @@ public class Game implements TweenAccessor<Game> {
 		resetWorld = false;
 	}
 	
+	/**
+	 * Gets the GameScreen related to the given GameState
+	 * @param state
+	 * GameState
+	 * @return GameScreen, or null if there's not screen related to this GameState
+	 */
 	public GameScreen getScreen(GameState state) {
 		return gameScreens.get(state);
 	}
@@ -111,7 +121,7 @@ public class Game implements TweenAccessor<Game> {
 	}
 
 	/**
-	 * Switch the current game state
+	 * (Asynchronous method) Switch the current game state
 	 * 
 	 * @param state
 	 *            new game's current state
@@ -121,14 +131,12 @@ public class Game implements TweenAccessor<Game> {
 	}
 	
 	
+	/*
+	 * (Asynchronous method) Changes the current state of the Game
+	 */
 	private void changeState(GameState state) {
 		if (state != null)
 			currentState = state;
-	}
-	
-	// TODO @yuri: remove these methods
-	public void onBackPressed() {
-		gameScreens.get(currentState).onBackPressed();
 	}
 	
 	/**
