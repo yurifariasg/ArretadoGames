@@ -8,9 +8,11 @@ import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
+import com.arretados.leveleditor.entities.Fluid;
 import com.arretados.leveleditor.entities.Fruit;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
+import com.arretados.leveleditor.entities.Pulley;
 import java.util.HashMap;
 import java.util.List;
 import org.json.simple.JSONArray;
@@ -28,15 +30,21 @@ public class JSONGenerator {
     private List<Fruit> fruits;
     private List<Coin> coins;
     private List<OneWayWall> oneWays;
+    private List<Pulley> pulleys;
+    private List<Fluid> fluids;
     private List<int[]> groundLines;
     private List<Player> players;
     private Flag flag;
 
-    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<Coin> coins, List<OneWayWall> oneWays, List<int[]> groundLines, List<Player> players, Flag flag) {
+    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<Coin> coins,
+            List<OneWayWall> oneWays, List<Pulley> pulleys, List<Fluid> fluids,
+            List<int[]> groundLines, List<Player> players, Flag flag) {
         this.boxes = boxes;
         this.fruits = fruits;
         this.coins = coins;
         this.oneWays = oneWays;
+        this.pulleys = pulleys;
+        this.fluids = fluids;
         this.groundLines = groundLines;
         this.players = players;
         this.flag = flag;
@@ -52,6 +60,8 @@ public class JSONGenerator {
         final String TYPE_FRUIT = "fruit";
         final String TYPE_COIN = "coin";
         final String TYPE_ONEWAY_WALL = "oneway_wall";
+        final String TYPE_PULLEY = "pulley";
+        final String TYPE_FLUID = "fluid";
         final String TYPE_PLAYER = "player";
         final String TYPE_FLAG = "finalflag";
         
@@ -108,7 +118,29 @@ public class JSONGenerator {
             jObj.put("size", Utils.convertPixelToMeter(oneWays.get(i).getSize()));
             
             jArrayEntities.add(jObj);
-        }    
+        }
+        
+        for (int i = 0; i < pulleys.size(); i++){
+            
+            JSONObject jObj = new JSONObject();
+            jObj.put("type", TYPE_PULLEY);
+            jObj.put("x", Utils.convertPixelToMeter(pulleys.get(i).getX()));
+            jObj.put("y", 10-Utils.convertPixelToMeter(pulleys.get(i).getY()));
+            jObj.put("size", Utils.convertPixelToMeter(pulleys.get(i).getSize()));
+            
+            jArrayEntities.add(jObj);
+        }
+        
+        for (int i = 0; i < fluids.size(); i++){
+            
+            JSONObject jObj = new JSONObject();
+            jObj.put("type", TYPE_FLUID);
+            jObj.put("x", Utils.convertPixelToMeter(fluids.get(i).getX()));
+            jObj.put("y", 10-Utils.convertPixelToMeter(fluids.get(i).getY()));
+            jObj.put("size", Utils.convertPixelToMeter(fluids.get(i).getSize()));
+            
+            jArrayEntities.add(jObj);
+        }
         
         JSONObject jObjFlag = new JSONObject();
         jObjFlag.put("type", TYPE_FLAG);

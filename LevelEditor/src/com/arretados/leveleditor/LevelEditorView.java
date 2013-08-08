@@ -138,6 +138,8 @@ public class LevelEditorView extends FrameView {
         jButton4 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jTextHeigthValue = new javax.swing.JTextField();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -273,6 +275,22 @@ public class LevelEditorView extends FrameView {
         jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
         jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
 
+        jButton6.setText("Pulley");
+        jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setText("Fluid");
+        jButton7.setName("jButton7"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -280,6 +298,8 @@ public class LevelEditorView extends FrameView {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                     .addComponent(activateBoxBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                     .addComponent(activateGroundBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
@@ -316,7 +336,11 @@ public class LevelEditorView extends FrameView {
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                         .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Flag, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -415,7 +439,8 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JSONGenerator json = new JSONGenerator(gameCanvas1.getBoxPos(),
                 gameCanvas1.getFruitPos(), gameCanvas1.getCoinsPos(),
-                gameCanvas1.getOneWayPos(), gameCanvas1.getLinesPos(), 
+                gameCanvas1.getOneWayPos(), gameCanvas1.getPulleyPos(),
+                gameCanvas1.getFluidPos(), gameCanvas1.getLinesPos(), 
                 gameCanvas1.getPlayersPos(), gameCanvas1.getFlag());
         try {
           File file = new File("level.json");
@@ -475,6 +500,14 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
         gameCanvas1.mode = DrawMode.ONEWAY_WALL;
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        gameCanvas1.mode = DrawMode.PULLEY;
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        gameCanvas1.mode = DrawMode.FLUID;
+    }//GEN-LAST:event_jButton7ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Flag;
     private javax.swing.JButton activateApple;
@@ -487,6 +520,8 @@ private void activateAppleActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jScrollInternalPanel;

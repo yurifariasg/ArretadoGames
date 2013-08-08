@@ -8,9 +8,11 @@ package com.arretados.leveleditor;
 import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
+import com.arretados.leveleditor.entities.Fluid;
 import com.arretados.leveleditor.entities.Fruit;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
+import com.arretados.leveleditor.entities.Pulley;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -30,6 +32,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     private List<Fruit> fruitPos = new ArrayList<Fruit>();
     private List<Coin> coinPos = new ArrayList<Coin>();
     private List<OneWayWall> oneWayPos = new ArrayList<OneWayWall>();
+    private List<Pulley> pulleyPos = new ArrayList<Pulley>();
+    private List<Fluid> fluidPos = new ArrayList<Fluid>();
     private List<Player> playerPos = new ArrayList<Player>();
     private List<int[]> groundPos = new ArrayList<int[]>();
     public DrawMode mode = DrawMode.BOX;
@@ -45,25 +49,26 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        for (int i = 0; i < playerPos.size(); i++){
+        for (int i = 0; i < playerPos.size(); i++)
             playerPos.get(i).drawMyself(g);
-        }
         
-        for (int i = 0; i < boxPos.size(); i++){
+        for (int i = 0; i < boxPos.size(); i++)
             boxPos.get(i).drawMyself(g);
-        }
 
-        for (int i = 0; i < fruitPos.size(); i++){
+        for (int i = 0; i < fruitPos.size(); i++)
             fruitPos.get(i).drawMyself(g);
-        }
         
-        for (int i = 0; i < oneWayPos.size(); i++){
+        for (int i = 0; i < oneWayPos.size(); i++)
             oneWayPos.get(i).drawMyself(g);
-        }
         
-        for (int i = 0; i < coinPos.size(); i++){
+        for (int i = 0; i < pulleyPos.size(); i++)
+            pulleyPos.get(i).drawMyself(g);
+        
+        for (int i = 0; i < fluidPos.size(); i++)
+            fluidPos.get(i).drawMyself(g);
+
+        for (int i = 0; i < coinPos.size(); i++)
             coinPos.get(i).drawMyself(g);
-        }
         
         if (flag != null)
             flag.drawMyself(g);
@@ -91,8 +96,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         repaint();
     }
 
-    public void drawBox(int x,int y){
-        boxPos.add(new Box(x, y, 60));
+    public void drawBox(int x, int y, int size){
+        boxPos.add(new Box(x, y, size));
         repaint();
     }
     
@@ -108,6 +113,16 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     
     public void drawOneWay(int x, int y){
         oneWayPos.add(new OneWayWall(x, y, 100));
+        repaint();
+    }
+    
+    public void drawPulley(int x, int y, int size){
+        pulleyPos.add(new Pulley(x, y, size));
+        repaint();
+    }
+    
+    public void drawFluid(int x, int y, int size){
+        fluidPos.add(new Fluid(x, y, size));
         repaint();
     }
     
@@ -149,6 +164,14 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         return oneWayPos;
     }
     
+    public List<Pulley> getPulleyPos(){
+        return pulleyPos;
+    }
+    
+    public List<Fluid> getFluidPos(){
+        return fluidPos;
+    }
+    
     public List<int[]> getLinesPos(){
         return groundPos;
     }
@@ -161,7 +184,9 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         this.groundPos = new ArrayList<int[]>();
         this.fruitPos = new ArrayList<Fruit>();
         this.coinPos = new ArrayList<Coin>();
+        this.pulleyPos = new ArrayList<Pulley>();
         this.oneWayPos = new ArrayList<OneWayWall>();
+        this.fluidPos = new ArrayList<Fluid>();
         this.boxPos = new ArrayList<Box>();
         this.playerPos = new ArrayList<Player>();
         this.flag = null;
@@ -172,7 +197,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         switch (mode) {
             
             case BOX:
-                drawBox(e.getX(), e.getY());
+                drawBox(e.getX(), e.getY(), 60);
             break;
 
             case FRUIT:
@@ -185,6 +210,14 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 
             case ONEWAY_WALL:
                 drawOneWay(e.getX(), e.getY());
+            break;
+                
+            case PULLEY:
+                drawPulley(e.getX(), e.getY(), 100);
+            break;
+                
+            case FLUID:
+                drawFluid(e.getX(), e.getY(), 100);
             break;
 
             case LINE:
@@ -240,6 +273,18 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 repaint();
             break;
                 
+            case PULLEY:
+                pulleyPos.get(pulleyPos.size()-1).setX(e.getX());
+                pulleyPos.get(pulleyPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+            
+            case FLUID:
+                fluidPos.get(fluidPos.size()-1).setX(e.getX());
+                fluidPos.get(fluidPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+                
             case PLAYER:
                 playerPos.get(playerPos.size()-1).setX(e.getX());
                 playerPos.get(playerPos.size()-1).setY(e.getY());
@@ -262,7 +307,6 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
 
     public void mouseMoved(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
