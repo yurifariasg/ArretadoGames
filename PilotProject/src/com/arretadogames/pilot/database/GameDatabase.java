@@ -84,7 +84,7 @@ public class GameDatabase {
 		values.put(KEY_LEVEL_ID, levelId);
         values.put(BEST_LEVEL_TIME, time);
         values.put(BEST_LEVEL_TIME_PLAYER, playerId );
-        db.insertWithOnConflict(LEVEL_TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+//        db.insertWithOnConflict(LEVEL_TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         System.out.println("SETOU O BEST TIME? "+db.insertWithOnConflict(LEVEL_TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE));
 	}
 
