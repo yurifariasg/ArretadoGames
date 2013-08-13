@@ -31,10 +31,6 @@ public class GameActivity extends Activity implements OnTouchListener {
 		FontLoader.create(context); // Create the FontLoader
 		GameDatabase.createDatabase(getApplicationContext());
 		Game.getInstance(); // Create Game
-		
-		renderingSurface = new GameGLSurfaceView(this);
-		renderingSurface.init();
-		setContentView(renderingSurface);
 	}
 	
 	@Override
@@ -52,7 +48,8 @@ public class GameActivity extends Activity implements OnTouchListener {
 		// TODO Handles the Resume Operation into Activity
 		// http://developer.android.com/reference/android/app/Activity.html
 		super.onResume();
-//		((GLSurfaceView) renderingSurface).onResume();
+		
+		// Creates a new
 		renderingSurface = new GameGLSurfaceView(this);
 		renderingSurface.init();
 		Game.getInstance().onResume();

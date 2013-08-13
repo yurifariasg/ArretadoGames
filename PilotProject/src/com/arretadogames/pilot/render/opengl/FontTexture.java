@@ -44,15 +44,12 @@ public class FontTexture {
 
 	private GLImage spriteData;
 
-	public FontTexture(Typeface tf) {
+	public FontTexture(Typeface tf, GL10 gl) {
 		this.tf = tf;
+		createTexture(gl);
 	}
 	
 	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb, boolean centered) {
-		
-		if (spriteData == null)  {// Not created
-			createTexture(gl);
-		}
 		
 		// Draw text centred at x,y
 		// Get width of text
@@ -232,6 +229,10 @@ public class FontTexture {
 
 		// Add dimensional info to spritedata
 		spriteData.setDimensions(textureSize, textureSize);
+	}
+
+	public int getGLId() {
+		return spriteData.getTextureID();
 	}
 	
 }

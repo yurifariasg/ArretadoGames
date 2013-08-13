@@ -42,8 +42,6 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		paintBitmap.setAntiAlias(true);
 	}
 	
-	
-	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.fillScreen(255, 0, 0, 0);

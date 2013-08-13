@@ -19,19 +19,34 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.opengl.GLES11;
 import android.opengl.GLUtils;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.loading.ImageLoader;
+import com.arretadogames.pilot.loading.LoadableGLObject;
+import com.arretadogames.pilot.loading.LoadableType;
+import com.arretadogames.pilot.loading.LoadManager.LoadFinisherCallBack;
 
 public class GLCanvas {
 	
+	// OpenGLES1.0 Interface
 	private GL10 gl;
+	
+	// SparseArray = HashMap<int, GLImage> - DrawableID -> GLImage
 	private SparseArray<GLImage> textures = new SparseArray<GLImage>();
+	
+	// TypeFace = Font Properties - TypeFace -> FontTexture
 	private HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
 	
-	private Rect arbritaryRect = new Rect();
+	// Rect to be used to store drawing calculations
+	private Rect auxiliaryRect = new Rect();
+	
+	// Pixel/Meters Ratio
 	public static float physicsRatio = 25;
+	
+	// Bottom-most Y coordinate position that the ground will have, in meters
+	private final float GROUND_BOTTOM = -10;
 	
 	public void setGLInterface(GL10 gl) {
 		this.gl = gl;
@@ -49,15 +64,9 @@ public class GLCanvas {
 		// Rotate world by 180 around x axis so positive y is down (like canvas)
 		GLES11.glRotatef(-180, 1, 0, 0);
 		
+		// Fills the screen with black
 		fillScreen(255, 0, 0, 0);
-		
-		/* OpenGL 2.0 */
-		// Clears the screen and depth buffer.
-//		GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		// Replace the current matrix with the identity matrix
-//		GLES20.gl
-		// Rotate world by 180 around x axis so positive y is down (like canvas)
-//		GLES20.glRotatef(-180, 1, 0, 0);
+
 		return true;
 	}
 
@@ -79,10 +88,10 @@ public class GLCanvas {
 	}
 
 	public void drawDebugRect(int x, int y, int x2, int y2) {
-		arbritaryRect.left = x;
-		arbritaryRect.top = y;
-		arbritaryRect.right = x2;
-		arbritaryRect.bottom = y2;
+		auxiliaryRect.left = x;
+		auxiliaryRect.top = y;
+		auxiliaryRect.right = x2;
+		auxiliaryRect.bottom = y2;
 		
 		GLRect.draw(gl, x, y, x2, y2, Color.RED);
 	}
@@ -95,16 +104,14 @@ public class GLCanvas {
 	
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength, int color) {
-		arbritaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
-		arbritaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
-		arbritaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
-		arbritaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
+		auxiliaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
+		auxiliaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
+		auxiliaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
+		auxiliaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
 		
-		GLRect.draw(gl, arbritaryRect.left, arbritaryRect.top, arbritaryRect.right,
-				arbritaryRect.bottom, color);
+		GLRect.draw(gl, auxiliaryRect.left, auxiliaryRect.top, auxiliaryRect.right,
+				auxiliaryRect.bottom, color);
 	}
-	
-	private final float GROUND_BOTTOM = -10; // FIXME : Check this
 	
 	public void drawPhysicsLines(Vec2[] lines) {
 		
@@ -133,7 +140,7 @@ public class GLCanvas {
     	squareCoords[3 + 3 * (vertices.length + 1) + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
     	squareCoords[3 + 3 * (vertices.length + 1) + 2] = 0.0f;
     	
-    	short[] drawOrder = new short[12]; // FIXME : fix this shit...
+    	short[] drawOrder = new short[12]; // FIXME : refactor this method
     	int i = 0;
     	drawOrder[i++] = 0;
     	drawOrder[i++] = 1;
@@ -187,15 +194,18 @@ public class GLCanvas {
 	}
 
 	public void drawText(String text, float x, float y, Paint p, boolean centered) {
-		if (fontTextures.get(p.getTypeface()) == null)
-			createFont(p.getTypeface());
+		if (fontTextures.get(p.getTypeface()) == null) {
+			Log.e("GLCanvas", "Font not loaded when drawing (\"" + text + "\")");
+			loadFont(p.getTypeface());
+		}
 		
 		fontTextures.get(p.getTypeface()).drawText(gl, text, (int) x, (int) y, p.getTextSize(), p.getColor(), centered);
 	}
 
-	private void createFont(Typeface typeface) {
-		FontTexture fontTexture = new FontTexture(typeface);
+	private int loadFont(Typeface typeface) {
+		FontTexture fontTexture = new FontTexture(typeface, gl);
 		fontTextures.put(typeface, fontTexture);
+		return fontTexture.getGLId();
 	}
 
 	public void fillScreen(float a, float r, float g, float b) {
@@ -209,22 +219,25 @@ public class GLCanvas {
 	public void drawBitmap(int imageId, float x, float y) {
 		saveState();
 		translate(x, y);
-		if (textures.get(imageId) == null)
+		if (textures.get(imageId) == null) {
 			loadImage(imageId);
+			Log.e("GLCanvas", "Texture not loaded");
+		}
 		
-		if (textures.get(imageId) == null)
-			loadImage(imageId);
 		GLImage texture = textures.get(imageId);
 		GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
 		restoreState();
 	}
 	
 	public void drawBitmap(int imageId, float x, float y, Paint paint) {
+		if (textures.get(imageId) == null) {
+			loadImage(imageId);
+			Log.e("GLCanvas", "Texture not loaded");
+		}
 		saveState();
 		GLES11.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
 		translate(x, y);
 
-		if (textures.get(imageId) == null)
 			loadImage(imageId);
 		
 		GLImage texture = textures.get(imageId);
@@ -239,18 +252,18 @@ public class GLCanvas {
 		GLES11.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
-			arbritaryRect.left = (int) (dstRect.left * physicsRatio);
-			arbritaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
-			arbritaryRect.right = (int) (dstRect.right * physicsRatio);
-			arbritaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
+			auxiliaryRect.left = (int) (dstRect.left * physicsRatio);
+			auxiliaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
+			auxiliaryRect.right = (int) (dstRect.right * physicsRatio);
+			auxiliaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
 		} else {
-			arbritaryRect.left = (int) dstRect.left;
-			arbritaryRect.top = (int) dstRect.top;
-			arbritaryRect.right = (int) dstRect.right;
-			arbritaryRect.bottom = (int) dstRect.bottom;
+			auxiliaryRect.left = (int) dstRect.left;
+			auxiliaryRect.top = (int) dstRect.top;
+			auxiliaryRect.right = (int) dstRect.right;
+			auxiliaryRect.bottom = (int) dstRect.bottom;
 		}
 		
-		GLTexture.draw(gl, srcRect, arbritaryRect, tex);
+		GLTexture.draw(gl, srcRect, auxiliaryRect, tex);
 	}
 
 	
@@ -266,13 +279,13 @@ public class GLCanvas {
 	}
 
 	
-	public void loadImage(int imageId) {
+	public int loadImage(int imageId) {
 		// Get bitmap
 		Bitmap bitmap = ImageLoader.loadImage(imageId);
-		loadImage(imageId, bitmap);
+		return loadImage(imageId, bitmap);
 	}
 	
-	private void loadImage(int imageId, Bitmap bitmapToLoad) { /* We also load Bitmaps in FontTexture */
+	private int loadImage(int imageId, Bitmap bitmapToLoad) { /* We also load Bitmaps in FontTexture */
 		IntBuffer t = IntBuffer.allocate(1);
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
@@ -301,6 +314,7 @@ public class GLCanvas {
 		// Add dimensional info to spritedata
 		texture.setDimensions(bitmapToLoad.getWidth(), bitmapToLoad.getHeight());
 		textures.append(imageId, texture);
+		return texture_id;
 	}
 	
 	public void recycleImage(int imageId) {
@@ -311,4 +325,17 @@ public class GLCanvas {
 		GLES11.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
 
+	public void removeTextures(int[] glIds) {
+		GLES11.glDeleteTextures(glIds.length, glIds, 0);
+	}
+	
+	public void loadObject(LoadableGLObject object) {
+		
+		if (object.getType().equals(LoadableType.TEXTURE)) {
+			object.setGLId(loadImage(object.getId()));
+		} else if (object.getType().equals(LoadableType.FONT)) {
+			object.setGLId(loadFont((Typeface) object.getData()));
+		}
+		
+	}
 }

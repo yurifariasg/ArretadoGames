@@ -2,6 +2,7 @@ package com.arretadogames.pilot.screens;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.screens.MainMenuScreen.State;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
@@ -60,5 +61,7 @@ public class SettingsScreen extends GameScreen implements GameButtonListener {
 
 	@Override
 	public void onClick(int buttonId) {
+		if (buttonId == BACK_BUTTON)
+			mainMenu.setState(State.MAIN);
 	}
 }

@@ -11,14 +11,15 @@ import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenCallback;
 
 import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.screens.CharacterSelectionScreen;
 import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.LevelSelectionScreen;
 import com.arretadogames.pilot.screens.MainMenuScreen;
-import com.arretadogames.pilot.screens.CharacterSelectionScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
@@ -27,7 +28,7 @@ import com.arretadogames.pilot.world.GameWorld;
  * Game class represents our Game.
  * This entity should hold all information related to <b>Game Logic</b>
  */
-public class Game implements TweenAccessor<Game> {
+public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBack {
 	
 	private static final int LEFT = 1;
 	private static final int RIGHT = 2;
@@ -43,11 +44,15 @@ public class Game implements TweenAccessor<Game> {
 	
 	private boolean resetWorld;
 	
+	private LoadManager loadManager;
+	private GameState nextState;
+	
 	/**
 	 * Creates a Game
 	 */
 	private Game() {
 		currentState = GameState.SPLASH;
+		loadManager = LoadManager.getInstance();
 		gameScreens = new HashMap<GameState, GameScreen>();
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen());
@@ -81,7 +86,12 @@ public class Game implements TweenAccessor<Game> {
 		
 		AnimationManager.getInstance().update(timeElapsed);
 		
-		getScreen(currentState).render(canvas, timeElapsed);
+		if (currentState.equals(GameState.LOADING)) {
+			loadManager.swapTextures(game, canvas);
+			return;
+		} else {
+			getScreen(currentState).render(canvas, timeElapsed);
+		}
 		
 		if (transitionStateOn) {
 			canvas.drawRect(transitionRect.left, transitionRect.top,
@@ -104,7 +114,8 @@ public class Game implements TweenAccessor<Game> {
 			resetWorld = false;
 		}
 		
-		gameScreens.get(currentState).step(timeElapsed);
+		if (!currentState.equals(GameState.LOADING))
+			gameScreens.get(currentState).step(timeElapsed);
 	}
 
 	/**
@@ -127,7 +138,8 @@ public class Game implements TweenAccessor<Game> {
 	 *            new game's current state
 	 */
 	public void goTo(GameState state) {
-		startTransitionAnimation(state);
+		nextState = state;
+		startTransitionAnimation();
 	}
 	
 	
@@ -175,30 +187,23 @@ public class Game implements TweenAccessor<Game> {
 	}
 	
 	/*
-	 * (Synchronous method) Starts the transition to the given GameState
+	 * (Synchronous method) Starts the transition to the next state
 	 */
-	private void startTransitionAnimation(final GameState state) {
+	private void startTransitionAnimation() {
 		transitionStateOn = true;
 		
 		transitionRect = new Rect(
 				(int) DisplaySettings.TARGET_WIDTH, 0,
 				(int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
 		
+		final Game game = this; // helper variable to use with Tween
 		Timeline.createSequence()
 				.push(Tween.to(this, LEFT, 0.4f).target(0f))
 				.push(Tween.call(new TweenCallback() {
 					
 					@Override
 					public void onEvent(int arg0, BaseTween<?> arg1) {
-						changeState(state);
-					}
-				}))
-				.push(Tween.to(this, RIGHT, 0.4f).target(0f))
-				.push(Tween.call(new TweenCallback() {
-					
-					@Override
-					public void onEvent(int arg0, BaseTween<?> arg1) {
-						transitionStateOn = false;
+						changeState(GameState.LOADING);
 					}
 				}))
 				.start(AnimationManager.getInstance());
@@ -225,5 +230,27 @@ public class Game implements TweenAccessor<Game> {
 	 * (Asynchronous method) Causes the Game to resume
 	 */
 	public void onResume() {
+	}
+
+	@Override
+	public void onLoadFinished(boolean error) { // TODO @yuri: Handle error
+		Timeline.createSequence()
+			.push(Tween.call(new TweenCallback() {
+			
+			@Override
+			public void onEvent(int arg0, BaseTween<?> arg1) {
+				changeState(nextState);
+				nextState = null;
+			}
+		}))
+		.push(Tween.to(game, RIGHT, 0.4f).target(0f))
+		.push(Tween.call(new TweenCallback() {
+			
+			@Override
+			public void onEvent(int arg0, BaseTween<?> arg1) {
+				transitionStateOn = false;
+			}
+		}))
+		.start(AnimationManager.getInstance());
 	}
 }
