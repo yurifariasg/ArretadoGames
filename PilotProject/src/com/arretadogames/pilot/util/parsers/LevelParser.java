@@ -30,40 +30,26 @@ public class LevelParser {
 				// Convert jsonEntity to EntityDescriptor
 				String entityType = jsonEntity.getString("type");
 				EntityDescriptor entity;
-				if (EntityType.BOX.toString().equals(entityType)) {
-					// is it a box ?
+				
+				if (EntityType.BOX.toString().equals(entityType)) { // BOX
+					
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.BOX, (float) jsonEntity.getDouble("size"));
-				} else if (EntityType.FRUIT.toString().equals(entityType)) {
-					// is it a fruit ?
-					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
-							(float) jsonEntity.getDouble("y"),
-							EntityType.FRUIT, (float) jsonEntity.getDouble("size"));
-				} else if (EntityType.FINALFLAG.toString().equals(entityType)) {
-					// is it a finalflag ?
-					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
-							(float) jsonEntity.getDouble("y"),
-							EntityType.FINALFLAG);
-				} else if (EntityType.COIN.toString().equals(entityType)) {
-					// is it a coin ?
+					
+				} else if (EntityType.COIN.toString().equals(entityType)) { // COIN
+					
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.COIN);
-				} else if (EntityType.BREAKABLE.toString().equals(entityType)) {
-
+					
+				} else if (EntityType.FRUIT.toString().equals(entityType)) { // FRUIT
+					
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
-							EntityType.BREAKABLE);
+							EntityType.FRUIT, (float) jsonEntity.getDouble("size"));
 					
-				} else if (EntityType.PULLEY.toString().equals(entityType)) {
-
-					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
-							(float) jsonEntity.getDouble("y"),
-							EntityType.PULLEY);
-					
-				} else if (EntityType.PLAYER.toString().equals(entityType)) {
-					// is it a player ?
+				} else if (EntityType.PLAYER.toString().equals(entityType)) { // PLAYER
 					PlayerNumber pNumber;
 					int pNumberInt = jsonEntity.getInt("number");
 					switch (pNumberInt) {
@@ -82,8 +68,38 @@ public class LevelParser {
 							(float) jsonEntity.getDouble("y"),
 							EntityType.PLAYER, pNumber);
 					
-				} else {
-					// Entity not defined
+				} else if (EntityType.ONEWAY_WALL.toString().equals(entityType)){ // ONEWAY_WALL
+					
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.ONEWAY_WALL);
+				
+				} else if (EntityType.PULLEY.toString().equals(entityType)) { // PULLEY
+
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.PULLEY);
+
+//TODO					
+/*				} else if (EntityType.FLUID.toString().equals(entityType)) { // FLUID
+
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.FLUID);*/
+					
+				} else if (EntityType.BREAKABLE.toString().equals(entityType)) { // BREAKABLE
+
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.BREAKABLE);
+					
+				} else if (EntityType.FINALFLAG.toString().equals(entityType)) { // FINAL FLAG
+					
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.FINALFLAG);
+					
+				} else {		// Entity not defined
 					Log.e("LevelDescriptor.jsonParse()", "Entity " + entityType + " not defined");
 					continue;
 				}

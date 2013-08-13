@@ -23,6 +23,7 @@ import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.LoboGuara;
+import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -107,44 +108,58 @@ public class GameWorld extends GameScreen {
 		b.setSprite(sm.getSprite(b));
 		worldEntities.add(a);
 		worldEntities.add(b);
-//		worldEntities.add(new Pulley(a, new Vec2(26,6.3f), b, new Vec2(32,6.5f), new Vec2(28,7f), new Vec2(32,8.5f), 5));
+		worldEntities.add(new Pulley(a, new Vec2(26,6.3f), b, new Vec2(32,6.5f), new Vec2(28,7f), new Vec2(32,8.5f), 5));
 		List<EntityDescriptor> entities = ld.getEntities();
-		for (EntityDescriptor entityDescriptor : entities) {
-			Entity entity = null;
-			switch (entityDescriptor.getType()) {
-			case BOX:
-				entity = new Box(entityDescriptor.getX(), entityDescriptor.getY(),
-						entityDescriptor.getSize());
-				break;
-			case FRUIT:
-				entity = new Fruit(entityDescriptor.getX(), entityDescriptor.getY(),
-						entityDescriptor.getSize());
-				break;
-			case PULLEY:
-				entity = new Pulley(a, new Vec2(entityDescriptor.getX(), 6.3f), b, new Vec2(entityDescriptor.getX()+6, 6.5f), new Vec2(entityDescriptor.getX()+2, 7f), new Vec2(entityDescriptor.getX()+6, 8.5f), 5);
-				break;
-			case BREAKABLE:
-				entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,2f,0,false);
-				break;
-			case PLAYER:
-				entity = createPlayerCharacter(entityDescriptor.getX(), entityDescriptor.getY(),
-						((PlayerDescriptor)entityDescriptor).getPlayerNumber());
-				break;
-			case FINALFLAG:
-				entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
-				break;
-			case COIN:
-				entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
-				break;
-			default:
-				break;
-			}
-			
-			if (entity != null) {
-				entity.setSprite(sm.getSprite(entity));
-				worldEntities.add(entity);
-				if (entity.getType() == EntityType.PLAYER)
-					players.put(((Player)entity).getNumber(), (Player) entity);
+		
+		if (entities != null){
+			for (EntityDescriptor entityDescriptor : entities) {
+				Entity entity = null;
+				switch (entityDescriptor.getType()) {
+				case BOX:
+					entity = new Box(entityDescriptor.getX(), entityDescriptor.getY(),
+							entityDescriptor.getSize());
+					break;
+				case COIN:
+					entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
+					break;
+				case FRUIT:
+					entity = new Fruit(entityDescriptor.getX(), entityDescriptor.getY(),
+							entityDescriptor.getSize());
+					break;
+				case PLAYER:
+					entity = createPlayerCharacter(entityDescriptor.getX(), entityDescriptor.getY(),
+							((PlayerDescriptor)entityDescriptor).getPlayerNumber());
+					break;
+				case ONEWAY_WALL:
+					entity = new OneWayWall(entityDescriptor.getX(), entityDescriptor.getY());
+					break;
+				case PULLEY:
+					entity = new Pulley(a, 
+							new Vec2(entityDescriptor.getX(), 6.3f), b,
+							new Vec2(entityDescriptor.getX()+6, 6.5f),
+							new Vec2(entityDescriptor.getX()+2, 7f),
+							new Vec2(entityDescriptor.getX()+6, 8.5f), 5);
+					break;
+/*TODO
+ * 				case FLUID:
+					entity = new Fluid(entityDescriptor.getX(), entityDescriptor.getY(), entityDescriptor.getSize());
+					break;*/
+				case BREAKABLE:
+					entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,2f,0,false);
+					break;
+				case FINALFLAG:
+					entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
+					break;
+				default:
+					break;
+				}
+				
+				if (entity != null) {
+					entity.setSprite(sm.getSprite(entity));
+					worldEntities.add(entity);
+					if (entity.getType() == EntityType.PLAYER)
+						players.put(((Player)entity).getNumber(), (Player) entity);
+				}
 			}
 		}
 		
