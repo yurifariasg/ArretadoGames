@@ -211,7 +211,7 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 			canvas.saveState();
 			canvas.scale(zoom, zoom, drawRect.centerX(), drawRect.centerY());
 			canvas.drawBitmap(R.drawable.bt_level_selector, drawRect, false);
-			canvas.drawText(String.valueOf(index), drawRect.centerX(),
+			canvas.drawText(String.valueOf(index+1), drawRect.centerX(),
 					drawRect.centerY(), textPaint, true);
 			canvas.restoreState();
 			
@@ -222,10 +222,10 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 						(bestCoins == -1 ? "?" : String.valueOf(bestCoins)), drawRect.centerX(),
 						drawRect.centerY() + 130, textPaint, true);
 				
-				int bestTime = levels.get(currentIndex).getBestTime();
+				/*int bestTime = levels.get(currentIndex).getBestTime();
 				canvas.drawText("Time: " +
 						(bestTime == -1 ? "?" : String.valueOf(bestTime)), drawRect.centerX(),
-						drawRect.centerY() + 160, textPaint, true);
+						drawRect.centerY() + 160, textPaint, true);*/
 			}
 		}
 	}

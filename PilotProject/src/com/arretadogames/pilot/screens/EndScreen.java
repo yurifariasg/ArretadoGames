@@ -72,19 +72,6 @@ public class EndScreen extends GameScreen {
 		Player p1 = players.get(PlayerNumber.ONE);
 		Player p2 = players.get(PlayerNumber.TWO);
 		
-		//Setando melhor tempo
-		if (p1.getTimeFinished() > 0 && p1.getTimeFinished() < p2.getTimeFinished()){
-			if (ld.getBestTime() > p1.getTimeFinished()){
-				ld.setBestTime(p1.getCoins());
-				GameDatabase.getInstance().setBestTime(p1.getTimeFinished(), ld.getId(), 1/*p1.getId()*/);				
-			}
-		}else if (p2.getTimeFinished() > 0 && p2.getTimeFinished() < p1.getTimeFinished()){
-			if (ld.getBestTime() > p2.getTimeFinished()){
-				ld.setBestTime(p2.getCoins());
-				GameDatabase.getInstance().setBestTime(p2.getTimeFinished(), ld.getId(), 2/*p1.getId()*/);				
-			}
-		}		
-		
 		//Setando melhor quantia de moedas
 		if (p2.getCoins() < p1.getCoins()){
 			if (ld.getBestCoins() < p1.getCoins()){
@@ -101,7 +88,6 @@ public class EndScreen extends GameScreen {
 		
 		initializePlayerInfo(130, p1);
 		initializePlayerInfo(680, p2);
-		
 	}
 
 	private void initializePlayerInfo(int x, Player player) {

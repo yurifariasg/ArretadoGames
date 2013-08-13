@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.database;
 
+import com.arretadogames.pilot.levels.LevelTable;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,9 +16,9 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 		    GameDatabase.LEVEL_TABLE_NAME + " (" +
 			GameDatabase.KEY_LEVEL_ID + " INTEGER PRIMARY KEY, " +
 			GameDatabase.BEST_LEVEL_COINS + " INTEGER, " +
-			GameDatabase.BEST_LEVEL_TIME + " INTEGER, " +
+//			GameDatabase.BEST_LEVEL_TIME + " INTEGER, " +
 			GameDatabase.BEST_LEVEL_COINS_PLAYER + " INTEGER, " +
-			GameDatabase.BEST_LEVEL_TIME_PLAYER + " INTEGER, " +
+//			GameDatabase.BEST_LEVEL_TIME_PLAYER + " INTEGER, " +
 			
 //			FOREIGN KEY(id_categoria) REFERENCES PLAYER(id_categoria)  
 			
@@ -32,14 +34,15 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
         
         ContentValues values = new ContentValues();
         
-        values.put(GameDatabase.KEY_LEVEL_ID, 0);
-        values.put(GameDatabase.BEST_LEVEL_COINS, -1);
-        values.put(GameDatabase.BEST_LEVEL_TIME, -1);
-        values.put(GameDatabase.BEST_LEVEL_COINS_PLAYER, 1);
-        values.put(GameDatabase.BEST_LEVEL_TIME_PLAYER, 1);        
-        values.put(GameDatabase.LEVEL_ENABLED, true);        
-        
-        db.insert(GameDatabase.LEVEL_TABLE_NAME, null, values);
+        for(int i = 0; i < LevelTable.LEVELS.length; i++){
+	        values.put(GameDatabase.KEY_LEVEL_ID, i);
+	        values.put(GameDatabase.BEST_LEVEL_COINS, -1);
+	        values.put(GameDatabase.BEST_LEVEL_COINS_PLAYER, 1); //Bug esta aqui! qual player tem a melhor pontuacao?        
+	        values.put(GameDatabase.LEVEL_ENABLED, true);
+	        db.insert(GameDatabase.LEVEL_TABLE_NAME, null, values);
+	        
+	        values.clear();
+	    }
     }
 
     @Override
