@@ -3,7 +3,8 @@ package com.arretadogames.pilot.entities;
 public enum EntityType {
 	
 	BOX("box"), FRUIT("fruit"),	GROUND("ground"), PLAYER("player"), FIRE("fire"),
-	FINALFLAG("finalflag"), COIN("coin");
+	PULLEY("pulley"), ONEWAY_WALL("oneway_wall"), FINALFLAG("finalflag"),
+	COIN("coin"), FLUID("fluid"), BREAKABLE("breakable");
 	
 	private String name;
 	

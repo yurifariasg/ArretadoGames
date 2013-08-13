@@ -6,6 +6,7 @@ package com.arretados.leveleditor.parsers;
 
 import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.Breakable;
 import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fluid;
@@ -32,19 +33,22 @@ public class JSONGenerator {
     private List<OneWayWall> oneWays;
     private List<Pulley> pulleys;
     private List<Fluid> fluids;
+    private List<Breakable> breakables;
     private List<int[]> groundLines;
     private List<Player> players;
     private Flag flag;
 
     public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<Coin> coins,
             List<OneWayWall> oneWays, List<Pulley> pulleys, List<Fluid> fluids,
-            List<int[]> groundLines, List<Player> players, Flag flag) {
+            List<Breakable> breakables, List<int[]> groundLines,
+            List<Player> players, Flag flag) {
         this.boxes = boxes;
         this.fruits = fruits;
         this.coins = coins;
         this.oneWays = oneWays;
         this.pulleys = pulleys;
         this.fluids = fluids;
+        this.breakables = breakables;
         this.groundLines = groundLines;
         this.players = players;
         this.flag = flag;
@@ -62,6 +66,7 @@ public class JSONGenerator {
         final String TYPE_ONEWAY_WALL = "oneway_wall";
         final String TYPE_PULLEY = "pulley";
         final String TYPE_FLUID = "fluid";
+        final String TYPE_BREAKABLE = "breakable";
         final String TYPE_PLAYER = "player";
         final String TYPE_FLAG = "finalflag";
         
@@ -138,6 +143,16 @@ public class JSONGenerator {
             jObj.put("x", Utils.convertPixelToMeter(fluids.get(i).getX()));
             jObj.put("y", 10-Utils.convertPixelToMeter(fluids.get(i).getY()));
             jObj.put("size", Utils.convertPixelToMeter(fluids.get(i).getSize()));
+            
+            jArrayEntities.add(jObj);
+        }
+        
+        for (int i = 0; i < breakables.size(); i++){
+            
+            JSONObject jObj = new JSONObject();
+            jObj.put("type", TYPE_BREAKABLE);
+            jObj.put("x", Utils.convertPixelToMeter(breakables.get(i).getX()));
+            jObj.put("y", 10-Utils.convertPixelToMeter(breakables.get(i).getY()));
             
             jArrayEntities.add(jObj);
         }

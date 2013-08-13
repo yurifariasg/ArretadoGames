@@ -6,6 +6,7 @@
 package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.Breakable;
 import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fluid;
@@ -34,6 +35,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     private List<OneWayWall> oneWayPos = new ArrayList<OneWayWall>();
     private List<Pulley> pulleyPos = new ArrayList<Pulley>();
     private List<Fluid> fluidPos = new ArrayList<Fluid>();
+    private List<Breakable> breakablePos = new ArrayList<Breakable>();
     private List<Player> playerPos = new ArrayList<Player>();
     private List<int[]> groundPos = new ArrayList<int[]>();
     public DrawMode mode = DrawMode.BOX;
@@ -66,6 +68,9 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         
         for (int i = 0; i < fluidPos.size(); i++)
             fluidPos.get(i).drawMyself(g);
+        
+        for (int i = 0; i < breakablePos.size(); i++)
+            breakablePos.get(i).drawMyself(g);
 
         for (int i = 0; i < coinPos.size(); i++)
             coinPos.get(i).drawMyself(g);
@@ -126,6 +131,11 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         repaint();
     }
     
+    public void drawBreakable(int x, int y){
+        breakablePos.add(new Breakable(x, y));
+        repaint();
+    }
+    
     public void drawGroundLine(int x,int y){
         int lastPointX = 0;
         
@@ -172,6 +182,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         return fluidPos;
     }
     
+    public List<Breakable> getBreakablePos(){
+        return breakablePos;
+    }
+    
     public List<int[]> getLinesPos(){
         return groundPos;
     }
@@ -187,6 +201,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         this.pulleyPos = new ArrayList<Pulley>();
         this.oneWayPos = new ArrayList<OneWayWall>();
         this.fluidPos = new ArrayList<Fluid>();
+        this.breakablePos = new ArrayList<Breakable>();
         this.boxPos = new ArrayList<Box>();
         this.playerPos = new ArrayList<Player>();
         this.flag = null;
@@ -218,6 +233,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 
             case FLUID:
                 drawFluid(e.getX(), e.getY(), 100);
+            break;
+                
+            case BREAKABLE:
+                drawBreakable(e.getX(), e.getY());
             break;
 
             case LINE:
@@ -282,6 +301,12 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             case FLUID:
                 fluidPos.get(fluidPos.size()-1).setX(e.getX());
                 fluidPos.get(fluidPos.size()-1).setY(e.getY());
+                repaint();
+            break;
+                
+            case BREAKABLE:
+                breakablePos.get(breakablePos.size()-1).setX(e.getX());
+                breakablePos.get(breakablePos.size()-1).setY(e.getY());
                 repaint();
             break;
                 

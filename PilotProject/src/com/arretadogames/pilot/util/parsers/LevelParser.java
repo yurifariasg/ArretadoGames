@@ -41,14 +41,27 @@ public class LevelParser {
 							(float) jsonEntity.getDouble("y"),
 							EntityType.FRUIT, (float) jsonEntity.getDouble("size"));
 				} else if (EntityType.FINALFLAG.toString().equals(entityType)) {
-					// is it a fruit ?
+					// is it a finalflag ?
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.FINALFLAG);
 				} else if (EntityType.COIN.toString().equals(entityType)) {
+					// is it a coin ?
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.COIN);
+				} else if (EntityType.BREAKABLE.toString().equals(entityType)) {
+
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.BREAKABLE);
+					
+				} else if (EntityType.PULLEY.toString().equals(entityType)) {
+
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.PULLEY);
+					
 				} else if (EntityType.PLAYER.toString().equals(entityType)) {
 					// is it a player ?
 					PlayerNumber pNumber;

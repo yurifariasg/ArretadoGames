@@ -8,7 +8,6 @@ public class LevelDescriptor {
 	private GroundDescriptor groundDescriptor;
 	private int id;
 	private int bestCoins;
-	private int bestTime;
 	private boolean isEnabled;
 	
 	public int getBestCoins() {
@@ -17,14 +16,6 @@ public class LevelDescriptor {
 
 	public void setBestCoins(int bestCoins) {
 		this.bestCoins = bestCoins;
-	}
-
-	public int getBestTime() {
-		return bestTime;
-	}
-
-	public void setBestTime(int bestTime) {
-		this.bestTime = bestTime;
 	}
 
 	public boolean isEnabled() {
