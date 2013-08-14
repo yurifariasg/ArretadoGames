@@ -26,7 +26,6 @@ import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
-import com.arretadogames.pilot.loading.LoadManager.LoadFinisherCallBack;
 
 public class GLCanvas {
 	
@@ -217,37 +216,30 @@ public class GLCanvas {
 	}
 
 	public void drawBitmap(int imageId, float x, float y) {
-		saveState();
-		translate(x, y);
-		if (textures.get(imageId) == null) {
-			loadImage(imageId);
-			Log.e("GLCanvas", "Texture not loaded");
-		}
-		
-		GLImage texture = textures.get(imageId);
-		GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
-		restoreState();
+		drawBitmap(imageId, x, y, null);
 	}
 	
 	public void drawBitmap(int imageId, float x, float y, Paint paint) {
 		if (textures.get(imageId) == null) {
-			loadImage(imageId);
 			Log.e("GLCanvas", "Texture not loaded");
+			loadImage(imageId);
 		}
 		saveState();
-		GLES11.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
-		translate(x, y);
-
-			loadImage(imageId);
-		
-		GLImage texture = textures.get(imageId);
-		GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
+			if (paint != null)
+				GLES11.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
+			translate(x, y);
+	
+			GLImage texture = textures.get(imageId);
+			GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
+		restoreState();
 	}
 	
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
 			boolean convertFromPhysics) {
+		
 		if (textures.get(imageId) == null)
 			loadImage(imageId);
+		
 		GLImage tex = textures.get(imageId);
 		GLES11.glColor4f(1, 1, 1, 1);
 		
@@ -305,8 +297,6 @@ public class GLCanvas {
 		// Clamp to edge behaviour at edge of texture (repeats last pixel)
 		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
 				GL10.GL_CLAMP_TO_EDGE);
-//		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
-//				GL10.GL_CLAMP_TO_EDGE);
 
 		// Attach bitmap to current texture
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmapToLoad, 0);

@@ -25,7 +25,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	// Main Menu Screens
 	private SettingsScreen settingsScreen;
 	
-	
 	private float currentBlackAlpha;
 	private float currentZoom;
 	private State currentState;
@@ -96,14 +95,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void onClick(int buttonId) {
 		switch (buttonId) {
 		case PLAY_BUTTON:
-//			Tween.to(this, ZOOM_PROPERTY, 0.7f).target(3f).ease(Back.IN).start(AnimationManager.getInstance());
-//			Tween.to(this, BLACK_ALPHA_PROPERTY, 0.7f).target(255f).setCallback(new TweenCallback() {
-//				
-//				@Override
-//				public void onEvent(int arg0, BaseTween<?> arg1) {
-//					startGame();
-//				}
-//			}).start(AnimationManager.getInstance());
 			startGame();
 			break;
 		case SETTINGS_BUTTON:
@@ -144,6 +135,4 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public enum State {
 		MAIN, SETTINGS;
 	}
-
-
 }

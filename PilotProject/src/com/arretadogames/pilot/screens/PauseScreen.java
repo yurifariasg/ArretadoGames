@@ -25,8 +25,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	private static final int OPTIONS_BT = 2;
 	private static final int QUIT_BT = 3;
 	
-	
-	private static final float PAUSE_MENU_SIZE = 277; // 277
+	private static final float PAUSE_MENU_SIZE = 277;
 	
 	private boolean isHidden;
 	
@@ -43,7 +42,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	public PauseScreen() {
 		isHidden = true;
 		backgroundId = R.drawable.pause_menu_bg;
-		ARROW_WIDTH = ImageLoader.checkBitmapSize(R.drawable.pause_menu_bg)[0] - PAUSE_MENU_SIZE; // 
+		ARROW_WIDTH = ImageLoader.checkBitmapSize(R.drawable.pause_menu_bg)[0] - PAUSE_MENU_SIZE;
 		currentWidth = ARROW_WIDTH;
 		currentBlackAlpha = 0;
 		
@@ -118,8 +117,6 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public boolean isHidden() {

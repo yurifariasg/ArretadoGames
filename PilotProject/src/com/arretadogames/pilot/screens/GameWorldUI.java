@@ -76,11 +76,18 @@ public class GameWorldUI extends GameScreen {
 					gWorld.getPlayers().get(PlayerNumber.ONE).body.getPosition().x;
 		}
 		
-		return 100 - (int) (100 * (flagXPosition - playerFurthestDistance) / totalDistance);
+		int totalCompletion = 100 - (int) (100 * (flagXPosition - playerFurthestDistance) / totalDistance);
+		
+		if (totalCompletion < 0)
+			totalCompletion = 0;
+		if (totalCompletion > 100)
+			totalCompletion = 100;
+		
+		return totalCompletion;
 	}
 
 	@Override
-	public void input(InputEventHandler event) { // FIX : Detect several inputs
+	public void input(InputEventHandler event) {
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
 			pressButtons(event.getX(), event.getY(), true);
@@ -119,7 +126,6 @@ public class GameWorldUI extends GameScreen {
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
 	}
 
 }
