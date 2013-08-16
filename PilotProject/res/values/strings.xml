@@ -1,5 +1,7 @@
 <resources>
-
     <string name="app_name">Pilot Project</string>
-
+	<string name="sign_out_button_name">Sign out</string>	
+	<string name="revoke_access_button_name">Revoke Acess</string>
+	<string name="default_status"/>
+	<string name="play">Play</string>
 </resources>
