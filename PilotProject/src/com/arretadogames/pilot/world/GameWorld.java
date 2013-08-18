@@ -98,7 +98,7 @@ public class GameWorld extends GameScreen {
 		steppables = new ArrayList<Steppable>();
 		
 		//TODO fzr direito
-//		worldEntities.add(new Fire(0,0));
+		worldEntities.add(new Fire(0,0));
 //		worldEntities.add(new Liana(25,9,23,7));
 //		worldEntities.add(new OneWayWall(30,6.5f));
 //		worldEntities.add(new Breakable(37,7.5f,0.2f,2f,0,false));
