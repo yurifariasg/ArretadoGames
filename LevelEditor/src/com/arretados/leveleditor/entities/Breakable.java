@@ -44,7 +44,7 @@ public class Breakable extends DrawableObject{
     @Override
     public void drawMyself(Graphics g) {
         g.setColor(Color.gray);
-        g.drawRect(this.x-5, this.y-25, 10, 100);
+        g.drawRect(this.x-5, this.y-100, 10, 200);
     }
     
 }

@@ -117,7 +117,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
     
     public void drawOneWay(int x, int y){
-        oneWayPos.add(new OneWayWall(x, y, 100));
+        oneWayPos.add(new OneWayWall(x, y, 300));
         repaint();
     }
     
@@ -141,10 +141,12 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         
         if (groundPos.size() > 0) {
             lastPointX = groundPos.get(groundPos.size()-1)[0];  //Gets the last point
+        }else{
+            groundPos.add(new int[]{0, y});
         }
         
         if (x >= lastPointX){  //Verify if the point that will be created comes after the last point
-            groundPos.add(new int[]{x, y});     
+            groundPos.add(new int[]{x, y}); 
         }
         repaint();
     }

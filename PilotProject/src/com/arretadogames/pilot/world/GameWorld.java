@@ -98,17 +98,18 @@ public class GameWorld extends GameScreen {
 		steppables = new ArrayList<Steppable>();
 		
 		//TODO fzr direito
-		worldEntities.add(new Fire(0,0));
+//		worldEntities.add(new Fire(0,0));
 //		worldEntities.add(new Liana(25,9,23,7));
 //		worldEntities.add(new OneWayWall(30,6.5f));
 //		worldEntities.add(new Breakable(37,7.5f,0.2f,2f,0,false));
-		Entity a = new Box(26,6.3f, 0.7f);
-		a.setSprite(sm.getSprite(a));
-		Entity b = new Box(32,7f, 1.5f);
-		b.setSprite(sm.getSprite(b));
-		worldEntities.add(a);
-		worldEntities.add(b);
-		worldEntities.add(new Pulley(a, new Vec2(26,6.3f), b, new Vec2(32,6.5f), new Vec2(28,7f), new Vec2(32,8.5f), 5));
+		
+//		Entity a = new Box(26,6.3f, 0.7f);
+//		a.setSprite(sm.getSprite(a));
+//		Entity b = new Box(32,7f, 1.5f);
+//		b.setSprite(sm.getSprite(b));
+//		worldEntities.add(a);
+//		worldEntities.add(b);
+//		worldEntities.add(new Pulley(a, new Vec2(26,6.3f), b, new Vec2(32,6.5f), new Vec2(28,7f), new Vec2(32,8.5f), 5));
 		List<EntityDescriptor> entities = ld.getEntities();
 		
 		if (entities != null){
@@ -134,11 +135,18 @@ public class GameWorld extends GameScreen {
 					entity = new OneWayWall(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 				case PULLEY:
+					Entity a = new Box(entityDescriptor.getX()-1,entityDescriptor.getY()-0.7f, 0.7f);
+					a.setSprite(sm.getSprite(a));
+					Entity b = new Box(entityDescriptor.getX()+1,entityDescriptor.getY(), 1.5f);
+					b.setSprite(sm.getSprite(b));
+					worldEntities.add(a);
+					worldEntities.add(b);
+					
 					entity = new Pulley(a, 
-							new Vec2(entityDescriptor.getX(), 6.3f), b,
-							new Vec2(entityDescriptor.getX()+6, 6.5f),
-							new Vec2(entityDescriptor.getX()+2, 7f),
-							new Vec2(entityDescriptor.getX()+6, 8.5f), 5);
+							new Vec2(entityDescriptor.getX()-1, entityDescriptor.getY()), b,
+							new Vec2(entityDescriptor.getX()+1, 2),
+							new Vec2(entityDescriptor.getX()-0.4f, 2),
+							new Vec2(entityDescriptor.getX()+1, 2.5f), 5);
 					break;
 /*TODO
  * 				case FLUID:
