@@ -36,5 +36,17 @@ public class LoadableGLObject {
 	public int getGlId() {
 		return glId;
 	}
-
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof LoadableGLObject))
+			return false;
+		
+		return ((LoadableGLObject) o).getId() == getId();
+	}
+	
+	@Override
+	public int hashCode() {
+		return getId() ^ type.ordinal();
+	}
 }

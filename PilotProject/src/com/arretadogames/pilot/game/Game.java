@@ -51,7 +51,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	 * Creates a Game
 	 */
 	private Game() {
-		currentState = GameState.SPLASH;
+		nextState = GameState.SPLASH;
 		loadManager = LoadManager.getInstance();
 		gameScreens = new HashMap<GameState, GameScreen>();
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
@@ -62,6 +62,8 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		gameScreens.put(GameState.LEVEL_SELECTION, new LevelSelectionScreen());
 		transitionStateOn = false;
 		resetWorld = false;
+		loadManager.prepareLoad(new GameState[] { nextState });
+		currentState = GameState.LOADING;
 	}
 	
 	/**
@@ -88,6 +90,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		
 		if (currentState.equals(GameState.LOADING)) {
 			loadManager.swapTextures(game, canvas);
+			System.out.println("LOADING STATE");
 			return;
 		} else {
 			getScreen(currentState).render(canvas, timeElapsed);
@@ -140,6 +143,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	public void goTo(GameState state) {
 		nextState = state;
 		startTransitionAnimation();
+		loadManager.prepareLoad(new GameState[] { state });
 	}
 	
 	
@@ -196,7 +200,6 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 				(int) DisplaySettings.TARGET_WIDTH, 0,
 				(int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
 		
-		final Game game = this; // helper variable to use with Tween
 		Timeline.createSequence()
 				.push(Tween.to(this, LEFT, 0.4f).target(0f))
 				.push(Tween.call(new TweenCallback() {
@@ -208,7 +211,6 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 				}))
 				.start(AnimationManager.getInstance());
 	}
-	
 
 	/**
 	 * (Asynchronous method) Sets a flag to reset world on the next frame
@@ -234,6 +236,15 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 
 	@Override
 	public void onLoadFinished(boolean error) { // TODO @yuri: Handle error
+		
+		if (nextState.equals(GameState.SPLASH)) {
+			//Don't perform animation on splash screen
+			changeState(nextState);
+			nextState = null;
+			transitionStateOn = false;
+			return;
+		} 
+		
 		Timeline.createSequence()
 			.push(Tween.call(new TweenCallback() {
 			
