@@ -1,71 +1,75 @@
 package com.arretadogames.pilot.loading;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.util.Log;
+
+import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class LoadManager {
 	
-	private HashMap<LoadableType, Set<LoadableGLObject>> loadedEntities;
-	private HashMap<LoadableType, Set<LoadableGLObject>> loadingEntities;
+	private Set<LoadableGLObject> loadedResources;
+	private LoadableGLObject[] objectsToLoad;
+	private LoadableGLObject[] objectsToRemove;
 	
 	// Hide Constructor (Singleton)
 	private LoadManager() {
-		loadedEntities = new HashMap<LoadableType , Set<LoadableGLObject>>();
-		loadingEntities = new HashMap<LoadableType, Set<LoadableGLObject>>();
-		
-		loadedEntities.put(LoadableType.TEXTURE, new HashSet<LoadableGLObject>());
-		loadedEntities.put(LoadableType.FONT, new HashSet<LoadableGLObject>());
-		loadingEntities.put(LoadableType.TEXTURE, new HashSet<LoadableGLObject>());
-		loadingEntities.put(LoadableType.FONT, new HashSet<LoadableGLObject>());
+		loadedResources = new HashSet<LoadableGLObject>();
 	}
 	
-	public boolean addLoadableObject(LoadableGLObject object) {
-		return loadingEntities.get(object.getType()).add(object);
-	}
-	
-	private List<LoadableGLObject> getObjectsToRemove() {
-		List<LoadableGLObject> objectsToRemove = new ArrayList<LoadableGLObject>();
+	public void prepareLoad(GameState[] states) {
 		
-		for (LoadableType type : loadingEntities.keySet()) {
-			for (LoadableGLObject object : loadedEntities.get(type))
-				if (!(loadingEntities.get(type).contains(object)))
-					objectsToRemove.add(object);
-		}
+		// Add all resources to be needed
+		HashSet<LoadableGLObject> neededResources = new HashSet<LoadableGLObject>();
+		for (int i = 0 ; i < states.length ; i++)
+			neededResources.addAll(ResourcesManager.getResourcesFrom(states[i]));
 		
-		return objectsToRemove;
-	}
-	
-	private List<LoadableGLObject> getObjectsToAdd() {
-		List<LoadableGLObject> objectsToRemove = new ArrayList<LoadableGLObject>();
+		// get what is not in loaded and is in needed - those should be loaded
+		List<LoadableGLObject> resourcesToLoad = new ArrayList<LoadableGLObject>();
+		for (LoadableGLObject resource : neededResources)
+			if (!loadedResources.contains(resource))
+				resourcesToLoad.add(resource);
+
+		// get what is in loaded and is not in needed - those should be removed
+		List<LoadableGLObject> resourcesToRemove = new ArrayList<LoadableGLObject>();
+		for (LoadableGLObject resource : loadedResources)
+			if (!neededResources.contains(resource))
+				resourcesToRemove.add(resource);
 		
-		for (LoadableType type : loadingEntities.keySet()) {
-			for (LoadableGLObject object : loadingEntities.get(type))
-				if (!(loadedEntities.get(type).contains(object)))
-					objectsToRemove.add(object);
-		}
 		
-		return objectsToRemove;
+		// Set Variables
+		this.objectsToLoad = new LoadableGLObject[resourcesToLoad.size()];
+		this.objectsToRemove = new LoadableGLObject[resourcesToRemove.size()];
+		
+		resourcesToLoad.toArray(objectsToLoad);
+		resourcesToRemove.toArray(objectsToRemove);
 	}
 	
 	public void swapTextures(final LoadFinisherCallBack callback, GLCanvas glCanvas) {
-		List<LoadableGLObject> objectsToRemove = getObjectsToRemove();
-		List<LoadableGLObject> objectsToAdd = getObjectsToAdd();
+		if (objectsToLoad == null || objectsToRemove == null) {
+			Log.e("LoadManager.SwapTextures", "Tried to swap textures without calling prepareLoad()");
+			return;
+		}
 		
-		int[] toRemove = new int[objectsToRemove.size()];
-		for (int i = 0 ; i < toRemove.length ; i++)
-			toRemove[i] = objectsToRemove.get(i).getGlId();
+		for (int i = 0 ; i < objectsToRemove.length ; i++) {
+			loadedResources.remove(objectsToRemove[i]);
+		}
 		
-		glCanvas.removeTextures(toRemove);
+		glCanvas.removeTextures(objectsToRemove);
 		
-		for (LoadableGLObject object : objectsToAdd)
-			glCanvas.loadObject(object);
+		for (int i = 0 ; i < objectsToLoad.length ; i++) {
+			glCanvas.loadObject(objectsToLoad[i]);
+			loadedResources.add(objectsToLoad[i]);
+		}
 		
 		callback.onLoadFinished(true);
+		
+		objectsToRemove = null;
+		objectsToLoad = null;
 	}
 	
 	/**

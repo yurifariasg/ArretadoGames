@@ -16,7 +16,6 @@ public class FontLoader {
 	private float fontSize;
 	
 	private FontLoader(Context c) {
-		
 		fontSize = 1.5f; // Default
 
 		fonts = new HashMap<Fonts, Typeface>();
@@ -24,7 +23,6 @@ public class FontLoader {
 				Typeface.create(Typeface.createFromAsset(
 				c.getAssets(), "Transmetals.ttf"),
 				Typeface.NORMAL));
-		
 	}
 	
 	public float getFontSize() {
@@ -45,6 +43,6 @@ public class FontLoader {
 	}
 	
 	public enum Fonts {
-		TRANSMETALS
+		TRANSMETALS;
 	}
 }

@@ -10,9 +10,6 @@ import com.arretadogames.pilot.entities.Player;
 
 public class SpriteManager {
 	
-	public SpriteManager() {
-	}
-	
 	public Sprite getSprite(Entity en){
 		Sprite sprite = new Sprite();
 		

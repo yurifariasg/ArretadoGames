@@ -22,7 +22,10 @@ import android.opengl.GLUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.arretadogames.pilot.GameActivity;
 import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontLoader.Fonts;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
@@ -237,8 +240,11 @@ public class GLCanvas {
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
 			boolean convertFromPhysics) {
 		
-		if (textures.get(imageId) == null)
+		if (textures.get(imageId) == null) {
+			Log.e("GLCanvas", "Texture not loaded " +
+					GameActivity.getContext().getResources().getResourceEntryName(imageId));
 			loadImage(imageId);
+		}
 		
 		GLImage tex = textures.get(imageId);
 		GLES11.glColor4f(1, 1, 1, 1);
@@ -315,7 +321,20 @@ public class GLCanvas {
 		GLES11.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
 
-	public void removeTextures(int[] glIds) {
+	public void removeTextures(LoadableGLObject[] objects) {
+		
+		int[] glIds = new int[objects.length];
+		for (int i = 0 ; i < objects.length ; i++) {
+			
+			if (objects[i].getType().equals(LoadableType.TEXTURE)){
+				glIds[i] = textures.get(objects[i].getId()).getTextureID();
+				textures.remove(objects[i].getId());
+			} else if (objects[i].getType().equals(LoadableType.FONT)) {
+//				fontTextures.get(key)
+			}
+			
+		}
+		
 		GLES11.glDeleteTextures(glIds.length, glIds, 0);
 	}
 	
@@ -324,7 +343,7 @@ public class GLCanvas {
 		if (object.getType().equals(LoadableType.TEXTURE)) {
 			object.setGLId(loadImage(object.getId()));
 		} else if (object.getType().equals(LoadableType.FONT)) {
-			object.setGLId(loadFont((Typeface) object.getData()));
+			object.setGLId(loadFont(FontLoader.getInstance().getFont(Fonts.values()[object.getId()])));
 		}
 		
 	}
