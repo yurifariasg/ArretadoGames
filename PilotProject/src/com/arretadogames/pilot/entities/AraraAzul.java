@@ -34,16 +34,12 @@ public class AraraAzul extends Player implements Steppable{
 	private float k = 25f;
 	private boolean doubleJump;
 	
-	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
-								  		     R.drawable.lobo_g_walking2,
-								  		     R.drawable.lobo_g_walking3,
-								  		     R.drawable.lobo_g_walking4,
-								  		     R.drawable.lobo_g_walking5,
-								  		     R.drawable.lobo_g_walking6};
+	private static final int[] WALKING = {R.drawable.ave,
+								  		  R.drawable.ave1};
 
-	private static final int[] JUMP = {R.drawable.lobo_g_jump1,
-  		  						  		R.drawable.lobo_g_jump2,
-  		  						  		R.drawable.lobo_g_jump4};
+	private static final int[] JUMP = {R.drawable.ave,
+  		  						  		R.drawable.ave1,
+  		  						  		R.drawable.ave2};
 	
 	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
 				 R.drawable.lobo_guara_act2,
@@ -223,7 +219,7 @@ public class AraraAzul extends Player implements Steppable{
 				(0.3f * GLCanvas.physicsRatio), // Bottom Right
 				(0.3f * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawBitmap(R.drawable.ave, rect, false);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 //		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.BLACK);
 		canvas.restoreState();
 		

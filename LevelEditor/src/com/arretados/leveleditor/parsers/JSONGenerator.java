@@ -11,6 +11,7 @@ import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fluid;
 import com.arretados.leveleditor.entities.Fruit;
+import com.arretados.leveleditor.entities.Liana;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
 import com.arretados.leveleditor.entities.Pulley;
@@ -34,13 +35,14 @@ public class JSONGenerator {
     private List<Pulley> pulleys;
     private List<Fluid> fluids;
     private List<Breakable> breakables;
+    private List<Liana> liana;
     private List<int[]> groundLines;
     private List<Player> players;
     private Flag flag;
 
     public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<Coin> coins,
             List<OneWayWall> oneWays, List<Pulley> pulleys, List<Fluid> fluids,
-            List<Breakable> breakables, List<int[]> groundLines,
+            List<Breakable> breakables, List<Liana> lianas, List<int[]> groundLines,
             List<Player> players, Flag flag) {
         this.boxes = boxes;
         this.fruits = fruits;
@@ -49,6 +51,7 @@ public class JSONGenerator {
         this.pulleys = pulleys;
         this.fluids = fluids;
         this.breakables = breakables;
+        this.liana = lianas;
         this.groundLines = groundLines;
         this.players = players;
         this.flag = flag;
@@ -67,6 +70,7 @@ public class JSONGenerator {
         final String TYPE_PULLEY = "pulley";
         final String TYPE_FLUID = "fluid";
         final String TYPE_BREAKABLE = "breakable";
+        final String TYPE_LIANA = "liana";
         final String TYPE_PLAYER = "player";
         final String TYPE_FLAG = "finalflag";
         
@@ -153,6 +157,17 @@ public class JSONGenerator {
             jObj.put("type", TYPE_BREAKABLE);
             jObj.put("x", Utils.convertPixelToMeter(breakables.get(i).getX()));
             jObj.put("y", 10-Utils.convertPixelToMeter(breakables.get(i).getY()));
+            
+            jArrayEntities.add(jObj);
+        }
+        
+        for (int i = 0; i < liana.size(); i++){
+            JSONObject jObj = new JSONObject();
+            jObj.put("type", TYPE_LIANA);
+            jObj.put("x0", Utils.convertPixelToMeter(liana.get(i).getX0()));
+            jObj.put("y0", Utils.convertPixelToMeter(liana.get(i).getY0()));
+            jObj.put("x1", Utils.convertPixelToMeter(liana.get(i).getX1()));
+            jObj.put("y1", Utils.convertPixelToMeter(liana.get(i).getY1()));
             
             jArrayEntities.add(jObj);
         }
