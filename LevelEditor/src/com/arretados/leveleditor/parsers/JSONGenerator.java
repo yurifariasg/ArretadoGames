@@ -165,9 +165,10 @@ public class JSONGenerator {
             JSONObject jObj = new JSONObject();
             jObj.put("type", TYPE_LIANA);
             jObj.put("x0", Utils.convertPixelToMeter(liana.get(i).getX0()));
-            jObj.put("y0", Utils.convertPixelToMeter(liana.get(i).getY0()));
+            jObj.put("y0", 10-Utils.convertPixelToMeter(liana.get(i).getY0()));
             jObj.put("x1", Utils.convertPixelToMeter(liana.get(i).getX1()));
-            jObj.put("y1", Utils.convertPixelToMeter(liana.get(i).getY1()));
+            jObj.put("y1", 10-Utils.convertPixelToMeter(liana.get(i).getY1()));
+            jObj.put("size", Utils.convertPixelToMeter(liana.get(i).getSize()));
             
             jArrayEntities.add(jObj);
         }

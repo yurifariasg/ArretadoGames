@@ -58,7 +58,7 @@ public class Liana extends DrawableObject{
     }
     
     public int getSize(){
-        return this.size;
+        return 5;
     }
 
     @Override
