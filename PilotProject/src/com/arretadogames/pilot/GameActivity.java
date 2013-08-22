@@ -1,6 +1,5 @@
 package com.arretadogames.pilot;
 
-import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -19,13 +18,18 @@ import com.arretadogames.pilot.screens.InputEventHandler;
  * this activity connects the game and the GLSurfaceView
  * that it should be draw into
  */
-public class GameActivity extends Activity implements OnTouchListener {
+public class GameActivity extends BaseGameActivity implements OnTouchListener {
 	
 	private static Context context;
 	private GameGLSurfaceView renderingSurface;
 	
+	public GameActivity() {
+		super();
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext(); // Sets the Context for external use
 		FontLoader.create(context); // Create the FontLoader
@@ -81,6 +85,18 @@ public class GameActivity extends Activity implements OnTouchListener {
 	public boolean onTouch(View view, MotionEvent event) {
 		Game.getInstance().input(new InputEventHandler(event));
 		return true;
+	}
+
+	@Override
+	public void onSignInFailed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSignInSucceeded() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

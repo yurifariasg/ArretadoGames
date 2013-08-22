@@ -4,4 +4,9 @@
 	<string name="revoke_access_button_name">Revoke Acess</string>
 	<string name="default_status"/>
 	<string name="play">Play</string>
+	<string name="gamehelper_app_misconfigured">GameHelper App Misconfigured</string>
+	<string name="gamehelper_sign_in_failed">Sign In Failed</string>
+	<string name="gamehelper_license_failed">Licence Failed</string>
+	<string name="gamehelper_unknown_error">Unknown Error</string>
+	<string name="app_id">403782597740</string>
 </resources>

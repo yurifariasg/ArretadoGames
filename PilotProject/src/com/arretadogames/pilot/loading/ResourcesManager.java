@@ -58,7 +58,9 @@ public class ResourcesManager {
 					R.drawable.bt_back_selected,
 					R.drawable.bt_back_unselected,
 					R.drawable.checked_box,
-					R.drawable.unchecked_box
+					R.drawable.unchecked_box,
+					R.drawable.bt_gplus_unselected,
+					R.drawable.bt_gplus_selected
 			};
 		} else if (state.equals(GameState.CHARACTER_SELECTION)) {
 			resources = new int[] {
