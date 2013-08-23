@@ -3,10 +3,12 @@ package com.arretadogames.pilot;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import com.arretadogames.pilot.android.KeyboardManager;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -18,23 +20,28 @@ import com.arretadogames.pilot.screens.InputEventHandler;
  * this activity connects the game and the GLSurfaceView
  * that it should be draw into
  */
-public class GameActivity extends BaseGameActivity implements OnTouchListener {
+public class MainActivity extends BaseGameActivity implements OnTouchListener {
 	
 	private static Context context;
 	private GameGLSurfaceView renderingSurface;
 	
-	public GameActivity() {
+	public MainActivity() {
 		super();
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext(); // Sets the Context for external use
 		FontLoader.create(context); // Create the FontLoader
 		GameDatabase.createDatabase(getApplicationContext());
 		Game.getInstance(); // Create Game
+		KeyboardManager.setup(this);
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		return KeyboardManager.dispatchKeyEvent(event);
 	}
 	
 	@Override
@@ -44,7 +51,6 @@ public class GameActivity extends BaseGameActivity implements OnTouchListener {
 		super.onPause();
 		((GLSurfaceView) renderingSurface).onPause();
 		Game.getInstance().onPause();
-//		setContentView(null);
 	}
 	
 	@Override
@@ -85,18 +91,6 @@ public class GameActivity extends BaseGameActivity implements OnTouchListener {
 	public boolean onTouch(View view, MotionEvent event) {
 		Game.getInstance().input(new InputEventHandler(event));
 		return true;
-	}
-
-	@Override
-	public void onSignInFailed() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onSignInSucceeded() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

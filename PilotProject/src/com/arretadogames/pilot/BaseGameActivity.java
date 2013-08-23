@@ -20,11 +20,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.arretadogames.pilot.android.KeyboardManager;
 import com.arretadogames.pilot.googlesync.SyncManager;
 import com.google.android.gms.appstate.AppStateClient;
 
 
-public abstract class BaseGameActivity extends FragmentActivity implements
+public class BaseGameActivity extends FragmentActivity implements
         SyncManager.GameHelperListener {
 
     /** Constructs a BaseGameActivity with default client (GamesClient). */
@@ -109,4 +110,14 @@ public abstract class BaseGameActivity extends FragmentActivity implements
     protected SyncManager.SignInFailureReason getSignInError() {
         return SyncManager.get().getSignInError();
     }
+
+	@Override
+	public void onSignInFailed() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onSignInSucceeded() {
+		// TODO Auto-generated method stub
+	}
 }

@@ -11,7 +11,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenCallback;
 
-import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.PlayableCharacter;
@@ -397,7 +397,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	}
 
 	private void showInvalidCharacterMessage() {
-		Toast.makeText(GameActivity.getContext(), "Selected character not available", Toast.LENGTH_SHORT).show();
+		Toast.makeText(MainActivity.getContext(), "Selected character not available", Toast.LENGTH_SHORT).show();
 	}
 
 }

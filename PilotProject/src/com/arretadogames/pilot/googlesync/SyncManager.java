@@ -14,8 +14,10 @@ import com.google.android.gms.appstate.AppStateClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.PlusClient.OnAccessRevokedListener;
 
 /*
  * Copyright (C) 2013 Google Inc.
@@ -35,7 +37,8 @@ import com.google.android.gms.plus.PlusClient;
 
 public class SyncManager implements
 		GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener {
+		GooglePlayServicesClient.OnConnectionFailedListener,
+		OnAccessRevokedListener {
 
 	/** Listener for sign-in success or failure events. */
 	public interface GameHelperListener {
@@ -64,18 +67,18 @@ public class SyncManager implements
 		/** Called when sign-in succeeds. */
 		void onSignInSucceeded();
 	}
-	
+
 	private static SyncManager syncManager;
-	
+
 	public static void create(Activity activity) {
 		if (syncManager == null)
 			syncManager = new SyncManager(activity);
 	}
-	
+
 	public static SyncManager get() {
 		return syncManager;
 	}
-	
+
 	// States we can be in
 	public static final int STATE_UNCONFIGURED = 0;
 	public static final int STATE_DISCONNECTED = 1;
@@ -192,6 +195,10 @@ public class SyncManager implements
 		}
 	}
 
+	public void setup(GameHelperListener listener, String... additionalScopes) {
+		setup(listener, null, additionalScopes);
+	}
+
 	/**
 	 * Performs setup on this GameHelper object. Call this from the onCreate()
 	 * method of your Activity. This will create the clients and do a few other
@@ -200,28 +207,40 @@ public class SyncManager implements
 	 * 
 	 * @param listener
 	 *            The listener to be notified of sign-in events.
-	 * @param clientsToUse
-	 *            The clients to use. Use a combination of CLIENT_GAMES,
-	 *            CLIENT_PLUS and CLIENT_APPSTATE, or CLIENT_ALL to request all
-	 *            clients.
+	 * @param accountName
+	 *            The name of the account to be used, non-null
 	 * @param additionalScopes
 	 *            Any scopes to be used that are outside of the ones defined in
 	 *            the Scopes class. I.E. for YouTube uploads one would add
 	 *            "https://www.googleapis.com/auth/youtube.upload"
 	 */
-	public void setup(GameHelperListener listener, String... additionalScopes) {
+	public void setup(GameHelperListener listener, String accountName,
+			String... additionalScopes) {
 		if (mState != STATE_UNCONFIGURED) {
 			String error = "GameHelper: you called GameHelper.setup() twice. You can only call "
 					+ "it once.";
 			logError(error);
 			throw new IllegalStateException(error);
 		}
-		
+
 		mListener = listener;
-		mAppStateClient = new AppStateClient.Builder(getContext(), this, this).create();
-		mPlusClient = new PlusClient.Builder(getContext(), this, this).build();
-		System.out.println("Built");
+		
+		if (accountName != null){
+			mAppStateClient = new AppStateClient.Builder(getContext(), this, this).setAccountName(accountName).create();
+			mPlusClient = new PlusClient.Builder(getContext(), this, this).setAccountName(accountName).build();
+		} else {
+			mAppStateClient = new AppStateClient.Builder(getContext(), this, this).create();
+			mPlusClient = new PlusClient.Builder(getContext(), this, this).build();
+		}
 		setState(STATE_DISCONNECTED);
+	}
+	
+	public void changeAccountName(String accountName) {
+		if (mState == STATE_DISCONNECTED) {
+			mPlusClient = new PlusClient.Builder(getContext(), this, this).setScopes(Scopes.PLUS_LOGIN, Scopes.PLUS_PROFILE, Scopes.GAMES, Scopes.APP_STATE).setAccountName(accountName).build();
+			mAppStateClient = new AppStateClient.Builder(getContext(), this, this).setAccountName(accountName).create();
+			System.out.println("Account Name Changed to " + accountName);
+		}
 	}
 
 	void setState(int newState) {
@@ -399,12 +418,12 @@ public class SyncManager implements
 			debugLog("Disconnecting AppStateClient.");
 			mAppStateClient.disconnect();
 		}
-		
+
 		if (mPlusClient != null && mPlusClient.isConnected()) {
 			debugLog("Disconnecting mPlusClient.");
 			mPlusClient.disconnect();
 		}
-		
+
 		debugLog("killConnections: all clients disconnected.");
 		setState(STATE_DISCONNECTED);
 	}
@@ -579,15 +598,14 @@ public class SyncManager implements
 		}
 		debugLog("Starting connections.");
 		setState(STATE_CONNECTING);
-		
+
 		connectNextClient();
 	}
-	
+
 	void connectNextClient() {
 		// do we already have all the clients we need?
-		if (mAppStateClient != null && mPlusClient != null && 
-				mAppStateClient.isConnected() &&
-				mPlusClient.isConnected()) {
+		if (mAppStateClient != null && mPlusClient != null
+				&& mAppStateClient.isConnected() && mPlusClient.isConnected()) {
 			logWarn("All states connected");
 			succeedSignIn();
 			return;
@@ -609,11 +627,14 @@ public class SyncManager implements
 				STATE_CONNECTING)) {
 			return;
 		}
-		
-		if (!mPlusClient.isConnected())
+
+		if (!mPlusClient.isConnected()) {
+			System.out.println("Connecting Plus Client");
 			mPlusClient.connect();
-		else if (!mAppStateClient.isConnected())
+		} else if (!mAppStateClient.isConnected()) {
+			System.out.println("Connecting State Client");
 			mAppStateClient.connect();
+		}
 	}
 
 	/**
@@ -668,6 +689,7 @@ public class SyncManager implements
 		mAutoSignIn = true;
 		mUserInitiatedSignIn = false;
 		notifyListener(true);
+		System.out.println("Account Name : " + mPlusClient.getAccountName());
 	}
 
 	/** Handles a connection failure reported by a client. */
@@ -915,6 +937,28 @@ public class SyncManager implements
 
 	public PlusClient getPlusClient() {
 		return mPlusClient;
+	}
+
+	public void revokeAccess() {
+		if (mPlusClient.isConnected()) {
+			if (mAppStateClient.isConnected())
+				mAppStateClient.disconnect();
+			mPlusClient.revokeAccessAndDisconnect(this);
+		}
+	}
+
+	@Override
+	public void onAccessRevoked(ConnectionResult result) {
+		if (result.getErrorCode() != ConnectionResult.SUCCESS) {
+			// Google Play services is not available.
+			debugLog("Google Play services not available. Show error dialog.");
+			mSignInFailureReason = new SignInFailureReason(
+					result.getErrorCode(), 0);
+			showFailureDialog();
+			notifyListener(false);
+			return;
+		}
+		setState(STATE_DISCONNECTED);
 	}
 
 }

@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
-import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.screens.InputEventHandler;
@@ -39,7 +39,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	 * @param context
 	 *            Context to be used
 	 */
-	public GameGLSurfaceView(GameActivity activity) {
+	public GameGLSurfaceView(MainActivity activity) {
 		super(activity);
 		this.activity = activity;
 	}
@@ -186,7 +186,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 //				setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 		
 		// Set OnTouchListener
-		setOnTouchListener((GameActivity)activity);
+		setOnTouchListener((MainActivity)activity);
 		
 		gameCanvas = new GLCanvas();
 		

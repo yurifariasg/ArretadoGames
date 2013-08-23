@@ -3,6 +3,8 @@ package com.arretadogames.pilot.screens;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.android.KeyboardManager;
+import com.arretadogames.pilot.android.KeyboardManager.InputFinishListener;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
@@ -12,7 +14,6 @@ import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.ui.ZoomImageButton;
-import com.google.android.gms.internal.g;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener, TweenAccessor<MainMenuScreen> {
 	
@@ -28,6 +29,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private ImageButton gPlusBt;
 	private Text welcomeLabel;
 	private Text nameLabel;
+	private Text inputLabel;
 	
 	// Main Menu Screens
 	private SettingsScreen settingsScreen;
@@ -50,6 +52,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				20, 390, this,
 				R.drawable.bt_gplus_selected,
 				R.drawable.bt_gplus_unselected);
+		
+		inputLabel = new Text(400, 50, "", 1);
 		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
@@ -86,7 +90,10 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				
 				nameLabel.render(canvas, timeElapsed);
 				welcomeLabel.render(canvas, timeElapsed);
-				
+			}
+			
+			if (KeyboardManager.isShowing()) {
+				inputLabel.render(canvas, timeElapsed);
 			}
 			
 		} else if (currentState == State.SETTINGS) {
@@ -100,7 +107,11 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 	@Override
 	public void step(float timeElapsed) {
-		// TODO Auto-generated method stub
+		
+		if (KeyboardManager.isShowing()) {
+			inputLabel.setText(KeyboardManager.getText());
+		}
+		
 	}
 
 	@Override
@@ -130,10 +141,17 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			currentState = State.SETTINGS;
 			break;
 		case G_SIGN_IN_BUTTON:
-			if (SyncManager.get().isSignedIn())
-				SyncManager.get().signOut();
-			else
-				SyncManager.get().beginUserInitiatedSignIn();
+			if (SyncManager.get().isSignedIn()) {
+				SyncManager.get().revokeAccess();
+			} else {
+				KeyboardManager.setOnInputFinishListener(new InputFinishListener() {
+					public void onInputFinish(String typedString) {
+						SyncManager.get().changeAccountName(typedString);
+						SyncManager.get().beginUserInitiatedSignIn();
+					}
+				});
+				KeyboardManager.show();
+			}
 			break;
 		}
 	}
