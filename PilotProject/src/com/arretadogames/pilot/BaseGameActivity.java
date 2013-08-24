@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import com.arretadogames.pilot.android.KeyboardManager;
+import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.googlesync.SyncManager;
 import com.google.android.gms.appstate.AppStateClient;
 
@@ -118,6 +118,6 @@ public class BaseGameActivity extends FragmentActivity implements
 
 	@Override
 	public void onSignInSucceeded() {
-		// TODO Auto-generated method stub
+		AccountManager.get().refreshAccounts();
 	}
 }

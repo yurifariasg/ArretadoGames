@@ -943,6 +943,7 @@ public class SyncManager implements
 		if (mPlusClient.isConnected()) {
 			if (mAppStateClient.isConnected())
 				mAppStateClient.disconnect();
+			mPlusClient.clearDefaultAccount();
 			mPlusClient.revokeAccessAndDisconnect(this);
 		}
 	}
@@ -960,5 +961,4 @@ public class SyncManager implements
 		}
 		setState(STATE_DISCONNECTED);
 	}
-
 }

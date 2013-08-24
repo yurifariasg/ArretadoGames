@@ -8,6 +8,8 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.accounts.Account;
+import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.entities.Player;
@@ -85,6 +87,13 @@ public class EndScreen extends GameScreen {
 				GameDatabase.getInstance().setBestCoins(p2.getCoins(), ld.getId(), 2/*p2.getId()*/);
 			}
 		}
+		
+		System.out.println("P1 Coins: " + p1.getCoins());
+		Account acc1 = AccountManager.get().getAccount1();
+		acc1.setCoins(acc1.getCoins() + p1.getCoins());
+		Account acc2 = AccountManager.get().getAccount2();
+		acc2.setCoins(acc2.getCoins() + p2.getCoins());
+		AccountManager.get().saveState();
 		
 		initializePlayerInfo(130, p1);
 		initializePlayerInfo(680, p2);

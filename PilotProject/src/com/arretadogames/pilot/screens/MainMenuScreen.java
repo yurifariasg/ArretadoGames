@@ -3,6 +3,7 @@ package com.arretadogames.pilot.screens;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
 import com.arretadogames.pilot.android.KeyboardManager.InputFinishListener;
 import com.arretadogames.pilot.config.DisplaySettings;
@@ -30,6 +31,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private Text welcomeLabel;
 	private Text nameLabel;
 	private Text inputLabel;
+	private long p1Coins; // Variable to detect if the account coins have changed since last time
 	
 	// Main Menu Screens
 	private SettingsScreen settingsScreen;
@@ -63,7 +65,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	}
 	
 	private void createUserInfoLabels() {
-		welcomeLabel = new Text(80, 300, "Welcome,",  1);
+		welcomeLabel = new Text(170, 300, "Welcome," + " (" + AccountManager.get().getAccount1().getCoins() + " coins)",  1);
 		nameLabel = new Text(120, 330, SyncManager.get().getPlusClient().getCurrentPerson().getName().getGivenName(),  1);
 	}
 
@@ -85,8 +87,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			gPlusBt.render(canvas, timeElapsed);
 			
 			if (SyncManager.get().isSignedIn()) {
-				if (nameLabel == null || welcomeLabel == null)
+				if (nameLabel == null || welcomeLabel == null ||
+						AccountManager.get().getAccount1().getCoins() != p1Coins) {
+					
 					createUserInfoLabels();
+					p1Coins = AccountManager.get().getAccount1().getCoins();
+				}
 				
 				nameLabel.render(canvas, timeElapsed);
 				welcomeLabel.render(canvas, timeElapsed);
