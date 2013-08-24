@@ -129,6 +129,7 @@ public class Liana extends Entity implements Steppable{
 			if(!conectedPlayers.contains(player)){
 				conectedPlayers.add(player);
 				createJoint(player, node);
+				((MacacoPrego)player).setOnLiana(true);
 			}
 		}
 
@@ -148,6 +149,7 @@ public class Liana extends Entity implements Steppable{
 					if(((Player)joint.getBodyA().getUserData()).equals(player)){
 						toDestroy.add(joint);
 						world.destroyJoint(joint);
+						((MacacoPrego)player).setOnLiana(false);
 					}
 				}
 				for(Joint joint : toDestroy){
@@ -164,7 +166,7 @@ public class Liana extends Entity implements Steppable{
 
 	private void createJoint(Player player, LianaNode node) {
 		RevoluteJointDef jd = new RevoluteJointDef();
-		jd.bodyA = player.body;
+		jd.bodyA = ((MacacoPrego)player).getContactLianaBody();
 		jd.bodyB = node.body;
 		jd.localAnchorA.set(new Vec2());
 		jd.localAnchorB.set(new Vec2());

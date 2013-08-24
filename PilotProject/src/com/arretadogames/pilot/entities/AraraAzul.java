@@ -56,7 +56,7 @@ public class AraraAzul extends Player implements Steppable{
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
 		shape.setRadius(0.3f);
-		footFixture = body.createFixture(shape,  3f);
+		footFixture = body.createFixture(shape,  k);
 		footFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
@@ -135,9 +135,9 @@ public class AraraAzul extends Player implements Steppable{
 			return;
 		float vel = body.getLinearVelocity().y;
 		Vec2 force = new Vec2(0,k * vel * vel);
-		if( vel > 0 ) force.negateLocal();
+		if( vel < 0 ){ //force.negateLocal();
 		body.applyForce(force, body.getWorldCenter());
-		System.out.println("acting");
+		System.out.println("acting");}
 	}
 
 	@Override

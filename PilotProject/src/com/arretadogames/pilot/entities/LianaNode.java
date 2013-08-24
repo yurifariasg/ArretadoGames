@@ -47,7 +47,7 @@ public class LianaNode extends Entity implements Steppable{
 	@Override
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
-		if(e.getType() == EntityType.PLAYER && ((Player)e).actActive){
+		if(e.getType() == EntityType.PLAYER && e instanceof MacacoPrego && ((Player)e).actActive){
 			liana.playerContact(e,this);
 		}
 		
