@@ -15,6 +15,7 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.GroundDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
+import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
 
 public class LevelParser {
@@ -92,6 +93,17 @@ public class LevelParser {
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.BREAKABLE);
+					
+				} else if (EntityType.LIANA.toString().equals(entityType)) { // LIANA
+					
+					entity = new LianaDescriptor(
+							(float) jsonEntity.getDouble("x0"),
+							(float) jsonEntity.getDouble("y0"),
+							(float) jsonEntity.getDouble("x1"),
+							(float) jsonEntity.getDouble("y1"),
+							(float) jsonEntity.getDouble("size"),
+							EntityType.LIANA);
+
 					
 				} else if (EntityType.FINALFLAG.toString().equals(entityType)) { // FINAL FLAG
 					

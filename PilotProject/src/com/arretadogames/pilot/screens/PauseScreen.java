@@ -9,7 +9,7 @@ import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Quart;
 
-import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
@@ -149,7 +149,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			hide();
 			break;
 		case OPTIONS_BT:
-			Toast.makeText(GameActivity.getContext(), "Not Implemented YET!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.getContext(), "Not Implemented YET!", Toast.LENGTH_SHORT).show();
 			break;
 		case QUIT_BT:
 			Game.getInstance().goTo(GameState.MAIN_MENU);

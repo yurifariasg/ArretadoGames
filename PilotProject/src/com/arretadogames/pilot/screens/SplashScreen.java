@@ -2,7 +2,7 @@ package com.arretadogames.pilot.screens;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.view.MotionEvent;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -33,6 +33,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	private int[] logoSize;
 	
 	private Paint paintBitmap;
+	private Timeline timeline;
 	
 	public SplashScreen() {
 		animationStarted = false;
@@ -77,8 +78,15 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 
 	@Override
 	public void input(InputEventHandler event) {
-		// TODO Auto-generated method stub
-		
+		if (event.getEvent().getAction() == MotionEvent.ACTION_DOWN) {
+			// Jump Splash
+			if (timeline != null) {
+				timeline.pause();
+				timeline.free();
+				AnimationManager.getInstance().killTarget(timeline);
+				startMainMenu();
+			}
+		}
 	}
 
 	@Override
@@ -86,7 +94,6 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		// TODO Auto-generated method stub
 		
 	}
-	
 
 	private void startAnimation() {
 		
@@ -96,7 +103,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		currentZoom = 0.001f;
 		currentBitmapAlpha = 0;
 		
-		Timeline.createSequence()
+		timeline = Timeline.createSequence()
 		.beginParallel()
 		.push(Tween.to(this, TWEEN_ANGLE, 1f)
 				.target(0f))

@@ -11,6 +11,7 @@ import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fluid;
 import com.arretados.leveleditor.entities.Fruit;
+import com.arretados.leveleditor.entities.Liana;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
 import com.arretados.leveleditor.entities.Pulley;
@@ -36,6 +37,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     private List<Pulley> pulleyPos = new ArrayList<Pulley>();
     private List<Fluid> fluidPos = new ArrayList<Fluid>();
     private List<Breakable> breakablePos = new ArrayList<Breakable>();
+    private List<Liana> lianaPos = new ArrayList<Liana>();
     private List<Player> playerPos = new ArrayList<Player>();
     private List<int[]> groundPos = new ArrayList<int[]>();
     public DrawMode mode = DrawMode.BOX;
@@ -71,6 +73,9 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         
         for (int i = 0; i < breakablePos.size(); i++)
             breakablePos.get(i).drawMyself(g);
+        
+        for (int i = 0; i < lianaPos.size(); i++)
+            lianaPos.get(i).drawMyself(g);
 
         for (int i = 0; i < coinPos.size(); i++)
             coinPos.get(i).drawMyself(g);
@@ -136,18 +141,22 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         repaint();
     }
     
+    public void drawLiana(int x0, int y0, int x1, int y1){
+        lianaPos.add(new Liana(x0, y0, x1, y1));
+        repaint();
+    }
+    
     public void drawGroundLine(int x,int y){
         int lastPointX = 0;
         
-        if (groundPos.size() > 0) {
+        if (groundPos.size() > 0)
             lastPointX = groundPos.get(groundPos.size()-1)[0];  //Gets the last point
-        }else{
+        else
             groundPos.add(new int[]{0, y});
-        }
-        
-        if (x >= lastPointX){  //Verify if the point that will be created comes after the last point
+                
+        if (x >= lastPointX)  //Verify if the point that will be created comes after the last point
             groundPos.add(new int[]{x, y}); 
-        }
+
         repaint();
     }
     
@@ -188,6 +197,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         return breakablePos;
     }
     
+    public List<Liana> getLianaPos(){
+        return lianaPos;
+    }
+    
     public List<int[]> getLinesPos(){
         return groundPos;
     }
@@ -204,6 +217,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         this.oneWayPos = new ArrayList<OneWayWall>();
         this.fluidPos = new ArrayList<Fluid>();
         this.breakablePos = new ArrayList<Breakable>();
+        this.lianaPos = new ArrayList<Liana>();
         this.boxPos = new ArrayList<Box>();
         this.playerPos = new ArrayList<Player>();
         this.flag = null;
@@ -239,6 +253,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 
             case BREAKABLE:
                 drawBreakable(e.getX(), e.getY());
+            break;
+                
+            case LIANA:
+                drawLiana(e.getX(), e.getY(), e.getX(), e.getY());
             break;
 
             case LINE:
@@ -309,6 +327,12 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             case BREAKABLE:
                 breakablePos.get(breakablePos.size()-1).setX(e.getX());
                 breakablePos.get(breakablePos.size()-1).setY(e.getY());
+                repaint();
+            break;
+                
+            case LIANA:
+                lianaPos.get(lianaPos.size()-1).setX1(e.getX());
+                lianaPos.get(lianaPos.size()-1).setY1(e.getY());
                 repaint();
             break;
                 

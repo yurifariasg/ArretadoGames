@@ -9,7 +9,7 @@ import java.util.List;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.util.parsers.LevelParser;
 
@@ -41,7 +41,7 @@ public class LevelManager {
 	}
 	
 	public static boolean loadLevel(LevelDescriptor level) {
-		return loadLevel(GameActivity.getContext().getResources(), level);
+		return loadLevel(MainActivity.getContext().getResources(), level);
 	}
 
 	public static List<LevelDescriptor> getLevels() {

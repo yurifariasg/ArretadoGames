@@ -35,6 +35,7 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
+import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
@@ -159,6 +160,12 @@ public class GameWorld extends GameScreen {
 				case BREAKABLE:
 					entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,2f,0,false);
 					break;
+				
+				case LIANA:
+					LianaDescriptor entityLiana = (LianaDescriptor) entityDescriptor; 
+					entity = new Liana(entityLiana.getX(), entityLiana.getY(), entityLiana.getX1(), entityLiana.getY1());
+					break;
+					
 				case FINALFLAG:
 					entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
 					break;

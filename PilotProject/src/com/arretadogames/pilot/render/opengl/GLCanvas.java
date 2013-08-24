@@ -22,7 +22,7 @@ import android.opengl.GLUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.arretadogames.pilot.GameActivity;
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.Fonts;
@@ -242,7 +242,7 @@ public class GLCanvas {
 		
 		if (textures.get(imageId) == null) {
 			Log.e("GLCanvas", "Texture not loaded " +
-					GameActivity.getContext().getResources().getResourceEntryName(imageId));
+					MainActivity.getContext().getResources().getResourceEntryName(imageId));
 			loadImage(imageId);
 		}
 		

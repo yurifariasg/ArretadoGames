@@ -3,12 +3,17 @@ package com.arretadogames.pilot.screens;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.accounts.AccountManager;
+import com.arretadogames.pilot.android.KeyboardManager;
+import com.arretadogames.pilot.android.KeyboardManager.InputFinishListener;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.googlesync.SyncManager;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
+import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.ui.ZoomImageButton;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener, TweenAccessor<MainMenuScreen> {
@@ -18,9 +23,15 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	private static final int PLAY_BUTTON = 1;
 	private static final int SETTINGS_BUTTON = 2;
+	private static final int G_SIGN_IN_BUTTON = 3;
 	
 	private ImageButton playBt;
 	private ImageButton settingsBt;
+	private ImageButton gPlusBt;
+	private Text welcomeLabel;
+	private Text nameLabel;
+	private Text inputLabel;
+	private long p1Coins; // Variable to detect if the account coins have changed since last time
 	
 	// Main Menu Screens
 	private SettingsScreen settingsScreen;
@@ -39,11 +50,23 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				R.drawable.bt_settings_selected,
 				R.drawable.bt_settings_unselected);
 		
+		gPlusBt = new ImageButton(G_SIGN_IN_BUTTON,
+				20, 390, this,
+				R.drawable.bt_gplus_selected,
+				R.drawable.bt_gplus_unselected);
+		
+		inputLabel = new Text(400, 50, "", 1);
+		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
 		
 		currentState = State.MAIN;
 		settingsScreen = new SettingsScreen(this);
+	}
+	
+	private void createUserInfoLabels() {
+		welcomeLabel = new Text(170, 300, "Welcome," + " (" + AccountManager.get().getAccount1().getCoins() + " coins)",  1);
+		nameLabel = new Text(120, 330, SyncManager.get().getPlusClient().getCurrentPerson().getName().getGivenName(),  1);
 	}
 
 	@Override
@@ -61,6 +84,24 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		if (currentState == State.MAIN) {
 			settingsBt.render(canvas, timeElapsed);
 			playBt.render(canvas, timeElapsed);
+			gPlusBt.render(canvas, timeElapsed);
+			
+			if (SyncManager.get().isSignedIn()) {
+				if (nameLabel == null || welcomeLabel == null ||
+						AccountManager.get().getAccount1().getCoins() != p1Coins) {
+					
+					createUserInfoLabels();
+					p1Coins = AccountManager.get().getAccount1().getCoins();
+				}
+				
+				nameLabel.render(canvas, timeElapsed);
+				welcomeLabel.render(canvas, timeElapsed);
+			}
+			
+			if (KeyboardManager.isShowing()) {
+				inputLabel.render(canvas, timeElapsed);
+			}
+			
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.render(canvas, timeElapsed);
 		}
@@ -72,7 +113,11 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 	@Override
 	public void step(float timeElapsed) {
-		// TODO Auto-generated method stub
+		
+		if (KeyboardManager.isShowing()) {
+			inputLabel.setText(KeyboardManager.getText());
+		}
+		
 	}
 
 	@Override
@@ -80,6 +125,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		if (currentState == State.MAIN) {
 			playBt.input(event);
 			settingsBt.input(event);
+			gPlusBt.input(event);
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.input(event);
 		}
@@ -99,6 +145,19 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			break;
 		case SETTINGS_BUTTON:
 			currentState = State.SETTINGS;
+			break;
+		case G_SIGN_IN_BUTTON:
+			if (SyncManager.get().isSignedIn()) {
+				SyncManager.get().revokeAccess();
+			} else {
+				KeyboardManager.setOnInputFinishListener(new InputFinishListener() {
+					public void onInputFinish(String typedString) {
+						SyncManager.get().changeAccountName(typedString);
+						SyncManager.get().beginUserInitiatedSignIn();
+					}
+				});
+				KeyboardManager.show();
+			}
 			break;
 		}
 	}

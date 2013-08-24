@@ -4,7 +4,7 @@ public enum EntityType {
 	
 	BOX("box"), FRUIT("fruit"),	GROUND("ground"), PLAYER("player"), FIRE("fire"),
 	PULLEY("pulley"), ONEWAY_WALL("oneway_wall"), FINALFLAG("finalflag"),
-	COIN("coin"), FLUID("fluid"), BREAKABLE("breakable");
+	COIN("coin"), FLUID("fluid"), BREAKABLE("breakable"), LIANA("liana");
 	
 	private String name;
 	
