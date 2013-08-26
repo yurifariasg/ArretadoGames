@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.Paint.Style;
 import android.opengl.GLES11;
 import android.opengl.GLUtils;
 import android.util.SparseArray;
@@ -50,7 +51,7 @@ public class FontTexture {
 	}
 	
 	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb, boolean centered) {
-		
+		scale /= 2;
 		// Draw text centred at x,y
 		// Get width of text
 		int textWidth = 0;
@@ -59,9 +60,12 @@ public class FontTexture {
 			charWidth = charWidths.get((int) text.charAt(i));
 			textWidth += charWidth * scale;
 		}
-		// Adjust to centre text about x,y
-		x -= textWidth / 2;
-		y -= fontHeight / 2;
+		if (centered) {
+			// Adjust to centre text about x,y
+			x -= textWidth / 2;
+		}
+
+		y -= scale * fontHeight / 2;
 
 		// No cycle through and draw text
 		int scaledCellWidth = (int) (scale * cellWidth);
@@ -104,6 +108,7 @@ public class FontTexture {
 	public Bitmap getBitmap() {
 		// We use the font to create a sprite atlas containing every letter,
 		// then we return the sprite atlas bitmap to be used as the texture.
+		size *= 2;
 
 		// Set-up Paint object for drawing letters to bitmap
 		Paint paint = new Paint(); // Create Android Paint Instance

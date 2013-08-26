@@ -30,7 +30,7 @@ public class SettingsScreen extends GameScreen implements GameButtonListener {
 				50, 200,
 				R.drawable.checked_box, R.drawable.unchecked_box);
 		
-		muteText = new Text(240, 230, "Mute Game", 1);
+		muteText = new Text(240, 230, "Mute Game", 1, true);
 		
 		backButton = new ImageButton(
 				BACK_BUTTON,

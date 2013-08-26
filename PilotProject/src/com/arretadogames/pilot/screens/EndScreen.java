@@ -66,7 +66,7 @@ public class EndScreen extends GameScreen {
 		
 		playerInformation.add(new Text(DisplaySettings.DISPLAY_WIDTH / 2,
 				DisplaySettings.DISPLAY_HEIGHT - 50,
-				"PRESS TO CONTINUE", 1));
+				"PRESS TO CONTINUE", 1, true));
 	}
 
 	private void initializeInfo() {
@@ -103,15 +103,15 @@ public class EndScreen extends GameScreen {
 		
 		int currentY = PLAYER_INFO_Y;
 		
-		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(), 1.35f));
+		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(), 1.35f, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Coins: " + player.getCoins(), 1f));
+				currentY, "Coins: " + player.getCoins(), 1f, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 		
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Time: " + player.getTimeFinished() + "s", 1f));
+				currentY, "Time: " + player.getTimeFinished() + "s", 1f, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 		
 	}

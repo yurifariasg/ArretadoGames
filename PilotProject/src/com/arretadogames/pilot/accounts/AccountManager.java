@@ -33,7 +33,9 @@ public class AccountManager implements OnStateListLoadedListener {
 	
 	public void refreshAccounts() {
 		if (syncManager.getAppStateClient().isConnected()) {
+			System.out.println("Requesting List States");
 			// App State Client supports only one player, so we suppose it is player one
+			account1 = null; // Avoid wrong info
 			syncManager.getAppStateClient().listStates(this);
 			
 		}
@@ -50,20 +52,32 @@ public class AccountManager implements OnStateListLoadedListener {
 	}
 	
 	public void saveState() {
-		if (account1 != null) {
-			account1.saveState();
-		}
-		
-		if (account2 != null) {
-//			account2.saveState(); Currently it is only supported one account
+		if (SyncManager.get().isSignedIn()) {
+			if (account1 != null) {
+				account1.saveState();
+			}
+			
+			if (account2 != null) {
+	//			account2.saveState(); Currently it is only supported one account
+			}
 		}
 	}
 
 	@Override
 	public void onStateListLoaded(int statusCode, AppStateBuffer buffer) {
 		if (statusCode == AppStateClient.STATUS_OK) {
+			System.out.println("List States OK");
 			
 			Iterator<AppState> it = buffer.iterator();
+			if (!it.hasNext()) {
+				Logger.v("User has no previous state... creating default account");
+				String accName = SyncManager.get().getPlusClient().getAccountName();
+				account1 = new Account(accName, accName);
+				account1.setName(SyncManager.get().getPlusClient().getCurrentPerson().getName().getGivenName());
+				System.out.println("Acc Name: " + accName);
+				System.out.println("Name: " + account1.getName());
+				return;
+			}
 			while (it.hasNext()) {
 				AppState state = it.next();
 				
@@ -85,6 +99,8 @@ public class AccountManager implements OnStateListLoadedListener {
 						
 						// Now, merge them
 						loadedAccount = Account.mergeAccounts(acc, accConflicted);
+						loadedAccount.setName(SyncManager.get().getPlusClient().getCurrentPerson().getName().getGivenName());
+						System.out.println("Loaded");
 						
 					} else {
 						// Data is fine! Just load...
@@ -93,19 +109,18 @@ public class AccountManager implements OnStateListLoadedListener {
 						loadedAccount = new Account(
 								syncManager.getPlusClient().getAccountName(),
 								syncManager.getPlusClient().getAccountName());
+						loadedAccount.setName(SyncManager.get().getPlusClient().getCurrentPerson().getName().getGivenName());
 						loadedAccount.updateFrom(bytes);
 					}
 					
 					account1 = loadedAccount;
 					
-				} else if (state.getKey() == 0) {
-					// First Time Loading..
-					Logger.v("First Time Loading! Welcome!");
 				} else {
 					Logger.v("Another Key came up: " + state.getKey());
 					Logger.v("with version: " + state.getLocalVersion());
 				}
 			}
+			
 			
 		} else {
 			// Something wrong..
@@ -119,5 +134,12 @@ public class AccountManager implements OnStateListLoadedListener {
 		if (accountManager == null)
 			accountManager = new AccountManager();
 		return accountManager;
+	}
+
+	public void clearArrount1() {
+		account1 = null;
+//		account1 = new Account();
+//		account1.setAccountId(Account.PLAYER_1_DEFAULT_ACCOUNT_NAME);
+//		account1.setAccountName(Account.PLAYER_1_DEFAULT_ACCOUNT_NAME);
 	}
 }
