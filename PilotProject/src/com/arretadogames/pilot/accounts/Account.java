@@ -21,6 +21,7 @@ public class Account implements OnStateLoadedListener {
 	private String accountId;
 	private String accountName;
 	private boolean isAnnonymous;
+	private String name;
 	
 	private long coins;
 	private HashMap<String, Integer> unlockedMaps;
@@ -51,6 +52,14 @@ public class Account implements OnStateLoadedListener {
 		initMaps();
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	private void initMaps() {
 		unlockedMaps = new HashMap<String, Integer>();
 		unlockedMaps.put("default", 0); // We should have all level categories here...
@@ -58,6 +67,14 @@ public class Account implements OnStateLoadedListener {
 
 	public String getAccountName() {
 		return accountName;
+	}
+	
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+	
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	public String getAccountId() {

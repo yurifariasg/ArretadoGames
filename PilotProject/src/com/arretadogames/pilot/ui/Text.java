@@ -13,6 +13,7 @@ public class Text implements Renderable {
 	private String text;
 	private float size;
 	private float x, y;
+	private boolean centered;
 	
 	/**
 	 * Creates a TextImageButton based on the given position and Images
@@ -32,11 +33,12 @@ public class Text implements Renderable {
 	 * @param text
 	 *            Text to be rendered
 	 */
-	public Text(float x, float y, String text, float size) {
+	public Text(float x, float y, String text, float size, boolean centered) {
 		this.text = text;
 		this.size = size;
 		this.x = x;
 		this.y = y;
+		this.centered = centered;
 		createPaints();
 	}
 
@@ -52,7 +54,7 @@ public class Text implements Renderable {
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		canvas.drawText(text, x, y, textPaint, false);
+		canvas.drawText(text, x, y, textPaint, centered);
 	}
 	/*
 	public static Point centerTextOnCanvas(Paint paint, float x, float y, float width, float height, String text) {

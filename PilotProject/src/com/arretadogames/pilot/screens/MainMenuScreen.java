@@ -3,9 +3,9 @@ package com.arretadogames.pilot.screens;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
-import com.arretadogames.pilot.android.KeyboardManager.InputFinishListener;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
@@ -55,7 +55,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				R.drawable.bt_gplus_selected,
 				R.drawable.bt_gplus_unselected);
 		
-		inputLabel = new Text(400, 50, "", 1);
+		inputLabel = new Text(400, 50, "", 1, true);
 		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
@@ -65,8 +65,10 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	}
 	
 	private void createUserInfoLabels() {
-		welcomeLabel = new Text(170, 300, "Welcome," + " (" + AccountManager.get().getAccount1().getCoins() + " coins)",  1);
-		nameLabel = new Text(120, 330, SyncManager.get().getPlusClient().getCurrentPerson().getName().getGivenName(),  1);
+		Account acc = AccountManager.get().getAccount1();
+		welcomeLabel = new Text(80, 320, "Welcome,",  1, true);
+		nameLabel = new Text(50, 360, acc.getName() +
+				 ". You have " + acc.getCoins() + " coins",  1, false);
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			
-			if (SyncManager.get().isSignedIn()) {
+			if (SyncManager.get().isSignedIn() && AccountManager.get().getAccount1() != null) {
 				if (nameLabel == null || welcomeLabel == null ||
 						AccountManager.get().getAccount1().getCoins() != p1Coins) {
 					
@@ -149,14 +151,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		case G_SIGN_IN_BUTTON:
 			if (SyncManager.get().isSignedIn()) {
 				SyncManager.get().revokeAccess();
+				AccountManager.get().clearArrount1();
 			} else {
-				KeyboardManager.setOnInputFinishListener(new InputFinishListener() {
-					public void onInputFinish(String typedString) {
-						SyncManager.get().changeAccountName(typedString);
-						SyncManager.get().beginUserInitiatedSignIn();
-					}
-				});
-				KeyboardManager.show();
+				SyncManager.get().userClickedSignIn();
 			}
 			break;
 		}

@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.googlesync;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +12,8 @@ import android.util.Log;
 
 import com.arretadogames.pilot.R;
 import com.google.android.gms.appstate.AppStateClient;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -111,6 +114,7 @@ public class SyncManager implements
 
 	// Request code when invoking Activities whose result we don't care about.
 	final static int RC_UNUSED = 9002;
+	static final int PICK_ACCOUNT_REQUEST = 9003;
 
 	AppStateClient mAppStateClient = null;
 	PlusClient mPlusClient = null;
@@ -227,10 +231,10 @@ public class SyncManager implements
 		
 		if (accountName != null){
 			mAppStateClient = new AppStateClient.Builder(getContext(), this, this).setAccountName(accountName).create();
-			mPlusClient = new PlusClient.Builder(getContext(), this, this).setAccountName(accountName).build();
+			mPlusClient = new PlusClient.Builder(getContext(), this, this).setScopes(Scopes.PLUS_LOGIN, Scopes.PLUS_PROFILE, Scopes.GAMES, Scopes.APP_STATE).setAccountName(accountName).build();
 		} else {
 			mAppStateClient = new AppStateClient.Builder(getContext(), this, this).create();
-			mPlusClient = new PlusClient.Builder(getContext(), this, this).build();
+			mPlusClient = new PlusClient.Builder(getContext(), this, this).setScopes(Scopes.PLUS_LOGIN, Scopes.PLUS_PROFILE, Scopes.GAMES, Scopes.APP_STATE).build();
 		}
 		setState(STATE_DISCONNECTED);
 	}
@@ -460,6 +464,14 @@ public class SyncManager implements
 				+ (requestCode == RC_RESOLVE ? "RC_RESOLVE" : String
 						.valueOf(requestCode)) + ", resp="
 				+ activityResponseCodeToString(responseCode));
+		
+		if (requestCode == PICK_ACCOUNT_REQUEST && responseCode == Activity.RESULT_OK) {
+			String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+			changeAccountName(accountName);
+			beginUserInitiatedSignIn();
+			return;
+		}
+		
 		if (requestCode != RC_RESOLVE) {
 			debugLog("onActivityResult: request code not meant for us. Ignoring.");
 			return;
@@ -961,4 +973,20 @@ public class SyncManager implements
 		}
 		setState(STATE_DISCONNECTED);
 	}
+
+	public void userClickedSignIn() {
+		showGoogleAccountPicker();
+	}
+	
+	private void showGoogleAccountPicker() {
+		int googleAccounts = AccountManager.get(mActivity).getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE).length;
+		if (googleAccounts < 2) {
+		    Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null,
+		        new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE }, true, null, null, null, null);
+		    mActivity.startActivityForResult(googlePicker, PICK_ACCOUNT_REQUEST);
+		} else {
+			beginUserInitiatedSignIn();
+		}
+	}
+	
 }

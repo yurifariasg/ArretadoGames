@@ -22,10 +22,10 @@ public class GameWorldUI extends GameScreen {
 	
 	public GameWorldUI(GameWorld gameWorld) {
 		this.gWorld = gameWorld;
-		completionText = new Text(400, 430, "0% completed", 1);
+		completionText = new Text(400, 430, "0% completed", 1, true);
 		
-		coin1Text = new Text(85, 40, "0", 1);
-		coin2Text = new Text(710, 40, "0", 1);
+		coin1Text = new Text(85, 40, "0", 1, true);
+		coin2Text = new Text(710, 40, "0", 1, true);
 	}
 
 	@Override
