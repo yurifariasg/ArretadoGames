@@ -27,10 +27,10 @@ public class LoboGuara extends Player implements Steppable{
 	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 6;
+	private final float MAX_JUMP_VELOCITY = 5;
 	private final float MAX_RUN_VELOCITY = 4;
-	private float JUMP_ACELERATION = 4;
-	private float RUN_ACELERATION = 5;
+	private float JUMP_ACELERATION = 3;
+	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	Date lastAct;
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
@@ -92,7 +92,7 @@ public class LoboGuara extends Player implements Steppable{
 		
 			sprite.setAnimationState("jump");
 			float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
-			Vec2 direction = new Vec2(1,6);
+			Vec2 direction = new Vec2(0,6);
 			direction.normalize();
 			direction.mulLocal(impulseX);
 			body.applyLinearImpulse(direction, body.getWorldCenter());
@@ -112,13 +112,13 @@ public class LoboGuara extends Player implements Steppable{
 	
 	
 	public void run(){
-		if(body.getLinearVelocity().x < 1.5){ 
-			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
+		if(body.getLinearVelocity().x < 0.5){ 
+			body.applyLinearImpulse(new Vec2(0.5f * body.getMass(),0f), body.getWorldCenter());
 		}
-		if(body.getLinearVelocity().length() > 2*MAX_RUN_VELOCITY){
+		if(body.getLinearVelocity().length() > 8){
 			Vec2 vel = body.getLinearVelocity();
 			vel.normalize();
-			body.setLinearVelocity(vel.mul(2*MAX_RUN_VELOCITY));
+			body.setLinearVelocity(vel.mul(8));
 		}
 		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
 			float force = (RUN_ACELERATION) * body.getMass();

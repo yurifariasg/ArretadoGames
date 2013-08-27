@@ -27,20 +27,17 @@ public class TatuBola extends Player implements Steppable{
 	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 6;
+	private final float MAX_JUMP_VELOCITY = 5;
 	private final float MAX_RUN_VELOCITY = 4;
 	private float JUMP_ACELERATION = 4;
-	private float RUN_ACELERATION = 5;
+	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	Date lastAct;
 	private static final int[] WALKING = {R.drawable.tatuandando};
 
-	private static final int[] JUMP = {R.drawable.tatupseudorolandokkk};
+	private static final int[] JUMP = {R.drawable.tatuandando};
 	
-	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
-				 R.drawable.lobo_guara_act2,
-				 R.drawable.lobo_guara_act3,
-				 };*/
+	private static final int[] ACT = {R.drawable.tatupseudorolandokkk};
 	
 	private final float rad = 0.3f;
 	public TatuBola(float x, float y, PlayerNumber number) {
@@ -86,7 +83,7 @@ public class TatuBola extends Player implements Steppable{
 		
 			sprite.setAnimationState("jump");
 			float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
-			Vec2 direction = new Vec2(1,6);
+			Vec2 direction = new Vec2(0,6);
 			direction.normalize();
 			direction.mulLocal(impulseX);
 			body.applyLinearImpulse(direction, body.getWorldCenter());
@@ -109,10 +106,10 @@ public class TatuBola extends Player implements Steppable{
 		if(body.getLinearVelocity().x < 1.5){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
-		if(body.getLinearVelocity().length() > 2*MAX_RUN_VELOCITY){
+		if(body.getLinearVelocity().length() > 8){
 			Vec2 vel = body.getLinearVelocity();
 			vel.normalize();
-			body.setLinearVelocity(vel.mul(2*MAX_RUN_VELOCITY));
+			body.setLinearVelocity(vel.mul(8));
 		}
 		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
 			float force = (RUN_ACELERATION) * body.getMass();
@@ -128,6 +125,7 @@ public class TatuBola extends Player implements Steppable{
 		if( contacts > 0 && contAct == 0){
 			Date t = new Date();
 			if(lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  ){
+			sprite.setAnimationState("act");
 			float impulse = (4) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
@@ -152,6 +150,12 @@ public class TatuBola extends Player implements Steppable{
 		if(actActive){
 			act();
 		}
+		
+		Date t = new Date();
+		if( contacts > 0 && !actActive && (lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  )){
+			sprite.setAnimationState("walking");
+		}
+		
 		if(contJump > 0) contJump--;
 		if(contAct > 0 ) contAct--;
 		run();
@@ -159,7 +163,7 @@ public class TatuBola extends Player implements Steppable{
 	
 	public void beginContact(Entity e, Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			sprite.setAnimationState("walking");
+			Date t = new Date();
 			contacts++;
 			bodiesContact.add(e.body);
 		}
@@ -195,7 +199,7 @@ public class TatuBola extends Player implements Steppable{
 
 	@Override
 	public int[] getActFrames() {
-		return null;
+		return ACT;
 		//TODO
 /*		Bitmap[] frames = new Bitmap[ACT.length];
 		for (int i = 0; i < ACT.length; i++) {
