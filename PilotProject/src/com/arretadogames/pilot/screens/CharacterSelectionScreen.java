@@ -359,7 +359,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 				imageId = R.drawable.selection_arara_azul;
 				break;
 			case TATU_BOLA:
-				imageId = R.drawable.selection_anonymous;
+				imageId = R.drawable.tatuzinlindinmininin;
 				break;
 			case MACACO_PREGO:
 				imageId = R.drawable.macacopregotxutxu;
@@ -379,10 +379,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		
 		HashMap<PlayerNumber, PlayableCharacter> selectedCharacters = new HashMap<PlayerNumber, PlayableCharacter>();
 		for (PlayerSelector selector : selectors) {
-			if (selector.spot.character == PlayableCharacter.TATU_BOLA ) {
-				showInvalidCharacterMessage();
-				return;
-			}
+			
 			selectedCharacters.put(selector.player, selector.spot.character);
 		}
 		

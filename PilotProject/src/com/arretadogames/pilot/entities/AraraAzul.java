@@ -26,10 +26,10 @@ public class AraraAzul extends Player implements Steppable{
 	private int contJump;
 	private int contacts;
 	private Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 7;
-	private final float MAX_RUN_VELOCITY = 4;
+	private final float MAX_JUMP_VELOCITY = 6;
+	private final float MAX_RUN_VELOCITY = 3;
 	private float JUMP_ACELERATION = 5;
-	private float RUN_ACELERATION = 10;
+	private float RUN_ACELERATION = 3;
 	Collection<Body> bodiesContact;
 	private float k = 25f;
 	private boolean doubleJump;
@@ -115,6 +115,11 @@ public class AraraAzul extends Player implements Steppable{
 	public void run(){
 		if(body.getLinearVelocity().x < 1.5){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
+		}
+		if(body.getLinearVelocity().length() > 2*MAX_RUN_VELOCITY){
+			Vec2 vel = body.getLinearVelocity();
+			vel.normalize();
+			body.setLinearVelocity(vel.mul(2*MAX_RUN_VELOCITY));
 		}
 		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
 			float force = (RUN_ACELERATION) * body.getMass();

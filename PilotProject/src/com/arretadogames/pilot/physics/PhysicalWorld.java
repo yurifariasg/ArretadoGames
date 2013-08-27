@@ -23,7 +23,7 @@ public class PhysicalWorld implements ContactListener {
 	private Collection<Entity> deadEntities;
 	
 	private PhysicalWorld() {
-		world = new World(new Vec2(0.0f,-10.0f));
+		world = new World(new Vec2(0.0f,-6.0f));
 		world.setContactListener(this);
 		world.setAllowSleep(true);
 		deadEntities = Collections.synchronizedCollection(new ArrayList<Entity>());

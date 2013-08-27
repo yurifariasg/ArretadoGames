@@ -31,6 +31,7 @@ import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.entities.Pulley;
 import com.arretadogames.pilot.entities.Steppable;
+import com.arretadogames.pilot.entities.TatuBola;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
@@ -231,6 +232,8 @@ public class GameWorld extends GameScreen {
 			return new AraraAzul(x, y, playerNumber);
 		case MACACO_PREGO:
 			return new MacacoPrego(x, y, playerNumber);
+		case TATU_BOLA:
+			return new TatuBola(x, y, playerNumber);
 		default:
 			break;
 		}

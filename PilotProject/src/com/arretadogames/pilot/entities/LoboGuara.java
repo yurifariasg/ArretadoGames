@@ -3,6 +3,7 @@ package com.arretadogames.pilot.entities;
 
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 
 import org.jbox2d.collision.shapes.CircleShape;
@@ -26,12 +27,12 @@ public class LoboGuara extends Player implements Steppable{
 	private int contAct;
 	private int contacts;
 	private Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 7;
+	private final float MAX_JUMP_VELOCITY = 6;
 	private final float MAX_RUN_VELOCITY = 4;
-	private float JUMP_ACELERATION = 6;
-	private float RUN_ACELERATION = 13;
+	private float JUMP_ACELERATION = 4;
+	private float RUN_ACELERATION = 5;
 	Collection<Body> bodiesContact;
-	
+	Date lastAct;
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
 								  		     R.drawable.lobo_g_walking3,
@@ -88,14 +89,16 @@ public class LoboGuara extends Player implements Steppable{
 	public void jump() {
 		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0)
 			return;
-		sprite.setAnimationState("jump");
-		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
-		Vec2 direction = new Vec2(1,6);
-		direction.normalize();
-		direction.mulLocal(impulseX);
-		body.applyLinearImpulse(direction, body.getWorldCenter());
-		contJump = 5;
-		applyReturn(direction);
+		
+			sprite.setAnimationState("jump");
+			float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
+			Vec2 direction = new Vec2(1,6);
+			direction.normalize();
+			direction.mulLocal(impulseX);
+			body.applyLinearImpulse(direction, body.getWorldCenter());
+			contJump = 5;
+			applyReturn(direction);
+		
 	}
 	
 	private void applyReturn(Vec2 impulse){
@@ -112,6 +115,11 @@ public class LoboGuara extends Player implements Steppable{
 		if(body.getLinearVelocity().x < 1.5){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
+		if(body.getLinearVelocity().length() > 2*MAX_RUN_VELOCITY){
+			Vec2 vel = body.getLinearVelocity();
+			vel.normalize();
+			body.setLinearVelocity(vel.mul(2*MAX_RUN_VELOCITY));
+		}
 		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
 			float force = (RUN_ACELERATION) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
@@ -124,13 +132,17 @@ public class LoboGuara extends Player implements Steppable{
 
 	public void act() {	
 		if( contacts > 0 && contAct == 0){
-			float impulse = (5) * body.getMass();
+			Date t = new Date();
+			if(lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  ){
+			float impulse = (4) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
 			direction.mulLocal(impulse);
 			body.applyLinearImpulse(direction, body.getWorldCenter());
 			contAct = 50;
+			lastAct = new Date();
+		}
 		}
 	}
 
