@@ -1,11 +1,13 @@
 package com.arretadogames.pilot.render;
 
 import com.arretadogames.pilot.entities.Box;
+import com.arretadogames.pilot.entities.Breakable;
 import com.arretadogames.pilot.entities.Coin;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
+import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.Player;
 
 public class SpriteManager {
@@ -27,10 +29,34 @@ public class SpriteManager {
 		}else if(en.getType() == EntityType.COIN){
 			Coin coin = (Coin) en;
 			setCoinSprites(sprite);
+		}else if(en.getType() == EntityType.BREAKABLE){
+			Breakable breakable = (Breakable) en;
+			setBreakableSprites(sprite, breakable);
+		}else if(en.getType() == EntityType.ONEWAY_WALL){
+			OneWayWall oneWayWall = (OneWayWall) en;
+			setOneWayWallSprite(sprite, oneWayWall);
 		}
 		return sprite;
 	}
 	
+	private void setOneWayWallSprite(Sprite sprite, OneWayWall oneWayWall) {
+		String name = "stopped";
+		sprite.setAnimationState(name);
+		sprite.addState(new SpriteState(name,
+				oneWayWall.getStoppedFrames(),
+				oneWayWall.getStoppedFramesDuration()));
+		oneWayWall.setSprite(sprite);
+	}
+
+	private void setBreakableSprites(Sprite sprite, Breakable breakable) {
+		String name = "stopped";
+		sprite.setAnimationState(name);
+		sprite.addState(new SpriteState(name,
+				breakable.getStoppedFrames(),
+				breakable.getStoppedFramesDuration()));
+		breakable.setSprite(sprite);
+	}
+
 	private void setCoinSprites(Sprite sprite) {
 		String name = "stopped";
 		int[] frames = Coin.FRAMES;

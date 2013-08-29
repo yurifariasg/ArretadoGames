@@ -4,6 +4,8 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.ResourceManager;
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -45,7 +47,6 @@ public class Coin extends DrawableObject{
 
     @Override
     public void drawMyself(Graphics g) {
-        g.setColor(Color.yellow);
-        g.fillOval(x-(this.size/2), y-(this.size/2), this.size, this.size);
+        g.drawImage(ResourceManager.getImageFor(DrawMode.COIN), x-(this.size/2), y-(this.size/2), this.size, this.size, null);
     }    
 }

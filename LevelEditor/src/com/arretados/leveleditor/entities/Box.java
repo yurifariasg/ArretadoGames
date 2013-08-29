@@ -4,7 +4,8 @@
  */
 package com.arretados.leveleditor.entities;
 
-import java.awt.Color;
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.ResourceManager;
 import java.awt.Graphics;
 
 /**
@@ -12,7 +13,7 @@ import java.awt.Graphics;
  * @author Bruno
  */
 public class Box extends DrawableObject{
-    
+        
     private int x;
     private int y;
     private int size;
@@ -45,7 +46,6 @@ public class Box extends DrawableObject{
 
     @Override
     public void drawMyself(Graphics g) {
-        g.setColor(Color.orange);
-        g.fillRect(x-(this.size/2), y-(this.size/2), this.size, this.size);
+        g.drawImage(ResourceManager.getImageFor(DrawMode.BOX), x-(this.size/2), y-(this.size/2), this.size, this.size, null);
     }    
 }

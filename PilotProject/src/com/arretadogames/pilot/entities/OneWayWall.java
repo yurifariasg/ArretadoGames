@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -25,6 +26,7 @@ public class OneWayWall extends Entity{
 	private float height;
 	final private WorldManifold worldManifold = new WorldManifold();
 	private HashSet<Contact> contactSet;
+	private Sprite sprite;
 	
 	public OneWayWall(float x, float y) {
 		super(x, y);
@@ -92,28 +94,36 @@ public class OneWayWall extends Entity{
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
 		RectF rect = new RectF(
-				(- width/2 * GLCanvas.physicsRatio), // Top Left
-				(- height/2 * GLCanvas.physicsRatio), // Top Left
-				(width/2 * GLCanvas.physicsRatio), // Bottom Right
-				(height/2 * GLCanvas.physicsRatio)); // Bottom Right
-		
-		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.WHITE);
+				(- width/2 * GLCanvas.physicsRatio), // Top Left X
+				((- height/2 - 0.3f) * GLCanvas.physicsRatio), // Top Left Y
+				(width/2 * GLCanvas.physicsRatio), // Bottom Right X
+				((height/2 + 2) * GLCanvas.physicsRatio)); // Bottom Right Y
+
+//		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.WHITE);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 	}
 
 	@Override
 	public EntityType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return EntityType.ONEWAY_WALL;
 	}
 
 	@Override
 	public void setSprite(Sprite sprite) {
-		// TODO Auto-generated method stub
-		
+		this.sprite = sprite;
+	}
+
+	public int[] getStoppedFrames() {
+		return new int[] {R.drawable.forest_platform};
+	}
+
+	public float[] getStoppedFramesDuration() {
+		return new float[] {-1f};
 	}
 }

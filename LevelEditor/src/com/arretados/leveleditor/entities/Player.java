@@ -4,8 +4,11 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.ResourceManager;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 
 /**
  *
@@ -51,11 +54,12 @@ public class Player extends DrawableObject{
 
     @Override
     public void drawMyself(Graphics g) {
+        Image img = null;
         if (this.player.equals("player1"))
-            g.setColor(Color.blue);
+            img = ResourceManager.getImageFor(DrawMode.P1);
         else
-            g.setColor(Color.gray);
+            img = ResourceManager.getImageFor(DrawMode.P2);
             
-        g.fillRect(x-(this.size/2), y-(this.size/2), this.size, this.size);
+        g.drawImage(img, x-(this.size/2), y-(this.size/2), this.size, this.size, null);
     }    
 }

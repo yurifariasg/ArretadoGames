@@ -4,7 +4,8 @@
  */
 package com.arretados.leveleditor.entities;
 
-import java.awt.Color;
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.ResourceManager;
 import java.awt.Graphics;
 
 /**
@@ -12,6 +13,7 @@ import java.awt.Graphics;
  * @author Bruno
  */
 public class Breakable extends DrawableObject{
+        
     private int x;
     private int y;
     private int size;
@@ -43,8 +45,7 @@ public class Breakable extends DrawableObject{
 
     @Override
     public void drawMyself(Graphics g) {
-        g.setColor(Color.gray);
-        g.drawRect(this.x-5, this.y-100, 10, 200);
+        g.drawImage(ResourceManager.getImageFor(DrawMode.BREAKABLE), this.x-5, this.y-100, 10, 200, null);
     }
     
 }

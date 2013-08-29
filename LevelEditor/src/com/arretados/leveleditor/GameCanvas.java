@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -82,19 +83,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         
         if (flag != null)
             flag.drawMyself(g);
-
-        int posX,posY;
-        posX = 0;
-        posY = 0;
-        g.setColor(Color.green);
-        for (int i = 0; i < groundPos.size(); i++){
-            posX = groundPos.get(i)[0];
-            posY = groundPos.get(i)[1];
-            if (i == 0)
-                g.drawLine(0, 950, posX, posY);
-            else
-                g.drawLine( groundPos.get(i-1)[0], groundPos.get(i-1)[1], posX, posY);
-        }
+        
+        drawGround(g);
     }
     
     public void drawPlayer(int x, int y){
@@ -358,6 +348,36 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
 
     public void mouseMoved(MouseEvent e) {
+    }
+
+    private void drawGround(Graphics g) {
+        if (groundPos.size() < 2)
+            return;
+        
+        int[] xPos = new int[groundPos.size() + 2];
+        int[] yPos = new int[groundPos.size() + 2];
+        
+        int highestY = Integer.MIN_VALUE;
+        
+        for (int i = 0; i < groundPos.size(); i++){
+            int posX = groundPos.get(i)[0];
+            int posY = groundPos.get(i)[1];
+            
+            xPos[i + 1] = posX;
+            yPos[i + 1] = posY;
+            
+            if (posY > highestY)
+                highestY = posY;
+        }
+        
+        xPos[0] = xPos[1];
+        yPos[0] = highestY + 1000; // Draw the ground 1000 pixels below the lowest
+        
+        xPos[xPos.length - 1] = xPos[xPos.length - 2];
+        yPos[yPos.length - 1] = highestY + 1000; // Draw the ground 1000 pixels below the lowest
+        
+        g.setColor(new Color(153, 76, 0));
+        g.fillPolygon(xPos, yPos, xPos.length);
     }
 
 }

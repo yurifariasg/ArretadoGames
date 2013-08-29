@@ -3,7 +3,6 @@ package com.arretadogames.pilot.entities;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 
-import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;

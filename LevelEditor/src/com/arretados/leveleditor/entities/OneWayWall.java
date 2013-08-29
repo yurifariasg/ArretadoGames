@@ -4,8 +4,11 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.ResourceManager;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 
 /**
  *
@@ -44,10 +47,7 @@ public class OneWayWall extends DrawableObject{
     }
 
     public void drawMyself(Graphics g) {
-        g.setColor(Color.black);
-        g.fillRect(x-(this.size/2), y-10, this.size, 10);
-        g.setColor(Color.green);
-        g.fillRect(x-(this.size/2), y, this.size, 10);
+        g.drawImage(ResourceManager.getImageFor(DrawMode.ONEWAY_WALL), x - 106, y - 10, 212, 112, null);
     }    
     
 }
