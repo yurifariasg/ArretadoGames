@@ -41,12 +41,13 @@ public abstract class Button {
 	
 	public abstract void render(GLCanvas canvas, float timeElapsed);
 	
-	public void input(InputEventHandler event) {
+	public boolean input(InputEventHandler event) {
 		
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			if (pressed(event.getX(), event.getY())) {
 				isSelected = true;
+				return true;
 			} else {
 				isSelected = false;
 			}
@@ -54,6 +55,7 @@ public abstract class Button {
 		case MotionEvent.ACTION_MOVE:
 			if (pressed(event.getX(), event.getY())) {
 				isSelected = true;
+				return true;
 			} else {
 				isSelected = false;
 			}
@@ -61,12 +63,14 @@ public abstract class Button {
 		case MotionEvent.ACTION_UP:
 			if (pressed(event.getX(), event.getY())) {
 				listener.onClick(id);
+				return true;
 			}
 			isSelected = false;
 			break;
 		default:
 			break;
 		}
+		return false;
 	}
 	
 	protected boolean pressed(float x, float y) {

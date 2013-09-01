@@ -12,16 +12,18 @@ public class ToggleButton extends ImageButton {
 	}
 	
 	@Override
-	public void input(InputEventHandler event) {
+	public boolean input(InputEventHandler event) {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_UP:
 			if (pressed(event.getX(), event.getY())) {
 				isSelected = !isSelected;
+				return true;
 			}
 			break;
 		default:
 			break;
 		}
+		return false;
 	}
 	
 	public boolean isToggled() {

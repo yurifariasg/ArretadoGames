@@ -141,6 +141,9 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	 *            new game's current state
 	 */
 	public void goTo(GameState state) {
+		if (state == GameState.CHARACTER_SELECTION){
+			((CharacterSelectionScreen) gameScreens.get(GameState.CHARACTER_SELECTION)).resetSelections();
+		}
 		nextState = state;
 		startTransitionAnimation();
 		loadManager.prepareLoad(new GameState[] { state });

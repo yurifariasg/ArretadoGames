@@ -30,6 +30,7 @@ import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.entities.Pulley;
+import com.arretadogames.pilot.entities.Spike;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.TatuBola;
 import com.arretadogames.pilot.game.Game;
@@ -105,6 +106,9 @@ public class GameWorld extends GameScreen {
 		
 //		worldEntities.add(new Fire(0,0));
 //		worldEntities.add(new Liana(25,9,23,7));
+		Entity spikeA = new Spike(18f, 6.23f);
+		spikeA.setSprite(sm.getSprite(spikeA));
+		worldEntities.add(spikeA);
 		worldEntities.add(new Liana(25f,9f,23f,7f));
 //		worldEntities.add(new OneWayWall(30,6.5f));
 //		worldEntities.add(new Breakable(37,7.5f,0.2f,2f,0,false));
@@ -139,6 +143,10 @@ public class GameWorld extends GameScreen {
 					break;
 				case ONEWAY_WALL:
 					entity = new OneWayWall(entityDescriptor.getX(), entityDescriptor.getY());
+					break;
+					
+				case SPIKE:
+					entity = new Spike(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 				case PULLEY:
 					Entity a = new Box(entityDescriptor.getX()-1,entityDescriptor.getY()-0.7f, 0.7f);

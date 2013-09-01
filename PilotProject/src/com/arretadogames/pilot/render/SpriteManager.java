@@ -9,8 +9,10 @@ import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.Player;
+import com.arretadogames.pilot.entities.Spike;
 
 public class SpriteManager {
+	final String STOPPED_NAME = "stopped";
 	
 	public Sprite getSprite(Entity en){
 		Sprite sprite = new Sprite();
@@ -35,34 +37,42 @@ public class SpriteManager {
 		}else if(en.getType() == EntityType.ONEWAY_WALL){
 			OneWayWall oneWayWall = (OneWayWall) en;
 			setOneWayWallSprite(sprite, oneWayWall);
+		}else if(en.getType() == EntityType.SPIKE){
+			Spike spike = (Spike) en;
+			setSpikeSprite(sprite, spike);
 		}
 		return sprite;
 	}
+		
+	private void setSpikeSprite(Sprite sprite, Spike spike){
+		sprite.setAnimationState(STOPPED_NAME);
+		sprite.addState(new SpriteState(STOPPED_NAME,
+				spike.getStoppedFrames(),
+				spike.getStoppedFramesDuration()));
+		spike.setSprite(sprite);
+	}
 	
 	private void setOneWayWallSprite(Sprite sprite, OneWayWall oneWayWall) {
-		String name = "stopped";
-		sprite.setAnimationState(name);
-		sprite.addState(new SpriteState(name,
+		sprite.setAnimationState(STOPPED_NAME);
+		sprite.addState(new SpriteState(STOPPED_NAME,
 				oneWayWall.getStoppedFrames(),
 				oneWayWall.getStoppedFramesDuration()));
 		oneWayWall.setSprite(sprite);
 	}
 
 	private void setBreakableSprites(Sprite sprite, Breakable breakable) {
-		String name = "stopped";
-		sprite.setAnimationState(name);
-		sprite.addState(new SpriteState(name,
+		sprite.setAnimationState(STOPPED_NAME);
+		sprite.addState(new SpriteState(STOPPED_NAME,
 				breakable.getStoppedFrames(),
 				breakable.getStoppedFramesDuration()));
 		breakable.setSprite(sprite);
 	}
 
 	private void setCoinSprites(Sprite sprite) {
-		String name = "stopped";
 		int[] frames = Coin.FRAMES;
 		float[] framesDur = Coin.DURATION;
-		sprite.setAnimationState(name);
-		sprite.addState(new SpriteState(name, frames, framesDur));
+		sprite.setAnimationState(STOPPED_NAME);
+		sprite.addState(new SpriteState(STOPPED_NAME, frames, framesDur));
 	}
 
 	private void setPlayerSprites(Sprite sprite, Player player){
@@ -86,30 +96,27 @@ public class SpriteManager {
 	}
 	
 	private void setBoxSprites(Sprite sprite, Box box) {
-		String name = "stopped";
 		int[] frames = box.getStoppedFrames();
 		float[] framesDur = box.getStoppedFramesDuration();
-		sprite.setAnimationState(name);
-		sprite.addState(new SpriteState(name, frames, framesDur));
+		sprite.setAnimationState(STOPPED_NAME);
+		sprite.addState(new SpriteState(STOPPED_NAME, frames, framesDur));
 	}
 	
 	
 	private void setFruitSprites(Sprite sprite, Fruit fruit) {
-		String name = "stopped";
 		int[] frames = fruit.getStoppedFrames();
 		float[] framesDur = fruit.getStoppedFramesDuration();
-		sprite.setAnimationState(name);
-		sprite.addState(new SpriteState(name, frames, framesDur));
+		sprite.setAnimationState(STOPPED_NAME);
+		sprite.addState(new SpriteState(STOPPED_NAME, frames, framesDur));
 	}
 	
 	private void setGroundImage(Sprite sprite) {
-		String name = "stopped";
 		int[] frames = new int[1];
 		for (int i = 0; i < frames.length; i++) {
 //			frames[i] = ImageLoader.loadImage(BOX_STOPPED[i]);			
 		}
 		float[] framesDur = {1f};
-		sprite.addState(new SpriteState(name, frames, framesDur));
+		sprite.addState(new SpriteState(STOPPED_NAME, frames, framesDur));
 	}
 
 	private void setFruitImage(Sprite sprite) {
