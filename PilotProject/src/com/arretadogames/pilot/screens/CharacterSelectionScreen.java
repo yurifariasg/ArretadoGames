@@ -275,8 +275,4 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		
 	}
 
-	private void showInvalidCharacterMessage() {
-		Toast.makeText(MainActivity.getContext(), "Selected character not available", Toast.LENGTH_SHORT).show();
-	}
-
 }
