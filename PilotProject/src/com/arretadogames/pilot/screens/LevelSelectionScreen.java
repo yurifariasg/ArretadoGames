@@ -4,11 +4,16 @@ import java.util.List;
 
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
@@ -21,7 +26,7 @@ import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.world.GameWorld;
 
-public class LevelSelectionScreen extends GameScreen implements GameButtonListener {
+public class LevelSelectionScreen extends GameScreen implements GameButtonListener, OnGestureListener {
 	
 	private static final int NEXT_BUTTON = 0;
 	private static final int PREVIOUS_BUTTON = 1;
@@ -33,8 +38,7 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 	// Rendering attributes
 	private LevelSpot[] spots = new LevelSpot[MAX_SPOTS];
 	
-	private ImageButton bt_next;
-	private ImageButton bt_prev;
+	private GestureDetectorCompat mDetector; 	
 	
 	private void setSpotLocation(int index, boolean animate) {
 		if (spots[index] == null)
@@ -89,22 +93,9 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 		}
 		setSpotLocation(2, true);
 		
-		initializeButtons();
+		mDetector = new GestureDetectorCompat(MainActivity.getContext(), this);
 	}
 	
-	private void initializeButtons() {
-		bt_prev = new ImageButton(PREVIOUS_BUTTON,
-				110f, 380f,
-				this,
-				R.drawable.bt_prev_selected,
-				R.drawable.bt_prev_unselected);
-		
-		bt_next = new ImageButton(NEXT_BUTTON,
-				610, 380f,
-				this,
-				R.drawable.bt_next_selected,
-				R.drawable.bt_next_unselected);
-	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
@@ -113,9 +104,6 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 		for (int i = 0 ; i < spots.length ; i++)
 			if (spots[i] != null)
 				spots[i].render(canvas, timeElapsed);
-		
-		bt_next.render(canvas, timeElapsed);
-		bt_prev.render(canvas, timeElapsed);
 	}
 
 	@Override
@@ -124,21 +112,7 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 
 	@Override
 	public void input(InputEventHandler event) {
-		bt_next.input(event);
-		bt_prev.input(event);
-		
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-			if (spots[2] != null && spots[2].contains(event.getX(), event.getY()))
-				start();
-			
-			// Click on right spot
-			if (spots[3] != null && spots[3].contains(event.getX(), event.getY()))
-				next();
-			
-			// Click on left spot
-			if (spots[1] != null && spots[1].contains(event.getX(), event.getY()))
-				previous();
-		}
+		mDetector.onTouchEvent(event.getEvent());
 	}
 
 	@Override
@@ -291,6 +265,68 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 		default:
 			break;
 		}
+	}
+
+
+	@Override
+	public boolean onDown(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		if( velocityX < -1) {
+			onClick(NEXT_BUTTON);
+			return true;
+		}
+		if( velocityX > 1) {
+			onClick(PREVIOUS_BUTTON);
+			return true;
+			
+		}
+		return false;
+	}
+
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		
+		return false;
+	}
+
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	int cont = 0;
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		InputEventHandler event = new InputEventHandler(e);
+		if (spots[2] != null && spots[2].contains(event.getX(), event.getY()))
+			start();
+		
+		// Click on right spot
+		if (spots[3] != null && spots[3].contains(event.getX(), event.getY()))
+			next();
+		
+		// Click on left spot
+		if (spots[1] != null && spots[1].contains(event.getX(), event.getY()))
+			previous();
+		return false;
 	}
 }
 
