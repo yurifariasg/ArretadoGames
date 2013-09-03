@@ -4,50 +4,35 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
-import android.widget.Toast;
+import android.view.MotionEvent;
 import aurelienribon.tweenengine.TweenAccessor;
 
-import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.ui.GameButtonListener;
-import com.arretadogames.pilot.ui.ImageButton;
-import com.arretadogames.pilot.util.Util;
 import com.arretadogames.pilot.world.GameWorld;
 
-public class CharacterSelectionScreen extends GameScreen implements GameButtonListener {
+public class CharacterSelectionScreen extends GameScreen{// implements GameButtonListener {
 	
 	private final RectF BASE_RECT = new RectF(0, 0, 220, 220);
 	private PlayerSelector[] selectors;
 	private CharacterSpot[] spots;
-	private ImageButton selectButton1;
-	private ImageButton selectButton2;
 	private boolean isPlayerOne;
+	private final int playerImgSize[] = ImageLoader.checkBitmapSize(R.drawable.player1);
+	
+	private float imgPlayerWidth = DisplaySettings.TARGET_WIDTH / 2 - (playerImgSize[0]/2);
+	private float imgPlayerHeight = DisplaySettings.TARGET_HEIGHT / 2 - (playerImgSize[1]/2);;
 
 	public CharacterSelectionScreen() {
 		isPlayerOne = true;
 		initializeSelectors();
 		initializeSpots();
-		
-		// Initialize Button1
-		selectButton1 = new ImageButton(R.drawable.player1,
-			DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2,
-			this, R.drawable.player1, R.drawable.player1);
-		selectButton1.setX(selectButton1.getX() - selectButton1.getWidth() / 2);
-		selectButton1.setY(selectButton1.getY() - selectButton1.getHeight() / 2);
-
-		// Initialize Button2
-		selectButton2 = new ImageButton(R.drawable.player2,
-			DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2,
-			this, R.drawable.player2, R.drawable.player2);
-		selectButton2.setX(selectButton2.getX() - selectButton2.getWidth() / 2);
-		selectButton2.setY(selectButton2.getY() - selectButton2.getHeight() / 2);
 	}
 	
 	private void initializeSelectors() {
@@ -75,10 +60,8 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[0].rect.right = spots[0].rect.left + BASE_RECT.width();
 		spots[0].rect.top = CENTER_Y - BASE_RECT.height() - 20;
 		spots[0].rect.bottom = spots[0].rect.top + BASE_RECT.height();
-		spots[0].selector = selectors[0];
-		selectors[0].spot = spots[0];
-		selectors[0].selectorRect = new RectF(spots[0].rect);
-
+		selectors[0].selectorRect = new RectF();
+		
 		spots[1] = new CharacterSpot();
 		spots[1].character = PlayableCharacter.ARARA_AZUL;
 		spots[1].rect = new RectF(BASE_RECT);
@@ -86,6 +69,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[1].rect.right = spots[1].rect.left + BASE_RECT.width();
 		spots[1].rect.top = CENTER_Y - BASE_RECT.height() - 20;
 		spots[1].rect.bottom = spots[1].rect.top + BASE_RECT.height();
+		selectors[1].selectorRect = new RectF();
 		
 		spots[2] = new CharacterSpot();
 		spots[2].character = PlayableCharacter.TATU_BOLA;
@@ -104,16 +88,6 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[3].rect.bottom = spots[3].rect.top + BASE_RECT.height();
 	}
 	
-	private void initSecondPlayer(){
-		if (selectors[0].spot == spots[0]){
-			selectors[1].spot = spots[1];
-			selectors[1].selectorRect = new RectF(spots[1].rect);
-		}else{
-			selectors[1].spot = spots[0];
-			selectors[1].selectorRect = new RectF(spots[0].rect);
-		}
-	}
-	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		for (int i = 0 ; i < spots.length ; i++)
@@ -121,11 +95,11 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		
 		if (isPlayerOne){
 			selectors[0].render(canvas, timeElapsed);
-			selectButton1.render(canvas, timeElapsed);
+			canvas.drawBitmap(R.drawable.player1, imgPlayerWidth, imgPlayerHeight);
 		}else{
 			selectors[0].render(canvas, timeElapsed);
 			selectors[1].render(canvas, timeElapsed);
-			selectButton2.render(canvas, timeElapsed);
+			canvas.drawBitmap(R.drawable.player2, imgPlayerWidth, imgPlayerHeight);
 		}
 	}
 
@@ -136,13 +110,15 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	@Override
 	public void input(InputEventHandler event) {
 		if (isPlayerOne){
-			if (!selectButton1.input(event)){
-				selectors[0].touch(event.getX(), event.getY());
+			if (event.getAction()== MotionEvent.ACTION_UP){
+				if (selectors[0].touch(event.getX(), event.getY()))
+					isPlayerOne = false;
 			}
 			
 		}else{
-			if (!selectButton2.input(event)){
-				selectors[1].touch(event.getX(), event.getY());
+			if (event.getAction()== MotionEvent.ACTION_UP){
+				if (selectors[1].touch(event.getX(), event.getY()))
+					initGame();
 			}
 		}
 	}
@@ -175,26 +151,24 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 			canvas.restoreState();
 		}
 		
-		public void touch(float x, float y) {
-			CharacterSpot newSpot = findClosestSpot(x, y);
-			selectorRect.set(newSpot.rect);
-			spot.selector = null;
-			spot = newSpot;
-			spot.selector = this;
+		public boolean touch(float x, float y) {
+			CharacterSpot newSpot = getSpotAt(x, y);
+			if (newSpot != null){
+				selectorRect.set(newSpot.rect);
+				spot = newSpot;
+				spot.selector = this;
+				return true;
+			}
+			return false;
 		}
 
-		private CharacterSpot findClosestSpot(float x, float y) {
-
-			CharacterSpot closestSpot = spot;
-			float closestDistance = Util.distance(x, y, closestSpot.rect.centerX(), closestSpot.rect.centerY());
-			for (int i = 0 ; i < spots.length ; i++) {
-				if (closestDistance > Util.distance(x, y, spots[i].rect.centerX(), spots[i].rect.centerY()) &&
-				spots[i].isAvailable()) {
-					closestSpot = spots[i];
-					closestDistance = Util.distance(x, y, spots[i].rect.centerX(), spots[i].rect.centerY());
+		private CharacterSpot getSpotAt(float x, float y){
+			for (int i = 0; i < spots.length ; i++) {
+				if (spots[i].rect.contains(x, y) && spots[i].isAvailable()){
+					return spots[i];
 				}
 			}
-			return closestSpot;
+			return null;
 		}
 
 		@Override
@@ -242,7 +216,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 				imageId = R.drawable.macacopregotxutxu;
 				break;
 			default:
-				System.out.println("No ImageId.. ERROR!");
+				System.out.println("No ImageId ERROR!");
 			}
 			
 			canvas.drawBitmap(imageId, rect, false);
@@ -255,24 +229,17 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		initializeSpots();
 	}
 	
-	@Override
-	public void onClick(int buttonId) {
+	
+	private void initGame(){
+		HashMap<PlayerNumber, PlayableCharacter> selectedCharacters = new HashMap<PlayerNumber, PlayableCharacter>();
 		
-		if (isPlayerOne){
-			initSecondPlayer();
-			isPlayerOne = false;
-		}else{
-			HashMap<PlayerNumber, PlayableCharacter> selectedCharacters = new HashMap<PlayerNumber, PlayableCharacter>();
-			
-			for (PlayerSelector selector : selectors) {
-				selectedCharacters.put(selector.player, selector.spot.character);
-			}
-			
-			((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
-			((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
-			Game.getInstance().goTo(GameState.RUNNING_GAME);
-		}		
+		for (PlayerSelector selector : selectors) {
+			selectedCharacters.put(selector.player, selector.spot.character);
+		}
 		
+		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
+		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
+		Game.getInstance().goTo(GameState.RUNNING_GAME);
 	}
 
 }
