@@ -16,12 +16,7 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 		    GameDatabase.LEVEL_TABLE_NAME + " (" +
 			GameDatabase.KEY_LEVEL_ID + " INTEGER PRIMARY KEY, " +
 			GameDatabase.BEST_LEVEL_COINS + " INTEGER, " +
-//			GameDatabase.BEST_LEVEL_TIME + " INTEGER, " +
 			GameDatabase.BEST_LEVEL_COINS_PLAYER + " INTEGER, " +
-//			GameDatabase.BEST_LEVEL_TIME_PLAYER + " INTEGER, " +
-			
-//			FOREIGN KEY(id_categoria) REFERENCES PLAYER(id_categoria)  
-			
 			GameDatabase.LEVEL_ENABLED + " BOOLEAN); ";
 
     public GameDatabaseOpenHelper(Context context) {
