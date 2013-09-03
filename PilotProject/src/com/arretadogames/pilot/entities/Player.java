@@ -62,6 +62,7 @@ public abstract class Player extends Watchable {
 			deathCount++;
 		
 		super.setDead(isDead);
+		disableThis();
 	}
 	
 	public int getDeathCount() {

@@ -2,7 +2,6 @@ package com.arretadogames.pilot.render;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
@@ -17,77 +16,45 @@ import android.util.SparseArray;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.Player;
-import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.world.GameWorld;
 
 public class GameCamera {
 
-	private static GameWorld gameWorld = null;
 	private int backgroundId;
 	
 	private boolean calculateWidthFirst;
-	private int currentNumberOfEnabledEntitiesToBeWatched;
-
-	private Vec2 currentLowerBound;
-	private Vec2 currentUpperBound;
-	private Vec2 currentTranslator;
-	private float currentPhysicsRatio;
-
-	private boolean transitioning;
-	private float transitionDuration; //Measured in milliseconds.
-	private long startTime;
-
-	private Vec2 targetLowerBound;
-	private Vec2 targetUpperBound;
-	private Vec2 targetTranslator;
-	private float targetPhysicsRatio;
 	
+	private int currentNumEnabledEntitiesToWatch;
+	private SparseArray<Watchable> entitiesToWatch;
+
 	private long time;
 	
-	SparseArray<Watchable> entitiesToWatch;
-	
-	public static SparseArray<Watchable> getPlayers(){
+	public GameCamera(int backgroundId){
 		
-		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
-		SparseArray<Watchable> toWatch = new SparseArray<Watchable>();
-		
-		for (PlayerNumber n : players.keySet() ){
-			toWatch.put(n.getValue(), players.get(n));
-		}
-		return toWatch;
+		this(null, backgroundId);
 	}
 	
-	public GameCamera(GameWorld world, int backgroundId){
+	public GameCamera(SparseArray<Watchable> toWatch, int backgroundId){
 
-		this(world, 250f, getPlayers()); //Default is 250 milliseconds
+		calculateWidthFirst = true;
+		entitiesToWatch = toWatch;
+		currentNumEnabledEntitiesToWatch = getNumberOfEnabledEntitiesToWatch();
 		this.backgroundId = backgroundId;
 	}
 
-	public GameCamera(GameWorld world, float setTransitionDuration, SparseArray<Watchable> toWatch){
-
-		gameWorld = world;
-
-		calculateWidthFirst = true;
-		currentNumberOfEnabledEntitiesToBeWatched = -1;
-		transitioning = false;
-		transitionDuration = setTransitionDuration;
-		currentLowerBound = null;
-		currentUpperBound = null;
-		currentTranslator = null;
-		currentPhysicsRatio = 0;
-		targetLowerBound = null;
-		targetUpperBound = null;
-		targetTranslator = null;
-		targetPhysicsRatio = 0;
-		startTime = 0;
+	public void setEntitiesToWatch(SparseArray<Watchable> toWatch){
+		
 		entitiesToWatch = toWatch;
+		currentNumEnabledEntitiesToWatch = getNumberOfEnabledEntitiesToWatch();
 	}
 	
-	private int getNumberOfEnabledEntitiesToBeWatched() {
+	private int getNumberOfEnabledEntitiesToWatch() {
+		
+		if ( entitiesToWatch == null ){
+			return -1;
+		}
 		
 		int alive = 0;
 		
@@ -99,33 +66,38 @@ public class GameCamera {
 		return alive;
 	}
 
-	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
-	private void determineViewport(GLCanvas gameCanvas, float timeElapsed){
+	private void handleCurrentNumberOfEntitiesToWatch() {
+
+		int numEnabledEntitiesToWatch = getNumberOfEnabledEntitiesToWatch();
 		
-		if (DisplaySettings.PROFILE_GAME_CAMERA)
-			time = System.nanoTime() / 1000000;
-
-		int numberOfEnabledEntitiesToBeWatched = getNumberOfEnabledEntitiesToBeWatched();
-		if ( currentNumberOfEnabledEntitiesToBeWatched == -1 ){
-			currentNumberOfEnabledEntitiesToBeWatched = numberOfEnabledEntitiesToBeWatched;
+		if ( numberOfEntitiesToWatchHasChanged(numEnabledEntitiesToWatch) ){
+			TransitionManager.startTransition();
+			Viewport.resetTargetViewport();
 		}
-		if ( numberOfEnabledEntitiesToBeWatched != currentNumberOfEnabledEntitiesToBeWatched ){
-			transitioning = true;
-			startTime = getCurrentTime();
-			targetLowerBound = null;
-			targetUpperBound = null;
-			targetTranslator = null;
-//			System.out.println("TRANSITION IS STARTED");
+		currentNumEnabledEntitiesToWatch = numEnabledEntitiesToWatch;
+	}
+
+	private boolean numberOfEntitiesToWatchHasChanged(int numEnabledEntitiesToWatch){
+
+		return numEnabledEntitiesToWatch != currentNumEnabledEntitiesToWatch;
+	}
+	
+	public class EarlyConstraints{
+		
+		public float maxXDistance, maxYDistance;
+		public Vec2 center;
+		
+		public EarlyConstraints(){
+			maxXDistance = 0;
+			maxYDistance = 0;
+			center = new Vec2();
 		}
-		currentNumberOfEnabledEntitiesToBeWatched = numberOfEnabledEntitiesToBeWatched;
+	}
+	
+	private EarlyConstraints determineEarlyConstraints(){
 
-		float viewportWidth, viewportHeight, physicsRatio;
-		Vec2 lowerBound, upperBound, translator;
-
-		float maxXDistance = 0;
-		float maxYDistance = 0;
-		Vec2 center = new Vec2();
-
+		EarlyConstraints constraints = new EarlyConstraints();
+		
 		for ( int i=0; i<entitiesToWatch.size(); i++ ){
 			
 			int key = entitiesToWatch.keyAt(i);
@@ -137,7 +109,7 @@ public class GameCamera {
 			float x = entity.getPosX();
 			float y = entity.getPosY();
 
-			center.addLocal(x, y);
+			constraints.center.addLocal(x, y);
 
 			for ( int j=0; j<entitiesToWatch.size(); j++ ){
 			
@@ -154,164 +126,94 @@ public class GameCamera {
 				float currentXDistance = Math.abs(x - x2);
 				float currentYDistance = Math.abs(y - y2);
 
-				if ( maxXDistance == 0 ){
-					maxXDistance = currentXDistance;
+				if ( constraints.maxXDistance == 0 ){
+					constraints.maxXDistance = currentXDistance;
 				}
-				else if ( maxXDistance < currentXDistance ){
-					maxXDistance = currentXDistance;
+				else if ( constraints.maxXDistance < currentXDistance ){
+					constraints.maxXDistance = currentXDistance;
 				}
-				if ( maxYDistance == 0 ){
-					maxYDistance = currentYDistance;
+				if ( constraints.maxYDistance == 0 ){
+					constraints.maxYDistance = currentYDistance;
 				}
-				else if ( maxYDistance < currentYDistance ){
-					maxYDistance = currentYDistance;
+				else if ( constraints.maxYDistance < currentYDistance ){
+					constraints.maxYDistance = currentYDistance;
 				}
 			}
 		}
 
-		center.mulLocal(1f / numberOfEnabledEntitiesToBeWatched);
+		constraints.center.mulLocal(1f / currentNumEnabledEntitiesToWatch);
+		return constraints;
+	}
 
-		if ( maxYDistance <= maxXDistance * 0.5f ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
+	public class LateConstraints{
+		
+		public float viewportWidth, viewportHeight, physicsRatio;
+		
+		public LateConstraints(){
+			viewportWidth = 0;
+			viewportHeight = 0;
+			physicsRatio = 0;
+		}
+	}
+	
+	private LateConstraints determineLateConstraints(EarlyConstraints earlyConstraints) {
 
-			viewportWidth = maxXDistance +10;//+ 15;//+ 30;
-			physicsRatio = DisplaySettings.TARGET_WIDTH / viewportWidth;
-			viewportHeight = DisplaySettings.TARGET_HEIGHT / physicsRatio;
+		LateConstraints constraints = new LateConstraints();
+		
+		if ( earlyConstraints.maxYDistance <= earlyConstraints.maxXDistance * 0.5f ){
+			//Threshold indicating when it is good to start calculating height first. Measured in meters.
 
-			if ( !transitioning ){
+			constraints.viewportWidth = earlyConstraints.maxXDistance +10;//+ 15;//+ 30;
+			constraints.physicsRatio = DisplaySettings.TARGET_WIDTH / constraints.viewportWidth;
+			constraints.viewportHeight = DisplaySettings.TARGET_HEIGHT / constraints.physicsRatio;
+
+			if ( TransitionManager.transitionWasNotHappening() ){
 
 				if ( !calculateWidthFirst ){
-					transitioning = true;
-					startTime = getCurrentTime();
-//					System.out.println("TRANSITION IS STARTED");
+					TransitionManager.startTransition();
 				}
 				calculateWidthFirst = true;
 			}
 		}
 		else{
 
-			viewportHeight = maxYDistance +6;//+ 9;//+ 18;
-			physicsRatio = DisplaySettings.TARGET_HEIGHT / viewportHeight;
-			viewportWidth = DisplaySettings.TARGET_WIDTH / physicsRatio;
+			constraints.viewportHeight = earlyConstraints.maxYDistance +6;//+ 9;//+ 18;
+			constraints.physicsRatio = DisplaySettings.TARGET_HEIGHT / constraints.viewportHeight;
+			constraints.viewportWidth = DisplaySettings.TARGET_WIDTH / constraints.physicsRatio;
 
-			if ( !transitioning ){
+			if ( TransitionManager.transitionWasNotHappening() ){
 
 				if ( calculateWidthFirst ){
-					transitioning = true;
-					startTime = getCurrentTime();
-//					System.out.println("TRANSITION IS STARTED");
+					TransitionManager.startTransition();
 				}
 				calculateWidthFirst = false;
 			}
 		}
-
-		lowerBound = new Vec2(center.x - viewportWidth/2, center.y - viewportHeight/2);
-		upperBound = new Vec2(center.x + viewportWidth/2, center.y + viewportHeight/2);
-		translator = new Vec2( -physicsRatio * (center.x - viewportWidth/2), physicsRatio * (center.y - viewportHeight/2) );
-
-		if ( !transitioning ){
-			currentLowerBound = lowerBound;
-			currentUpperBound = upperBound;
-			currentTranslator = translator;
-			currentPhysicsRatio = physicsRatio;
-		}
-		else{
-			targetLowerBound = lowerBound;
-			targetUpperBound = upperBound;
-			targetTranslator = translator;
-			targetPhysicsRatio = physicsRatio;
-		}
-
-		if ( currentLowerBound == null ){
-			currentLowerBound = targetLowerBound;
-			currentUpperBound = targetUpperBound;
-			currentTranslator = targetTranslator;
-			currentPhysicsRatio = targetPhysicsRatio;
-		}
-		else if ( targetLowerBound == null ){
-			targetLowerBound = currentLowerBound;
-			targetUpperBound = currentUpperBound;
-			targetTranslator = currentTranslator;
-			targetPhysicsRatio = currentPhysicsRatio;
-		}
-		
-		if ( transitioning ){
-
-			float currentTime = getCurrentTime();
-			float elapsedTime = currentTime - startTime;
-			float reachedPercentage = elapsedTime / transitionDuration;
-
-			if ( reachedPercentage >= 1 ){
-
-//				System.out.println("TRANSITION IS OVER");
-				transitioning = false;
-				
-				currentLowerBound = new Vec2(targetLowerBound);
-				lowerBound = currentLowerBound;
-
-				currentUpperBound = new Vec2(targetUpperBound);
-				upperBound = currentUpperBound;
-
-				currentTranslator = new Vec2(targetTranslator);
-				translator = currentTranslator;
-
-				currentPhysicsRatio = targetPhysicsRatio;
-				physicsRatio = currentPhysicsRatio;
-
-				targetLowerBound = null;
-				targetUpperBound = null;
-				targetTranslator = null;
-				targetPhysicsRatio = 0;
-			}
-			else{
-
-				lowerBound = new Vec2(currentLowerBound);
-				lowerBound.addLocal(targetLowerBound.sub(currentLowerBound).mul(reachedPercentage));
-
-				upperBound = new Vec2(currentUpperBound);
-				upperBound.addLocal(targetUpperBound.sub(currentUpperBound).mul(reachedPercentage));
-
-				translator = new Vec2(currentTranslator);
-				translator.addLocal(targetTranslator.sub(currentTranslator).mul(reachedPercentage));
-
-				physicsRatio = currentPhysicsRatio;
-				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio)*reachedPercentage;
-			}
-		}
-		
-		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profling", "Calculate Viewport: " + (System.nanoTime()/1000000 - time));
-			time = System.nanoTime() / 1000000;
-		}
-
-
-		gameCanvas.setPhysicsRatio(physicsRatio);
-
-		drawBackground(gameCanvas, center);
-		
-		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profling", "Draw Background: " + (System.nanoTime()/1000000 - time));
-			time = System.nanoTime() / 1000000;
-		}
-
-		gameCanvas.saveState();
-		
-		gameCanvas.translate(translator.x, translator.y);
-
-		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, upperBound);
-
-		for ( Entity entity : entities ){
-			entity.render(gameCanvas, timeElapsed);
-		}
-		
-		if (DisplaySettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profling", "Draw Entities: " + (System.nanoTime()/1000000 - time));
-			time = System.nanoTime() / 1000000;
-		}
-
-		gameCanvas.restoreState();
-
+		return constraints;
 	}
 
+	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
+
+		final Collection<Entity> entities = new ArrayList<Entity>();
+
+		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() {
+
+			@Override
+			public boolean reportFixture(Fixture fixture) {
+
+				Object e = fixture.getBody().getUserData();
+				if ( e != null ){
+
+					Entity entity = (Entity) e;
+					entities.add(entity);
+				}
+				return true;
+			}
+		}, new AABB(lowerBound, upperBound));
+
+		return entities;
+	}
+	
 	private void drawBackground(GLCanvas gameCanvas, Vec2 center) {
 
 		backgroundId = R.drawable.dark;
@@ -380,35 +282,64 @@ public class GameCamera {
 		}
 	}
 
-	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 upperBound) {
+	private void drawViewportEntities(GLCanvas gameCanvas, float timeElapsed, Viewport viewport) {
 
-		final Collection<Entity> entities = new ArrayList<Entity>();
+		gameCanvas.saveState();
+		
+		gameCanvas.translate(viewport.translator.x, viewport.translator.y);
 
-		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() {
+		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(viewport.lowerBound, viewport.upperBound);
 
-			@Override
-			public boolean reportFixture(Fixture fixture) {
-
-				Object e = fixture.getBody().getUserData();
-				if ( e != null ){
-
-					Entity entity = (Entity) e;
-					entities.add(entity);
-				}
-				return true;
-			}
-		}, new AABB(lowerBound, upperBound));
-
-		return entities;
+		for ( Entity entity : entities ){
+			entity.render(gameCanvas, timeElapsed);
+		}
+		
+		gameCanvas.restoreState();
 	}
+	
+	private void drawViewportAndBackground(GLCanvas gameCanvas, float timeElapsed){
+		
+		if (DisplaySettings.PROFILE_GAME_CAMERA){
+			time = System.nanoTime() / 1000000;
+		}
 
+		if ( entitiesToWatch == null ){
+			return;
+		}
+		
+		handleCurrentNumberOfEntitiesToWatch();
+
+		EarlyConstraints earlyConstraints = determineEarlyConstraints();
+
+		LateConstraints lateConstraints = determineLateConstraints(earlyConstraints);
+		
+		Viewport viewport = new Viewport(earlyConstraints, lateConstraints);
+		
+		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			Log.d("Profling", "Calculate Viewport: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime() / 1000000;
+		}
+
+		gameCanvas.setPhysicsRatio(lateConstraints.physicsRatio);
+
+		drawBackground(gameCanvas, earlyConstraints.center);
+		
+		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			Log.d("Profling", "Draw Background: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime() / 1000000;
+		}
+
+		drawViewportEntities(gameCanvas, timeElapsed, viewport);
+
+		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			Log.d("Profling", "Draw Viewport Entities: " + (System.nanoTime()/1000000 - time));
+			time = System.nanoTime() / 1000000;
+		}
+
+	}
+	
 	public void render(final GLCanvas canvas, final float timeElapsed) {
-		determineViewport(canvas, timeElapsed);
-	}
-
-	private long getCurrentTime() {
-
-		return System.nanoTime()/1000000;
+		drawViewportAndBackground(canvas, timeElapsed);
 	}
 
 }

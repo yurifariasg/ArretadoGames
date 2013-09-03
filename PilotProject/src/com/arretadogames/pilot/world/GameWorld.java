@@ -9,6 +9,7 @@ import java.util.List;
 import org.jbox2d.common.Vec2;
 
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
@@ -19,7 +20,6 @@ import com.arretadogames.pilot.entities.Coin;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.FinalFlag;
-import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.Liana;
@@ -42,6 +42,7 @@ import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.SpriteManager;
+import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
@@ -76,7 +77,7 @@ public class GameWorld extends GameScreen {
 		backgroundId = R.drawable.stage_background;
 		pWorld = PhysicalWorld.getInstance();
 		ui = new GameWorldUI(this);
-		gameCamera = new GameCamera(this, backgroundId);
+		gameCamera = new GameCamera(backgroundId);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		totalElapsedSeconds = 0;
@@ -89,6 +90,7 @@ public class GameWorld extends GameScreen {
 		
 		load(level); 
 		isInitialized = true;
+		setPlayersAsCurrentEntitiesToWatch();
 	}
 	
 	private void load(LevelDescriptor ld) {
@@ -336,6 +338,17 @@ public class GameWorld extends GameScreen {
 	
 	public HashMap<PlayerNumber, Player> getPlayers(){
 		return players;
+	}
+	
+	public void setPlayersAsCurrentEntitiesToWatch(){
+		
+		HashMap<PlayerNumber, Player> players = getPlayers();
+		SparseArray<Watchable> toWatch = new SparseArray<Watchable>();
+		
+		for (PlayerNumber n : players.keySet() ){
+			toWatch.put(n.getValue(), players.get(n));
+		}
+		gameCamera.setEntitiesToWatch(toWatch);
 	}
 
 	public Collection<Entity> getEntities(){
