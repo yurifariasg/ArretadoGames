@@ -2,11 +2,12 @@ package com.arretadogames.pilot.entities;
 
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.world.GameWorld;
 
 
 
-public abstract class Player extends Entity {
+public abstract class Player extends Watchable {
 	
 	private PlayerNumber playerNumber;
 	private boolean hasFinished; /* Player has finished level */

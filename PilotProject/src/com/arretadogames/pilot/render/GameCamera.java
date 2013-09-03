@@ -3,8 +3,6 @@ package com.arretadogames.pilot.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
@@ -14,6 +12,7 @@ import org.jbox2d.dynamics.Fixture;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
@@ -24,13 +23,14 @@ import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.world.GameWorld;
+
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;
 	private int backgroundId;
 	
 	private boolean calculateWidthFirst;
-	private int currentNumberOfPlayers;
+	private int currentNumberOfEnabledEntitiesToBeWatched;
 
 	private Vec2 currentLowerBound;
 	private Vec2 currentUpperBound;
@@ -47,19 +47,32 @@ public class GameCamera {
 	private float targetPhysicsRatio;
 	
 	private long time;
-
+	
+	SparseArray<Watchable> entitiesToWatch;
+	
+	public static SparseArray<Watchable> getPlayers(){
+		
+		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
+		SparseArray<Watchable> toWatch = new SparseArray<Watchable>();
+		
+		for (PlayerNumber n : players.keySet() ){
+			toWatch.put(n.getValue(), players.get(n));
+		}
+		return toWatch;
+	}
+	
 	public GameCamera(GameWorld world, int backgroundId){
 
-		this(world, 250f);//Default is 250 milliseconds
+		this(world, 250f, getPlayers()); //Default is 250 milliseconds
 		this.backgroundId = backgroundId;
 	}
 
-	public GameCamera(GameWorld world, float setTransitionDuration){
+	public GameCamera(GameWorld world, float setTransitionDuration, SparseArray<Watchable> toWatch){
 
 		gameWorld = world;
 
 		calculateWidthFirst = true;
-		currentNumberOfPlayers = -1;
+		currentNumberOfEnabledEntitiesToBeWatched = -1;
 		transitioning = false;
 		transitionDuration = setTransitionDuration;
 		currentLowerBound = null;
@@ -71,13 +84,18 @@ public class GameCamera {
 		targetTranslator = null;
 		targetPhysicsRatio = 0;
 		startTime = 0;
+		entitiesToWatch = toWatch;
 	}
 	
-	private int getNumberOfAlivePlayers(Collection<Player> players) {
+	private int getNumberOfEnabledEntitiesToBeWatched() {
+		
 		int alive = 0;
-		for (Player p : players)
-			if (p.isAlive())
+		
+		for ( int i=0; i<entitiesToWatch.size(); i++ ){
+			if ( entitiesToWatch.get(entitiesToWatch.keyAt(i)).isEnabled() ){
 				alive++;
+			}
+		}
 		return alive;
 	}
 
@@ -87,13 +105,11 @@ public class GameCamera {
 		if (DisplaySettings.PROFILE_GAME_CAMERA)
 			time = System.nanoTime() / 1000000;
 
-		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
-
-		int numberOfPlayers = getNumberOfAlivePlayers(players.values());
-		if ( currentNumberOfPlayers == -1 ){
-			currentNumberOfPlayers = numberOfPlayers;
+		int numberOfEnabledEntitiesToBeWatched = getNumberOfEnabledEntitiesToBeWatched();
+		if ( currentNumberOfEnabledEntitiesToBeWatched == -1 ){
+			currentNumberOfEnabledEntitiesToBeWatched = numberOfEnabledEntitiesToBeWatched;
 		}
-		if ( numberOfPlayers != currentNumberOfPlayers ){
+		if ( numberOfEnabledEntitiesToBeWatched != currentNumberOfEnabledEntitiesToBeWatched ){
 			transitioning = true;
 			startTime = getCurrentTime();
 			targetLowerBound = null;
@@ -101,7 +117,7 @@ public class GameCamera {
 			targetTranslator = null;
 //			System.out.println("TRANSITION IS STARTED");
 		}
-		currentNumberOfPlayers = numberOfPlayers;
+		currentNumberOfEnabledEntitiesToBeWatched = numberOfEnabledEntitiesToBeWatched;
 
 		float viewportWidth, viewportHeight, physicsRatio;
 		Vec2 lowerBound, upperBound, translator;
@@ -110,29 +126,30 @@ public class GameCamera {
 		float maxYDistance = 0;
 		Vec2 center = new Vec2();
 
-		Iterator<PlayerNumber> iiterator = players.keySet().iterator();
-		while ( iiterator.hasNext() ){
-
-			PlayerNumber i = iiterator.next();
-			if (!players.get(i).isAlive())
-				continue;
+		for ( int i=0; i<entitiesToWatch.size(); i++ ){
 			
-			float x = players.get(i).getPosX();
-			float y = players.get(i).getPosY();
+			int key = entitiesToWatch.keyAt(i);
+			Watchable entity = entitiesToWatch.get(key);
+			if ( entity.isDisabled() ){
+				continue;
+			}
+			
+			float x = entity.getPosX();
+			float y = entity.getPosY();
 
 			center.addLocal(x, y);
 
-			Iterator<PlayerNumber> jiterator = players.keySet().iterator();
-			while ( jiterator.hasNext() ){
-
-				PlayerNumber j = jiterator.next();
+			for ( int j=0; j<entitiesToWatch.size(); j++ ){
+			
+				int key2 = entitiesToWatch.keyAt(j);
+				Watchable otherEntity = entitiesToWatch.get(key2);
 				
-				if ( i.equals(j) || !players.get(j).isAlive() ){
+				if ( key == key2 || otherEntity.isDisabled() ){
 					continue;
 				}
 
-				float x2 = players.get(j).getPosX();
-				float y2 = players.get(j).getPosY();
+				float x2 = otherEntity.getPosX();
+				float y2 = otherEntity.getPosY();
 
 				float currentXDistance = Math.abs(x - x2);
 				float currentYDistance = Math.abs(y - y2);
@@ -152,7 +169,7 @@ public class GameCamera {
 			}
 		}
 
-		center.mulLocal(1f / numberOfPlayers);
+		center.mulLocal(1f / numberOfEnabledEntitiesToBeWatched);
 
 		if ( maxYDistance <= maxXDistance * 0.5f ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
