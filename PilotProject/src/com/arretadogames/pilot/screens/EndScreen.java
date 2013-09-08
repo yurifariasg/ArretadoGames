@@ -26,6 +26,7 @@ public class EndScreen extends GameScreen {
 	private static final int PLAYER_INFO_Y_SPACING = 50;
 	private static final int PLAYER_INFO_X_OFFSET = 0;
 	private static final int SECONDS_TO_WAIT = 5;
+	private static final int TOTAL_OF_RECORDS = 3;
 	
 	private float totalTimeElapsed;
 	private boolean hasWon;
@@ -74,29 +75,49 @@ public class EndScreen extends GameScreen {
 		Player p1 = players.get(PlayerNumber.ONE);
 		Player p2 = players.get(PlayerNumber.TWO);
 		
-		//Setando melhor quantia de moedas
-		if (p2.getCoins() < p1.getCoins()){
-			if (ld.getBestCoins() < p1.getCoins()){
-				ld.setBestCoins(p1.getCoins());
-				GameDatabase.getInstance().setBestCoins(p1.getCoins(), ld.getId(), 1/*p1.getId()*/);
-			}			
-			
-		}else{
-			if (ld.getBestCoins() < p2.getCoins()){
-				ld.setBestCoins(p2.getCoins());
-				GameDatabase.getInstance().setBestCoins(p2.getCoins(), ld.getId(), 2/*p2.getId()*/);
-			}
-		}
-		
-		System.out.println("P1 Coins: " + p1.getCoins());
 		Account acc1 = AccountManager.get().getAccount1();
 		acc1.setCoins(acc1.getCoins() + p1.getCoins());
 		Account acc2 = AccountManager.get().getAccount2();
 		acc2.setCoins(acc2.getCoins() + p2.getCoins());
 		AccountManager.get().saveState();
+				
+		setNewRecord(p1.getCoins(), acc1.getAccountId());
+		setNewRecord(p2.getCoins(), acc2.getAccountId());
 		
 		initializePlayerInfo(130, p1);
 		initializePlayerInfo(680, p2);
+	}
+	
+	private void setNewRecord(int coins, String accId){
+		int[] recs = ld.getRecords();
+		
+		if (recs != null){
+					
+			for(int i = 0; i < recs.length; i++){
+				if(recs[i] <= coins){
+					if (i == 0){
+						ld.setNewRecord(recs[i+1], i+2);
+						ld.setNewRecord(recs[i], i+1);
+						ld.setNewRecord(coins, i);
+						GameDatabase.getInstance().setNewRecord(ld.getId(), accId, coins, recs[0], recs[1]);
+						return;
+					}else if(i == 1){
+						ld.setNewRecord(recs[i], i+1);
+						ld.setNewRecord(coins, i);
+						GameDatabase.getInstance().setNewRecord(ld.getId(), accId, recs[0], coins, recs[1]);
+						return;
+					}else if(i == 2){
+						ld.setNewRecord(coins, i);
+						GameDatabase.getInstance().setNewRecord(ld.getId(), accId, recs[0], recs[1], coins);
+						return;
+					}
+				}
+			}
+			
+		}else{
+			ld.setNewRecord(coins, 0); //The first record save goes here
+			GameDatabase.getInstance().setNewRecord(ld.getId(), accId, coins, 0, 0);
+		}
 	}
 
 	private void initializePlayerInfo(int x, Player player) {

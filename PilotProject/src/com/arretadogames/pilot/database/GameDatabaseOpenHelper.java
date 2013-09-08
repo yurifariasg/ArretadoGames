@@ -11,12 +11,16 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 	
     private static final int DATABASE_VERSION = 42;
     private static final String DATABASE_NAME = "pilotproject_db";
-   
+    
     private static final String LEVEL_TABLE_CREATE = "CREATE TABLE " +
-		    GameDatabase.LEVEL_TABLE_NAME + " (" +
-			GameDatabase.KEY_LEVEL_ID + " INTEGER PRIMARY KEY, " +
-			GameDatabase.BEST_LEVEL_COINS + " INTEGER, " +
-			GameDatabase.BEST_LEVEL_COINS_PLAYER + " INTEGER, " +
+		    GameDatabase.TABLE_LEVEL + " (" +
+			GameDatabase.LEVEL_ID + " INTEGER PRIMARY KEY, " +
+			GameDatabase.ACC_ID_RECORD_FIRST + " INTEGER, " +
+			GameDatabase.RECORD_VALUE_FIRST + " INTEGER, " +
+			GameDatabase.ACC_ID_RECORD_SECOND + " INTEGER, " +
+			GameDatabase.RECORD_VALUE_SECOND + " INTEGER, " +
+			GameDatabase.ACC_ID_RECORD_THIRD + " INTEGER, " +
+			GameDatabase.RECORD_VALUE_THIRD + " INTEGER, " +
 			GameDatabase.LEVEL_ENABLED + " BOOLEAN); ";
 
     public GameDatabaseOpenHelper(Context context) {
@@ -30,11 +34,12 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
         ContentValues values = new ContentValues();
         
         for(int i = 0; i < LevelTable.LEVELS.length; i++){
-	        values.put(GameDatabase.KEY_LEVEL_ID, i);
-	        values.put(GameDatabase.BEST_LEVEL_COINS, -1);
-	        values.put(GameDatabase.BEST_LEVEL_COINS_PLAYER, 1); //Bug esta aqui! qual player tem a melhor pontuacao?        
+	        values.put(GameDatabase.LEVEL_ID, i);
 	        values.put(GameDatabase.LEVEL_ENABLED, true);
-	        db.insert(GameDatabase.LEVEL_TABLE_NAME, null, values);
+	        values.put(GameDatabase.RECORD_VALUE_FIRST, -1);
+	        values.put(GameDatabase.RECORD_VALUE_SECOND, -1);
+	        values.put(GameDatabase.RECORD_VALUE_THIRD, -1); 
+	        db.insert(GameDatabase.TABLE_LEVEL, null, values);
 	        
 	        values.clear();
 	    }
