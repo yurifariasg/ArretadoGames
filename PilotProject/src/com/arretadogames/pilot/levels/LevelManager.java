@@ -53,6 +53,8 @@ public class LevelManager {
 	private static void loadlevels() {
 		// Load Levels from DB and place them at levels variable
 		levels = GameDatabase.getInstance().getAllLevels();
+		System.out.println("!!! ID do level Zero: " + levels.get(0).getId());
+		System.out.println("!!! record1: " + levels.get(0).getRecords()[0]);
 	}
 
 }

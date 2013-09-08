@@ -191,15 +191,22 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 			
 			if (zoom == 2) {
 				
-				int bestCoins = levels.get(currentIndex).getBestCoins();
-				canvas.drawText("Coins: " +
-						(bestCoins == -1 ? "?" : String.valueOf(bestCoins)), drawRect.centerX(),
-						drawRect.centerY() + 160, textPaint, true);
+				int stRecord = levels.get(currentIndex).getRecords()[0];
+				canvas.drawText(
+						"1st Coins: " + (stRecord == -1 ? "?" : String.valueOf(stRecord)),
+						drawRect.centerX(),	drawRect.centerY() + 130, textPaint, true);
 				
-				/*int bestTime = levels.get(currentIndex).getBestTime();
-				canvas.drawText("Time: " +
-						(bestTime == -1 ? "?" : String.valueOf(bestTime)), drawRect.centerX(),
-						drawRect.centerY() + 160, textPaint, true);*/
+				int ndRecord = levels.get(currentIndex).getRecords()[1];
+				canvas.drawText(
+						"2nd Coins: " + (ndRecord == -1 ? "?" : String.valueOf(ndRecord)),
+						drawRect.centerX(),	drawRect.centerY() + 160, textPaint, true);
+				
+				int rdRecord = levels.get(currentIndex).getRecords()[2];
+				canvas.drawText(
+						"3rd Coins: " + (rdRecord == -1 ? "?" : String.valueOf(rdRecord)),
+						drawRect.centerX(),	drawRect.centerY() + 190, textPaint, true);
+
+				
 			}
 		}
 	}

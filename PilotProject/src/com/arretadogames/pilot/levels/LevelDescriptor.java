@@ -7,15 +7,38 @@ public class LevelDescriptor {
 	private List<EntityDescriptor> entities;
 	private GroundDescriptor groundDescriptor;
 	private int id;
-	private int bestCoins;
+	private int theBest;
+	private int secondBest;
+	private int thirdBest;
 	private boolean isEnabled;
 	
-	public int getBestCoins() {
-		return bestCoins;
+	public int[] getRecords() {
+		if (theBest == 0 && secondBest == 0 && thirdBest == 0)
+			return null;
+		
+		return new int[] {theBest, secondBest, thirdBest};
 	}
 
-	public void setBestCoins(int bestCoins) {
-		this.bestCoins = bestCoins;
+	public void setRecords(int[] records) {
+		this.theBest = records[0];
+		this.secondBest = records[1];
+		this.thirdBest = records[2];
+	}
+	
+	public void setNewRecord(int coins, int num) {
+		switch(num){
+			case 0: 
+				theBest = coins;
+				break;
+			case 1: 
+				secondBest = coins;
+				break;
+			case 2: 
+				thirdBest = coins;
+				break;
+			default:
+				break;
+		}
 	}
 
 	public boolean isEnabled() {
