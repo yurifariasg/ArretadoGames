@@ -213,7 +213,7 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 				imageId = R.drawable.selection_tatu_bola;
 				break;
 			case MACACO_PREGO:
-				imageId = R.drawable.macacopregotxutxu;
+				imageId = R.drawable.selection_macaco_prego;
 				break;
 			default:
 				System.out.println("No ImageId ERROR!");
