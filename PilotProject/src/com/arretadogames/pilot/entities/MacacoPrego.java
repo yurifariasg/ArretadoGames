@@ -39,9 +39,8 @@ public class MacacoPrego extends Player implements Steppable{
 	private boolean isonliana;
 	private Body b;
 	
-	private static final int[] WALKING = {R.drawable.macacoandando};
-
-	private static final int[] JUMP = {R.drawable.macacoandando};
+	private static final int[] WALKING = {R.drawable.monkey_walk_right_1, R.drawable.monkey_walk_right_2};
+	private static final int[] JUMP = {R.drawable.monkey_jump_right, R.drawable.monkey_jump_right_1, R.drawable.monkey_jump_right_2, R.drawable.monkey_jump_right_3};
 	
 	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
 				 R.drawable.lobo_guara_act2,
@@ -133,7 +132,10 @@ public class MacacoPrego extends Player implements Steppable{
 	
 	
 	public void run(){
-		if( isonliana)return;
+		if( isonliana) {
+			sprite.setAnimationState("jump");
+			return;
+		}
 		if(body.getLinearVelocity().x < 1.5){ 
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
@@ -199,7 +201,7 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 	
 	public float[] getWalkFramesDuration(){
-		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
+		return new float[] {0.5f, 0.5f};
 	}
 
 	@Override
@@ -208,7 +210,7 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 	
 	public float[] getJumpFramesDuration(){
-		return new float[] {0.3f, 0.3f, 0f};
+		return new float[] {1f, 1f, 0f};
 	}
 
 	@Override
@@ -242,8 +244,8 @@ public class MacacoPrego extends Player implements Steppable{
 		RectF rect = new RectF(
 				(- radius* GLCanvas.physicsRatio), // Top Left
 				(- radius * GLCanvas.physicsRatio), // Top Top Left
-				(radius * GLCanvas.physicsRatio), // Bottom Right
-				(radius * GLCanvas.physicsRatio)); // Bottom Right
+				((radius + 0.06f) * GLCanvas.physicsRatio), // Bottom Right
+				((radius + 0.06f) * GLCanvas.physicsRatio)); // Bottom Right
 		
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();

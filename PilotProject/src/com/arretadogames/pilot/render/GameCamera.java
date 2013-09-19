@@ -215,9 +215,8 @@ public class GameCamera {
 	}
 	
 	private void drawBackground(GLCanvas gameCanvas, Vec2 center) {
-
-		backgroundId = R.drawable.dark;
 		
+		// @yuri: these calculations shouldn't be done every frame..
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
 		

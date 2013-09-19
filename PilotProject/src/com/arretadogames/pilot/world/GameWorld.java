@@ -74,7 +74,7 @@ public class GameWorld extends GameScreen {
 	private LevelDescriptor level;
 	
 	public GameWorld() {
-		backgroundId = R.drawable.stage_background;
+		backgroundId = R.drawable.repeatable_background;
 		pWorld = PhysicalWorld.getInstance();
 		ui = new GameWorldUI(this);
 		gameCamera = new GameCamera(backgroundId);
