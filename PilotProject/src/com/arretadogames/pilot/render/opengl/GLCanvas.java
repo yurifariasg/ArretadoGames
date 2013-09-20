@@ -48,7 +48,7 @@ public class GLCanvas {
 	public static float physicsRatio = 25;
 	
 	// Bottom-most Y coordinate position that the ground will have, in meters
-	private final float GROUND_BOTTOM = -10;
+	private final float GROUND_BOTTOM = -50;
 	
 	public void setGLInterface(GL10 gl) {
 		this.gl = gl;
@@ -216,6 +216,11 @@ public class GLCanvas {
 
 	public void drawRect(float left, float top, float right, float bottom, int color) {
 		GLRect.draw(gl, left, top, right, bottom, color);
+	}
+	
+	public void drawLine(float x, float y, float x2, float y2, float width, int color) {
+		System.out.println("Drawing line from: (" + x + "," + y + ") to (" + x2 + "," + y2 + ")");
+		GLLine.draw(x, y, x2, y2, width, color);
 	}
 
 	public void drawBitmap(int imageId, float x, float y) {

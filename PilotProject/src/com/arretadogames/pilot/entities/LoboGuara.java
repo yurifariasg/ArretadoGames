@@ -234,5 +234,7 @@ public class LoboGuara extends Player implements Steppable{
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 		
+		System.out.println("Lobo Guara: " + (getPosX() * GLCanvas.physicsRatio) + ", " + (getPosY() * GLCanvas.physicsRatio));
+		
 	}
 }

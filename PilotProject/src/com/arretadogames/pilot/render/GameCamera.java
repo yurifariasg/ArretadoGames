@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Rect;
@@ -13,9 +14,9 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -210,6 +211,16 @@ public class GameCamera {
 				return true;
 			}
 		}, new AABB(lowerBound, upperBound));
+		
+		Body b = PhysicalWorld.getInstance().getWorld().getBodyList();
+		while (b != null) {
+			Entity entity = (Entity) b.getUserData();
+			if (entity != null && entity.getType() != null && entity.getType().equals(EntityType.PULLEY)) {
+				System.out.println("Pulley: " + entity.getPosX() + ", " + entity.getPosY());
+				entities.add(entity);
+			}
+			b = b.getNext();
+		}
 
 		return entities;
 	}

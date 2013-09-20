@@ -13,7 +13,6 @@ import android.opengl.GLES11;
 public class GLRect {
 
     protected static final short[] INDICES = {0,1,2,0,2,3};
-    
     protected static float vertices[] = new float[12];
 
     protected static FloatBuffer vertexBuffer;
