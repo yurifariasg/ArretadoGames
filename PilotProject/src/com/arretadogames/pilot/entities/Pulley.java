@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.joints.PulleyJointDef;
 import android.graphics.Color;
 import android.graphics.RectF;
 
+import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -46,16 +47,16 @@ public class Pulley extends Entity {
 		lines[1] = groundAnchorA;
 		lines[3] = anchorB;
 		lines[2] = groundAnchorB;
-		int color = Color.RED;
+		int color = Color.rgb(77, 34, 0);;
 		int width = 5;
-//		System.out.println("drawing ------------------------------------");
-//		canvas.drawLine(groundAnchorA.x * GLCanvas.physicsRatio, groundAnchorA.y * GLCanvas.physicsRatio, anchorA.x * GLCanvas.physicsRatio, anchorA.y * GLCanvas.physicsRatio, width * GLCanvas.physicsRatio, color);
-//		canvas.drawLine(anchorA.x * GLCanvas.physicsRatio, anchorA.y * GLCanvas.physicsRatio, anchorB.x * GLCanvas.physicsRatio, anchorB.y * GLCanvas.physicsRatio, width * GLCanvas.physicsRatio, color);
-//		canvas.drawLine(anchorB.x * GLCanvas.physicsRatio, anchorB.y * GLCanvas.physicsRatio, groundAnchorB.x * GLCanvas.physicsRatio, groundAnchorB.y * GLCanvas.physicsRatio, width * GLCanvas.physicsRatio, color);
-//		System.out.println("---------------------------------");
+		canvas.drawLine(a.getPosX() * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - a.getPosY() * GLCanvas.physicsRatio, anchorA.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, width, color);
+		canvas.drawLine(anchorA.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, anchorB.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, width, color);
+		canvas.drawLine(anchorB.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, b.getPosX() * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - b.getPosY() * GLCanvas.physicsRatio, width, color);
 		
-		//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.RED);
-//		canvas.drawPhysicsLines(lines);
+		// Rendering Pulley Entities
+		a.render(canvas, timeElapsed);
+		b.render(canvas, timeElapsed);
+		
 		canvas.restoreState();
 	}
 

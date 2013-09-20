@@ -218,7 +218,7 @@ public class GLCanvas {
 	}
 	
 	public void drawLine(float x, float y, float x2, float y2, float width, int color) {
-//		System.out.println("Drawing line from: (" + x + "," + y + ") to (" + x2 + "," + y2 + ")");
+		System.out.println("Drawing line from: (" + x + "," + y + ") to (" + x2 + "," + y2 + ")");
 		GLLine.draw(x, y, x2, y2, width, color);
 	}
 

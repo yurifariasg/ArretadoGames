@@ -80,7 +80,7 @@ public class GLLine {
         // Draw
         GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer); // Sets Vertex Buffer
-        GLES11.glDrawElements(GL10.GL_TRIANGLES, 9, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
+        GLES11.glDrawElements(GL10.GL_TRIANGLES, 6, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
         GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         
         // Reset Color

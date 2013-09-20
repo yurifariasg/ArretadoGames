@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Rect;
@@ -19,6 +19,7 @@ import android.util.SparseArray;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.ImageLoader;
@@ -429,7 +430,16 @@ upperBound) {
 				}
 				return true;
 			}
-		}, new AABB(lowerBound, upperBound));
+		}, new AABB(lowerBound.addLocal(-10, -10), upperBound.addLocal(10, 10))); // TODO: Check this..
+		
+		Body b = PhysicalWorld.getInstance().getWorld().getBodyList();
+		while (b != null) {
+			Object uData = b.getUserData();
+			if (uData != null && ((Entity) uData).getType() != null && ((Entity) uData).getType().equals(EntityType.PULLEY)) {
+				entities.add((Entity)uData);
+			}
+			b = b.getNext();
+		}
 
 		return entities;
 	}

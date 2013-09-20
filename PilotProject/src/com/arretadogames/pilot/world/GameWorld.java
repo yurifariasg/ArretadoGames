@@ -158,9 +158,9 @@ public class GameWorld extends GameScreen {
 					worldEntities.add(a);
 					worldEntities.add(b);
 					
-					entity = new Pulley(a, 
-							new Vec2(entityDescriptor.getX()-1, entityDescriptor.getY()), b,
-							new Vec2(entityDescriptor.getX()+1, 2),
+					entity = new Pulley(
+							a, new Vec2(entityDescriptor.getX()-1, entityDescriptor.getY() + 2),
+							b, new Vec2(entityDescriptor.getX()+1, entityDescriptor.getY() + 2),
 							new Vec2(entityDescriptor.getX()-0.4f, 2),
 							new Vec2(entityDescriptor.getX()+1, 2.5f), 5);
 					break;
