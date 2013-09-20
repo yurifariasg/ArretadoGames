@@ -1,19 +1,16 @@
 package com.arretadogames.pilot.entities;
 
-
-
 import java.util.Collection;
 import java.util.HashSet;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
@@ -34,12 +31,21 @@ public class AraraAzul extends Player implements Steppable{
 	private float k = 25f;
 	private boolean doubleJump;
 	
-	private static final int[] WALKING = {R.drawable.ave,
-								  		  R.drawable.ave1};
+	private static final int[] WALKING = {R.drawable.bird_1,
+											R.drawable.bird_2,
+											R.drawable.bird_3,
+											R.drawable.bird_2,
+											R.drawable.bird_1,
+											R.drawable.bird_4,
+											R.drawable.bird_5,
+											R.drawable.bird_6,
+											R.drawable.bird_5,
+											R.drawable.bird_4};
 
-	private static final int[] JUMP = {R.drawable.ave,
-  		  						  		R.drawable.ave1,
-  		  						  		R.drawable.ave2};
+	private static final int[] JUMP = {R.drawable.bird_6,
+  		  						  		R.drawable.bird_4,
+  		  						  		R.drawable.bird_3,
+  		  						  		R.drawable.bird_4};
 	
 	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
 				 R.drawable.lobo_guara_act2,
@@ -138,7 +144,7 @@ public class AraraAzul extends Player implements Steppable{
 		Vec2 force = new Vec2(0,k * vel * vel);
 		if( vel < 0 ){ //force.negateLocal();
 		body.applyForce(force, body.getWorldCenter());
-		System.out.println("acting");}
+		}
 	}
 
 	@Override
@@ -152,6 +158,7 @@ public class AraraAzul extends Player implements Steppable{
 		}
 		if(actActive){
 			act();
+			sprite.setAnimationState("act");
 		}
 		if(contJump > 0) contJump--;
 		run();
@@ -181,7 +188,7 @@ public class AraraAzul extends Player implements Steppable{
 	}
 	
 	public float[] getWalkFramesDuration(){
-		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
+		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f, 0.15f, 0.15f, 0.15f ,0.15f}; // 10
 	}
 
 	@Override
@@ -189,13 +196,13 @@ public class AraraAzul extends Player implements Steppable{
 		return JUMP;
 	}
 	
-	public float[] getJumpFramesDuration(){
-		return new float[] {0.3f, 0.3f, 0f};
+	public float[] getJumpFramesDuration(){ // 4
+		return new float[] {0.3f, 0.3f, 0.3f, 0f};
 	}
 
 	@Override
 	public int[] getActFrames() {
-		return null;
+		return JUMP;
 		//TODO
 /*		Bitmap[] frames = new Bitmap[ACT.length];
 		for (int i = 0; i < ACT.length; i++) {
@@ -205,7 +212,7 @@ public class AraraAzul extends Player implements Steppable{
 	}
 	
 	public float[] getActFramesDuration(){
-		return new float[] {0.15f, 0.15f};
+		return new float[] {0.3f, 0.3f, 0.3f, 0f};
 	}
 	
 	public void setSprite(Sprite sprite){
@@ -219,10 +226,10 @@ public class AraraAzul extends Player implements Steppable{
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
 		RectF rect = new RectF(
-				(- 0.3f * GLCanvas.physicsRatio), // Top Left
-				(- 0.3f * GLCanvas.physicsRatio), // Top Left
-				(0.3f * GLCanvas.physicsRatio), // Bottom Right
-				(0.3f * GLCanvas.physicsRatio)); // Bottom Right
+				(- 0.5f * GLCanvas.physicsRatio), // Top Left
+				(- 0.5f * GLCanvas.physicsRatio), // Top Left
+				(0.4f * GLCanvas.physicsRatio), // Bottom Right
+				(0.4f * GLCanvas.physicsRatio)); // Bottom Right
 		
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 //		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.BLACK);

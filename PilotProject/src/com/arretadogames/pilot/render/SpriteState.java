@@ -39,6 +39,13 @@ public class SpriteState {
 		}
 		return keyframesIds[currentKeyFrameIndex];
 	}
+	
+	public void resetIfInfinite() {
+		if (currentFrameTimeLeft == 0) {
+			this.currentKeyFrameIndex = 0;
+			this.currentFrameTimeLeft = keyFrameDuration[currentKeyFrameIndex];
+		}
+	}
 
 	private void nextFrame() {
 		currentKeyFrameIndex++;

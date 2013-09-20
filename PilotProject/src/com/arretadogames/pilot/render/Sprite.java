@@ -22,6 +22,8 @@ public class Sprite {
 	
 	public void setAnimationState(String state) {
 		this.currentState = state;
+		if (spriteStates.get(currentState) != null)
+			spriteStates.get(currentState).resetIfInfinite();
 	}
 	
 	public void release() {
