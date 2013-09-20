@@ -33,11 +33,22 @@ public class TatuBola extends Player implements Steppable{
 	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	Date lastAct;
-	private static final int[] WALKING = {R.drawable.tatuandando};
+	private static final int[] WALKING = {R.drawable.tatu1,
+										  R.drawable.tatu2,
+										  R.drawable.tatu3,
+										  R.drawable.tatu0};
 
-	private static final int[] JUMP = {R.drawable.tatuandando};
+	private static final int[] JUMP = {R.drawable.tatu_rowling1,
+									  R.drawable.tatu_rowling2,
+									  R.drawable.tatu_rowling3,
+									  R.drawable.tatu_rowling4,
+									  R.drawable.tatu_rowling5};
 	
-	private static final int[] ACT = {R.drawable.tatupseudorolandokkk};
+	private static final int[] ACT = {R.drawable.tatu_rowling1,
+									  R.drawable.tatu_rowling2,
+									  R.drawable.tatu_rowling3,
+									  R.drawable.tatu_rowling4,
+									  R.drawable.tatu_rowling5};
 	
 	private final float rad = 0.3f;
 	public TatuBola(float x, float y, PlayerNumber number) {
@@ -194,22 +205,16 @@ public class TatuBola extends Player implements Steppable{
 	}
 	
 	public float[] getJumpFramesDuration(){
-		return new float[] {0.3f, 0.3f, 0f};
+		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f};
 	}
 
 	@Override
 	public int[] getActFrames() {
 		return ACT;
-		//TODO
-/*		Bitmap[] frames = new Bitmap[ACT.length];
-		for (int i = 0; i < ACT.length; i++) {
-			frames[i] = ImageLoader.loadImage(ACT[i]);
-		}
-		return frames;*/
 	}
 	
 	public float[] getActFramesDuration(){
-		return new float[] {0.15f, 0.15f};
+		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f};
 	}
 	
 	public void setSprite(Sprite sprite){
@@ -223,10 +228,10 @@ public class TatuBola extends Player implements Steppable{
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
 		RectF rect = new RectF(
-				(- rad* GLCanvas.physicsRatio), // Top Left
-				(- rad * GLCanvas.physicsRatio), // Top Top Left
-				(rad * GLCanvas.physicsRatio), // Bottom Right
-				(rad * GLCanvas.physicsRatio)); // Bottom Right
+				(- (rad + 0.25f)* GLCanvas.physicsRatio), // Top Left
+				(- (rad + 0.25f) * GLCanvas.physicsRatio), // Top Top Left
+				((rad + 0.0f) * GLCanvas.physicsRatio), // Bottom Right
+				((rad + 0.0f) * GLCanvas.physicsRatio)); // Bottom Right
 		
 		
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
