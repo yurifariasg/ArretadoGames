@@ -108,7 +108,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		}
 		
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
-		
 		canvas.restoreState();
 	}
 

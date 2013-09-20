@@ -320,7 +320,7 @@ time));
 
 	private void drawBackground(GLCanvas gameCanvas, Vec2 center) {
 
-		backgroundId = R.drawable.dark;
+		backgroundId = R.drawable.repeatable_background;
 		
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];

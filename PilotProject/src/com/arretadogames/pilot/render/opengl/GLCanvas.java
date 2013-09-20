@@ -115,7 +115,7 @@ public class GLCanvas {
 				auxiliaryRect.bottom, color);
 	}
 	
-	public void drawPhysicsLines(Vec2[] lines) {
+	public void drawPhysicsLines(final Vec2[] lines) {
 		
 		Vec2 vertices[] = lines;
     	int cont = vertices.length + 3;
@@ -184,7 +184,6 @@ public class GLCanvas {
         GLES11.glDrawElements(GL10.GL_TRIANGLE_STRIP, drawOrder.length, GL10.GL_UNSIGNED_SHORT, drawListBuffer);
         GLES11.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         GLES11.glColor4f(1,1,1,1);
-		
 	}
 
 	public void saveState() {
@@ -219,7 +218,7 @@ public class GLCanvas {
 	}
 	
 	public void drawLine(float x, float y, float x2, float y2, float width, int color) {
-		System.out.println("Drawing line from: (" + x + "," + y + ") to (" + x2 + "," + y2 + ")");
+//		System.out.println("Drawing line from: (" + x + "," + y + ") to (" + x2 + "," + y2 + ")");
 		GLLine.draw(x, y, x2, y2, width, color);
 	}
 
