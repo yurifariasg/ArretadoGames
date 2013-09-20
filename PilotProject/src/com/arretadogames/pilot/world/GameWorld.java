@@ -77,7 +77,7 @@ public class GameWorld extends GameScreen {
 		backgroundId = R.drawable.repeatable_background;
 		pWorld = PhysicalWorld.getInstance();
 		ui = new GameWorldUI(this);
-		gameCamera = new GameCamera(backgroundId);
+		gameCamera = new GameCamera(this, backgroundId);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		totalElapsedSeconds = 0;
