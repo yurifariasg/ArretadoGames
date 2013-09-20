@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.joints.PulleyJointDef;
 import android.graphics.Color;
 import android.graphics.RectF;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
@@ -41,14 +42,13 @@ public class Pulley extends Entity {
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
-//		canvas.translatePhysics(getPosX(), getPosY());
 		Vec2 lines[] = new Vec2[4];
 		lines[0] = anchorA;
 		lines[1] = groundAnchorA;
 		lines[3] = anchorB;
 		lines[2] = groundAnchorB;
 		int color = Color.rgb(77, 34, 0);;
-		int width = 5;
+		float width = 0.05f * GLCanvas.physicsRatio;
 		canvas.drawLine(a.getPosX() * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - a.getPosY() * GLCanvas.physicsRatio, anchorA.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, width, color);
 		canvas.drawLine(anchorA.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, anchorB.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, width, color);
 		canvas.drawLine(anchorB.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, b.getPosX() * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - b.getPosY() * GLCanvas.physicsRatio, width, color);
@@ -56,6 +56,29 @@ public class Pulley extends Entity {
 		// Rendering Pulley Entities
 		a.render(canvas, timeElapsed);
 		b.render(canvas, timeElapsed);
+		
+		// Draw First Sheave
+		canvas.saveState();
+		canvas.translatePhysics(anchorA.x, anchorA.y);
+		RectF rect = new RectF(
+				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+				(0.2f * GLCanvas.physicsRatio), // Bottom Right
+				(0.2f * GLCanvas.physicsRatio)); // Bottom Right
+		
+		canvas.drawBitmap(R.drawable.sheave, rect, false);
+		canvas.restoreState();
+		
+		canvas.saveState();
+		canvas.translatePhysics(anchorB.x, anchorB.y);
+		rect = new RectF(
+				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+				(0.2f * GLCanvas.physicsRatio), // Bottom Right
+				(0.2f * GLCanvas.physicsRatio)); // Bottom Right
+		
+		canvas.drawBitmap(R.drawable.sheave, rect, false);
+		canvas.restoreState();
 		
 		canvas.restoreState();
 	}

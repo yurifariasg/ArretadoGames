@@ -259,7 +259,7 @@ public class MacacoPrego extends Player implements Steppable{
 				(0.1f * GLCanvas.physicsRatio), // Bottom Right
 				(0.3f * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawRect((int) rect2.left, (int) rect2.top, (int) rect2.right, (int) rect2.bottom, Color.YELLOW);
+//		canvas.drawRect((int) rect2.left, (int) rect2.top, (int) rect2.right, (int) rect2.bottom, Color.YELLOW);
 		canvas.restoreState();
 		
 	}

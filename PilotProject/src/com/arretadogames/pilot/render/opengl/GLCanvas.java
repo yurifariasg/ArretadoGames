@@ -218,7 +218,6 @@ public class GLCanvas {
 	}
 	
 	public void drawLine(float x, float y, float x2, float y2, float width, int color) {
-		System.out.println("Drawing line from: (" + x + "," + y + ") to (" + x2 + "," + y2 + ")");
 		GLLine.draw(x, y, x2, y2, width, color);
 	}
 
@@ -331,6 +330,8 @@ public class GLCanvas {
 		for (int i = 0 ; i < objects.length ; i++) {
 			
 			if (objects[i].getType().equals(LoadableType.TEXTURE)){
+				if (textures.get(objects[i].getId()) == null)
+					continue;
 				glIds[i] = textures.get(objects[i].getId()).getTextureID();
 				textures.remove(objects[i].getId());
 			} else if (objects[i].getType().equals(LoadableType.FONT)) {
