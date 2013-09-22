@@ -76,7 +76,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		
 		canvas.saveState();
 		
 		canvas.fillScreen(255, 0, 0, 0);
@@ -84,7 +83,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		canvas.scale(currentZoom, currentZoom, DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2);
 		
 		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
-		
 		
 		if (currentState == State.MAIN) {
 			settingsBt.render(canvas, timeElapsed);
@@ -110,8 +108,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.render(canvas, timeElapsed);
 		}
-		
-		drawCircle(canvas);
 		
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.restoreState();
