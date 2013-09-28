@@ -18,7 +18,7 @@ public class Fire extends Entity implements Steppable{
 
 	private float height;
 	private float width;
-	private float velocity = 4f;
+	private float velocity = 3.2f;
 	
 	public Fire(float x, float y) {
 		super(x, y);
