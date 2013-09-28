@@ -40,7 +40,7 @@ public class FontTexture {
 	private int padX = 2;
 	private int padY = 2;
 
-	private GLImage spriteData;
+	private GLTexture spriteData;
 
 	public FontTexture(Typeface tf, GL10 gl) {
 		this.tf = tf;
@@ -88,7 +88,7 @@ public class FontTexture {
 			dst.set(x, y, x + scaledCellWidth, y + scaledCellHeight);
 
 			// Draw
-			GLTexture.draw(gl, src, dst, spriteData);
+			GLTexturedRect.draw(gl, src, dst, spriteData);
 			// Move forward CHAR WIDTH (not cell width)
 			x += charWidth * scale;
 		}
@@ -219,7 +219,7 @@ public class FontTexture {
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
-		spriteData = new GLImage(texture_id);
+		spriteData = new GLTexture(texture_id);
 		
 		// Working with textureId
 		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);

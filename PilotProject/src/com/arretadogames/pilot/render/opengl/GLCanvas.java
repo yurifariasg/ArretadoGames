@@ -36,7 +36,7 @@ public class GLCanvas {
 	private GL10 gl;
 	
 	// SparseArray = HashMap<int, GLImage> - DrawableID -> GLImage
-	private SparseArray<GLImage> textures = new SparseArray<GLImage>();
+	private SparseArray<GLTexture> textures = new SparseArray<GLTexture>();
 	
 	// TypeFace = Font Properties - TypeFace -> FontTexture
 	private HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
@@ -235,8 +235,8 @@ public class GLCanvas {
 				GLES11.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
 			translate(x, y);
 	
-			GLImage texture = textures.get(imageId);
-			GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
+			GLTexture texture = textures.get(imageId);
+			GLTexturedRect.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
 		restoreState();
 	}
 	
@@ -249,7 +249,7 @@ public class GLCanvas {
 			loadImage(imageId);
 		}
 		
-		GLImage tex = textures.get(imageId);
+		GLTexture tex = textures.get(imageId);
 		GLES11.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
@@ -264,7 +264,7 @@ public class GLCanvas {
 			auxiliaryRect.bottom = (int) dstRect.bottom;
 		}
 		
-		GLTexture.draw(gl, srcRect, auxiliaryRect, tex);
+		GLTexturedRect.draw(gl, srcRect, auxiliaryRect, tex);
 	}
 
 	
@@ -291,7 +291,7 @@ public class GLCanvas {
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
-		GLImage texture = new GLImage(texture_id);
+		GLTexture texture = new GLTexture(texture_id);
 		
 		// Working with textureId
 		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
