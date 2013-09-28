@@ -7,7 +7,6 @@ package com.arretados.leveleditor;
 import com.arretados.leveleditor.entities.BoxPanel;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
 import com.arretados.leveleditor.parsers.JSONGenerator;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.event.ChangeEvent;
 import org.jdesktop.application.Action;
@@ -47,8 +46,8 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
 
             }
         });
-        jTextWidthValue.setText("???");
-        jTextHeigthValue.setText("???");
+        jTextWidthValue.setText(String.valueOf(gameCanvas1.getPreferredSize().width));
+        jTextHeigthValue.setText(String.valueOf(gameCanvas1.getPreferredSize().height));
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();

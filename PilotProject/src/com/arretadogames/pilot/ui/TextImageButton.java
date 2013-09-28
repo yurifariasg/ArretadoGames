@@ -64,7 +64,7 @@ public class TextImageButton extends ImageButton {
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		super.render(canvas, timeElapsed);
-		canvas.drawText(text, x + width / 2, y + height / 2.5f, textPaint, true);
+		canvas.drawText(text, x + width / 2, y + height / 2f, textPaint, true);
 	}
 	
 	public static Point centerTextOnCanvas(Paint paint, float x, float y, float width, float height, String text) {

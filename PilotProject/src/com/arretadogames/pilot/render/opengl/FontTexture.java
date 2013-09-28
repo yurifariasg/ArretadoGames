@@ -3,15 +3,14 @@ package com.arretadogames.pilot.render.opengl;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.Paint.Style;
 import android.opengl.GLES11;
 import android.opengl.GLUtils;
 import android.util.SparseArray;
@@ -26,8 +25,6 @@ public class FontTexture {
 	// Render parameters
 	private int fontHeight;
 	// TODO: support multi-line: add max chars in row and wrap
-	private int fontAscent;
-	private int fontDescent;
 	private SparseIntArray charWidths;
 	private SparseArray<Rect> characterRects;
 	private int cellWidth;
@@ -52,7 +49,6 @@ public class FontTexture {
 	
 	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb, boolean centered) {
 		scale /= 2;
-		// Draw text centred at x,y
 		// Get width of text
 		int textWidth = 0;
 		int charWidth;
@@ -64,7 +60,7 @@ public class FontTexture {
 			// Adjust to centre text about x,y
 			x -= textWidth / 2;
 		}
-
+		
 		y -= scale * fontHeight / 2;
 
 		// No cycle through and draw text
@@ -74,6 +70,7 @@ public class FontTexture {
 		Rect dst = new Rect();
 		int charNumber;
 		GLES11.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
+		gl.glPushMatrix();
 		for (int i = 0; i < text.length() ; i++) {
 			// Source rect
 			charNumber = (int) text.charAt(i);
@@ -95,17 +92,19 @@ public class FontTexture {
 			// Move forward CHAR WIDTH (not cell width)
 			x += charWidth * scale;
 		}
-		GLES11.glColor4f(1,1,1,1);
+		gl.glPopMatrix();
+		gl.glColor4f(1, 1, 1, 1);
 	}
 	
 	
 	private void createTexture(GL10 gl) {
-		loadBitmap(gl, getBitmap());
+		loadBitmap(gl, getBitmap(false));
 	}
 	
 	int textureSize;
 	
-	public Bitmap getBitmap() {
+	public Bitmap getBitmap(boolean hasStroke) {
+		hasStroke = true;
 		// We use the font to create a sprite atlas containing every letter,
 		// then we return the sprite atlas bitmap to be used as the texture.
 		size *= 2;
@@ -117,25 +116,35 @@ public class FontTexture {
 		paint.setTextSize(size); // Set Text Size
 		paint.setColor(colour); // Set ARGB (White, Opaque)
 		paint.setTextAlign(Paint.Align.LEFT);
+		
+		Paint mStrokePaint = new Paint();
+		mStrokePaint.setTypeface(tf);
+		mStrokePaint.setStyle(Style.STROKE);
+		mStrokePaint.setStrokeWidth(2);
+		mStrokePaint.setColor(Color.rgb(89, 103, 213));
+		mStrokePaint.setTextSize(size);
+		mStrokePaint.setAntiAlias(true);
+		mStrokePaint.setTextAlign(Paint.Align.LEFT);
 
 		// get font metrics
 		Paint.FontMetrics fm = paint.getFontMetrics();
 		fontHeight = (int) Math.ceil(Math.abs(fm.bottom) + Math.abs(fm.top));
-		fontAscent = (int) Math.ceil(Math.abs(fm.ascent));
-		fontDescent = (int) Math.ceil(Math.abs(fm.descent));
 
 		// Store for char widths
 		charWidths = new SparseIntArray();
 
 		// Cycle through chars and store width of each character
-		char[] s = new char[2];
-		float[] w = new float[2];
+		char[] s = new char[1];
+		float[] w = new float[1];
 		int charWidthMax = 0;
 		int charWidth;
 		for (char c = (char) charStart; c <= (char) charEnd; c++) {
 			s[0] = c;
 			paint.getTextWidths(s, 0, 1, w);
 			charWidth = (int) Math.ceil(w[0]);
+			if (hasStroke)
+				charWidth += (int)Math.floor(mStrokePaint.getStrokeWidth());
+			
 			// Store it
 			charWidths.put(c, charWidth);
 			if (charWidth > charWidthMax) {
@@ -173,14 +182,10 @@ public class FontTexture {
 			textureSize = 4096;
 
 		// Create an empty bitmap (alpha only)
-		Bitmap bitmap = Bitmap.createBitmap(textureSize, textureSize,
-				Bitmap.Config.ALPHA_8);
+		Bitmap bitmap = Bitmap.createBitmap(textureSize, textureSize, Bitmap.Config.ARGB_4444);
 		// Create Canvas for rendering to Bitmap
 		Canvas canvas = new Canvas(bitmap);
 		bitmap.eraseColor(0x00000000); // Set Transparent Background (ARGB)
-
-		// Calculate number of columns
-		// int colCnt = textureSize / cellWidth;
 
 		// Render each of the characters to the canvas (i.e. build the font map)
 		// Also store a source rectangle for each char
@@ -191,8 +196,11 @@ public class FontTexture {
 			// Draw char
 			s[0] = c;
 			canvas.drawText(s, 0, 1, x, y, paint);
+			if (hasStroke)
+				canvas.drawText(s, 0, 1, x, y, mStrokePaint);
 			// Store source rectangle
-			characterRects.put((int) c, new Rect(x, (int) (y - cellHeight * 0.7), x
+			characterRects.put((int) c,
+					new Rect(x - (int)(Math.floor(mStrokePaint.getStrokeWidth())), (int) (y - cellHeight * 0.7), x
 					+ cellWidth, (int) (y + cellHeight * 0.3)));
 			// Increment and wrap at end of line
 			x += cellWidth;

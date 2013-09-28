@@ -13,13 +13,10 @@ import java.awt.Graphics;
  */
 public class Fruit extends DrawableObject{
     
-    private int x;
-    private int y;
     private int size;
 
     public Fruit(int x, int y, int size) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.size = size;
     }
     

@@ -1,7 +1,6 @@
 package com.arretadogames.pilot.entities;
 
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.joints.Joint;
 import org.jbox2d.dynamics.joints.PulleyJoint;
 import org.jbox2d.dynamics.joints.PulleyJointDef;
 
@@ -10,7 +9,6 @@ import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.DisplaySettings;
-import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 

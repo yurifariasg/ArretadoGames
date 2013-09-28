@@ -13,14 +13,11 @@ import java.awt.Graphics;
  * @author Bruno
  */
 public class Box extends DrawableObject{
-        
-    private int x;
-    private int y;
+    
     private int size;
     
     public Box(int x, int y, int size) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.size = size;
     }
     

@@ -16,13 +16,10 @@ import java.awt.Image;
  */
 public class OneWayWall extends DrawableObject{
     
-    private int x;
-    private int y;
     private int size;
     
     public OneWayWall(int x, int y, int size) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.size = size;
     }
     

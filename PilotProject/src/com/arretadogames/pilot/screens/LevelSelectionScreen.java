@@ -5,7 +5,6 @@ import java.util.List;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.v4.view.GestureDetectorCompat;
-import android.util.Log;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import aurelienribon.tweenengine.Tween;
@@ -13,7 +12,6 @@ import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
@@ -23,7 +21,6 @@ import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
-import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.world.GameWorld;
 
 public class LevelSelectionScreen extends GameScreen implements GameButtonListener, OnGestureListener {

@@ -3,7 +3,6 @@ package com.arretadogames.pilot.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -11,9 +10,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.joints.Joint;
-import org.jbox2d.dynamics.joints.JointDef;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 import android.graphics.Color;

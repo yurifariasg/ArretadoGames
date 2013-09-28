@@ -13,13 +13,10 @@ import java.awt.Graphics;
  */
 public class Flag extends DrawableObject{
     
-    private int x;
-    private int y;
     private int size;
     
     public Flag(int x, int y, int size) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.size = size;
     }
     
