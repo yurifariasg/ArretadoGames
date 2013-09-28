@@ -246,7 +246,10 @@ public class MacacoPrego extends Player implements Steppable{
 				((radius + 0.06f) * GLCanvas.physicsRatio), // Bottom Right
 				((radius + 0.06f) * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		if (this.isAlive()) {
+			canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		}
+//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 		
 		canvas.saveState();
