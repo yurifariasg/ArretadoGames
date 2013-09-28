@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import android.graphics.Color;
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
@@ -13,8 +11,6 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.googlesync.SyncManager;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.render.opengl.GLCircle;
-import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;

@@ -4,7 +4,6 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;

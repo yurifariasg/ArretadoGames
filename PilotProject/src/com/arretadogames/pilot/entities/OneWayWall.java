@@ -11,8 +11,6 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
