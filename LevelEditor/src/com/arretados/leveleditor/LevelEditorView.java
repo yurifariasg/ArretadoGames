@@ -47,8 +47,8 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
 
             }
         });
-        jTextWidthValue.setText("???");
-        jTextHeigthValue.setText("???");
+        jTextWidthValue.setText(String.valueOf(gameCanvas1.getWidth()));
+        jTextHeigthValue.setText(String.valueOf(gameCanvas1.getHeight()));
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();

@@ -13,14 +13,11 @@ import java.awt.Graphics;
  * @author Bruno
  */
 public class Breakable extends DrawableObject{
-        
-    private int x;
-    private int y;
+    
     private int size;
     
     public Breakable(int x, int y){
-        this.x = x;
-        this.y = y;
+        super(x, y);
     }
     
     public int getX(){

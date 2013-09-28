@@ -13,13 +13,10 @@ import java.awt.Graphics;
  */
 public class Pulley extends DrawableObject{
     
-    private int x;
-    private int y;
     private int size;
     
     public Pulley(int x, int y, int size){
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.size = size;
     }
     

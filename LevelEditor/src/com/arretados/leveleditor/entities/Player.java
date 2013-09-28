@@ -16,14 +16,11 @@ import java.awt.Image;
  */
 public class Player extends DrawableObject{
        
-    private int x;
-    private int y;
     private int size;
     private String player;
     
     public Player(int x, int y, int size, String player){
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.size = size;
         this.player = player;
     }
