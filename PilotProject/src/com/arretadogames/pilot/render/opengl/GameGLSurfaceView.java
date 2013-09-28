@@ -16,6 +16,9 @@ import android.view.SurfaceHolder;
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontSpecification;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.screens.InputEventHandler;
 
 /**
@@ -30,7 +33,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	// FPS Settings
 	private float[] fpsBuffer;
 	private int fpsCounter;
-	private Paint fpsPaint;
+	private FontSpecification fpsFont;
 	private Activity activity;
 
 	/**
@@ -107,7 +110,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		if (DisplaySettings.SHOW_FPS) {
 			fpsBuffer[fpsCounter] = (1000f/(getCurrentTime() - frameCurrentTime));
 			fpsCounter = ++fpsCounter % fpsBuffer.length;
-			gameCanvas.drawText("FPS: " + getAverageFPS(), 30, 20, fpsPaint, true);
+			gameCanvas.drawText("FPS: " + getAverageFPS(), 10, 20, fpsFont, 0.8f, false);
 		}
 		
 		frameEndedTime = frameCurrentTime;
@@ -199,9 +202,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 			}
 			fpsCounter = 0;
 			
-			fpsPaint = new Paint();
-			fpsPaint.setColor(Color.RED);
-			fpsPaint.setTextSize(0.5f);
+			fpsFont = FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS);
 		}
 	}
 }

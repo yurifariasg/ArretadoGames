@@ -17,6 +17,8 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelDescriptor;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.Text;
 
@@ -67,7 +69,8 @@ public class EndScreen extends GameScreen {
 		
 		playerInformation.add(new Text(DisplaySettings.DISPLAY_WIDTH / 2,
 				DisplaySettings.DISPLAY_HEIGHT - 50,
-				"PRESS TO CONTINUE", 1, true));
+				"PRESS TO CONTINUE",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 	}
 
 	private void initializeInfo() {
@@ -124,15 +127,18 @@ public class EndScreen extends GameScreen {
 		
 		int currentY = PLAYER_INFO_Y;
 		
-		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(), 1.35f, true));
+		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(),
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1.35f, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Coins: " + player.getCoins(), 1f, true));
+				currentY, "Coins: " + player.getCoins(),
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 		
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Time: " + player.getTimeFinished() + "s", 1f, true));
+				currentY, "Time: " + player.getTimeFinished() + "s",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 		
 	}

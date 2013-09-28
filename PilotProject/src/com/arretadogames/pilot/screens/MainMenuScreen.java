@@ -10,6 +10,8 @@ import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.googlesync.SyncManager;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
@@ -55,7 +57,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				R.drawable.bt_gplus_selected,
 				R.drawable.bt_gplus_unselected);
 		
-		inputLabel = new Text(400, 50, "", 1, true);
+		inputLabel = new Text(400, 50, "",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 		
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
@@ -66,8 +69,10 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	private void createUserInfoLabels() {
 		Account acc = AccountManager.get().getAccount1();
-		welcomeLabel = new Text(170, 320, "Welcome, " + acc.getName(),  1, true);
-		nameLabel = new Text(20, 360, "You have " + acc.getCoins() + " coins",  1, false);
+		welcomeLabel = new Text(170, 320, "Welcome, " + acc.getName(),
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
+		nameLabel = new Text(20, 360, "You have " + acc.getCoins() + " coins",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
 	}
 
 	@Override

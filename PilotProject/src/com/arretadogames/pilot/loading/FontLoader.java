@@ -3,8 +3,10 @@ package com.arretadogames.pilot.loading;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Typeface;
-
 
 public class FontLoader {
 	
@@ -12,24 +14,23 @@ public class FontLoader {
 	private static FontLoader fontLoader;
 	
 	// Object Variables
-	private HashMap<Fonts, Typeface> fonts;
+	private HashMap<FontTypeFace, FontSpecification> fonts;
 	private float fontSize;
+	private Context context;
 	
-	private FontLoader(Context c) {
-		fontSize = 1.5f; // Default
-
-		fonts = new HashMap<Fonts, Typeface>();
-		fonts.put(Fonts.TRANSMETALS,
-				Typeface.create(Typeface.createFromAsset(
-				c.getAssets(), "Transmetals.ttf"),
-				Typeface.NORMAL));
+	private FontLoader(Context context) {
+		this.context = context;
+		fontSize = 60f; // Default
+		fonts = new HashMap<FontTypeFace, FontSpecification>();
 	}
-	
+
 	public float getFontSize() {
 		return fontSize;
 	}
 	
-	public Typeface getFont(Fonts font) {
+	public FontSpecification getFont(FontTypeFace font) {
+		if (fonts.get(font) == null)
+			fonts.put(font, createSpecificationFor(font));
 		return fonts.get(font);
 	}
 	
@@ -42,7 +43,58 @@ public class FontLoader {
 			fontLoader = new FontLoader(c);
 	}
 	
-	public enum Fonts {
-		TRANSMETALS;
+	/*
+	 * If you want a need font type added (different font, color, or stroke, just add them below
+	 */
+	
+	private FontSpecification createSpecificationFor(FontTypeFace fontTypeFace) {
+		
+		switch (fontTypeFace) {
+		
+		case TRANSMETALS_STROKED:
+			Typeface tf = Typeface.create(Typeface.createFromAsset(
+					context.getAssets(), "Transmetals.ttf"),
+					Typeface.NORMAL);
+
+			// Set-up Paint object for drawing letters to bitmap
+			Paint paint = new Paint(); // Create Android Paint Instance
+			paint.setAntiAlias(true); // Enable Anti Alias
+			paint.setTypeface(tf); // Set Typeface
+			paint.setTextSize(fontSize); // Set Text Size
+			paint.setColor(Color.WHITE); // Set ARGB (White, Opaque)
+			paint.setTextAlign(Paint.Align.LEFT);
+			
+			Paint mStrokePaint = new Paint();
+			mStrokePaint.setTypeface(tf);
+			mStrokePaint.setStyle(Style.STROKE);
+			mStrokePaint.setStrokeWidth(2);
+			mStrokePaint.setColor(Color.rgb(89, 103, 213));
+			mStrokePaint.setTextSize(fontSize);
+			mStrokePaint.setAntiAlias(true);
+			mStrokePaint.setTextAlign(Paint.Align.LEFT);
+			
+			return new FontSpecification(paint, mStrokePaint);
+			
+		case TRANSMETALS:
+			Typeface transmetals = Typeface.create(Typeface.createFromAsset(
+					context.getAssets(), "Transmetals.ttf"),
+					Typeface.NORMAL);
+
+			// Set-up Paint object for drawing letters to bitmap
+			Paint transmetalsPaint = new Paint(); // Create Android Paint Instance
+			transmetalsPaint.setAntiAlias(true); // Enable Anti Alias
+			transmetalsPaint.setTypeface(transmetals); // Set Typeface
+			transmetalsPaint.setTextSize(fontSize); // Set Text Size
+			transmetalsPaint.setColor(Color.BLACK); // Set ARGB (White, Opaque)
+			transmetalsPaint.setTextAlign(Paint.Align.LEFT);
+			
+			return new FontSpecification(transmetalsPaint, null);
+		}
+		
+		return null;
+	}
+	
+	public enum FontTypeFace {
+		TRANSMETALS_STROKED, TRANSMETALS;
 	}
 }

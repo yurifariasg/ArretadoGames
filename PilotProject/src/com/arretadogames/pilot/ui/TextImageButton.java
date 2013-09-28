@@ -4,8 +4,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.loading.FontLoader.Fonts;
+import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 /**
@@ -14,9 +13,9 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
  */
 public class TextImageButton extends ImageButton {
 
-	// why do these variables were static?
-	private Paint textPaint;
 	private String text = "";
+	private FontSpecification fontSpecification;
+	private int textSize;
 	
 	/**
 	 * Creates a TextImageButton based on the given position and Images
@@ -37,34 +36,17 @@ public class TextImageButton extends ImageButton {
 	 *            Text to be rendered
 	 */
 	public TextImageButton(int id, float x, float y, GameButtonListener listener,
-			int selectedImageId, int unselectedImageId, String text) {
+			int selectedImageId, int unselectedImageId, String text, FontSpecification fs, int textSize) {
 		super(id, x, y, listener, selectedImageId, unselectedImageId);
 		this.text = text;
-		createPaints();
-	}
-
-	public TextImageButton(int id, float x, float y, GameButtonListener listener,
-			int selectedImageId, int unselectedImageId, String text, Paint textPaint, 
-						Paint strokePaint) {
-		super(id, x, y, listener, selectedImageId, unselectedImageId);
-		this.text = text;
-		this.textPaint = textPaint;
+		this.textSize = textSize;
+		this.fontSpecification = fs;
 	}
 	
-	private void createPaints() {
-		float textSize = FontLoader.getInstance().getFontSize();
-
-		textPaint = new Paint();
-		textPaint.setARGB(255, 255, 255, 255);
-		textPaint.setAntiAlias(true);
-		textPaint.setTextSize(textSize);
-		textPaint.setTypeface(FontLoader.getInstance().getFont(Fonts.TRANSMETALS));
-	}
-
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		super.render(canvas, timeElapsed);
-		canvas.drawText(text, x + width / 2, y + height / 2f, textPaint, true);
+		canvas.drawText(text, x + width / 2, y + height / 2f, fontSpecification, textSize, true);
 	}
 	
 	public static Point centerTextOnCanvas(Paint paint, float x, float y, float width, float height, String text) {

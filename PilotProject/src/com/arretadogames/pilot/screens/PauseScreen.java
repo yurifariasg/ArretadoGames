@@ -13,6 +13,8 @@ import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
@@ -49,17 +51,20 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 		continueBt = new TextImageButton(CONTINUE_BT, 0, 91, this,
 				R.drawable.bt_pause_selected,
 				0,
-				"continue");
+				"continue",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
 		
 		optionsBt = new TextImageButton(OPTIONS_BT, 0, 146, this,
 				R.drawable.bt_pause_selected,
 				0,
-				"options");
+				"options",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
 		
 		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
 				R.drawable.bt_pause_selected,
 				0,
-				"quit");
+				"quit",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
 	}
 
 	@Override

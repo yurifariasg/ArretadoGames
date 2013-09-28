@@ -16,7 +16,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.opengl.GLES11;
 import android.opengl.GLUtils;
 import android.util.Log;
@@ -25,7 +24,8 @@ import android.util.SparseArray;
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.config.DisplaySettings;
 import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.loading.FontLoader.Fonts;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
+import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
@@ -38,8 +38,8 @@ public class GLCanvas {
 	// SparseArray = HashMap<int, GLImage> - DrawableID -> GLImage
 	private SparseArray<GLTexture> textures = new SparseArray<GLTexture>();
 	
-	// TypeFace = Font Properties - TypeFace -> FontTexture
-	private HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
+	// FontSpecification = Font Properties
+	private HashMap<FontSpecification, GLTexturedFont> fontTextures = new HashMap<FontSpecification, GLTexturedFont>();
 	
 	// Rect to be used to store drawing calculations
 	private Rect auxiliaryRect = new Rect();
@@ -194,18 +194,20 @@ public class GLCanvas {
 		GLES11.glPopMatrix();
 	}
 
-	public void drawText(String text, float x, float y, Paint p, boolean centered) {
-		if (fontTextures.get(p.getTypeface()) == null) {
+	public void drawText(String text, float x, float y, FontSpecification fs, float size, boolean centered) {
+		if (fs == null)
+			System.out.println("This one is null: " + text);
+		if (fontTextures.get(fs) == null) {
 			Log.e("GLCanvas", "Font not loaded when drawing (\"" + text + "\")");
-			loadFont(p.getTypeface());
+			loadFont(fs);
 		}
 		
-		fontTextures.get(p.getTypeface()).drawText(gl, text, (int) x, (int) y, p.getTextSize(), p.getColor(), centered);
+		fontTextures.get(fs).drawText(gl, text, (int) x, (int) y, size, centered);
 	}
 
-	private int loadFont(Typeface typeface) {
-		FontTexture fontTexture = new FontTexture(typeface, gl);
-		fontTextures.put(typeface, fontTexture);
+	private int loadFont(FontSpecification fs) {
+		GLTexturedFont fontTexture = new GLTexturedFont(fs, gl);
+		fontTextures.put(fs, fontTexture);
 		return fontTexture.getGLId();
 	}
 
@@ -348,7 +350,7 @@ public class GLCanvas {
 		if (object.getType().equals(LoadableType.TEXTURE)) {
 			object.setGLId(loadImage(object.getId()));
 		} else if (object.getType().equals(LoadableType.FONT)) {
-			object.setGLId(loadFont(FontLoader.getInstance().getFont(Fonts.values()[object.getId()])));
+			object.setGLId(loadFont(FontLoader.getInstance().getFont(FontTypeFace.values()[object.getId()])));
 		}
 		
 	}

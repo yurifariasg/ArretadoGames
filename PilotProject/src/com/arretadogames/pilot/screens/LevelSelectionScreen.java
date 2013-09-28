@@ -17,6 +17,9 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LevelManager;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontSpecification;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
@@ -129,11 +132,11 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 		protected int index;
 		protected RectF drawRect;
 		private float zoom;
+		private FontSpecification textSpecification;
 		
 		public LevelSpot() {
 			drawRect = new RectF(0, 0, 100, 100);
-			textPaint = new Paint();
-			textPaint.setTextSize(1f);
+			textSpecification = FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS);
 			zoom = 1;
 		}
 		
@@ -175,15 +178,13 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 			
 		}
 
-		Paint textPaint;
-
 		@Override
 		public void render(GLCanvas canvas, float timeElapsed) {
 			canvas.saveState();
 			canvas.scale(zoom, zoom, drawRect.centerX(), drawRect.centerY());
 			canvas.drawBitmap(R.drawable.bt_level_selector, drawRect, false);
 			canvas.drawText(String.valueOf(index+1), drawRect.centerX(),
-					drawRect.centerY(), textPaint, true);
+					drawRect.centerY(), textSpecification, 1, true);
 			canvas.restoreState();
 			
 			if (zoom == 2) {
@@ -191,17 +192,17 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 				int stRecord = levels.get(currentIndex).getRecords()[0];
 				canvas.drawText(
 						"1st Coins: " + (stRecord == -1 ? "?" : String.valueOf(stRecord)),
-						drawRect.centerX(),	drawRect.centerY() + 130, textPaint, true);
+						drawRect.centerX(),	drawRect.centerY() + 130, textSpecification, 1, true);
 				
 				int ndRecord = levels.get(currentIndex).getRecords()[1];
 				canvas.drawText(
 						"2nd Coins: " + (ndRecord == -1 ? "?" : String.valueOf(ndRecord)),
-						drawRect.centerX(),	drawRect.centerY() + 160, textPaint, true);
+						drawRect.centerX(),	drawRect.centerY() + 160, textSpecification, 1, true);
 				
 				int rdRecord = levels.get(currentIndex).getRecords()[2];
 				canvas.drawText(
 						"3rd Coins: " + (rdRecord == -1 ? "?" : String.valueOf(rdRecord)),
-						drawRect.centerX(),	drawRect.centerY() + 190, textPaint, true);
+						drawRect.centerX(),	drawRect.centerY() + 190, textSpecification, 1, true);
 
 				
 			}

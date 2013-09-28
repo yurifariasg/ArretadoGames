@@ -7,6 +7,8 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.world.GameWorld;
@@ -22,10 +24,13 @@ public class GameWorldUI extends GameScreen {
 	
 	public GameWorldUI(GameWorld gameWorld) {
 		this.gWorld = gameWorld;
-		completionText = new Text(400, 430, "0% completed", 1, true);
+		completionText = new Text(400, 430, "0% completed",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 		
-		coin1Text = new Text(85, 40, "0", 1, true);
-		coin2Text = new Text(710, 40, "0", 1, true);
+		coin1Text = new Text(85, 40, "0",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
+		coin2Text = new Text(710, 40, "0",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 	}
 
 	@Override

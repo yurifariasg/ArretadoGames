@@ -5,36 +5,36 @@ import java.util.List;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.loading.FontLoader.Fonts;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 
 public class ResourcesManager {
 	
-	public static Fonts[] getFonts(GameState state) {
-		Fonts[] resources = null;
+	public static FontTypeFace[] getFonts(GameState state) {
+		FontTypeFace[] resources = null;
 		
 		if (state.equals(GameState.SPLASH)) {
-			resources = new Fonts[] {
-				Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED
 			};
 		} else if (state.equals(GameState.MAIN_MENU)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED
 				};
 		} else if (state.equals(GameState.CHARACTER_SELECTION)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED
 				};
 		} else if (state.equals(GameState.GAME_OVER)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED
 				};
 		} else if (state.equals(GameState.RUNNING_GAME)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED
 				};
 		} else if (state.equals(GameState.LEVEL_SELECTION)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED
 				};
 		}
 		
@@ -114,7 +114,7 @@ public class ResourcesManager {
 		return objects;
 	}
 	
-	private static List<LoadableGLObject> convertFontsToLoadableObjects(Fonts[] fontsResources) {
+	private static List<LoadableGLObject> convertFontsToLoadableObjects(FontTypeFace[] fontsResources) {
 		List<LoadableGLObject> objects = new ArrayList<LoadableGLObject>();
 		
 		for (int i = 0 ; i < fontsResources.length ; i++) {

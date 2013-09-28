@@ -1,6 +1,8 @@
 package com.arretadogames.pilot.screens;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.MainMenuScreen.State;
 import com.arretadogames.pilot.ui.GameButtonListener;
@@ -30,7 +32,9 @@ public class SettingsScreen extends GameScreen implements GameButtonListener {
 				50, 200,
 				R.drawable.checked_box, R.drawable.unchecked_box);
 		
-		muteText = new Text(240, 235, "Mute Game", 1, true);
+		muteText = new Text(240, 235, "Mute Game",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1.3f,
+				true);
 		
 		backButton = new ImageButton(
 				BACK_BUTTON,

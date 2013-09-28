@@ -63,6 +63,7 @@ public abstract class Button {
 		case MotionEvent.ACTION_UP:
 			if (pressed(event.getX(), event.getY())) {
 				listener.onClick(id);
+				isSelected = false;
 				return true;
 			}
 			isSelected = false;
