@@ -70,7 +70,12 @@ public class TatuBola extends Player implements Steppable{
 		
 		bodiesContact = new HashSet<Body>();
 	}
-
+	@Override
+	public PolygonShape getWaterContactShape() {
+		PolygonShape a = new PolygonShape();
+		a.setAsBox(rad, rad);
+		return a;
+	}
 	double getAngle(){
 		//return body.getAngle();
 		double angle = 0;
