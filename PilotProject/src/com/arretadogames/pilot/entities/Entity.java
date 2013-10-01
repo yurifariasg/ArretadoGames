@@ -2,6 +2,7 @@ package com.arretadogames.pilot.entities;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.FixtureDef;
@@ -72,6 +73,10 @@ public abstract class Entity implements Renderable {
 	}
 
 	public void postSolve(Contact contact, ContactImpulse impulse) {
+	}
+
+	public PolygonShape getWaterContactShape() {
+		return (PolygonShape) body.m_fixtureList.m_shape;
 	}
 	
 }

@@ -34,6 +34,7 @@ import com.arretadogames.pilot.entities.Pulley;
 import com.arretadogames.pilot.entities.Spike;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.TatuBola;
+import com.arretadogames.pilot.entities.Water;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
@@ -109,7 +110,7 @@ public class GameWorld extends GameScreen {
 		
 		//TODO fzr direito
 		
-		worldEntities.add(new Fire(-5,0));
+//		worldEntities.add(new Fire(-5,0));
 //		worldEntities.add(new Liana(25,9,23,7));
 //		Entity spikeA = new Spike(18f, 6.23f);
 //		spikeA.setSprite(sm.getSprite(spikeA));
@@ -183,6 +184,8 @@ public class GameWorld extends GameScreen {
 				case FINALFLAG:
 					entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
+				case WATER:
+					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),entityDescriptor.getSize());
 				default:
 					break;
 				}

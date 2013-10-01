@@ -33,6 +33,7 @@ public class LoboGuara extends Player implements Steppable{
 	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	Date lastAct;
+	private float size;
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
 								  		     R.drawable.lobo_g_walking3,
@@ -54,7 +55,8 @@ public class LoboGuara extends Player implements Steppable{
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
-		shape.setRadius(0.5f);
+		size = 0.5f;
+		shape.setRadius(size);
 		footFixture = body.createFixture(shape,  3f);
 		footFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
@@ -68,7 +70,14 @@ public class LoboGuara extends Player implements Steppable{
 		
 		bodiesContact = new HashSet<Body>();
 	}
-
+	
+	@Override
+	public PolygonShape getWaterContactShape() {
+		PolygonShape a = new PolygonShape();
+		a.setAsBox(size, size);
+		return a;
+	}
+	
 	double getAngle(){
 		//return body.getAngle();
 		double angle = 0;
