@@ -16,9 +16,24 @@ public class LoadManager {
 	private LoadableGLObject[] objectsToLoad;
 	private LoadableGLObject[] objectsToRemove;
 	
+	
+	private ArrayList<LoadableGLObject> extraResources;
+	
 	// Hide Constructor (Singleton)
 	private LoadManager() {
 		loadedResources = new HashSet<LoadableGLObject>();
+		extraResources = new ArrayList<LoadableGLObject>();
+	}
+	
+	public void addExtraObject(LoadableGLObject object) {
+		if (object != null)
+			extraResources.add(object);
+	}
+	
+	public void addExtraObjects(List<LoadableGLObject> objects) {
+		if (objects != null)
+			for (LoadableGLObject object : objects)
+				addExtraObject(object);
 	}
 	
 	public void prepareLoad(GameState[] states) {
@@ -27,6 +42,9 @@ public class LoadManager {
 		HashSet<LoadableGLObject> neededResources = new HashSet<LoadableGLObject>();
 		for (int i = 0 ; i < states.length ; i++)
 			neededResources.addAll(ResourcesManager.getResourcesFrom(states[i]));
+		
+		neededResources.addAll(extraResources);
+		extraResources.clear();
 		
 		// get what is not in loaded and is in needed - those should be loaded
 		List<LoadableGLObject> resourcesToLoad = new ArrayList<LoadableGLObject>();
@@ -40,7 +58,6 @@ public class LoadManager {
 			if (!neededResources.contains(resource))
 				resourcesToRemove.add(resource);
 		
-		
 		// Set Variables
 		this.objectsToLoad = new LoadableGLObject[resourcesToLoad.size()];
 		this.objectsToRemove = new LoadableGLObject[resourcesToRemove.size()];
@@ -51,7 +68,7 @@ public class LoadManager {
 	
 	public void swapTextures(final LoadFinisherCallBack callback, GLCanvas glCanvas) {
 		if (objectsToLoad == null || objectsToRemove == null) {
-			Log.e("LoadManager.SwapTextures", "Tried to swap textures without calling prepareLoad()");
+			Log.e("LoadManager.SwapTextures", "Tried to swap textures without calling prepareLoad() or game failed to load");
 			return;
 		}
 		

@@ -6,7 +6,7 @@ import org.jbox2d.dynamics.BodyType;
 
 import android.graphics.Color;
 
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -32,8 +32,8 @@ public class Ground extends Entity {
         int color = Color.rgb(77, 34, 0);
         for (int lineIndex = 1 ; lineIndex < vec.length ; lineIndex++) {
         	canvas.drawLine(
-        			vec[lineIndex - 1].x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - vec[lineIndex - 1].y * GLCanvas.physicsRatio,
-        			vec[lineIndex].x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - vec[lineIndex].y * GLCanvas.physicsRatio,
+        			vec[lineIndex - 1].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[lineIndex - 1].y * GLCanvas.physicsRatio,
+        			vec[lineIndex].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[lineIndex].y * GLCanvas.physicsRatio,
         			width, color);
         	
         }

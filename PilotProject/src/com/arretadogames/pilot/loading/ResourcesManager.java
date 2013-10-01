@@ -5,36 +5,42 @@ import java.util.List;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.loading.FontLoader.Fonts;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 
 public class ResourcesManager {
 	
-	public static Fonts[] getFonts(GameState state) {
-		Fonts[] resources = null;
+	public static FontTypeFace[] getFonts(GameState state) {
+		FontTypeFace[] resources = null;
 		
 		if (state.equals(GameState.SPLASH)) {
-			resources = new Fonts[] {
-				Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 			};
 		} else if (state.equals(GameState.MAIN_MENU)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.CHARACTER_SELECTION)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.GAME_OVER)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.RUNNING_GAME)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.LEVEL_SELECTION)) {
-			resources = new Fonts[] {
-					Fonts.TRANSMETALS
+			resources = new FontTypeFace[] {
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		}
 		
@@ -70,6 +76,10 @@ public class ResourcesManager {
 					R.drawable.red_selector,
 					R.drawable.selection_lobo_guara,
 					R.drawable.selection_arara_azul,
+					R.drawable.selection_tatu_bola,
+					R.drawable.selection_macaco_prego,
+					R.drawable.player1,
+					R.drawable.player2,
 					R.drawable.selection_anonymous
 			};
 			
@@ -85,7 +95,8 @@ public class ResourcesManager {
 					R.drawable.pause_menu_bg,
 					R.drawable.bt_pause_selected,
 					R.drawable.stage_background,
-					R.drawable.dark
+					R.drawable.repeatable_background,
+					R.drawable.spike
 			};
 		} else if (state.equals(GameState.LEVEL_SELECTION)) {
 			resources = new int[] {
@@ -114,7 +125,7 @@ public class ResourcesManager {
 		return objects;
 	}
 	
-	private static List<LoadableGLObject> convertFontsToLoadableObjects(Fonts[] fontsResources) {
+	private static List<LoadableGLObject> convertFontsToLoadableObjects(FontTypeFace[] fontsResources) {
 		List<LoadableGLObject> objects = new ArrayList<LoadableGLObject>();
 		
 		for (int i = 0 ; i < fontsResources.length ; i++) {

@@ -12,7 +12,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.AraraAzul;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Breakable;
@@ -41,8 +41,10 @@ import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
+import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
+import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.SpriteManager;
 import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -189,7 +191,9 @@ public class GameWorld extends GameScreen {
 				}
 				
 				if (entity != null) {
-					entity.setSprite(sm.getSprite(entity));
+					Sprite sprite = sm.getSprite(entity);
+					entity.setSprite(sprite);
+					LoadManager.getInstance().addExtraObjects(sprite.getAllFrames());
 					worldEntities.add(entity);
 					if (entity.getType() == EntityType.PLAYER)
 						players.put(((Player)entity).getNumber(), (Player) entity);
@@ -202,19 +206,19 @@ public class GameWorld extends GameScreen {
 		ld.getGroundDescriptor().getPoints().toArray(groundPoints);
 		int amountOfPoints = groundPoints.length;
 		
-		Vec2[] vecs = new Vec2[amountOfPoints > DisplaySettings.GROUND_ENTITY_THRESHOLD ? DisplaySettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
+		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
 		int internalPointer = 0;
 		for (int i = 0 ; i < amountOfPoints ; i++) {
 			
 			vecs[internalPointer] = groundPoints[i];
 			
-			if (internalPointer == DisplaySettings.GROUND_ENTITY_THRESHOLD - 1) {
+			if (internalPointer == GameSettings.GROUND_ENTITY_THRESHOLD - 1) {
 				worldEntities.add(new Ground(vecs, vecs.length));
-				vecs = new Vec2[DisplaySettings.GROUND_ENTITY_THRESHOLD];
+				vecs = new Vec2[GameSettings.GROUND_ENTITY_THRESHOLD];
 				vecs[0] = groundPoints[i];
 				internalPointer = 1;
 			} else {
-				internalPointer %= DisplaySettings.GROUND_ENTITY_THRESHOLD;
+				internalPointer %= GameSettings.GROUND_ENTITY_THRESHOLD;
 				internalPointer++;
 			}
 			
@@ -257,28 +261,28 @@ public class GameWorld extends GameScreen {
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		if (DisplaySettings.PROFILE_RENDER_SPEED)
+		if (GameSettings.PROFILE_RENDER_SPEED)
 			time = System.nanoTime()/1000000;
 		if (!pauseScreen.isHidden()) {
 			gameCamera.render(canvas, 0); // Draw a fixed frame - Dont move anything
 		} else {
 			gameCamera.render(canvas, timeElapsed);
 		}
-		if (DisplaySettings.PROFILE_RENDER_SPEED) {
+		if (GameSettings.PROFILE_RENDER_SPEED) {
 			Log.d("Profile", "Camera Render Time: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime()/1000000;
 		}
 		
 		ui.render(canvas, timeElapsed);
 		
-		if (DisplaySettings.PROFILE_RENDER_SPEED) {
+		if (GameSettings.PROFILE_RENDER_SPEED) {
 			Log.d("Profile", "UI Render Time: " + (System.nanoTime()/1000000 - time));
 			time = System.nanoTime()/1000000;
 		}
 		
 		pauseScreen.render(canvas, timeElapsed);
 		
-		if (DisplaySettings.PROFILE_RENDER_SPEED) {
+		if (GameSettings.PROFILE_RENDER_SPEED) {
 			Log.d("Profile", "Pause Screen Render Time: " + (System.nanoTime()/1000000 - time));
 		}
 	}

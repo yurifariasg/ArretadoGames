@@ -1,6 +1,12 @@
 package com.arretadogames.pilot.render;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
+import com.arretadogames.pilot.loading.LoadableGLObject;
+import com.arretadogames.pilot.loading.LoadableType;
 
 public class Sprite {
 	
@@ -31,6 +37,21 @@ public class Sprite {
 			spriteStates.get(state).release();
 		}
 		spriteStates.clear();
+	}
+
+	public List<LoadableGLObject> getAllFrames() {
+		List<LoadableGLObject> loadableObject = new ArrayList<LoadableGLObject>();
+		for (SpriteState state : spriteStates.values()) {
+			if (state != null) {
+				int[] frameIds = state.getFrames();
+				if (frameIds != null) {
+					for (int frameId : state.getFrames()) {
+						loadableObject.add(new LoadableGLObject(frameId, LoadableType.TEXTURE));
+					}
+				}
+			}
+		}
+		return loadableObject;
 	}
 
 }

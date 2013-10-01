@@ -16,16 +16,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.opengl.GLES11;
 import android.opengl.GLUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.MainActivity;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.loading.FontLoader.Fonts;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
+import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
@@ -36,19 +36,16 @@ public class GLCanvas {
 	private GL10 gl;
 	
 	// SparseArray = HashMap<int, GLImage> - DrawableID -> GLImage
-	private SparseArray<GLImage> textures = new SparseArray<GLImage>();
+	private SparseArray<GLTexture> textures = new SparseArray<GLTexture>();
 	
-	// TypeFace = Font Properties - TypeFace -> FontTexture
-	private HashMap<Typeface, FontTexture> fontTextures = new HashMap<Typeface, FontTexture>();
+	// FontSpecification = Font Properties
+	private HashMap<FontSpecification, GLTexturedFont> fontTextures = new HashMap<FontSpecification, GLTexturedFont>();
 	
 	// Rect to be used to store drawing calculations
 	private Rect auxiliaryRect = new Rect();
 	
 	// Pixel/Meters Ratio
 	public static float physicsRatio = 25;
-	
-	// Bottom-most Y coordinate position that the ground will have, in meters
-	private final float GROUND_BOTTOM = -50;
 	
 	public void setGLInterface(GL10 gl) {
 		this.gl = gl;
@@ -107,9 +104,9 @@ public class GLCanvas {
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength, int color) {
 		auxiliaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
-		auxiliaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
+		auxiliaryRect.top = (int) (GameSettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
 		auxiliaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
-		auxiliaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
+		auxiliaryRect.bottom = (int) (GameSettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
 		
 		GLRect.draw(gl, auxiliaryRect.left, auxiliaryRect.top, auxiliaryRect.right,
 				auxiliaryRect.bottom, color);
@@ -123,23 +120,23 @@ public class GLCanvas {
 
     	// Ultimo
     	squareCoords[0] = vertices[0].x * physicsRatio;
-    	squareCoords[1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
     	squareCoords[2] = 0.0f;
     	
     	for( int i = 0; i < vertices.length; i++){
     		squareCoords[3 + 3*i] = vertices[i].x * physicsRatio;
-    		squareCoords[3 + 3*i+1] = DisplaySettings.TARGET_HEIGHT - vertices[i].y * physicsRatio;
+    		squareCoords[3 + 3*i+1] = GameSettings.TARGET_HEIGHT - vertices[i].y * physicsRatio;
     		squareCoords[3 + 3*i+2] = 0.0f;
     	}
     	
     	// Penultimo
     	squareCoords[3 + 3 * vertices.length] = vertices[vertices.length - 1].x * physicsRatio;
-    	squareCoords[3 + 3 * vertices.length + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[3 + 3 * vertices.length + 1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
     	squareCoords[3 + 3 * vertices.length + 2] = 0.0f;
 
     	// Ultimo
     	squareCoords[3 + 3 * (vertices.length + 1)] = vertices[0].x * physicsRatio;
-    	squareCoords[3 + 3 * (vertices.length + 1) + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[3 + 3 * (vertices.length + 1) + 1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
     	squareCoords[3 + 3 * (vertices.length + 1) + 2] = 0.0f;
     	
     	short[] drawOrder = new short[12]; // FIXME : refactor this method
@@ -194,18 +191,19 @@ public class GLCanvas {
 		GLES11.glPopMatrix();
 	}
 
-	public void drawText(String text, float x, float y, Paint p, boolean centered) {
-		if (fontTextures.get(p.getTypeface()) == null) {
+	public void drawText(String text, float x, float y, FontSpecification fs, float size, boolean centered) {
+		if (fontTextures.get(fs) == null) {
 			Log.e("GLCanvas", "Font not loaded when drawing (\"" + text + "\")");
-			loadFont(p.getTypeface());
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadFont(fs);
 		}
 		
-		fontTextures.get(p.getTypeface()).drawText(gl, text, (int) x, (int) y, p.getTextSize(), p.getColor(), centered);
+		fontTextures.get(fs).drawText(gl, text, (int) x, (int) y, size, centered);
 	}
 
-	private int loadFont(Typeface typeface) {
-		FontTexture fontTexture = new FontTexture(typeface, gl);
-		fontTextures.put(typeface, fontTexture);
+	private int loadFont(FontSpecification fs) {
+		GLTexturedFont fontTexture = new GLTexturedFont(fs, gl);
+		fontTextures.put(fs, fontTexture);
 		return fontTexture.getGLId();
 	}
 
@@ -227,36 +225,39 @@ public class GLCanvas {
 	
 	public void drawBitmap(int imageId, float x, float y, Paint paint) {
 		if (textures.get(imageId) == null) {
-			Log.e("GLCanvas", "Texture not loaded");
-			loadImage(imageId);
+			Log.e("GLCanvas", "Texture not loaded: " +
+					MainActivity.getContext().getResources().getResourceEntryName(imageId));
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadImage(imageId);
 		}
 		saveState();
 			if (paint != null)
 				GLES11.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
 			translate(x, y);
 	
-			GLImage texture = textures.get(imageId);
-			GLTexture.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
+			GLTexture texture = textures.get(imageId);
+			GLTexturedRect.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
 		restoreState();
 	}
 	
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
 			boolean convertFromPhysics) {
-		
 		if (textures.get(imageId) == null) {
 			Log.e("GLCanvas", "Texture not loaded " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
-			loadImage(imageId);
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadImage(imageId);
 		}
 		
-		GLImage tex = textures.get(imageId);
+		
+		GLTexture tex = textures.get(imageId);
 		GLES11.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
 			auxiliaryRect.left = (int) (dstRect.left * physicsRatio);
-			auxiliaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
+			auxiliaryRect.top = (int) (GameSettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
 			auxiliaryRect.right = (int) (dstRect.right * physicsRatio);
-			auxiliaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
+			auxiliaryRect.bottom = (int) (GameSettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
 		} else {
 			auxiliaryRect.left = (int) dstRect.left;
 			auxiliaryRect.top = (int) dstRect.top;
@@ -264,7 +265,7 @@ public class GLCanvas {
 			auxiliaryRect.bottom = (int) dstRect.bottom;
 		}
 		
-		GLTexture.draw(gl, srcRect, auxiliaryRect, tex);
+		GLTexturedRect.draw(gl, srcRect, auxiliaryRect, tex);
 	}
 
 	
@@ -291,7 +292,7 @@ public class GLCanvas {
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
-		GLImage texture = new GLImage(texture_id);
+		GLTexture texture = new GLTexture(texture_id);
 		
 		// Working with textureId
 		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
@@ -321,7 +322,7 @@ public class GLCanvas {
 	}
 	
 	public void translatePhysics(float posX, float posY) {
-		GLES11.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
+		GLES11.glTranslatef(posX * physicsRatio, GameSettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
 
 	public void removeTextures(LoadableGLObject[] objects) {
@@ -348,7 +349,7 @@ public class GLCanvas {
 		if (object.getType().equals(LoadableType.TEXTURE)) {
 			object.setGLId(loadImage(object.getId()));
 		} else if (object.getType().equals(LoadableType.FONT)) {
-			object.setGLId(loadFont(FontLoader.getInstance().getFont(Fonts.values()[object.getId()])));
+			object.setGLId(loadFont(FontLoader.getInstance().getFont(FontTypeFace.values()[object.getId()])));
 		}
 		
 	}

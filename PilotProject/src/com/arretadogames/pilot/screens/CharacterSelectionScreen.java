@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
@@ -26,8 +26,8 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 	private boolean isPlayerOne;
 	private final int playerImgSize[] = ImageLoader.checkBitmapSize(R.drawable.player1);
 	
-	private float imgPlayerWidth = DisplaySettings.TARGET_WIDTH / 2 - (playerImgSize[0]/2);
-	private float imgPlayerHeight = DisplaySettings.TARGET_HEIGHT / 2 - (playerImgSize[1]/2);;
+	private float imgPlayerWidth = GameSettings.TARGET_WIDTH / 2 - (playerImgSize[0]/2);
+	private float imgPlayerHeight = GameSettings.TARGET_HEIGHT / 2 - (playerImgSize[1]/2);;
 
 	public CharacterSelectionScreen() {
 		isPlayerOne = true;
@@ -48,8 +48,8 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 	@SuppressLint("NewApi")
 	private void initializeSpots() {
 		
-		final float CENTER_X = DisplaySettings.TARGET_WIDTH / 2;
-		final float CENTER_Y = DisplaySettings.TARGET_HEIGHT / 2;
+		final float CENTER_X = GameSettings.TARGET_WIDTH / 2;
+		final float CENTER_Y = GameSettings.TARGET_HEIGHT / 2;
 		
 		spots = new CharacterSpot[4];
 		

@@ -10,13 +10,15 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelDescriptor;
+import com.arretadogames.pilot.loading.FontLoader;
+import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.Text;
 
@@ -65,9 +67,10 @@ public class EndScreen extends GameScreen {
 		backgroundId = hasWon ? R.drawable.victory_bg : R.drawable.defeat_bg;
 		initializeInfo();
 		
-		playerInformation.add(new Text(DisplaySettings.DISPLAY_WIDTH / 2,
-				DisplaySettings.DISPLAY_HEIGHT - 50,
-				"PRESS TO CONTINUE", 1, true));
+		playerInformation.add(new Text(GameSettings.DisplayWidth / 2,
+				GameSettings.DisplayHeight - 50,
+				"PRESS TO CONTINUE",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 	}
 
 	private void initializeInfo() {
@@ -124,15 +127,18 @@ public class EndScreen extends GameScreen {
 		
 		int currentY = PLAYER_INFO_Y;
 		
-		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(), 1.35f, true));
+		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(),
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1.35f, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Coins: " + player.getCoins(), 1f, true));
+				currentY, "Coins: " + player.getCoins(),
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 		
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Time: " + player.getTimeFinished() + "s", 1f, true));
+				currentY, "Time: " + player.getTimeFinished() + "s",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 		
 	}

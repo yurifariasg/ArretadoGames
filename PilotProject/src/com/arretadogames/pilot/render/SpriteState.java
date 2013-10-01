@@ -59,5 +59,9 @@ public class SpriteState {
 			keyframesIds[i] = 0;
 		keyframesIds = null;
 	}
+
+	public int[] getFrames() {
+		return keyframesIds;
+	}
 	
 }

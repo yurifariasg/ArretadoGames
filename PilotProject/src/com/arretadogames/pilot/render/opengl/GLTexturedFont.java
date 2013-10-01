@@ -6,48 +6,43 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.opengl.GLES11;
 import android.opengl.GLUtils;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
-public class FontTexture {
+import com.arretadogames.pilot.loading.FontSpecification;
+
+public class GLTexturedFont {
 	// Font texture for drawing text
 
 	// General
-	private Typeface tf;
+	private FontSpecification fontSpec;
 
 	// Render parameters
 	private int fontHeight;
-	// TODO: support multi-line: add max chars in row and wrap
 	private SparseIntArray charWidths;
 	private SparseArray<Rect> characterRects;
 	private int cellWidth;
 	private int cellHeight;
 
 	// Font settings (defaults)
-	// TODO: Add way to change these:
-	private int size = 24;
-	private int colour = 0xffffffff;
 	private int charStart = 32;
 	private int charEnd = 126;
 	private int charUnknown = 32; // Must be between start and end
-	private int padX = 2;
-	private int padY = 2;
+	private int padX = 4; // X Padding
+	private int padY = 4; // Y Padding
 
-	private GLImage spriteData;
+	private GLTexture spriteData;
 
-	public FontTexture(Typeface tf, GL10 gl) {
-		this.tf = tf;
+	public GLTexturedFont(FontSpecification fontSpecification, GL10 gl) {//Typeface tf, GL10 gl) {
+		this.fontSpec = fontSpecification;
 		createTexture(gl);
 	}
 	
-	public void drawText(GL10 gl, String text, int x, int y, float scale, int argb, boolean centered) {
+	public void drawText(GL10 gl, String text, int x, int y, float scale, boolean centered) {
 		scale /= 2;
 		// Get width of text
 		int textWidth = 0;
@@ -69,7 +64,8 @@ public class FontTexture {
 		Rect src;
 		Rect dst = new Rect();
 		int charNumber;
-		GLES11.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
+//		GLES11.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
+		gl.glColor4f(1, 1, 1, 1);
 		gl.glPushMatrix();
 		for (int i = 0; i < text.length() ; i++) {
 			// Source rect
@@ -88,47 +84,32 @@ public class FontTexture {
 			dst.set(x, y, x + scaledCellWidth, y + scaledCellHeight);
 
 			// Draw
-			GLTexture.draw(gl, src, dst, spriteData);
+			GLTexturedRect.draw(gl, src, dst, spriteData);
 			// Move forward CHAR WIDTH (not cell width)
 			x += charWidth * scale;
 		}
 		gl.glPopMatrix();
-		gl.glColor4f(1, 1, 1, 1);
 	}
 	
 	
 	private void createTexture(GL10 gl) {
-		loadBitmap(gl, getBitmap(false));
+		loadBitmap(gl, createBitmap());
 	}
 	
 	int textureSize;
 	
-	public Bitmap getBitmap(boolean hasStroke) {
-		hasStroke = true;
+	public Bitmap createBitmap() {
 		// We use the font to create a sprite atlas containing every letter,
 		// then we return the sprite atlas bitmap to be used as the texture.
-		size *= 2;
-
-		// Set-up Paint object for drawing letters to bitmap
-		Paint paint = new Paint(); // Create Android Paint Instance
-		paint.setAntiAlias(true); // Enable Anti Alias
-		paint.setTypeface(tf); // Set Typeface
-		paint.setTextSize(size); // Set Text Size
-		paint.setColor(colour); // Set ARGB (White, Opaque)
-		paint.setTextAlign(Paint.Align.LEFT);
-		
-		Paint mStrokePaint = new Paint();
-		mStrokePaint.setTypeface(tf);
-		mStrokePaint.setStyle(Style.STROKE);
-		mStrokePaint.setStrokeWidth(2);
-		mStrokePaint.setColor(Color.rgb(89, 103, 213));
-		mStrokePaint.setTextSize(size);
-		mStrokePaint.setAntiAlias(true);
-		mStrokePaint.setTextAlign(Paint.Align.LEFT);
+		Paint paint = fontSpec.getFontPaint();
+		Paint mStrokePaint = fontSpec.getStrokePaint();
+		boolean hasStroke = mStrokePaint != null;
 
 		// get font metrics
 		Paint.FontMetrics fm = paint.getFontMetrics();
 		fontHeight = (int) Math.ceil(Math.abs(fm.bottom) + Math.abs(fm.top));
+		if (hasStroke)
+			fontHeight += (int)Math.floor(mStrokePaint.getStrokeWidth()) * 2;
 
 		// Store for char widths
 		charWidths = new SparseIntArray();
@@ -143,8 +124,7 @@ public class FontTexture {
 			paint.getTextWidths(s, 0, 1, w);
 			charWidth = (int) Math.ceil(w[0]);
 			if (hasStroke)
-				charWidth += (int)Math.floor(mStrokePaint.getStrokeWidth());
-			
+				charWidth += (int)Math.floor(mStrokePaint.getStrokeWidth()) * 2;
 			// Store it
 			charWidths.put(c, charWidth);
 			if (charWidth > charWidthMax) {
@@ -163,7 +143,6 @@ public class FontTexture {
 		int maxSize = cellWidth > cellHeight ? cellWidth : cellHeight;
 
 		// Ensure power-of-2 texture sizes. Base it on maxSize
-		// TODO: Make automatic? Are we OK beyond 1024?
 		// Here is how calculation goes:
 		// Number of chars = 95
 		// Square root (round up) = 10 x 10 grid
@@ -199,9 +178,14 @@ public class FontTexture {
 			if (hasStroke)
 				canvas.drawText(s, 0, 1, x, y, mStrokePaint);
 			// Store source rectangle
-			characterRects.put((int) c,
+			if (hasStroke)
+				characterRects.put((int) c,
 					new Rect(x - (int)(Math.floor(mStrokePaint.getStrokeWidth())), (int) (y - cellHeight * 0.7), x
 					+ cellWidth, (int) (y + cellHeight * 0.3)));
+			else
+				characterRects.put((int) c,
+						new Rect(x, (int) (y - cellHeight * 0.7), x
+						+ cellWidth, (int) (y + cellHeight * 0.3)));
 			// Increment and wrap at end of line
 			x += cellWidth;
 			if ((x + cellWidth) > textureSize) {
@@ -219,7 +203,7 @@ public class FontTexture {
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
-		spriteData = new GLImage(texture_id);
+		spriteData = new GLTexture(texture_id);
 		
 		// Working with textureId
 		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
