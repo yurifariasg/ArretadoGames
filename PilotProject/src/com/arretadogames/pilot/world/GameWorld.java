@@ -111,9 +111,9 @@ public class GameWorld extends GameScreen {
 		
 		worldEntities.add(new Fire(-5,0));
 //		worldEntities.add(new Liana(25,9,23,7));
-		Entity spikeA = new Spike(18f, 6.23f);
-		spikeA.setSprite(sm.getSprite(spikeA));
-		worldEntities.add(spikeA);
+//		Entity spikeA = new Spike(18f, 6.23f);
+//		spikeA.setSprite(sm.getSprite(spikeA));
+//		worldEntities.add(spikeA);
 		worldEntities.add(new Liana(25f,9f,23f,7f));
 //		worldEntities.add(new OneWayWall(30,6.5f));
 //		worldEntities.add(new Breakable(37,7.5f,0.2f,2f,0,false));
