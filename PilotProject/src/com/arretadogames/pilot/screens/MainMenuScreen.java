@@ -6,7 +6,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.googlesync.SyncManager;
@@ -81,7 +81,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		canvas.fillScreen(255, 0, 0, 0);
 		
-		canvas.scale(currentZoom, currentZoom, DisplaySettings.TARGET_WIDTH / 2, DisplaySettings.TARGET_HEIGHT / 2);
+		canvas.scale(currentZoom, currentZoom, GameSettings.TARGET_WIDTH / 2, GameSettings.TARGET_HEIGHT / 2);
 		
 		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
 		

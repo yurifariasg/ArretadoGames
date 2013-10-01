@@ -1,6 +1,6 @@
 package com.arretadogames.pilot.screens;
 
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 
 import android.view.MotionEvent;
 
@@ -13,11 +13,11 @@ public class InputEventHandler {
 	}
 	
 	public float getX() {
-		return motionEvent.getX(getIndex()) / DisplaySettings.WIDTH_RATIO;
+		return motionEvent.getX(getIndex()) / GameSettings.WidthRatio;
 	}
 	
 	public float getY() {
-		return motionEvent.getY(getIndex()) / DisplaySettings.HEIGHT_RATIO;
+		return motionEvent.getY(getIndex()) / GameSettings.HeightRatio;
 	}
 
 	public int getAction() {
@@ -29,11 +29,11 @@ public class InputEventHandler {
 	}
 	
 	public float getX(int pointerIndex) {
-		return motionEvent.getX(pointerIndex) / DisplaySettings.WIDTH_RATIO;
+		return motionEvent.getX(pointerIndex) / GameSettings.WidthRatio;
 	}
 	
 	public float getY(int pointerIndex) {
-		return motionEvent.getY(pointerIndex) / DisplaySettings.HEIGHT_RATIO;
+		return motionEvent.getY(pointerIndex) / GameSettings.HeightRatio;
 	}
 	
 	private int getIndex() {

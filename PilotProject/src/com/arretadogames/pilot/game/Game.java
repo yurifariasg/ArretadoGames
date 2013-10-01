@@ -10,7 +10,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenCallback;
 
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -90,7 +90,6 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		
 		if (currentState.equals(GameState.LOADING)) {
 			loadManager.swapTextures(game, canvas);
-			System.out.println("LOADING STATE");
 			return;
 		} else {
 			getScreen(currentState).render(canvas, timeElapsed);
@@ -200,8 +199,8 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		transitionStateOn = true;
 		
 		transitionRect = new Rect(
-				(int) DisplaySettings.TARGET_WIDTH, 0,
-				(int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
+				(int) GameSettings.TARGET_WIDTH, 0,
+				(int) GameSettings.TARGET_WIDTH, (int) GameSettings.TARGET_HEIGHT);
 		
 		Timeline.createSequence()
 				.push(Tween.to(this, LEFT, 0.4f).target(0f))

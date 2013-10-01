@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
@@ -67,8 +67,8 @@ public class EndScreen extends GameScreen {
 		backgroundId = hasWon ? R.drawable.victory_bg : R.drawable.defeat_bg;
 		initializeInfo();
 		
-		playerInformation.add(new Text(DisplaySettings.DISPLAY_WIDTH / 2,
-				DisplaySettings.DISPLAY_HEIGHT - 50,
+		playerInformation.add(new Text(GameSettings.DisplayWidth / 2,
+				GameSettings.DisplayHeight - 50,
 				"PRESS TO CONTINUE",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 	}

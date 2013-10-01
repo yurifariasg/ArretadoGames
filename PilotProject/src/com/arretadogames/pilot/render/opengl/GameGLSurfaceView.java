@@ -4,8 +4,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.opengl.GLES11;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
@@ -14,11 +12,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.arretadogames.pilot.MainActivity;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
+import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.screens.InputEventHandler;
 
 /**
@@ -49,11 +47,11 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		if (DisplaySettings.DISPLAY_WIDTH == -1 || DisplaySettings.DISPLAY_HEIGHT == -1) {
-			DisplaySettings.DISPLAY_WIDTH = getWidth();
-			DisplaySettings.DISPLAY_HEIGHT = getHeight();
-			DisplaySettings.WIDTH_RATIO = DisplaySettings.DISPLAY_WIDTH / DisplaySettings.TARGET_WIDTH;
-			DisplaySettings.HEIGHT_RATIO = DisplaySettings.DISPLAY_HEIGHT / DisplaySettings.TARGET_HEIGHT;
+		if (GameSettings.DisplayWidth == -1 || GameSettings.DisplayHeight == -1) {
+			GameSettings.DisplayWidth = getWidth();
+			GameSettings.DisplayHeight = getHeight();
+			GameSettings.WidthRatio = GameSettings.DisplayWidth / GameSettings.TARGET_WIDTH;
+			GameSettings.HeightRatio = GameSettings.DisplayHeight / GameSettings.TARGET_HEIGHT;
 		}
 		
 		if (Game.getInstance() != null) {
@@ -74,13 +72,13 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		long frameCurrentTime = getCurrentTime();
 		float elapsedTime = (frameCurrentTime - frameEndedTime) / 1000f;
 		
-		if (DisplaySettings.PROFILE_SPEED)
+		if (GameSettings.PROFILE_SPEED)
 			time = getCurrentTime();
 		
 		// Game Loop
 		Game.getInstance().step(elapsedTime);
 		
-		if (DisplaySettings.PROFILE_SPEED) {
+		if (GameSettings.PROFILE_SPEED) {
 			Log.d("Profile", "Step Speed: " + (getCurrentTime() - time));
 			time = getCurrentTime();
 		}
@@ -89,7 +87,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		gameCanvas.initiate();
 		Game.getInstance().render(gameCanvas, elapsedTime);
 		
-		if (DisplaySettings.PROFILE_SPEED) {
+		if (GameSettings.PROFILE_SPEED) {
 			Log.d("Profile", "Render Speed: " + (getCurrentTime() - time));
 		}
 		
@@ -107,7 +105,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 			}
 		}
 		
-		if (DisplaySettings.SHOW_FPS) {
+		if (GameSettings.SHOW_FPS) {
 			fpsBuffer[fpsCounter] = (1000f/(getCurrentTime() - frameCurrentTime));
 			fpsCounter = ++fpsCounter % fpsBuffer.length;
 			gameCanvas.drawText("FPS: " + getAverageFPS(), 10, 20, fpsFont, 0.8f, false);
@@ -129,7 +127,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 	}
 	
 	private long getTargetMilli(long timeBefore) {
-		return (long) (1000.0 / DisplaySettings.TARGET_FPS) + timeBefore;
+		return (long) (1000.0 / GameSettings.TARGET_FPS) + timeBefore;
 	}
 
 	@Override
@@ -185,18 +183,15 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		// Specifies the Renderer and starts the Rendering Thread
 		setRenderer(this);
 
-		// Render the view only when there is a change in the drawing data
-//				setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-		
 		// Set OnTouchListener
 		setOnTouchListener((MainActivity)activity);
 		
 		gameCanvas = new GLCanvas();
 		
-		getHolder().setFixedSize((int) DisplaySettings.TARGET_WIDTH, (int) DisplaySettings.TARGET_HEIGHT);
+		getHolder().setFixedSize((int) GameSettings.TARGET_WIDTH, (int) GameSettings.TARGET_HEIGHT);
 		
-		if (DisplaySettings.SHOW_FPS) {
-			fpsBuffer = new float[DisplaySettings.FPS_AVG_BUFFER_SIZE];
+		if (GameSettings.SHOW_FPS) {
+			fpsBuffer = new float[GameSettings.FPS_AVG_BUFFER_SIZE];
 			for (int i = 0 ; i < fpsBuffer.length ; i++) {
 				fpsBuffer[i] = 0; // initialize all 0
 			}

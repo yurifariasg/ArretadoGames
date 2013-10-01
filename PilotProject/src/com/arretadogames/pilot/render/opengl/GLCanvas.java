@@ -22,7 +22,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.MainActivity;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.loading.FontSpecification;
@@ -46,9 +46,6 @@ public class GLCanvas {
 	
 	// Pixel/Meters Ratio
 	public static float physicsRatio = 25;
-	
-	// Bottom-most Y coordinate position that the ground will have, in meters
-	private final float GROUND_BOTTOM = -50;
 	
 	public void setGLInterface(GL10 gl) {
 		this.gl = gl;
@@ -107,9 +104,9 @@ public class GLCanvas {
 	public void drawPhysicsDebugRect(float centerX, float centerY,
 			float sideLength, int color) {
 		auxiliaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
-		auxiliaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
+		auxiliaryRect.top = (int) (GameSettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
 		auxiliaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
-		auxiliaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
+		auxiliaryRect.bottom = (int) (GameSettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
 		
 		GLRect.draw(gl, auxiliaryRect.left, auxiliaryRect.top, auxiliaryRect.right,
 				auxiliaryRect.bottom, color);
@@ -123,23 +120,23 @@ public class GLCanvas {
 
     	// Ultimo
     	squareCoords[0] = vertices[0].x * physicsRatio;
-    	squareCoords[1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
     	squareCoords[2] = 0.0f;
     	
     	for( int i = 0; i < vertices.length; i++){
     		squareCoords[3 + 3*i] = vertices[i].x * physicsRatio;
-    		squareCoords[3 + 3*i+1] = DisplaySettings.TARGET_HEIGHT - vertices[i].y * physicsRatio;
+    		squareCoords[3 + 3*i+1] = GameSettings.TARGET_HEIGHT - vertices[i].y * physicsRatio;
     		squareCoords[3 + 3*i+2] = 0.0f;
     	}
     	
     	// Penultimo
     	squareCoords[3 + 3 * vertices.length] = vertices[vertices.length - 1].x * physicsRatio;
-    	squareCoords[3 + 3 * vertices.length + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[3 + 3 * vertices.length + 1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
     	squareCoords[3 + 3 * vertices.length + 2] = 0.0f;
 
     	// Ultimo
     	squareCoords[3 + 3 * (vertices.length + 1)] = vertices[0].x * physicsRatio;
-    	squareCoords[3 + 3 * (vertices.length + 1) + 1] = DisplaySettings.TARGET_HEIGHT - GROUND_BOTTOM * physicsRatio;
+    	squareCoords[3 + 3 * (vertices.length + 1) + 1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
     	squareCoords[3 + 3 * (vertices.length + 1) + 2] = 0.0f;
     	
     	short[] drawOrder = new short[12]; // FIXME : refactor this method
@@ -195,11 +192,10 @@ public class GLCanvas {
 	}
 
 	public void drawText(String text, float x, float y, FontSpecification fs, float size, boolean centered) {
-		if (fs == null)
-			System.out.println("This one is null: " + text);
 		if (fontTextures.get(fs) == null) {
 			Log.e("GLCanvas", "Font not loaded when drawing (\"" + text + "\")");
-			loadFont(fs);
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadFont(fs);
 		}
 		
 		fontTextures.get(fs).drawText(gl, text, (int) x, (int) y, size, centered);
@@ -229,8 +225,10 @@ public class GLCanvas {
 	
 	public void drawBitmap(int imageId, float x, float y, Paint paint) {
 		if (textures.get(imageId) == null) {
-			Log.e("GLCanvas", "Texture not loaded");
-			loadImage(imageId);
+			Log.e("GLCanvas", "Texture not loaded: " +
+					MainActivity.getContext().getResources().getResourceEntryName(imageId));
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadImage(imageId);
 		}
 		saveState();
 			if (paint != null)
@@ -244,21 +242,22 @@ public class GLCanvas {
 	
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
 			boolean convertFromPhysics) {
-		
 		if (textures.get(imageId) == null) {
 			Log.e("GLCanvas", "Texture not loaded " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
-			loadImage(imageId);
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadImage(imageId);
 		}
+		
 		
 		GLTexture tex = textures.get(imageId);
 		GLES11.glColor4f(1, 1, 1, 1);
 		
 		if (convertFromPhysics) {
 			auxiliaryRect.left = (int) (dstRect.left * physicsRatio);
-			auxiliaryRect.top = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
+			auxiliaryRect.top = (int) (GameSettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
 			auxiliaryRect.right = (int) (dstRect.right * physicsRatio);
-			auxiliaryRect.bottom = (int) (DisplaySettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
+			auxiliaryRect.bottom = (int) (GameSettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
 		} else {
 			auxiliaryRect.left = (int) dstRect.left;
 			auxiliaryRect.top = (int) dstRect.top;
@@ -323,7 +322,7 @@ public class GLCanvas {
 	}
 	
 	public void translatePhysics(float posX, float posY) {
-		GLES11.glTranslatef(posX * physicsRatio, DisplaySettings.TARGET_HEIGHT - posY * physicsRatio, 0);
+		GLES11.glTranslatef(posX * physicsRatio, GameSettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
 
 	public void removeTextures(LoadableGLObject[] objects) {

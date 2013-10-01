@@ -14,27 +14,33 @@ public class ResourcesManager {
 		
 		if (state.equals(GameState.SPLASH)) {
 			resources = new FontTypeFace[] {
-					FontTypeFace.TRANSMETALS_STROKED
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 			};
 		} else if (state.equals(GameState.MAIN_MENU)) {
 			resources = new FontTypeFace[] {
-					FontTypeFace.TRANSMETALS_STROKED
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.CHARACTER_SELECTION)) {
 			resources = new FontTypeFace[] {
-					FontTypeFace.TRANSMETALS_STROKED
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.GAME_OVER)) {
 			resources = new FontTypeFace[] {
-					FontTypeFace.TRANSMETALS_STROKED
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.RUNNING_GAME)) {
 			resources = new FontTypeFace[] {
-					FontTypeFace.TRANSMETALS_STROKED
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		} else if (state.equals(GameState.LEVEL_SELECTION)) {
 			resources = new FontTypeFace[] {
-					FontTypeFace.TRANSMETALS_STROKED
+					FontTypeFace.TRANSMETALS_STROKED,
+					FontTypeFace.TRANSMETALS
 				};
 		}
 		
@@ -70,6 +76,10 @@ public class ResourcesManager {
 					R.drawable.red_selector,
 					R.drawable.selection_lobo_guara,
 					R.drawable.selection_arara_azul,
+					R.drawable.selection_tatu_bola,
+					R.drawable.selection_macaco_prego,
+					R.drawable.player1,
+					R.drawable.player2,
 					R.drawable.selection_anonymous
 			};
 			
@@ -85,7 +95,8 @@ public class ResourcesManager {
 					R.drawable.pause_menu_bg,
 					R.drawable.bt_pause_selected,
 					R.drawable.stage_background,
-					R.drawable.dark
+					R.drawable.repeatable_background,
+					R.drawable.spike
 			};
 		} else if (state.equals(GameState.LEVEL_SELECTION)) {
 			resources = new int[] {

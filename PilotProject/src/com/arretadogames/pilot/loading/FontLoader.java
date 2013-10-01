@@ -2,6 +2,8 @@ package com.arretadogames.pilot.loading;
 
 import java.util.HashMap;
 
+import com.arretadogames.pilot.config.GameSettings;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,17 +17,11 @@ public class FontLoader {
 	
 	// Object Variables
 	private HashMap<FontTypeFace, FontSpecification> fonts;
-	private float fontSize;
 	private Context context;
 	
 	private FontLoader(Context context) {
 		this.context = context;
-		fontSize = 60f; // Default
 		fonts = new HashMap<FontTypeFace, FontSpecification>();
-	}
-
-	public float getFontSize() {
-		return fontSize;
 	}
 	
 	public FontSpecification getFont(FontTypeFace font) {
@@ -60,7 +56,7 @@ public class FontLoader {
 			Paint paint = new Paint(); // Create Android Paint Instance
 			paint.setAntiAlias(true); // Enable Anti Alias
 			paint.setTypeface(tf); // Set Typeface
-			paint.setTextSize(fontSize); // Set Text Size
+			paint.setTextSize(GameSettings.DEFAULT_FONT_SIZE); // Set Text Size
 			paint.setColor(Color.WHITE); // Set ARGB (White, Opaque)
 			paint.setTextAlign(Paint.Align.LEFT);
 			
@@ -69,7 +65,7 @@ public class FontLoader {
 			mStrokePaint.setStyle(Style.STROKE);
 			mStrokePaint.setStrokeWidth(2);
 			mStrokePaint.setColor(Color.rgb(89, 103, 213));
-			mStrokePaint.setTextSize(fontSize);
+			mStrokePaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE);
 			mStrokePaint.setAntiAlias(true);
 			mStrokePaint.setTextAlign(Paint.Align.LEFT);
 			
@@ -84,7 +80,7 @@ public class FontLoader {
 			Paint transmetalsPaint = new Paint(); // Create Android Paint Instance
 			transmetalsPaint.setAntiAlias(true); // Enable Anti Alias
 			transmetalsPaint.setTypeface(transmetals); // Set Typeface
-			transmetalsPaint.setTextSize(fontSize); // Set Text Size
+			transmetalsPaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE); // Set Text Size
 			transmetalsPaint.setColor(Color.BLACK); // Set ARGB (White, Opaque)
 			transmetalsPaint.setTextAlign(Paint.Align.LEFT);
 			

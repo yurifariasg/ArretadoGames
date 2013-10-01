@@ -11,7 +11,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Back;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
@@ -48,8 +48,8 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		canvas.fillScreen(255, 0, 0, 0);
 		
 		canvas.saveState();
-		float centerX = DisplaySettings.TARGET_WIDTH / 2;
-		float centerY = DisplaySettings.TARGET_HEIGHT / 2;
+		float centerX = GameSettings.TARGET_WIDTH / 2;
+		float centerY = GameSettings.TARGET_HEIGHT / 2;
 		canvas.translate(centerX, centerY);
 		canvas.rotate(currentAngle);
 		canvas.translate(-centerX, -centerY);

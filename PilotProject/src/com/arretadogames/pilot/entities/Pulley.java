@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -47,9 +47,9 @@ public class Pulley extends Entity {
 		lines[2] = groundAnchorB;
 		int color = Color.rgb(77, 34, 0);;
 		float width = 0.05f * GLCanvas.physicsRatio;
-		canvas.drawLine(a.getPosX() * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - a.getPosY() * GLCanvas.physicsRatio, anchorA.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, width, color);
-		canvas.drawLine(anchorA.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, anchorB.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, width, color);
-		canvas.drawLine(anchorB.x * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, b.getPosX() * GLCanvas.physicsRatio, DisplaySettings.TARGET_HEIGHT - b.getPosY() * GLCanvas.physicsRatio, width, color);
+		canvas.drawLine(a.getPosX() * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - a.getPosY() * GLCanvas.physicsRatio, anchorA.x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, width, color);
+		canvas.drawLine(anchorA.x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - anchorA.y * GLCanvas.physicsRatio, anchorB.x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, width, color);
+		canvas.drawLine(anchorB.x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - anchorB.y * GLCanvas.physicsRatio, b.getPosX() * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - b.getPosY() * GLCanvas.physicsRatio, width, color);
 		
 		// Rendering Pulley Entities
 		a.render(canvas, timeElapsed);

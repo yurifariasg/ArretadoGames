@@ -17,7 +17,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.DisplaySettings;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Player;
@@ -86,7 +86,7 @@ public class GameCamera {
 	//Determine viewport: portion of World that will be visible. Obviously, it is measured in meters.
 	private void determineViewport(GLCanvas gameCanvas, float timeElapsed){
 		
-		if (DisplaySettings.PROFILE_GAME_CAMERA)
+		if (GameSettings.PROFILE_GAME_CAMERA)
 			time = System.nanoTime() / 1000000;
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
@@ -159,8 +159,8 @@ public class GameCamera {
 		if ( maxYDistance <= maxXDistance * 0.5f ){ //Threshold indicating when it is good to start calculating height first. Measured in meters.
 
 			viewportWidth = maxXDistance +10;//+ 15;//+ 30;
-			physicsRatio = DisplaySettings.TARGET_WIDTH / viewportWidth;
-			viewportHeight = DisplaySettings.TARGET_HEIGHT / physicsRatio;
+			physicsRatio = GameSettings.TARGET_WIDTH / viewportWidth;
+			viewportHeight = GameSettings.TARGET_HEIGHT / physicsRatio;
 
 			if ( !transitioning ){
 
@@ -175,8 +175,8 @@ public class GameCamera {
 		else{
 
 			viewportHeight = maxYDistance +6;//+ 9;//+ 18;
-			physicsRatio = DisplaySettings.TARGET_HEIGHT / viewportHeight;
-			viewportWidth = DisplaySettings.TARGET_WIDTH / physicsRatio;
+			physicsRatio = GameSettings.TARGET_HEIGHT / viewportHeight;
+			viewportWidth = GameSettings.TARGET_WIDTH / physicsRatio;
 
 			if ( !transitioning ){
 
@@ -277,7 +277,7 @@ physicsRatio * (center.y - viewportHeight/2) );
 			}
 		}
 		
-		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Calculate Viewport: " + (System.nanoTime()/1000000 
 
 - time));
@@ -289,7 +289,7 @@ physicsRatio * (center.y - viewportHeight/2) );
 
 		drawBackground(gameCanvas, center);
 		
-		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Draw Background: " + (System.nanoTime()/1000000 - 
 
 time));
@@ -308,7 +308,7 @@ upperBound);
 			entity.render(gameCanvas, timeElapsed);
 		}
 		
-		if (DisplaySettings.PROFILE_GAME_CAMERA) {
+		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Draw Entities: " + (System.nanoTime()/1000000 - 
 
 time));
@@ -334,18 +334,18 @@ time));
 			pos_rel_to_map = 1;
 		}
 		
-		if ( backgroundImageWidth > DisplaySettings.TARGET_WIDTH && 
+		if ( backgroundImageWidth > GameSettings.TARGET_WIDTH && 
 
-backgroundImageHeight > DisplaySettings.TARGET_HEIGHT ){
+backgroundImageHeight > GameSettings.TARGET_HEIGHT ){
 
-			float factor = (float) Math.ceil((DisplaySettings.TARGET_HEIGHT / 
+			float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / 
 
 backgroundImageHeight));
 			float backgroundWidth = backgroundImageWidth * factor;
 			float backgroundHeight = backgroundImageHeight * factor;
 
-			if ( backgroundWidth < DisplaySettings.TARGET_WIDTH ){
-				factor = (float) Math.ceil(DisplaySettings.TARGET_WIDTH / 
+			if ( backgroundWidth < GameSettings.TARGET_WIDTH ){
+				factor = (float) Math.ceil(GameSettings.TARGET_WIDTH / 
 
 backgroundWidth);
 				backgroundWidth *= factor;
@@ -358,7 +358,7 @@ backgroundHeight);
 
 			int translate_x = (int) (pos_rel_to_map * ( backgroundWidth - 
 
-DisplaySettings.TARGET_WIDTH ));
+GameSettings.TARGET_WIDTH ));
 			int translate_y = 0;
 
 			Rect showRect = new Rect(translate_x, translate_y, 
@@ -366,7 +366,7 @@ DisplaySettings.TARGET_WIDTH ));
 
 (int)backgroundHeight);
 			
-			if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			if (GameSettings.PROFILE_GAME_CAMERA) {
 				Log.d("Profiling", "Calculate Background: " + 
 
 (System.nanoTime()/1000000 - time));
@@ -380,14 +380,14 @@ DisplaySettings.TARGET_WIDTH ));
 		}
 		else{
 			
-			RectF displayRect = new RectF(0f, 0f, DisplaySettings.TARGET_WIDTH, 
+			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH, 
 
-DisplaySettings.TARGET_HEIGHT);
+GameSettings.TARGET_HEIGHT);
 			
 			int backgroundHeight = backgroundImageHeight;
 			int backgroundWidth = backgroundHeight * (int)
 
-(DisplaySettings.TARGET_WIDTH / DisplaySettings.TARGET_HEIGHT);
+(GameSettings.TARGET_WIDTH / GameSettings.TARGET_HEIGHT);
 			
 			int translate_x = (int) (pos_rel_to_map * ( backgroundImageWidth - 
 
@@ -398,7 +398,7 @@ backgroundWidth));
 
 backgroundWidth, backgroundHeight + translate_y);
 
-			if (DisplaySettings.PROFILE_GAME_CAMERA) {
+			if (GameSettings.PROFILE_GAME_CAMERA) {
 				Log.d("Profiling", "Calculate Background: " + 
 
 (System.nanoTime()/1000000 - time));
