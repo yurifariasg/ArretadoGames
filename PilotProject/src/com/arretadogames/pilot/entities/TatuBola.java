@@ -76,6 +76,13 @@ public class TatuBola extends Player implements Steppable{
 		a.setAsBox(rad, rad);
 		return a;
 	}
+	
+	@Override
+	public double getPercentageLeftToNextAct() {
+		Date t = new Date();
+		return ((double)(Math.min(t.getTime(),lastAct.getTime()) - lastAct.getTime())/1000)/3;
+	}
+	
 	double getAngle(){
 		//return body.getAngle();
 		double angle = 0;

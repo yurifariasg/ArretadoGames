@@ -154,7 +154,13 @@ public class LoboGuara extends Player implements Steppable{
 		}
 		}
 	}
-
+	
+	@Override
+	public double getPercentageLeftToNextAct() {
+		Date t = new Date();
+		return ((double)(Math.min(t.getTime(),lastAct.getTime()) - lastAct.getTime())/1000)/3;
+	}
+	
 	@Override
 	public void step(float timeElapsed) {
 		if (hasFinished() || !isAlive()) {
