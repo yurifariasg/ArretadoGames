@@ -38,7 +38,6 @@ public class Water extends Entity implements Steppable{
 		agua.setType(BodyType.STATIC);
 		entitiesContact = new ArrayList<Entity>();
 	}
-
 	
 	public static List<Vec2> transformToVec2(List<List<Float>> l){
 		List<Vec2> result = new ArrayList<Vec2>();

@@ -33,7 +33,7 @@ public class TatuBola extends Player implements Steppable{
 	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	Date lastAct;
-	private final float TIME_WAITING_FOR_ACT = 3000;
+	private final float TIME_WAITING_FOR_ACT = 3f;
 	private float timeForNextAct = 0f;
 	
 	private static final int[] WALKING = {R.drawable.tatu1,
@@ -70,9 +70,9 @@ public class TatuBola extends Player implements Steppable{
 		footShape.setAsBox(rad, 0.1f, new Vec2(0f,-rad + 0.1f), 0f);
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
-		
 		bodiesContact = new HashSet<Body>();
 	}
+	
 	@Override
 	public PolygonShape getWaterContactShape() {
 		PolygonShape a = new PolygonShape();
@@ -82,7 +82,7 @@ public class TatuBola extends Player implements Steppable{
 	
 	@Override
 	public int getPercentageLeftToNextAct() {
-		return Math.min((int)(((timeForNextAct/TIME_WAITING_FOR_ACT) * 100) + 0.000000001),100);
+		return Math.min((int)((((TIME_WAITING_FOR_ACT-timeForNextAct)/TIME_WAITING_FOR_ACT) * 100) + 0.000000001),100);
 	}
 	
 	double getAngle(){
@@ -166,6 +166,7 @@ public class TatuBola extends Player implements Steppable{
 	@Override
 	public void step(float timeElapsed) {
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
+		System.out.println(getPercentageLeftToNextAct());
 		if (hasFinished() || !isAlive()) {
 			return;
 		}
@@ -189,7 +190,6 @@ public class TatuBola extends Player implements Steppable{
 	
 	public void beginContact(Entity e, Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			Date t = new Date();
 			contacts++;
 			bodiesContact.add(e.body);
 		}
