@@ -34,6 +34,8 @@ public class LoboGuara extends Player implements Steppable{
 	Collection<Body> bodiesContact;
 	Date lastAct;
 	private float size;
+	private final float TIME_WAITING_FOR_ACT = 3000;
+	private float timeForNextAct = 0f;
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
 								  		     R.drawable.lobo_g_walking3,
@@ -142,7 +144,7 @@ public class LoboGuara extends Player implements Steppable{
 	public void act() {	
 		if( contacts > 0 && contAct == 0){
 			Date t = new Date();
-			if(lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  ){
+			if( timeForNextAct < 0.00000001 ){
 			float impulse = (4) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
@@ -156,14 +158,14 @@ public class LoboGuara extends Player implements Steppable{
 	}
 	
 	@Override
-	public double getPercentageLeftToNextAct() {
-		Date t = new Date();
-		return ((double)(Math.min(t.getTime(),lastAct.getTime()) - lastAct.getTime())/1000)/3;
+	public int getPercentageLeftToNextAct() {
+		return Math.min((int)(((timeForNextAct/TIME_WAITING_FOR_ACT) * 100) + 0.000000001),100);
 	}
 	
 	
 	@Override
 	public void step(float timeElapsed) {
+		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
 		if (hasFinished() || !isAlive()) {
 			return;
 		}
