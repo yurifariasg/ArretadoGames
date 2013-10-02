@@ -78,9 +78,9 @@ public class TatuBola extends Player implements Steppable{
 	}
 	
 	@Override
-	public double getPercentageLeftToNextAct() {
+	public int getPercentageLeftToNextAct() {
 		Date t = new Date();
-		return ((double)(Math.min(t.getTime(),lastAct.getTime()) - lastAct.getTime())/1000)/3;
+		return Math.min( 100,((int)(((double)(Math.min(t.getTime(),lastAct.getTime() + 3000) - lastAct.getTime())/1000)/3 + 0.0000001)*100));
 	}
 	
 	double getAngle(){
@@ -166,6 +166,7 @@ public class TatuBola extends Player implements Steppable{
 		if (hasFinished() || !isAlive()) {
 			return;
 		}
+		
 		if (jumpActive) {
 			jump();
 			jumpActive = false;
