@@ -9,12 +9,13 @@ import com.arretados.leveleditor.ResourceManager;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Bruno
  */
-public class Player extends DrawableObject{
+public class Player extends Entity{
        
     private int size;
     private String player;
@@ -58,5 +59,10 @@ public class Player extends DrawableObject{
             img = ResourceManager.getImageFor(DrawMode.P2);
             
         g.drawImage(img, x-(this.size/2), y-(this.size/2), this.size, this.size, null);
-    }    
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

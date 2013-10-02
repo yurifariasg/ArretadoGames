@@ -5,16 +5,8 @@
 package com.arretados.leveleditor.parsers;
 
 import com.arretados.leveleditor.Utils;
-import com.arretados.leveleditor.entities.Box;
-import com.arretados.leveleditor.entities.Breakable;
-import com.arretados.leveleditor.entities.Coin;
+import com.arretados.leveleditor.entities.Entity;
 import com.arretados.leveleditor.entities.Flag;
-import com.arretados.leveleditor.entities.Fluid;
-import com.arretados.leveleditor.entities.Fruit;
-import com.arretados.leveleditor.entities.Liana;
-import com.arretados.leveleditor.entities.OneWayWall;
-import com.arretados.leveleditor.entities.Player;
-import com.arretados.leveleditor.entities.Pulley;
 import java.util.HashMap;
 import java.util.List;
 import org.json.simple.JSONArray;
@@ -28,32 +20,14 @@ public class JSONGenerator {
     
     JSONObject j;
     
-    private List<Box> boxes;
-    private List<Fruit> fruits;
-    private List<Coin> coins;
-    private List<OneWayWall> oneWays;
-    private List<Pulley> pulleys;
-    private List<Fluid> fluids;
-    private List<Breakable> breakables;
-    private List<Liana> liana;
+    private List<Entity> entities;
     private List<int[]> groundLines;
-    private List<Player> players;
     private Flag flag;
 
-    public JSONGenerator(List<Box> boxes, List<Fruit> fruits, List<Coin> coins,
-            List<OneWayWall> oneWays, List<Pulley> pulleys, List<Fluid> fluids,
-            List<Breakable> breakables, List<Liana> lianas, List<int[]> groundLines,
-            List<Player> players, Flag flag) {
-        this.boxes = boxes;
-        this.fruits = fruits;
-        this.coins = coins;
-        this.oneWays = oneWays;
-        this.pulleys = pulleys;
-        this.fluids = fluids;
-        this.breakables = breakables;
-        this.liana = lianas;
+    public JSONGenerator(List<Entity> entities, List<int[]> groundLines,
+            Flag flag) {
+        this.entities = entities;
         this.groundLines = groundLines;
-        this.players = players;
         this.flag = flag;
     }
     
@@ -77,7 +51,7 @@ public class JSONGenerator {
         HashMap<String, JSONArray> hm = new HashMap<String, JSONArray>();
         JSONArray jArrayEntities = new JSONArray();        
         
-        for (int i = 0; i < players.size(); i++){
+        /*for (int i = 0; i < players.size(); i++){
             JSONObject jPlayerObj = new JSONObject();
             jPlayerObj.put("type", TYPE_PLAYER);
             jPlayerObj.put("number", i+1);
@@ -85,8 +59,14 @@ public class JSONGenerator {
             jPlayerObj.put("y", 10-Utils.convertPixelToMeter(players.get(i).getY()));
             
             jArrayEntities.add(jPlayerObj);
-        }    
+        }*/
         
+        
+        for (int i = 0 ; i < entities.size() ; i++) {
+            jArrayEntities.add(entities.get(i).toJSON());
+        }
+        
+        /*
         for (int i = 0; i < boxes.size(); i++){
             JSONObject jObj = new JSONObject();
             jObj.put("type", TYPE_BOX);
@@ -171,7 +151,7 @@ public class JSONGenerator {
             jObj.put("size", Utils.convertPixelToMeter(liana.get(i).getSize()));
             
             jArrayEntities.add(jObj);
-        }
+        }*/
         
         JSONObject jObjFlag = new JSONObject();
         jObjFlag.put("type", TYPE_FLAG);

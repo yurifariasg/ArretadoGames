@@ -9,12 +9,15 @@ import com.arretados.leveleditor.ResourceManager;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Bruno
  */
-public class OneWayWall extends DrawableObject{
+public class OneWayWall extends Entity{
+    
+    public static EntityPanel onewaywall_panel;
     
     private int size;
     
@@ -45,6 +48,16 @@ public class OneWayWall extends DrawableObject{
 
     public void drawMyself(Graphics g) {
         g.drawImage(ResourceManager.getImageFor(DrawMode.ONEWAY_WALL), x - 106, y - 10, 212, 112, null);
-    }    
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public EntityPanel getEntityPanel() {
+        return onewaywall_panel;
+    }
     
 }

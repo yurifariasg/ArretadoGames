@@ -6,22 +6,22 @@
 package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.BoxPanel;
 import com.arretados.leveleditor.entities.Breakable;
+import com.arretados.leveleditor.entities.BreakablePanel;
 import com.arretados.leveleditor.entities.Coin;
+import com.arretados.leveleditor.entities.CoinPanel;
+import com.arretados.leveleditor.entities.Entity;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fluid;
-import com.arretados.leveleditor.entities.Fruit;
-import com.arretados.leveleditor.entities.Liana;
-import com.arretados.leveleditor.entities.OneWayWall;
-import com.arretados.leveleditor.entities.Player;
-import com.arretados.leveleditor.entities.Pulley;
+import com.arretados.leveleditor.entities.FluidPanel;
+import com.arretados.leveleditor.entities.OneWayWallPanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -31,33 +31,38 @@ import javax.swing.JPanel;
  */
 public class GameCanvas extends JPanel implements MouseMotionListener, MouseListener{
     
-    private List<Box> boxPos = new ArrayList<Box>();
-    private List<Fruit> fruitPos = new ArrayList<Fruit>();
-    private List<Coin> coinPos = new ArrayList<Coin>();
-    private List<OneWayWall> oneWayPos = new ArrayList<OneWayWall>();
-    private List<Pulley> pulleyPos = new ArrayList<Pulley>();
-    private List<Fluid> fluidPos = new ArrayList<Fluid>();
-    private List<Breakable> breakablePos = new ArrayList<Breakable>();
-    private List<Liana> lianaPos = new ArrayList<Liana>();
-    private List<Player> playerPos = new ArrayList<Player>();
+    public static final float METER_TO_PIXELS = 50f; // px = 1meter
+    
+    private LevelEditorView mainView;
+    
+    private List<Entity> entities = new ArrayList<Entity>();
     private List<int[]> groundPos = new ArrayList<int[]>();
-    public DrawMode mode = DrawMode.BOX;
+    private Entity selectedEntity = null;
     private Flag flag;
+    
+    private DrawMode insertionMode = null;
 
     public GameCanvas() {
         addMouseListener(this);
         addMouseMotionListener(this);
+    }
+    
+    public void setMainView(LevelEditorView mainView) {
+        this.mainView = mainView;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());
-
-        for (int i = 0; i < playerPos.size(); i++)
-            playerPos.get(i).drawMyself(g);
         
-        for (int i = 0; i < boxPos.size(); i++)
+        if (selectedEntity != null)
+            drawSelection(selectedEntity);
+
+        for (int i = 0; i < entities.size(); i++)
+            entities.get(i).drawMyself(g);
+        
+        /*for (int i = 0; i < boxPos.size(); i++)
             boxPos.get(i).drawMyself(g);
 
         for (int i = 0; i < fruitPos.size(); i++)
@@ -79,7 +84,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             lianaPos.get(i).drawMyself(g);
 
         for (int i = 0; i < coinPos.size(); i++)
-            coinPos.get(i).drawMyself(g);
+            coinPos.get(i).drawMyself(g);*/
         
         if (flag != null)
             flag.drawMyself(g);
@@ -87,7 +92,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         drawGround(g);
     }
     
-    public void drawPlayer(int x, int y){
+    /*public void drawPlayer(int x, int y){
         if (playerPos.isEmpty()){
             playerPos.add(new Player(x, y, 50, "player1"));
         }else if (playerPos.size() == 1){
@@ -134,7 +139,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public void drawLiana(int x0, int y0, int x1, int y1){
         lianaPos.add(new Liana(x0, y0, x1, y1));
         repaint();
-    }
+    }*/
     
     public void drawGroundLine(int x,int y){
         int lastPointX = 0;
@@ -159,63 +164,124 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         return flag;
     }
     
-    public List<Box> getBoxPos(){
-        return boxPos;
-    }
-    
-    public List<Fruit> getFruitPos(){
-        return fruitPos;
-    }
-    
-    public List<Coin> getCoinsPos(){
-        return coinPos;
-    }
-    
-    public List<OneWayWall> getOneWayPos(){
-        return oneWayPos;
-    }
-    
-    public List<Pulley> getPulleyPos(){
-        return pulleyPos;
-    }
-    
-    public List<Fluid> getFluidPos(){
-        return fluidPos;
-    }
-    
-    public List<Breakable> getBreakablePos(){
-        return breakablePos;
-    }
-    
-    public List<Liana> getLianaPos(){
-        return lianaPos;
-    }
-    
     public List<int[]> getLinesPos(){
         return groundPos;
     }
     
-    public List<Player> getPlayersPos(){
-        return playerPos;
+    public List<Entity> getEntitiesPos() {
+        return entities;
     }
     
     public void clearObjectsList(){
-        this.groundPos = new ArrayList<int[]>();
-        this.fruitPos = new ArrayList<Fruit>();
-        this.coinPos = new ArrayList<Coin>();
-        this.pulleyPos = new ArrayList<Pulley>();
-        this.oneWayPos = new ArrayList<OneWayWall>();
-        this.fluidPos = new ArrayList<Fluid>();
-        this.breakablePos = new ArrayList<Breakable>();
-        this.lianaPos = new ArrayList<Liana>();
-        this.boxPos = new ArrayList<Box>();
-        this.playerPos = new ArrayList<Player>();
+        this.groundPos.clear();
+        this.entities.clear();
         this.flag = null;
+    }
+    
+    private Entity checkClickOn(int x, int y) {
+        
+        for (int i = 0; i < entities.size() ; i++) {
+            if (entities.get(i).collides(x, y))
+                return entities.get(i);
+        }
+        
+        return null;
     }
 
     public void mouseClicked(MouseEvent e) {
         
-        switch (mode) {
+        Entity clickedEntity = checkClickOn(e.getX(), e.getY());
+        
+        if (clickedEntity != null) {
+            
+            selectedEntity = clickedEntity;
+            mainView.switchEntityPanel(selectedEntity.getEntityPanel());
+            mainView.getEntityPanel().setEntity(selectedEntity);
+            
+            return ;
+            
+        }
+        
+        if (insertionMode != null) {
+            // Inserts..
+            
+            Entity entityToAdd = null;
+            switch (insertionMode) {
+                case BOX:
+                    float sizeBox = ((BoxPanel)mainView.getEntityPanel()).getCurrentSize();
+                    float weightBox = ((BoxPanel)mainView.getEntityPanel()).getCurrentWeight(); // TODO: set Weight
+                    entityToAdd = new Box(e.getX(), e.getY(), sizeBox);
+                break;
+
+                case FRUIT:
+                    //drawApple(e.getX(), e.getY());
+                break;
+
+                case COIN:
+                    float coinValue = ((CoinPanel)mainView.getEntityPanel()).getCurrentValue();
+                    entityToAdd = new Coin(e.getX(), e.getY());
+                    ((Coin)entityToAdd).setValue((int) coinValue);
+                break;
+
+                case ONEWAY_WALL:
+                    //drawOneWay(e.getX(), e.getY());
+                    //float sizeWall = ((OneWayWallPanel)mainView.getEntityPanel()).getCurrentSize()
+                    //float weightWall = ((BoxPanel)mainView.getEntityPanel()).getCurrentWeight(); // TODO: set Weight
+                    //entityToAdd = new Box(e.getX(), e.getY(), sizeBox);
+                break;
+
+                case PULLEY:
+                    //drawPulley(e.getX(), e.getY(), 100);
+                break;
+
+                case FLUID:
+                    float fluidWidth = ((FluidPanel)mainView.getEntityPanel()).getCurrentWidth();
+                    float fluidHeight = ((FluidPanel)mainView.getEntityPanel()).getCurrentHeight();
+                    float fluidDensity = ((FluidPanel)mainView.getEntityPanel()).getCurrentDensity();
+                    entityToAdd = new Fluid(e.getX(), e.getY());
+                    ((Fluid)entityToAdd).setWidth(fluidWidth);
+                    ((Fluid)entityToAdd).setHeight(fluidHeight);
+                    ((Fluid)entityToAdd).setDensity(fluidDensity);
+                break;
+
+                case BREAKABLE:
+                    float widthBreakable = ((BreakablePanel)mainView.getEntityPanel()).getWidth();
+                    float heightBreakable = ((BreakablePanel)mainView.getEntityPanel()).getHeight();
+                    float hitUntilBreak = ((BreakablePanel)mainView.getEntityPanel()).getHitToBreakCount();
+                    entityToAdd = new Breakable(e.getX(), e.getY());
+                    ((Breakable)entityToAdd).setWidth(widthBreakable);
+                    ((Breakable)entityToAdd).setHeight(heightBreakable);
+                    ((Breakable)entityToAdd).setHitsUntilBreak(hitUntilBreak);
+                break;
+
+                case LIANA:
+                    //drawLiana(e.getX(), e.getY(), e.getX(), e.getY());
+                break;
+
+                case LINE:
+                    drawGroundLine(e.getX(), e.getY());
+                break;
+
+                case PLAYER:
+                    //drawPlayer(e.getX(), e.getY());
+                break;
+
+                case FLAG:
+                    drawFlag(e.getX(), e.getY());
+                break;
+            }
+            
+            if (entityToAdd != null) {
+                entities.add(entityToAdd);
+                mainView.getEntityPanel().setEntity(entityToAdd);
+            }
+            repaint();
+            
+        }
+        
+        
+        
+        /*switch (mode) {
             
             case BOX:
                 drawBox(e.getX(), e.getY(), 60);
@@ -263,8 +329,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
 
             default: 
                 System.out.println("BUG");
-            break;            
-        }
+            break; 
+        }*/
     }
     
     public void mousePressed(MouseEvent e) { }
@@ -276,7 +342,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public void mouseExited(MouseEvent e) { }
 
     public void mouseDragged(MouseEvent e) {
-        switch (mode) {
+        /*switch (mode) {
             
             case BOX:
                 boxPos.get(boxPos.size()-1).setX(e.getX());
@@ -343,7 +409,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             default: 
                 System.out.println("BUG");
             break;            
-        }
+        }*/
         
     }
 
@@ -378,6 +444,14 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         
         g.setColor(new Color(153, 76, 0));
         g.fillPolygon(xPos, yPos, xPos.length);
+    }
+
+    private void drawSelection(Entity selectedEntity) {
+    }
+
+    public void changeMode(DrawMode drawMode) {
+        insertionMode = drawMode;
+        
     }
 
 }

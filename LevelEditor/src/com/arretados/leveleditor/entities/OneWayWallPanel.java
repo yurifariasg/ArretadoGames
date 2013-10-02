@@ -21,10 +21,10 @@ import javax.swing.text.DefaultFormatter;
  *
  * @author Yuri
  */
-public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedListener {
+public class OneWayWallPanel extends EntityPanel<OneWayWall> implements ItemPropertyChangedListener {
 
     /** Creates new form BoxPanel */
-    public BoxPanel(ItemPropertyChangedListener listener) {
+    public OneWayWallPanel(ItemPropertyChangedListener listener) {
         initComponents();
         
         JSpinner.NumberEditor jsEditor = (JSpinner.NumberEditor)jSpinner1.getEditor();
@@ -60,13 +60,13 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
             return;
         
         if (propertyName.equals("Size")) {
-            getEntity().setSize(Float.parseFloat(newValue));
+            //getBreakable().setSize(Float.parseFloat(newValue));
         }
         
     }
 
     @Override
-    public void setEntity(Box entity) {
+    public void setEntity(OneWayWall entity) {
         super.setEntity(entity);
         jSpinner1.setValue((double) getEntity().getSize());
     }
@@ -88,7 +88,7 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
         setName("Form"); // NOI18N
         setLayout(new java.awt.GridLayout(10, 1));
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(BoxPanel.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(OneWayWallPanel.class);
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
         add(jLabel1);
@@ -106,6 +106,12 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
         jLabel2.setName("jLabel2"); // NOI18N
         add(jLabel2);
 
+        jSpinner2.setModel(new SpinnerNumberModel(
+            1.0, // value
+            0.1, // min
+            10.0, // max
+            0.1 // step
+        ));
         jSpinner2.setName("jSpinner2"); // NOI18N
         add(jSpinner2);
     }// </editor-fold>//GEN-END:initComponents

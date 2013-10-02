@@ -2,11 +2,12 @@ package com.arretados.leveleditor.entities.layer;
 
 import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.ResourceManager;
-import com.arretados.leveleditor.entities.DrawableObject;
+import com.arretados.leveleditor.entities.Entity;
 import java.awt.Graphics;
+import org.json.simple.JSONObject;
 
 
-public class Tree extends DrawableObject {
+public class Tree extends Entity {
     
     public Tree(int x, int y) {
         super(x, y);
@@ -23,13 +24,18 @@ public class Tree extends DrawableObject {
     }
 
     @Override
-    public DrawableObject clone() {
+    public Entity clone() {
         Tree t = new Tree(x, y);
         return t;
     }
 
     public void onPropertyChanged(String propertyName, String newValue) {
         
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

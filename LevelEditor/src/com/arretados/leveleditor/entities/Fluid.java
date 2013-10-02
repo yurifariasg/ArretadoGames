@@ -4,46 +4,68 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.GameCanvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Bruno
  */
-public class Fluid extends DrawableObject{
+public class Fluid extends Entity{
+    
+    public static EntityPanel fluid_panel;
 
-    private int size;
+    private float width;
+    private float height;
+    private float density;
     
-    public Fluid(int x, int y, int size){
+    public Fluid(int x, int y) {
         super(x, y);
-        this.size = size;
     }
-    
-    public int getX(){
-        return this.x;
+
+    public float getDensity() {
+        return density;
     }
-    
-    public void setX(int x){
-        this.x = x;
+
+    public void setDensity(float density) {
+        this.density = density;
     }
-    
-    public int getY(){
-        return this.y;
+
+    public float getWidth() {
+        return width;
     }
-    
-    public void setY(int y){
-        this.y = y;
+
+    public void setWidth(float width) {
+        this.width = width;
     }
-    
-    public int getSize(){
-        return this.size;
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     @Override
     public void drawMyself(Graphics g) {
         g.setColor(Color.blue);
-        g.fillRect(x-(this.size/2), y-(this.size/2), this.size*2, this.size/2);
+        g.fillRect(
+                (int) (x - (width/2) * GameCanvas.METER_TO_PIXELS),
+                (int) (y - (height/2) * GameCanvas.METER_TO_PIXELS),
+                (int) (width * GameCanvas.METER_TO_PIXELS),
+                (int) (height * GameCanvas.METER_TO_PIXELS));
     }
-    
+
+    @Override
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public EntityPanel getEntityPanel() {
+        return fluid_panel;
+    }
 }

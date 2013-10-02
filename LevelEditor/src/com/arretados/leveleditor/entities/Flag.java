@@ -6,12 +6,13 @@ package com.arretados.leveleditor.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Bruno
  */
-public class Flag extends DrawableObject{
+public class Flag extends Entity{
     
     private int size;
     
@@ -45,6 +46,11 @@ public class Flag extends DrawableObject{
         g.fillRect(x-(this.size/2), y-(this.size/2), this.size, 100);
         g.setColor(Color.red);
         g.fillRect(x-(this.size/2), y, 60, size*2);
-    }    
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }
