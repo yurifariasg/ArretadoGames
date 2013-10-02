@@ -169,7 +169,6 @@ public class TatuBola extends Player implements Steppable{
 		if (hasFinished() || !isAlive()) {
 			return;
 		}
-		
 		if (jumpActive) {
 			jump();
 			jumpActive = false;
