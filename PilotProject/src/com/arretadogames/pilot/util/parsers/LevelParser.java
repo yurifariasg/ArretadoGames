@@ -110,7 +110,10 @@ public class LevelParser {
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.FINALFLAG);
-					
+				}else if(EntityType.WATER.toString().equals(entityType)){
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.WATER, (float) jsonEntity.getDouble("size"));
 				} else {		// Entity not defined
 					Log.e("LevelDescriptor.jsonParse()", "Entity " + entityType + " not defined");
 					continue;

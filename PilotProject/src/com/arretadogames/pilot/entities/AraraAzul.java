@@ -30,6 +30,7 @@ public class AraraAzul extends Player implements Steppable{
 	Collection<Body> bodiesContact;
 	private float k = 25f;
 	private boolean doubleJump;
+	private float radius;
 	
 	private static final int[] WALKING = {R.drawable.bird_1,
 											R.drawable.bird_2,
@@ -57,7 +58,8 @@ public class AraraAzul extends Player implements Steppable{
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
-		shape.setRadius(0.3f);
+		radius = 0.3f;
+		shape.setRadius(radius);
 		footFixture = body.createFixture(shape,  k);
 		footFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
@@ -72,6 +74,13 @@ public class AraraAzul extends Player implements Steppable{
 		bodiesContact = new HashSet<Body>();
 	}
 
+	@Override
+	public PolygonShape getWaterContactShape() {
+		PolygonShape a = new PolygonShape();
+		a.setAsBox(radius,radius);
+		return a;
+	}
+	
 	double getAngle(){
 		//return body.getAngle();
 		double angle = 0;

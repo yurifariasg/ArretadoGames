@@ -33,6 +33,9 @@ public class TatuBola extends Player implements Steppable{
 	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	Date lastAct;
+	private final float TIME_WAITING_FOR_ACT = 3000;
+	private float timeForNextAct = 0f;
+	
 	private static final int[] WALKING = {R.drawable.tatu1,
 										  R.drawable.tatu2,
 										  R.drawable.tatu3,
@@ -70,7 +73,18 @@ public class TatuBola extends Player implements Steppable{
 		
 		bodiesContact = new HashSet<Body>();
 	}
-
+	@Override
+	public PolygonShape getWaterContactShape() {
+		PolygonShape a = new PolygonShape();
+		a.setAsBox(rad, rad);
+		return a;
+	}
+	
+	@Override
+	public int getPercentageLeftToNextAct() {
+		return Math.min((int)(((timeForNextAct/TIME_WAITING_FOR_ACT) * 100) + 0.000000001),100);
+	}
+	
 	double getAngle(){
 		//return body.getAngle();
 		double angle = 0;
@@ -132,10 +146,10 @@ public class TatuBola extends Player implements Steppable{
 		}
 	}
 
-	public void act() {	
+	public void act() {
 		if( contacts > 0 && contAct == 0){
-			Date t = new Date();
-			if(lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  ){
+			if( timeForNextAct < 0.00000001 ){
+			timeForNextAct = TIME_WAITING_FOR_ACT;	
 			sprite.setAnimationState("act");
 			float impulse = (4) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
@@ -151,6 +165,7 @@ public class TatuBola extends Player implements Steppable{
 
 	@Override
 	public void step(float timeElapsed) {
+		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
 		if (hasFinished() || !isAlive()) {
 			return;
 		}

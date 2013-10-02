@@ -87,6 +87,10 @@ public abstract class Player extends Watchable {
 		return acquiredCoins;
 	}
 	
+	public int getPercentageLeftToNextAct(){
+		return 100;
+	}
+	
 	public abstract int[] getWalkFrames();
 	
 	public abstract int[] getJumpFrames();

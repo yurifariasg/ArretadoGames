@@ -86,7 +86,12 @@ public class MacacoPrego extends Player implements Steppable{
 		jd2.localAnchorB.set(new Vec2(0f,0.1f));
 		world.createJoint(jd2);
 	}
-
+	@Override
+	public PolygonShape getWaterContactShape() {
+		PolygonShape a = new PolygonShape();
+		a.setAsBox(radius, radius);
+		return a;
+	}
 	double getAngle(){
 		//return body.getAngle();
 		double angle = 0;
