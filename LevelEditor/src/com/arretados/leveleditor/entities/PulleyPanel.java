@@ -21,10 +21,10 @@ import javax.swing.text.DefaultFormatter;
  *
  * @author Yuri
  */
-public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedListener {
+public class PulleyPanel extends EntityPanel<Pulley> implements ItemPropertyChangedListener {
 
     /** Creates new form BoxPanel */
-    public BoxPanel(ItemPropertyChangedListener listener) {
+    public PulleyPanel(ItemPropertyChangedListener listener) {
         initComponents();
         
         JSpinner.NumberEditor jsEditor = (JSpinner.NumberEditor)jSpinner1.getEditor();
@@ -60,13 +60,13 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
             return;
         
         if (propertyName.equals("Size")) {
-            getEntity().setSize(Float.parseFloat(newValue));
+            //getEntity().setSize(Float.parseFloat(newValue));
         }
         
     }
 
     @Override
-    public void setEntity(Box entity) {
+    public void setEntity(Pulley entity) {
         super.setEntity(entity);
         jSpinner1.setValue((double) getEntity().getSize());
     }
@@ -88,7 +88,7 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
         setName("Form"); // NOI18N
         setLayout(new java.awt.GridLayout(10, 1));
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(BoxPanel.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(PulleyPanel.class);
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
         add(jLabel1);

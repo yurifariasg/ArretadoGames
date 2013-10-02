@@ -6,12 +6,15 @@ package com.arretados.leveleditor.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Bruno
  */
-public class Pulley extends DrawableObject{
+public class Pulley extends Entity{
+    
+    public static EntityPanel pulley_panel;
     
     private int size;
     
@@ -49,6 +52,16 @@ public class Pulley extends DrawableObject{
         g.fillRect(x-(this.size)+10, y-(this.size/2)-25, 6, 125);
         g.fillRect(x-(this.size)+10, y-(this.size/2)-25, 100, 6);
         g.fillRect(x-(this.size/2)+56, y-(this.size/2)-25,  6, 25);
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public EntityPanel getEntityPanel() {
+        return pulley_panel;
     }
     
 }

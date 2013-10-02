@@ -4,8 +4,22 @@
 
 package com.arretados.leveleditor;
 
+import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.BoxPanel;
+import com.arretados.leveleditor.entities.Breakable;
+import com.arretados.leveleditor.entities.BreakablePanel;
+import com.arretados.leveleditor.entities.Coin;
+import com.arretados.leveleditor.entities.CoinPanel;
+import com.arretados.leveleditor.entities.EntityPanel;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
+import com.arretados.leveleditor.entities.Fluid;
+import com.arretados.leveleditor.entities.FluidPanel;
+import com.arretados.leveleditor.entities.Liana;
+import com.arretados.leveleditor.entities.LianaPanel;
+import com.arretados.leveleditor.entities.OneWayWall;
+import com.arretados.leveleditor.entities.OneWayWallPanel;
+import com.arretados.leveleditor.entities.Pulley;
+import com.arretados.leveleditor.entities.PulleyPanel;
 import com.arretados.leveleditor.parsers.JSONGenerator;
 import java.awt.Dimension;
 import javax.swing.event.ChangeEvent;
@@ -34,8 +48,10 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
 
     public LevelEditorView(SingleFrameApplication app) {
         super(app);
-
         initComponents();
+        itemComboBox.setSelectedItem(null);
+        gameCanvas1.setMainView(this);
+        
         jScrollPane1.getViewport().addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
@@ -48,6 +64,15 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         });
         jTextWidthValue.setText(String.valueOf(gameCanvas1.getPreferredSize().width));
         jTextHeigthValue.setText(String.valueOf(gameCanvas1.getPreferredSize().height));
+        
+        // Initialize Panels
+        Box.box_panel = new BoxPanel(this);
+        Breakable.breakable_panel = new BreakablePanel(this);
+        Coin.coin_panel = new CoinPanel(this);
+        Fluid.fluid_panel = new FluidPanel(this);
+        Liana.liana_panel = new LianaPanel(this);
+        OneWayWall.onewaywall_panel = new OneWayWallPanel(this);
+        Pulley.pulley_panel = new PulleyPanel(this);
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -355,12 +380,8 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JSONGenerator json = new JSONGenerator(gameCanvas1.getBoxPos(),
-                gameCanvas1.getFruitPos(), gameCanvas1.getCoinsPos(),
-                gameCanvas1.getOneWayPos(), gameCanvas1.getPulleyPos(),
-                gameCanvas1.getFluidPos(), gameCanvas1.getBreakablePos(),
-                gameCanvas1.getLianaPos(), gameCanvas1.getLinesPos(),
-                gameCanvas1.getPlayersPos(), gameCanvas1.getFlag());
+        JSONGenerator json = new JSONGenerator(gameCanvas1.getEntitiesPos(),
+                gameCanvas1.getLinesPos(), gameCanvas1.getFlag());
         try {
           File file = new File("level.json");
           BufferedWriter output = new BufferedWriter(new FileWriter(file));
@@ -406,40 +427,53 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
 private void itemComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_itemComboBoxPropertyChange
 }//GEN-LAST:event_itemComboBoxPropertyChange
 
+public void switchEntityPanel(EntityPanel entityPanel) {
+    itemPanel.removeAll();
+    itemPanel.add(entityPanel);
+}
+
+public EntityPanel getEntityPanel() {
+    return (EntityPanel) itemPanel.getComponent(0);
+}
+
 private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_itemComboBoxItemStateChanged
+    if (evt.getItemSelectable().getSelectedObjects().length == 0)
+        return;
+    
     DrawMode newMode = (DrawMode) (evt.getItemSelectable().getSelectedObjects()[0]);
-     gameCanvas1.mode = newMode;
+    gameCanvas1.changeMode(newMode);
     itemPanel.removeAll();
     
+    // Add the panel related to the mode
     switch (newMode) {
         case BOX:
-            itemPanel.add(new BoxPanel(this));
+            itemPanel.add(Box.box_panel);
             break;
         case BREAKABLE:
-            System.out.println("Breakable");
+            itemPanel.add(Breakable.breakable_panel);
         break;
         case COIN:
-
+            itemPanel.add(Coin.coin_panel);
         break;
         case FLAG:
         break;
         case FLUID:
-            
+            itemPanel.add(Fluid.fluid_panel);
         break;
         case LIANA:
-            
+            itemPanel.add(Liana.liana_panel);
         break;
         case LINE:
             
         break;
         case ONEWAY_WALL:
-            
+            itemPanel.add(OneWayWall.onewaywall_panel);
         break;
         case PLAYER:
             
         break;
         case PULLEY:
-            
+            itemPanel.add(Pulley.pulley_panel);
         break;
     }
     itemPanel.validate();
@@ -478,6 +512,6 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
     private JDialog aboutBox;
 
     public void onPropertyChanged(String propertyName, String newValue) {
-        System.out.println("Property: \"" + propertyName + "\" changed to \"" + newValue + "\"");
+        gameCanvas1.repaint();
     }
 }
