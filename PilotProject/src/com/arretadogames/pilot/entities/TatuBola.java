@@ -166,7 +166,6 @@ public class TatuBola extends Player implements Steppable{
 	@Override
 	public void step(float timeElapsed) {
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
-		System.out.println(getPercentageLeftToNextAct());
 		if (hasFinished() || !isAlive()) {
 			return;
 		}

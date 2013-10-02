@@ -41,6 +41,7 @@ import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
+import com.arretadogames.pilot.levels.WaterDescriptor;
 import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
@@ -185,7 +186,7 @@ public class GameWorld extends GameScreen {
 					entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 				case WATER:
-					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),entityDescriptor.getSize());
+					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),((WaterDescriptor)entityDescriptor).getWidth(),((WaterDescriptor)entityDescriptor).getHeight(),((WaterDescriptor)entityDescriptor).getDensity());
 				default:
 					break;
 				}

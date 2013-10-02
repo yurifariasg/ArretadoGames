@@ -17,6 +17,7 @@ import com.arretadogames.pilot.levels.GroundDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
+import com.arretadogames.pilot.levels.WaterDescriptor;
 
 public class LevelParser {
 	public static boolean parseJSON(String jsonString, LevelDescriptor level) {
@@ -111,9 +112,9 @@ public class LevelParser {
 							(float) jsonEntity.getDouble("y"),
 							EntityType.FINALFLAG);
 				}else if(EntityType.WATER.toString().equals(entityType)){
-					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+					entity = new WaterDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
-							EntityType.WATER, (float) jsonEntity.getDouble("size"));
+							EntityType.WATER, (float) jsonEntity.getDouble("width"), (float) jsonEntity.getDouble("height"),  (float) jsonEntity.getDouble("density"));
 				} else {		// Entity not defined
 					Log.e("LevelDescriptor.jsonParse()", "Entity " + entityType + " not defined");
 					continue;
