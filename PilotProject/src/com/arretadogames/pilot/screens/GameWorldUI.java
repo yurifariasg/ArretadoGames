@@ -1,5 +1,8 @@
 package com.arretadogames.pilot.screens;
 
+import java.util.Collection;
+
+import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
@@ -9,16 +12,25 @@ import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
+import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.render.opengl.GLCircle;
 import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.world.GameWorld;
 
 public class GameWorldUI extends GameScreen {
 	
+	private final int COOLDOWN_RADIUS = 30;
+	private final int COOLDOWN1_X = 40;
+	private final int COOLDOWN2_X = 590;
+	private final int COOLDOWN_Y = 40;	
+	
 	private GameWorld gWorld;
 	private Text completionText;
 	private Text coin1Text;
 	private Text coin2Text;
+	private GLCircle coolDown1;
+	private GLCircle coolDown2;
 	
 	float totalDistance = Float.MIN_VALUE;
 	
@@ -27,10 +39,13 @@ public class GameWorldUI extends GameScreen {
 		completionText = new Text(400, 430, "0% completed",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 		
-		coin1Text = new Text(85, 40, "0",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
-		coin2Text = new Text(710, 40, "0",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
+		coin1Text = new Text(140, 40, "0",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
+		coin2Text = new Text(690, 40, "0",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
+		
+		coolDown1 = new GLCircle(COOLDOWN_RADIUS);
+		coolDown2 = new GLCircle(COOLDOWN_RADIUS);
 	}
 
 	@Override
@@ -38,12 +53,48 @@ public class GameWorldUI extends GameScreen {
 		canvas.drawBitmap(R.drawable.ui_buttons, 0, 340);
 		completionText.render(canvas, timeElapsed);
 		
-		canvas.drawBitmap(R.drawable.coin_1_1, 20, 35);
+		canvas.drawBitmap(R.drawable.coin_1_1, 90, 25);
 		coin1Text.render(canvas, timeElapsed);
 		
-		canvas.drawBitmap(R.drawable.coin_1_1, 645, 35);
+		canvas.drawBitmap(R.drawable.coin_1_1, 640, 25);
 		coin2Text.render(canvas, timeElapsed);
 		
+		coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true ); //, int percent); 		//Collection<Player> x = gWorld.getPlayers().values().;
+		canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0),
+											centerImage(R.drawable.power, 2));
+		
+		coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true);
+		canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1),
+											centerImage(R.drawable.power, 2));
+	}
+	
+	private float centerImage(int imgId, int cooldown){
+		int[] size = ImageLoader.checkBitmapSize(R.drawable.power); 
+		int width = size[0];
+		int height = size[1];
+		float x = 0.0f;
+		
+		switch(cooldown){
+		case 0://First Player - Horizontal
+			//int[] size = ImageLoader.checkBitmapSize(R.drawable.power);//take from the player your image
+			//width = size[0];
+			x = COOLDOWN1_X - (width/2);
+			break;
+		case 1://Second Player - Horizontal
+			//int[] size = ImageLoader.checkBitmapSize(R.drawable.power);//take from the player your image
+			//width = size[0];		
+			x = COOLDOWN2_X - (width/2);
+			break;
+		case 2://Players - Vertical
+			//int[] size = ImageLoader.checkBitmapSize(R.drawable.power);//take from the player your image
+			//height = size[1];
+			x = COOLDOWN_Y - (height/2);
+			break;
+		default:
+			break;
+		}
+		
+		return x;
 	}
 
 	@Override
