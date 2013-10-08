@@ -31,27 +31,25 @@ public class OneWayWallPanel extends EntityPanel<OneWayWall> implements ItemProp
         DefaultFormatter formatter = (DefaultFormatter) jsEditor.getTextField().getFormatter();
         formatter.setAllowsInvalid(false);
         ((NumberEditor)jSpinner1.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Size", this));
+                addDocumentListener(new EntityPropertyDocumentListener("Width", this));
         ((NumberEditor)jSpinner1.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Size", listener));
-        jSpinner1.setValue(1.0);
+                addDocumentListener(new EntityPropertyDocumentListener("Width", listener));
         
         jsEditor = (JSpinner.NumberEditor)jSpinner2.getEditor();
         formatter = (DefaultFormatter) jsEditor.getTextField().getFormatter();
         formatter.setAllowsInvalid(false);
         ((NumberEditor)jSpinner2.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Weight", this));
+                addDocumentListener(new EntityPropertyDocumentListener("Height", this));
         ((NumberEditor)jSpinner2.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Weight", listener));
-        jSpinner2.setValue(1.0);
+                addDocumentListener(new EntityPropertyDocumentListener("Height", listener));
         
     }
     
-    public float getCurrentSize() {
+    public float getCurrentWidth() {
         return (float) ((Double) jSpinner1.getValue()).doubleValue();
     }
     
-    public float getCurrentWeight() {
+    public float getCurrentHeight() {
         return (float) ((Double) jSpinner2.getValue()).doubleValue();
     }
     
@@ -59,8 +57,10 @@ public class OneWayWallPanel extends EntityPanel<OneWayWall> implements ItemProp
         if (getEntity() == null)
             return;
         
-        if (propertyName.equals("Size")) {
-            //getBreakable().setSize(Float.parseFloat(newValue));
+        if (propertyName.equals("Width")) {
+            getEntity().setWidth(Float.parseFloat(newValue));
+        } else if (propertyName.equals("Height")) {
+            getEntity().setHeight(Float.parseFloat(newValue));
         }
         
     }
@@ -68,7 +68,8 @@ public class OneWayWallPanel extends EntityPanel<OneWayWall> implements ItemProp
     @Override
     public void setEntity(OneWayWall entity) {
         super.setEntity(entity);
-        jSpinner1.setValue((double) getEntity().getSize());
+        jSpinner1.setValue((double) getEntity().getWidth());
+        jSpinner2.setValue((double) getEntity().getHeight());
     }
 
     /** This method is called from within the constructor to
@@ -94,7 +95,7 @@ public class OneWayWallPanel extends EntityPanel<OneWayWall> implements ItemProp
         add(jLabel1);
 
         jSpinner1.setModel(new SpinnerNumberModel(
-            1.0, // value
+            3.0, // value
             0.1, // min
             10.0, // max
             0.1 // step
@@ -107,10 +108,10 @@ public class OneWayWallPanel extends EntityPanel<OneWayWall> implements ItemProp
         add(jLabel2);
 
         jSpinner2.setModel(new SpinnerNumberModel(
-            1.0, // value
+            0.15, // value
             0.1, // min
             10.0, // max
-            0.1 // step
+            0.01 // step
         ));
         jSpinner2.setName("jSpinner2"); // NOI18N
         add(jSpinner2);
