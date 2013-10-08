@@ -10,6 +10,7 @@
  */
 package com.arretados.leveleditor.entities;
 
+import apple.laf.JRSUIConstants.Hit;
 import com.arretados.leveleditor.EntityPropertyDocumentListener;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
 import javax.swing.JSpinner;
@@ -53,6 +54,10 @@ public class BreakablePanel extends EntityPanel<Breakable> implements ItemProper
     
     public float getCurrentHeight() {
         return (float) ((Double) jSpinner2.getValue()).doubleValue();
+    }
+    
+    public float getCurrentHitsUntilBreak() {
+        return (float) ((Double) jSpinner3.getValue()).doubleValue();
     }
     
     public void onPropertyChanged(String propertyName, String newValue) {
@@ -102,10 +107,10 @@ public class BreakablePanel extends EntityPanel<Breakable> implements ItemProper
         add(jLabel1);
 
         jSpinner1.setModel(new SpinnerNumberModel(
-            1.0, // value
-            1.0, // min
+            0.2, // value
+            0.1, // min
             10.0, // max
-            0.5 // step
+            0.1 // step
         ));
         jSpinner1.setName("jSpinner1"); // NOI18N
         add(jSpinner1);
@@ -144,9 +149,5 @@ public class BreakablePanel extends EntityPanel<Breakable> implements ItemProper
     private javax.swing.JSpinner jSpinner2;
     private javax.swing.JSpinner jSpinner3;
     // End of variables declaration//GEN-END:variables
-
-    public float getHitToBreakCount() {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 
 }

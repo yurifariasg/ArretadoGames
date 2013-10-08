@@ -5,8 +5,10 @@
 package com.arretados.leveleditor.entities;
 
 import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.GameCanvas;
 import com.arretados.leveleditor.ResourceManager;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import org.json.simple.JSONObject;
 
 /**
@@ -23,22 +25,6 @@ public class Breakable extends Entity{
     
     public Breakable(int x, int y){
         super(x, y);
-    }
-    
-    public int getX(){
-        return this.x;
-    }
-    
-    public void setX(int x){
-        this.x = x;
-    }
-    
-    public int getY(){
-        return this.y;
-    }
-    
-    public void setY(int y){
-        this.y = y;
     }
 
     public float getWidth() {
@@ -66,17 +52,32 @@ public class Breakable extends Entity{
     }
 
     @Override
+    public boolean collides(int x, int y) {
+        Rectangle rect = new Rectangle(
+                this.x - ((int) (GameCanvas.METER_TO_PIXELS * this.width/2)),
+                this.y - ((int) (GameCanvas.METER_TO_PIXELS * this.height/2)),
+                (int) (this.width * GameCanvas.METER_TO_PIXELS),
+                (int) (this.height * GameCanvas.METER_TO_PIXELS));
+        return rect.contains(x, y);
+    }
+
+    @Override
     public void drawMyself(Graphics g) {
-        g.drawImage(
-                ResourceManager.getImageFor(DrawMode.BREAKABLE),
-                this.x-5, this.y-100,
-                10, 200,
-                null);
+        g.drawImage(ResourceManager.getImageFor(DrawMode.BREAKABLE),
+                x - ((int) (GameCanvas.METER_TO_PIXELS * this.width/2)),
+                y - ((int) (GameCanvas.METER_TO_PIXELS * this.height/2)),
+                (int) (this.width * GameCanvas.METER_TO_PIXELS),
+                (int) (this.height * GameCanvas.METER_TO_PIXELS), null);
     }
 
     @Override
     public JSONObject toJSON() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JSONObject json = super.toJSON();
+        json.put("type", "box");
+        json.put("width", width);
+        json.put("height", height);
+        json.put("hitsUntilBreak", hitsUntilBreak);
+        return json;
     }
 
     @Override

@@ -49,17 +49,7 @@ public class JSONGenerator {
         final String TYPE_FLAG = "finalflag";
         
         HashMap<String, JSONArray> hm = new HashMap<String, JSONArray>();
-        JSONArray jArrayEntities = new JSONArray();        
-        
-        /*for (int i = 0; i < players.size(); i++){
-            JSONObject jPlayerObj = new JSONObject();
-            jPlayerObj.put("type", TYPE_PLAYER);
-            jPlayerObj.put("number", i+1);
-            jPlayerObj.put("x", Utils.convertPixelToMeter(players.get(i).getX()));
-            jPlayerObj.put("y", 10-Utils.convertPixelToMeter(players.get(i).getY()));
-            
-            jArrayEntities.add(jPlayerObj);
-        }*/
+        JSONArray jArrayEntities = new JSONArray();
         
         
         for (int i = 0 ; i < entities.size() ; i++) {
@@ -153,11 +143,11 @@ public class JSONGenerator {
             jArrayEntities.add(jObj);
         }*/
         
-        JSONObject jObjFlag = new JSONObject();
-        jObjFlag.put("type", TYPE_FLAG);
-        jObjFlag.put("x", Utils.convertPixelToMeter(flag.getX()));
-        jObjFlag.put("y", 10-Utils.convertPixelToMeter(flag.getY()));
-        jArrayEntities.add(jObjFlag);
+//        JSONObject jObjFlag = new JSONObject();
+//        jObjFlag.put("type", TYPE_FLAG);
+//        jObjFlag.put("x", Utils.convertPixelToMeter(flag.getX()));
+//        jObjFlag.put("y", 10-Utils.convertPixelToMeter(flag.getY()));
+//        jArrayEntities.add(jObjFlag);
         
         hm.put("entities", jArrayEntities);
         JSONArray jArrayGround = new JSONArray();

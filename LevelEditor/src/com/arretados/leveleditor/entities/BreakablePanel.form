@@ -31,7 +31,7 @@
     <Component class="javax.swing.JSpinner" name="jSpinner1">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="new SpinnerNumberModel(&#xd;&#xa;                    1.0, // value&#xd;&#xa;                    1.0, // min&#xd;&#xa;                    10.0, // max&#xd;&#xa;                    0.5 // step&#xd;&#xa;                    )" type="code"/>
+          <Connection code="new SpinnerNumberModel(&#xd;&#xa;                    0.2, // value&#xd;&#xa;                    0.1, // min&#xd;&#xa;                    10.0, // max&#xd;&#xa;                    0.1 // step&#xd;&#xa;                    )" type="code"/>
         </Property>
         <Property name="name" type="java.lang.String" value="jSpinner1" noResource="true"/>
       </Properties>

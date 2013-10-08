@@ -20,26 +20,19 @@ public class Box extends Entity{
     public static BoxPanel box_panel;
     
     private float size;
+    private float weight;
     
     public Box(int x, int y, float size) {
         super(x, y);
         this.size = size;
     }
-    
-    public int getX(){
-        return this.x;
+
+    public float getWeight() {
+        return weight;
     }
-    
-    public void setX(int x){
-        this.x = x;
-    }
-    
-    public int getY(){
-        return this.y;
-    }
-    
-    public void setY(int y){
-        this.y = y;
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
     
     public float getSize(){

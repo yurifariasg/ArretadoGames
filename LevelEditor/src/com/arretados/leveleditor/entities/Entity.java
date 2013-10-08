@@ -4,6 +4,7 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.Utils;
 import java.awt.Graphics;
 import org.json.simple.JSONObject;
 
@@ -44,8 +45,8 @@ public abstract class Entity {
     
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
-        json.put("x", x);
-        json.put("y", y);
+        json.put("x", Utils.convertPixelToMeter(x));
+        json.put("y", Utils.convertPixelToMeter(y));
         return json;
     }
 

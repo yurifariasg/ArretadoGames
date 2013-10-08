@@ -22,6 +22,7 @@ import com.arretados.leveleditor.entities.Pulley;
 import com.arretados.leveleditor.entities.PulleyPanel;
 import com.arretados.leveleditor.parsers.JSONGenerator;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.event.ChangeEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
@@ -39,6 +40,8 @@ import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.event.ChangeListener;
 
 /**
@@ -239,7 +242,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
         jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
 
-        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY}));
+        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.GROUND}));
         itemComboBox.setName("itemComboBox"); // NOI18N
         itemComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -271,32 +274,32 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                     .addComponent(jLabel1)
-                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 338, Short.MAX_VALUE)
+                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 326, Short.MAX_VALUE)
                     .addComponent(jLabel3)
-                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE))
+                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(itemComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -382,15 +385,30 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JSONGenerator json = new JSONGenerator(gameCanvas1.getEntitiesPos(),
                 gameCanvas1.getLinesPos(), gameCanvas1.getFlag());
+        
+        String jsonString = json.generateJson().toJSONString();
+        
         try {
           File file = new File("level.json");
           BufferedWriter output = new BufferedWriter(new FileWriter(file));
-          output.write(json.generateJson().toJSONString());
+          output.write(jsonString);
           output.close();
         } catch ( IOException e ) {
            e.printStackTrace();
         }
-        System.out.println(json.generateJson().toJSONString());
+        
+        // Show Dialog
+        JFrame frame = new JFrame();
+        JTextArea textArea = new JTextArea(jsonString);
+        frame.add(textArea);
+        frame.setSize(new Dimension(500, 250));
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation((dim.width-frame.getWidth())/2, (dim.height-frame.getHeight())/2);
+        
+        frame.setVisible(true);
+        
+        System.out.println(jsonString);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void clearScrBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearScrBtnActionPerformed
@@ -433,7 +451,9 @@ public void switchEntityPanel(EntityPanel entityPanel) {
 }
 
 public EntityPanel getEntityPanel() {
-    return (EntityPanel) itemPanel.getComponent(0);
+    if (itemPanel.getComponentCount() > 0)
+        return (EntityPanel) itemPanel.getComponent(0);
+    return null;
 }
 
 private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_itemComboBoxItemStateChanged

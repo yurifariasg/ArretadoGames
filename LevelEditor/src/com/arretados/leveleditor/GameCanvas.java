@@ -15,7 +15,9 @@ import com.arretados.leveleditor.entities.Entity;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fluid;
 import com.arretados.leveleditor.entities.FluidPanel;
+import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.OneWayWallPanel;
+import com.arretados.leveleditor.entities.Player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -34,6 +36,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public static final float METER_TO_PIXELS = 50f; // px = 1meter
     
     private LevelEditorView mainView;
+    private short playersAdded = 0;
     
     private List<Entity> entities = new ArrayList<Entity>();
     private List<int[]> groundPos = new ArrayList<int[]>();
@@ -62,84 +65,11 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         for (int i = 0; i < entities.size(); i++)
             entities.get(i).drawMyself(g);
         
-        /*for (int i = 0; i < boxPos.size(); i++)
-            boxPos.get(i).drawMyself(g);
-
-        for (int i = 0; i < fruitPos.size(); i++)
-            fruitPos.get(i).drawMyself(g);
-        
-        for (int i = 0; i < oneWayPos.size(); i++)
-            oneWayPos.get(i).drawMyself(g);
-        
-        for (int i = 0; i < pulleyPos.size(); i++)
-            pulleyPos.get(i).drawMyself(g);
-        
-        for (int i = 0; i < fluidPos.size(); i++)
-            fluidPos.get(i).drawMyself(g);
-        
-        for (int i = 0; i < breakablePos.size(); i++)
-            breakablePos.get(i).drawMyself(g);
-        
-        for (int i = 0; i < lianaPos.size(); i++)
-            lianaPos.get(i).drawMyself(g);
-
-        for (int i = 0; i < coinPos.size(); i++)
-            coinPos.get(i).drawMyself(g);*/
-        
         if (flag != null)
             flag.drawMyself(g);
         
         drawGround(g);
     }
-    
-    /*public void drawPlayer(int x, int y){
-        if (playerPos.isEmpty()){
-            playerPos.add(new Player(x, y, 50, "player1"));
-        }else if (playerPos.size() == 1){
-            playerPos.add(new Player(x, y, 50, "player2"));
-        }
-        repaint();
-    }
-
-    public void drawBox(int x, int y, int size){
-        boxPos.add(new Box(x, y, size));
-        repaint();
-    }
-    
-    public void drawApple(int x, int y){
-        fruitPos.add(new Fruit(x, y, 25));
-        repaint();
-    }
-    
-    public void drawCoin(int x, int y){
-        coinPos.add(new Coin(x, y, 25));
-        repaint();
-    }
-    
-    public void drawOneWay(int x, int y){
-        oneWayPos.add(new OneWayWall(x, y, 300));
-        repaint();
-    }
-    
-    public void drawPulley(int x, int y, int size){
-        pulleyPos.add(new Pulley(x, y, size));
-        repaint();
-    }
-    
-    public void drawFluid(int x, int y, int size){
-        fluidPos.add(new Fluid(x, y, size));
-        repaint();
-    }
-    
-    public void drawBreakable(int x, int y){
-        breakablePos.add(new Breakable(x, y));
-        repaint();
-    }
-    
-    public void drawLiana(int x0, int y0, int x1, int y1){
-        lianaPos.add(new Liana(x0, y0, x1, y1));
-        repaint();
-    }*/
     
     public void drawGroundLine(int x,int y){
         int lastPointX = 0;
@@ -211,6 +141,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                     float sizeBox = ((BoxPanel)mainView.getEntityPanel()).getCurrentSize();
                     float weightBox = ((BoxPanel)mainView.getEntityPanel()).getCurrentWeight(); // TODO: set Weight
                     entityToAdd = new Box(e.getX(), e.getY(), sizeBox);
+                    ((Box)entityToAdd).setWeight(weightBox);
                 break;
 
                 case FRUIT:
@@ -224,10 +155,9 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 break;
 
                 case ONEWAY_WALL:
-                    //drawOneWay(e.getX(), e.getY());
-                    //float sizeWall = ((OneWayWallPanel)mainView.getEntityPanel()).getCurrentSize()
-                    //float weightWall = ((BoxPanel)mainView.getEntityPanel()).getCurrentWeight(); // TODO: set Weight
-                    //entityToAdd = new Box(e.getX(), e.getY(), sizeBox);
+                    float owwWidth = ((OneWayWallPanel)mainView.getEntityPanel()).getCurrentWidth();
+                    float owwHeight = ((OneWayWallPanel)mainView.getEntityPanel()).getCurrentHeight();
+                    entityToAdd = new OneWayWall(e.getX(), e.getY(), owwWidth, owwHeight);
                 break;
 
                 case PULLEY:
@@ -245,9 +175,9 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 break;
 
                 case BREAKABLE:
-                    float widthBreakable = ((BreakablePanel)mainView.getEntityPanel()).getWidth();
-                    float heightBreakable = ((BreakablePanel)mainView.getEntityPanel()).getHeight();
-                    float hitUntilBreak = ((BreakablePanel)mainView.getEntityPanel()).getHitToBreakCount();
+                    float widthBreakable = ((BreakablePanel)mainView.getEntityPanel()).getCurrentWidth();
+                    float heightBreakable = ((BreakablePanel)mainView.getEntityPanel()).getCurrentHeight();
+                    float hitUntilBreak = ((BreakablePanel)mainView.getEntityPanel()).getCurrentHitsUntilBreak();
                     entityToAdd = new Breakable(e.getX(), e.getY());
                     ((Breakable)entityToAdd).setWidth(widthBreakable);
                     ((Breakable)entityToAdd).setHeight(heightBreakable);
@@ -258,12 +188,19 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                     //drawLiana(e.getX(), e.getY(), e.getX(), e.getY());
                 break;
 
-                case LINE:
+                case GROUND:
                     drawGroundLine(e.getX(), e.getY());
                 break;
 
                 case PLAYER:
                     //drawPlayer(e.getX(), e.getY());
+                    if (playersAdded == 0) {
+                        entityToAdd = new Player(e.getX(), e.getY(), "player1");
+                        playersAdded++;
+                    } else if (playersAdded == 1) {
+                        entityToAdd = new Player(e.getX(), e.getY(), "player2");
+                        playersAdded++;
+                    }
                 break;
 
                 case FLAG:
@@ -273,67 +210,17 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             
             if (entityToAdd != null) {
                 entities.add(entityToAdd);
-                mainView.getEntityPanel().setEntity(entityToAdd);
+                if (mainView.getEntityPanel() != null)
+                    mainView.getEntityPanel().setEntity(entityToAdd);
             }
             repaint();
             
         }
-        
-        
-        
-        /*switch (mode) {
-            
-            case BOX:
-                drawBox(e.getX(), e.getY(), 60);
-            break;
-
-            case FRUIT:
-                drawApple(e.getX(), e.getY());
-            break;
-                
-            case COIN:
-                drawCoin(e.getX(), e.getY());
-            break;
-                
-            case ONEWAY_WALL:
-                drawOneWay(e.getX(), e.getY());
-            break;
-                
-            case PULLEY:
-                drawPulley(e.getX(), e.getY(), 100);
-            break;
-                
-            case FLUID:
-                drawFluid(e.getX(), e.getY(), 100);
-            break;
-                
-            case BREAKABLE:
-                drawBreakable(e.getX(), e.getY());
-            break;
-                
-            case LIANA:
-                drawLiana(e.getX(), e.getY(), e.getX(), e.getY());
-            break;
-
-            case LINE:
-                drawGroundLine(e.getX(), e.getY());
-            break;
-                
-            case PLAYER:
-                drawPlayer(e.getX(), e.getY());
-            break;
-                
-            case FLAG:
-                drawFlag(e.getX(), e.getY());
-            break;
-
-            default: 
-                System.out.println("BUG");
-            break; 
-        }*/
     }
     
-    public void mousePressed(MouseEvent e) { }
+    public void mousePressed(MouseEvent e) {
+        selectedEntity = checkClickOn(e.getX(), e.getY());
+    }
     
     public void mouseReleased(MouseEvent e) { }
     
@@ -342,6 +229,12 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public void mouseExited(MouseEvent e) { }
 
     public void mouseDragged(MouseEvent e) {
+        if (selectedEntity != null) {
+            selectedEntity.setX(e.getX());
+            selectedEntity.setY(e.getY());
+            repaint();
+        }
+        
         /*switch (mode) {
             
             case BOX:
