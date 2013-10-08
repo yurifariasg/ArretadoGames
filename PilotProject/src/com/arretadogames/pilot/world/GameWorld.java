@@ -69,7 +69,7 @@ public class GameWorld extends GameScreen {
 	private HashMap<PlayerNumber, PlayableCharacter> selectedCharacters;
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
-	
+	private float flagPos;
 	private SpriteManager sm;
 	private float totalElapsedSeconds;
 	
@@ -81,7 +81,6 @@ public class GameWorld extends GameScreen {
 	public GameWorld() {
 		backgroundId = R.drawable.repeatable_background;
 		pWorld = PhysicalWorld.getInstance();
-		ui = new GameWorldUI(this);
 		gameCamera = new GameCamera(this, backgroundId);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
@@ -96,6 +95,7 @@ public class GameWorld extends GameScreen {
 		load(level); 
 		isInitialized = true;
 		setPlayersAsCurrentEntitiesToWatch();
+		ui = new GameWorldUI(this);
 	}
 	
 	private void load(LevelDescriptor ld) {
@@ -184,6 +184,7 @@ public class GameWorld extends GameScreen {
 					
 				case FINALFLAG:
 					entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
+					flagPos = entityDescriptor.getX();
 					break;
 				case WATER:
 					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),((WaterDescriptor)entityDescriptor).getWidth(),((WaterDescriptor)entityDescriptor).getHeight(),((WaterDescriptor)entityDescriptor).getDensity());
@@ -385,6 +386,9 @@ public class GameWorld extends GameScreen {
 
 	public void destroyResources() {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	public float getFlagPos(){
+		return flagPos;
 	}
 }

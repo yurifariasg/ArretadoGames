@@ -90,6 +90,7 @@ public abstract class Player extends Watchable {
 	public int getPercentageLeftToNextAct(){
 		return 100;
 	}
+	public abstract int getStatusImg();
 	
 	public abstract int[] getWalkFrames();
 	

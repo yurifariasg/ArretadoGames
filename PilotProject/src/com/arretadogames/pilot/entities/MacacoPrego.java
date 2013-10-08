@@ -274,4 +274,9 @@ public class MacacoPrego extends Player implements Steppable{
 	public Body getContactLianaBody() {
 		return b;
 	}
+	
+	@Override
+	public int getStatusImg() {
+		return R.drawable.macaco_status;
+	}
 }

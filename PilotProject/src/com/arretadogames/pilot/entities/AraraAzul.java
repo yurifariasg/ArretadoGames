@@ -245,4 +245,9 @@ public class AraraAzul extends Player implements Steppable{
 		canvas.restoreState();
 		
 	}
+	
+	@Override
+	public int getStatusImg() {
+		return R.drawable.arara_status;
+	}
 }

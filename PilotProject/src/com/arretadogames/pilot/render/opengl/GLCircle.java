@@ -77,7 +77,7 @@ public class GLCircle {
     
 	// percent: 0 to 100
     public void drawCircle(GLCanvas gl, float x, float y, int color, boolean filled, int percent) {
-    	drawCircle(gl, x, y, color, filled, percent * numSegments / 100, numSegments);
+    	drawCircle(gl, x, y, color, filled, 0, percent * numSegments / 100);
     }
     
     // fromsegment - starting segment to draw

@@ -71,6 +71,7 @@ public class LoboGuara extends Player implements Steppable{
 		footFixture.setSensor(true);
 		
 		bodiesContact = new HashSet<Body>();
+		lastAct = new Date(0,0,0);
 	}
 	
 	@Override
@@ -251,5 +252,10 @@ public class LoboGuara extends Player implements Steppable{
 		
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
+	}
+	
+	@Override
+	public int getStatusImg() {
+		return R.drawable.lobo_status;
 	}
 }

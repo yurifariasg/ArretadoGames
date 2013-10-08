@@ -94,7 +94,6 @@ public class ResourcesManager {
 					R.drawable.coin_1_1,
 					R.drawable.pause_menu_bg,
 					R.drawable.bt_pause_selected,
-					R.drawable.stage_background,
 					R.drawable.repeatable_background,
 					R.drawable.spike
 			};
