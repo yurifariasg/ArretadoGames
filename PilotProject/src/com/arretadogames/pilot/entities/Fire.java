@@ -9,6 +9,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 import android.graphics.Color;
 import android.graphics.RectF;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -66,6 +67,10 @@ public class Fire extends Entity implements Steppable{
 	public void setSprite(Sprite sprite) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public int getStatusImg(){
+		return R.drawable.fire_status;
 	}
 
 }

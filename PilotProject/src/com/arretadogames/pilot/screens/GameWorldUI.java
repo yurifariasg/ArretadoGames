@@ -2,11 +2,11 @@ package com.arretadogames.pilot.screens;
 
 import android.graphics.Color;
 import android.view.MotionEvent;
-import android.view.ViewDebug.FlagToString;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
+import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -28,22 +28,29 @@ public class GameWorldUI extends GameScreen {
 	
 	private Player p1;
 	private Player p2;
+	private Fire fire;
 	private GameWorld gWorld;
-	private Text completionText;
+//	private Text completionText;
 	private Text coin1Text;
 	private Text coin2Text;
 	private GLCircle coolDown1;
 	private GLCircle coolDown2;
 	
 	float totalDistance = Float.MIN_VALUE;
+	
 	public GameWorldUI(GameWorld gameWorld) {
 		this.gWorld = gameWorld;
 		
 		p1 = gWorld.getPlayers().get(PlayerNumber.ONE);
 		p2 = gWorld.getPlayers().get(PlayerNumber.TWO);
 		
-		completionText = new Text(400, 430, "0% completed",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
+		for (Entity e : gWorld.getEntities()){
+			if (e.getType() == EntityType.FIRE)
+				fire = (Fire) e;
+		}
+		
+//		completionText = new Text(400, 430, "0% completed",
+//				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 		
 		coin1Text = new Text(140, 40, "0",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
@@ -66,17 +73,21 @@ public class GameWorldUI extends GameScreen {
 		canvas.drawBitmap(R.drawable.coin_1_1, 640, 25);
 		coin2Text.render(canvas, timeElapsed);
 		
-		coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, p1.getPercentageLeftToNextAct());
-		canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0),
-											centerImage(R.drawable.power, 2));
+		if (p1.isAlive()){
+			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390);
+			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, p1.getPercentageLeftToNextAct());
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0),
+												centerImage(R.drawable.power, 2));			
+		}
 		
-		coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true, p2.getPercentageLeftToNextAct());
-		canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1),
-											centerImage(R.drawable.power, 2));
+		if (p2.isAlive()){
+			canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2.body.getPosition().x), 440);
+			coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true, p2.getPercentageLeftToNextAct());
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1),
+												centerImage(R.drawable.power, 2));
+		}
 		
-		
-		canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1), 390);
-		canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2), 440);
+		canvas.drawBitmap(fire.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(fire.getPosX()), 415);
 		
 //		System.out.println("Position Player2: "+p2.body.getPosition().x);
 	}
@@ -123,16 +134,15 @@ public class GameWorldUI extends GameScreen {
 		
 	}
 
-	private int calculateMapCompletion(Player p) {
+	private int calculateMapCompletion(float pos) {
 		
 		float flagXPosition = gWorld.getFlagPos();
 		
 		if (totalDistance == Float.MIN_VALUE) {
-			totalDistance = flagXPosition -
-					gWorld.getPlayers().get(PlayerNumber.ONE).body.getPosition().x;
+			totalDistance = flagXPosition -	pos;
 		}
 		
-		int totalCompletion = END_OF_STATUS_INTERVAL - (int) (END_OF_STATUS_INTERVAL * (flagXPosition - p.body.getPosition().x) / totalDistance);
+		int totalCompletion = END_OF_STATUS_INTERVAL - (int) (END_OF_STATUS_INTERVAL * (flagXPosition - pos) / totalDistance);
 		
 		if (totalCompletion < 0)
 			totalCompletion = 0;
