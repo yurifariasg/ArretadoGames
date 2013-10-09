@@ -62,6 +62,11 @@ public class Ground extends Entity {
         			width, color);
 		}
 	}
+	
+	@Override
+	public int getLayerPosition() {
+		return 2;
+	}
 
 	@Override
 	public EntityType getType() {

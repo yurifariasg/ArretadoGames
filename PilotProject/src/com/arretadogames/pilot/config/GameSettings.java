@@ -13,6 +13,8 @@ public class GameSettings {
 	public static final boolean SHOW_FPS = true;
 	public static final int FPS_AVG_BUFFER_SIZE = 10;
 	
+	public static final boolean ACTIVATE_FIRE = false;
+	
 	// Should the texture be loaded when they need to be used ?
 	public static final boolean LAZY_LOAD_ENABLED = true;
 	

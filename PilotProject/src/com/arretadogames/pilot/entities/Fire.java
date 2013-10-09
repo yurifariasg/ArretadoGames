@@ -48,6 +48,11 @@ public class Fire extends Entity implements Steppable{
 	}
 	
 	@Override
+	public int getLayerPosition() {
+		return 1;
+	}
+	
+	@Override
 	public void beginContact(Entity e, Contact contact) {
 		super.endContact(e, contact);
 		PhysicalWorld.getInstance().addDeadEntity(e);
