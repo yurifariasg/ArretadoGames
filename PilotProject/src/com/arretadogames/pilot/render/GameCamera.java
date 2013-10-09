@@ -56,7 +56,7 @@ public class GameCamera {
 
 	public GameCamera(GameWorld world, int backgroundId) {
 
-		this(world, 250f);// Default is 250 milliseconds
+		this(world, 1000f);// Default is 1000 milliseconds
 		this.backgroundId = backgroundId;
 	}
 
