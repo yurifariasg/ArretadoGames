@@ -14,7 +14,7 @@ import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.Sprite;
 
 
-public abstract class Entity implements Renderable {
+public abstract class Entity implements Renderable, LayerEntity {
 	
 	public Body body;
 	protected World world;
@@ -30,6 +30,11 @@ public abstract class Entity implements Renderable {
 		body.setSleepingAllowed(true);
 		body.setAwake(false);
 		isDead = false;
+	}
+	
+	@Override
+	public int getLayerPosition() {
+		return 0;
 	}
 	
 	public boolean isAlive() {

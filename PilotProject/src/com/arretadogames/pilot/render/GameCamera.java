@@ -2,8 +2,10 @@ package com.arretadogames.pilot.render;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jbox2d.callbacks.QueryCallback;
 import org.jbox2d.collision.AABB;
@@ -20,6 +22,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
+import com.arretadogames.pilot.entities.LayerEntity.Layer;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.ImageLoader;
@@ -300,9 +303,10 @@ time));
 		
 		gameCanvas.translate(translator.x, translator.y);
 
-		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, 
-
-upperBound);
+		List<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, upperBound);
+		
+		// Sort based on layer
+		Collections.sort(entities, Layer.getComparator());
 
 		for ( Entity entity : entities ){
 			entity.render(gameCanvas, timeElapsed);
@@ -411,11 +415,11 @@ backgroundWidth, backgroundHeight + translate_y);
 		}
 	}
 
-	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 
+	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 
 
 upperBound) {
 
-		final Collection<Entity> entities = new ArrayList<Entity>();
+		final List<Entity> entities = new ArrayList<Entity>();
 
 		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() {
 
