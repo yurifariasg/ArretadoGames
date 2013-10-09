@@ -124,15 +124,15 @@ public class LevelParser {
 			}
 			
 			GroundDescriptor groundDescriptor = new GroundDescriptor();
-			JSONArray groundArray = master.getJSONArray("ground");
-			for (int i = 0; i < groundArray.length() ; i++) {
-				JSONObject jsonGroundPoint = groundArray.getJSONObject(i);
-				groundDescriptor.addPoint(new Vec2(
-						(float) jsonGroundPoint.getDouble("x"),
-						(float) jsonGroundPoint.getDouble("y")));
-			}
-			
-			// Set Level Data
+//			JSONArray groundArray = master.getJSONArray("ground");
+//			for (int i = 0; i < groundArray.length() ; i++) {
+//				JSONObject jsonGroundPoint = groundArray.getJSONObject(i);
+//				groundDescriptor.addPoint(new Vec2(
+//						(float) jsonGroundPoint.getDouble("x"),
+//						(float) jsonGroundPoint.getDouble("y")));
+//			}
+//			
+//			// Set Level Data
 			level.setData(entities, groundDescriptor);
 			return true;
 		} catch (JSONException ex) {

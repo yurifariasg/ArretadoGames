@@ -13,9 +13,11 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 public class Ground extends Entity {
 	
 	private Vec2[] vec;
-
+	boolean chain = true;
+	
 	public Ground(Vec2[] vec, int count) {
 		super(0, 0);
+		chain = true;
 		this.vec = vec;
 		ChainShape shape = new ChainShape();
 		shape.createChain(vec, count);
@@ -23,8 +25,21 @@ public class Ground extends Entity {
 		body.setType(BodyType.STATIC);
 	}
 
+	public Ground() {
+		super(0,0);
+		chain = false;
+		vec = new Vec2[2];
+		vec[0] = new Vec2(-10000,0);
+		vec[1] = new Vec2(10000,0);
+		ChainShape shape = new ChainShape();
+		shape.createChain(vec, 2);
+		body.createFixture(shape, 0.5f);
+		body.setType(BodyType.STATIC);
+	}
+
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		if(chain){
 		canvas.drawPhysicsLines(vec);
 		
         // Draw Darker Lines
@@ -37,6 +52,15 @@ public class Ground extends Entity {
         			width, color);
         	
         }
+		}else{
+			canvas.drawPhysicsLines(vec);
+			int width = 2;
+	        int color = Color.rgb(77, 34, 0);
+			canvas.drawLine(
+        			vec[0].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[0].y * GLCanvas.physicsRatio,
+        			vec[1].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[1].y * GLCanvas.physicsRatio,
+        			width, color);
+		}
 	}
 
 	@Override

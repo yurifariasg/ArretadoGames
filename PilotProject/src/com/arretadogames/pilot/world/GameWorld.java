@@ -204,36 +204,40 @@ public class GameWorld extends GameScreen {
 				}
 			}
 		}
+	
 		
-		// Add Ground
-		Vec2[] groundPoints = new Vec2[ld.getGroundDescriptor().getPoints().size()];
-		ld.getGroundDescriptor().getPoints().toArray(groundPoints);
-		int amountOfPoints = groundPoints.length;
 		
-		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
-		int internalPointer = 0;
-		for (int i = 0 ; i < amountOfPoints ; i++) {
-			
-			vecs[internalPointer] = groundPoints[i];
-			
-			if (internalPointer == GameSettings.GROUND_ENTITY_THRESHOLD - 1) {
-				worldEntities.add(new Ground(vecs, vecs.length));
-				vecs = new Vec2[GameSettings.GROUND_ENTITY_THRESHOLD];
-				vecs[0] = groundPoints[i];
-				internalPointer = 1;
-			} else {
-				internalPointer %= GameSettings.GROUND_ENTITY_THRESHOLD;
-				internalPointer++;
-			}
-			
-		}
+		worldEntities.add(new Ground());
+//		// Add Ground
+//		Vec2[] groundPoints = new Vec2[ld.getGroundDescriptor().getPoints().size()];
+//		ld.getGroundDescriptor().getPoints().toArray(groundPoints);
+//		int amountOfPoints = groundPoints.length;
+//		
+//		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
+//		int internalPointer = 0;
+//		for (int i = 0 ; i < amountOfPoints ; i++) {
+//			
+//			vecs[internalPointer] = groundPoints[i];
+//			
+//			if (internalPointer == GameSettings.GROUND_ENTITY_THRESHOLD - 1) {
+//				worldEntities.add(new Ground(vecs, vecs.length));
+//				vecs = new Vec2[GameSettings.GROUND_ENTITY_THRESHOLD];
+//				vecs[0] = groundPoints[i];
+//				internalPointer = 1;
+//			} else {
+//				internalPointer %= GameSettings.GROUND_ENTITY_THRESHOLD;
+//				internalPointer++;
+//			}
+//			
+//		}
+//		
+//		if (internalPointer != 0) {
+//			Vec2[] lastVec = new Vec2[internalPointer];
+//			for (int i = 0 ; i < internalPointer ; i++)
+//				lastVec[i] = vecs[i];
+//			worldEntities.add(new Ground(lastVec, internalPointer));
+//		}
 		
-		if (internalPointer != 0) {
-			Vec2[] lastVec = new Vec2[internalPointer];
-			for (int i = 0 ; i < internalPointer ; i++)
-				lastVec[i] = vecs[i];
-			worldEntities.add(new Ground(lastVec, internalPointer));
-		}
 		
 		for(Entity e : worldEntities){
 			if(e instanceof Steppable){
