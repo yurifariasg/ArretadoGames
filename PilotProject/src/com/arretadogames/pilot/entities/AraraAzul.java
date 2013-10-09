@@ -99,6 +99,8 @@ public class AraraAzul extends Player implements Steppable{
 	
 
 	public void jump() {
+		System.out.println("ae " + contacts);
+		
 		if (hasFinished() || !isAlive() || contJump > 0 || (contacts <= 0 && !doubleJump))
 			return;
 		if(contacts <= 0 && doubleJump){

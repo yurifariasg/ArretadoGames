@@ -204,7 +204,10 @@ public class GameWorld extends GameScreen {
 				}
 			}
 		}
+	
 		
+		
+		worldEntities.add(new Ground());
 		// Add Ground
 		Vec2[] groundPoints = new Vec2[ld.getGroundDescriptor().getPoints().size()];
 		ld.getGroundDescriptor().getPoints().toArray(groundPoints);
