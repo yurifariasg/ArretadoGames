@@ -6,12 +6,15 @@ package com.arretados.leveleditor.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Bruno
  */
-public class Liana extends DrawableObject{
+public class Liana extends Entity{
+    
+    public static EntityPanel liana_panel;
 
     private int x1;
     private int y1;
@@ -63,6 +66,16 @@ public class Liana extends DrawableObject{
     public void drawMyself(Graphics g) {
         g.setColor(Color.magenta);
         g.drawLine(this.x, this.y, this.x1, this.y1);
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public EntityPanel getEntityPanel() {
+        return liana_panel;
     }
     
 }

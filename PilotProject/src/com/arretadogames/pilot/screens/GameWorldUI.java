@@ -1,13 +1,12 @@
 package com.arretadogames.pilot.screens;
 
-import java.util.Collection;
-
 import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
+import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -20,13 +19,18 @@ import com.arretadogames.pilot.world.GameWorld;
 
 public class GameWorldUI extends GameScreen {
 	
+	private final int INIT_OF_STATUS_INTERVAL = 270;
+	private final int END_OF_STATUS_INTERVAL = 487 - INIT_OF_STATUS_INTERVAL;
 	private final int COOLDOWN_RADIUS = 30;
 	private final int COOLDOWN1_X = 40;
 	private final int COOLDOWN2_X = 590;
-	private final int COOLDOWN_Y = 40;	
+	private final int COOLDOWN_Y = 40;
 	
+	private Player p1;
+	private Player p2;
+	private Fire fire;
 	private GameWorld gWorld;
-	private Text completionText;
+//	private Text completionText;
 	private Text coin1Text;
 	private Text coin2Text;
 	private GLCircle coolDown1;
@@ -36,8 +40,17 @@ public class GameWorldUI extends GameScreen {
 	
 	public GameWorldUI(GameWorld gameWorld) {
 		this.gWorld = gameWorld;
-		completionText = new Text(400, 430, "0% completed",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
+		
+		p1 = gWorld.getPlayers().get(PlayerNumber.ONE);
+		p2 = gWorld.getPlayers().get(PlayerNumber.TWO);
+		
+		for (Entity e : gWorld.getEntities()){
+			if (e.getType() == EntityType.FIRE)
+				fire = (Fire) e;
+		}
+		
+//		completionText = new Text(400, 430, "0% completed",
+//				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 		
 		coin1Text = new Text(140, 40, "0",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
@@ -50,8 +63,9 @@ public class GameWorldUI extends GameScreen {
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		
 		canvas.drawBitmap(R.drawable.ui_buttons, 0, 340);
-		completionText.render(canvas, timeElapsed);
+//		completionText.render(canvas, timeElapsed);
 		
 		canvas.drawBitmap(R.drawable.coin_1_1, 90, 25);
 		coin1Text.render(canvas, timeElapsed);
@@ -59,15 +73,25 @@ public class GameWorldUI extends GameScreen {
 		canvas.drawBitmap(R.drawable.coin_1_1, 640, 25);
 		coin2Text.render(canvas, timeElapsed);
 		
-		coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true ); //, int percent); 		//Collection<Player> x = gWorld.getPlayers().values().;
-		canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0),
-											centerImage(R.drawable.power, 2));
+		if (p1.isAlive()){
+			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390);
+			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, p1.getPercentageLeftToNextAct());
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0),
+												centerImage(R.drawable.power, 2));			
+		}
 		
-		coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true);
-		canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1),
-											centerImage(R.drawable.power, 2));
+		if (p2.isAlive()){
+			canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2.body.getPosition().x), 440);
+			coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true, p2.getPercentageLeftToNextAct());
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1),
+												centerImage(R.drawable.power, 2));
+		}
+		
+		canvas.drawBitmap(fire.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(fire.getPosX()), 415);
+		
+//		System.out.println("Position Player2: "+p2.body.getPosition().x);
 	}
-	
+		
 	private float centerImage(int imgId, int cooldown){
 		int[] size = ImageLoader.checkBitmapSize(R.drawable.power); 
 		int width = size[0];
@@ -105,39 +129,25 @@ public class GameWorldUI extends GameScreen {
 		coins = gWorld.getPlayers().get(PlayerNumber.TWO).getCoins();
 		coin2Text.setText(String.valueOf(coins));
 		
-		int percentageCompleted = calculateMapCompletion();
-		completionText.setText(String.valueOf(percentageCompleted) + "% completed");
-		
+//		int percentageCompleted = calculateMapCompletion();
+//		completionText.setText(String.valueOf(percentageCompleted) + "% completed");
 		
 	}
 
-	private int calculateMapCompletion() {
+	private int calculateMapCompletion(float pos) {
 		
-		float playerFurthestDistance = 0;
-		for (Player p : gWorld.getPlayers().values()) {
-			if (p.body.getPosition().x > playerFurthestDistance)
-				playerFurthestDistance = p.body.getPosition().x;
-		}
-		
-		float flagXPosition = 0;
-		for (Entity entity : gWorld.getEntities()) {
-			if (entity.getType() == EntityType.FINALFLAG) {
-				flagXPosition = entity.body.getPosition().x;
-				break;
-			}
-		}
+		float flagXPosition = gWorld.getFlagPos();
 		
 		if (totalDistance == Float.MIN_VALUE) {
-			totalDistance = flagXPosition -
-					gWorld.getPlayers().get(PlayerNumber.ONE).body.getPosition().x;
+			totalDistance = flagXPosition -	pos;
 		}
 		
-		int totalCompletion = 100 - (int) (100 * (flagXPosition - playerFurthestDistance) / totalDistance);
+		int totalCompletion = END_OF_STATUS_INTERVAL - (int) (END_OF_STATUS_INTERVAL * (flagXPosition - pos) / totalDistance);
 		
 		if (totalCompletion < 0)
 			totalCompletion = 0;
-		if (totalCompletion > 100)
-			totalCompletion = 100;
+		if (totalCompletion > END_OF_STATUS_INTERVAL)
+			totalCompletion = END_OF_STATUS_INTERVAL;
 		
 		return totalCompletion;
 	}

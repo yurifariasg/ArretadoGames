@@ -21,28 +21,28 @@ import javax.swing.text.DefaultFormatter;
  *
  * @author Yuri
  */
-public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedListener {
+public class LianaPanel extends EntityPanel<Liana> implements ItemPropertyChangedListener {
 
     /** Creates new form BoxPanel */
-    public BoxPanel(ItemPropertyChangedListener listener) {
+    public LianaPanel(ItemPropertyChangedListener listener) {
         initComponents();
         
         JSpinner.NumberEditor jsEditor = (JSpinner.NumberEditor)jSpinner1.getEditor();
         DefaultFormatter formatter = (DefaultFormatter) jsEditor.getTextField().getFormatter();
         formatter.setAllowsInvalid(false);
         ((NumberEditor)jSpinner1.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Size", this));
+                addDocumentListener(new EntityPropertyDocumentListener("Width", this));
         ((NumberEditor)jSpinner1.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Size", listener));
+                addDocumentListener(new EntityPropertyDocumentListener("Width", listener));
         jSpinner1.setValue(1.0);
         
         jsEditor = (JSpinner.NumberEditor)jSpinner2.getEditor();
         formatter = (DefaultFormatter) jsEditor.getTextField().getFormatter();
         formatter.setAllowsInvalid(false);
         ((NumberEditor)jSpinner2.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Weight", this));
+                addDocumentListener(new EntityPropertyDocumentListener("Height", this));
         ((NumberEditor)jSpinner2.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Weight", listener));
+                addDocumentListener(new EntityPropertyDocumentListener("Height", listener));
         jSpinner2.setValue(1.0);
         
     }
@@ -60,13 +60,13 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
             return;
         
         if (propertyName.equals("Size")) {
-            getEntity().setSize(Float.parseFloat(newValue));
+            //getEntity().setSize(Float.parseFloat(newValue));
         }
         
     }
 
     @Override
-    public void setEntity(Box entity) {
+    public void setEntity(Liana entity) {
         super.setEntity(entity);
         jSpinner1.setValue((double) getEntity().getSize());
     }
@@ -88,7 +88,7 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
         setName("Form"); // NOI18N
         setLayout(new java.awt.GridLayout(10, 1));
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(BoxPanel.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(LianaPanel.class);
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
         add(jLabel1);

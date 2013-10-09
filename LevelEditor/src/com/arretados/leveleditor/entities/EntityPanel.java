@@ -6,12 +6,22 @@ package com.arretados.leveleditor.entities;
 
 import javax.swing.JPanel;
 
-public abstract class EntityPanel extends JPanel {
+public abstract class EntityPanel<T extends Entity> extends JPanel {
+    
+    private T entity;
     
     public interface ItemPropertyChangedListener {
         
         public void onPropertyChanged(String propertyName, String newValue);
         
+    }
+
+    public void setEntity(T entity) {
+        this.entity = entity;
+    }
+
+    public T getEntity() {
+        return entity;
     }
     
     protected ItemPropertyChangedListener listener;

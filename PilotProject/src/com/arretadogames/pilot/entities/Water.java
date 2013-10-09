@@ -22,23 +22,24 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Water extends Entity implements Steppable{
 
-	private Body agua;
 	private PolygonShape shapeA;
 	private Sprite sprite;
 	Collection<Entity> entitiesContact;
-	private float size;
+	private float height;
+	private float width;
+	private float density;
 	
-	public Water(float x, float y, float sz) {
+	public Water(float x, float y, float w, float h, float d) {
 		super(x, y);
-		agua = body;
-		size = sz;
+		width = w;
+		height = h;
 		shapeA = new PolygonShape();
-		shapeA.setAsBox(size,size);
-		agua.createFixture(shapeA,0.0f).setSensor(true);
-		agua.setType(BodyType.STATIC);
+		shapeA.setAsBox(width/2,height/2);
+		body.createFixture(shapeA,0.0f).setSensor(true);
+		body.setType(BodyType.STATIC);
+		density = d;
 		entitiesContact = new ArrayList<Entity>();
 	}
-
 	
 	public static List<Vec2> transformToVec2(List<List<Float>> l){
 		List<Vec2> result = new ArrayList<Vec2>();
@@ -131,10 +132,10 @@ public class Water extends Entity implements Steppable{
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		RectF rect = new RectF(
-				(- size * GLCanvas.physicsRatio), // Top Left
-				(- size * GLCanvas.physicsRatio), // Top Left
-				(size * GLCanvas.physicsRatio), // Bottom Right
-				(size * GLCanvas.physicsRatio)); // Bottom Right
+				(- width/2 * GLCanvas.physicsRatio), // Top Left
+				(- height/2 * GLCanvas.physicsRatio), // Top Left
+				(width/2 * GLCanvas.physicsRatio), // Bottom Right
+				(height/2 * GLCanvas.physicsRatio)); // Bottom Right
 		
 		//canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.BLUE);
@@ -168,7 +169,7 @@ public class Water extends Entity implements Steppable{
 		}
 		
 		for( int i = 0; i < cont2; i++){
-			Vec2 p = agua.getWorldPoint(v2[i]);
+			Vec2 p = body.getWorldPoint(v2[i]);
 			List<Float> ui = new ArrayList<Float>();
 			ui.add(p.x);
 			ui.add(p.y);
@@ -180,7 +181,7 @@ public class Water extends Entity implements Steppable{
 		float area = calcArea(in);
 		Vec2 centroid = getCentroid(in);
 		System.out.println("area " + area);
-		float displacedMass = 3.3f * area;
+		float displacedMass = density * area;
 		Vec2 force =  world.getGravity().mul(-displacedMass);
 		caixa.body.applyForce(force, centroid);
 		}
@@ -194,7 +195,7 @@ public class Water extends Entity implements Steppable{
 		      
 		      //find relative velocity between object and fluid at edge midpoint
 		      Vec2 velDir = caixa.body.getLinearVelocityFromWorldPoint( midPoint ).sub(
-		                      agua.getLinearVelocityFromWorldPoint( midPoint ));
+		                      body.getLinearVelocityFromWorldPoint( midPoint ));
 		      float vel = velDir.normalize();
 		  
 		      Vec2 edge = v1.sub(v0);
@@ -205,7 +206,7 @@ public class Water extends Entity implements Steppable{
 		      if ( dragDot < 0 )
 		          continue; //normal points backwards - this is not a leading edge
 		  
-		      float dragMag = (float) (dragDot * edgeLength * 3.3 * vel * vel);
+		      float dragMag = (float) (dragDot * edgeLength * density * vel * vel);
 		      Vec2 dragForce = velDir.mul(- dragMag);
 		      caixa.body.applyForce( dragForce, midPoint );
 		  }

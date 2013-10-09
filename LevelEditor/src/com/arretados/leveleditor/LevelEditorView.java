@@ -4,10 +4,25 @@
 
 package com.arretados.leveleditor;
 
+import com.arretados.leveleditor.entities.Box;
 import com.arretados.leveleditor.entities.BoxPanel;
+import com.arretados.leveleditor.entities.Breakable;
+import com.arretados.leveleditor.entities.BreakablePanel;
+import com.arretados.leveleditor.entities.Coin;
+import com.arretados.leveleditor.entities.CoinPanel;
+import com.arretados.leveleditor.entities.EntityPanel;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
+import com.arretados.leveleditor.entities.Fluid;
+import com.arretados.leveleditor.entities.FluidPanel;
+import com.arretados.leveleditor.entities.Liana;
+import com.arretados.leveleditor.entities.LianaPanel;
+import com.arretados.leveleditor.entities.OneWayWall;
+import com.arretados.leveleditor.entities.OneWayWallPanel;
+import com.arretados.leveleditor.entities.Pulley;
+import com.arretados.leveleditor.entities.PulleyPanel;
 import com.arretados.leveleditor.parsers.JSONGenerator;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.event.ChangeEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
@@ -25,6 +40,8 @@ import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.event.ChangeListener;
 
 /**
@@ -34,8 +51,10 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
 
     public LevelEditorView(SingleFrameApplication app) {
         super(app);
-
         initComponents();
+        itemComboBox.setSelectedItem(null);
+        gameCanvas1.setMainView(this);
+        
         jScrollPane1.getViewport().addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
@@ -48,6 +67,15 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         });
         jTextWidthValue.setText(String.valueOf(gameCanvas1.getPreferredSize().width));
         jTextHeigthValue.setText(String.valueOf(gameCanvas1.getPreferredSize().height));
+        
+        // Initialize Panels
+        Box.box_panel = new BoxPanel(this);
+        Breakable.breakable_panel = new BreakablePanel(this);
+        Coin.coin_panel = new CoinPanel(this);
+        Fluid.fluid_panel = new FluidPanel(this);
+        Liana.liana_panel = new LianaPanel(this);
+        OneWayWall.onewaywall_panel = new OneWayWallPanel(this);
+        Pulley.pulley_panel = new PulleyPanel(this);
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -214,7 +242,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
         jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
 
-        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY}));
+        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.GROUND}));
         itemComboBox.setName("itemComboBox"); // NOI18N
         itemComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -246,32 +274,32 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                     .addComponent(jLabel1)
-                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 338, Short.MAX_VALUE)
+                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 326, Short.MAX_VALUE)
                     .addComponent(jLabel3)
-                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE))
+                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(itemComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -355,21 +383,32 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JSONGenerator json = new JSONGenerator(gameCanvas1.getBoxPos(),
-                gameCanvas1.getFruitPos(), gameCanvas1.getCoinsPos(),
-                gameCanvas1.getOneWayPos(), gameCanvas1.getPulleyPos(),
-                gameCanvas1.getFluidPos(), gameCanvas1.getBreakablePos(),
-                gameCanvas1.getLianaPos(), gameCanvas1.getLinesPos(),
-                gameCanvas1.getPlayersPos(), gameCanvas1.getFlag());
+        JSONGenerator json = new JSONGenerator(gameCanvas1.getEntitiesPos(),
+                gameCanvas1.getLinesPos(), gameCanvas1.getFlag());
+        
+        String jsonString = json.generateJson().toJSONString();
+        
         try {
           File file = new File("level.json");
           BufferedWriter output = new BufferedWriter(new FileWriter(file));
-          output.write(json.generateJson().toJSONString());
+          output.write(jsonString);
           output.close();
         } catch ( IOException e ) {
            e.printStackTrace();
         }
-        System.out.println(json.generateJson().toJSONString());
+        
+        // Show Dialog
+        JFrame frame = new JFrame();
+        JTextArea textArea = new JTextArea(jsonString);
+        frame.add(textArea);
+        frame.setSize(new Dimension(500, 250));
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation((dim.width-frame.getWidth())/2, (dim.height-frame.getHeight())/2);
+        
+        frame.setVisible(true);
+        
+        System.out.println(jsonString);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void clearScrBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearScrBtnActionPerformed
@@ -406,40 +445,55 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
 private void itemComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_itemComboBoxPropertyChange
 }//GEN-LAST:event_itemComboBoxPropertyChange
 
+public void switchEntityPanel(EntityPanel entityPanel) {
+    itemPanel.removeAll();
+    itemPanel.add(entityPanel);
+}
+
+public EntityPanel getEntityPanel() {
+    if (itemPanel.getComponentCount() > 0)
+        return (EntityPanel) itemPanel.getComponent(0);
+    return null;
+}
+
 private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_itemComboBoxItemStateChanged
+    if (evt.getItemSelectable().getSelectedObjects().length == 0)
+        return;
+    
     DrawMode newMode = (DrawMode) (evt.getItemSelectable().getSelectedObjects()[0]);
-     gameCanvas1.mode = newMode;
+    gameCanvas1.changeMode(newMode);
     itemPanel.removeAll();
     
+    // Add the panel related to the mode
     switch (newMode) {
         case BOX:
-            itemPanel.add(new BoxPanel(this));
+            itemPanel.add(Box.box_panel);
             break;
         case BREAKABLE:
-            System.out.println("Breakable");
+            itemPanel.add(Breakable.breakable_panel);
         break;
         case COIN:
-
+            itemPanel.add(Coin.coin_panel);
         break;
         case FLAG:
         break;
         case FLUID:
-            
+            itemPanel.add(Fluid.fluid_panel);
         break;
         case LIANA:
-            
+            itemPanel.add(Liana.liana_panel);
         break;
         case LINE:
             
         break;
         case ONEWAY_WALL:
-            
+            itemPanel.add(OneWayWall.onewaywall_panel);
         break;
         case PLAYER:
             
         break;
         case PULLEY:
-            
+            itemPanel.add(Pulley.pulley_panel);
         break;
     }
     itemPanel.validate();
@@ -478,6 +532,6 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
     private JDialog aboutBox;
 
     public void onPropertyChanged(String propertyName, String newValue) {
-        System.out.println("Property: \"" + propertyName + "\" changed to \"" + newValue + "\"");
+        gameCanvas1.repaint();
     }
 }

@@ -12,7 +12,7 @@ public class Utils {
     
     public static float convertPixelToMeter(float pixels){
         float calc;
-        calc = pixels/100;
+        calc = pixels/GameCanvas.METER_TO_PIXELS;
         return calc;
     }
     

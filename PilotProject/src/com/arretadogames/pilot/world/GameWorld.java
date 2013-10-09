@@ -41,6 +41,7 @@ import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
+import com.arretadogames.pilot.levels.WaterDescriptor;
 import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.GameCamera;
@@ -68,7 +69,8 @@ public class GameWorld extends GameScreen {
 	private HashMap<PlayerNumber, PlayableCharacter> selectedCharacters;
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
-	
+	private float flagPos;
+	private float firePos;
 	private SpriteManager sm;
 	private float totalElapsedSeconds;
 	
@@ -80,7 +82,6 @@ public class GameWorld extends GameScreen {
 	public GameWorld() {
 		backgroundId = R.drawable.repeatable_background;
 		pWorld = PhysicalWorld.getInstance();
-		ui = new GameWorldUI(this);
 		gameCamera = new GameCamera(this, backgroundId);
 		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
@@ -95,6 +96,7 @@ public class GameWorld extends GameScreen {
 		load(level); 
 		isInitialized = true;
 		setPlayersAsCurrentEntitiesToWatch();
+		ui = new GameWorldUI(this);
 	}
 	
 	private void load(LevelDescriptor ld) {
@@ -110,7 +112,8 @@ public class GameWorld extends GameScreen {
 		
 		//TODO fzr direito
 		
-//		worldEntities.add(new Fire(-5,0));
+		worldEntities.add(new Fire(-5,0));
+		
 //		worldEntities.add(new Liana(25,9,23,7));
 //		Entity spikeA = new Spike(18f, 6.23f);
 //		spikeA.setSprite(sm.getSprite(spikeA));
@@ -183,9 +186,10 @@ public class GameWorld extends GameScreen {
 					
 				case FINALFLAG:
 					entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
+					flagPos = entityDescriptor.getX();
 					break;
 				case WATER:
-					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),entityDescriptor.getSize());
+					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),((WaterDescriptor)entityDescriptor).getWidth(),((WaterDescriptor)entityDescriptor).getHeight(),((WaterDescriptor)entityDescriptor).getDensity());
 				default:
 					break;
 				}
@@ -384,6 +388,9 @@ public class GameWorld extends GameScreen {
 
 	public void destroyResources() {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	public float getFlagPos(){
+		return flagPos;
 	}
 }
