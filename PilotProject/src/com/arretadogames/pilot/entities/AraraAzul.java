@@ -28,7 +28,7 @@ public class AraraAzul extends Player implements Steppable{
 	private float JUMP_ACELERATION = 4;
 	private float RUN_ACELERATION = 3;
 	Collection<Body> bodiesContact;
-	private float k = 25f;
+	private float k = 3f;
 	private boolean doubleJump;
 	private float radius;
 	
@@ -152,9 +152,14 @@ public class AraraAzul extends Player implements Steppable{
 		if (hasFinished() || !isAlive())
 			return;
 		float vel = body.getLinearVelocity().y;
-		Vec2 force = new Vec2(0,k * vel * vel);
+		float velx = body.getLinearVelocity().x;
+		Vec2 force = new Vec2((k * vel * vel) / 3,k * vel * vel);
 		if( vel < 0 ){ //force.negateLocal();
-		body.applyForce(force, body.getWorldCenter());
+			body.applyForce(force, body.getWorldCenter());
+		}
+		Vec2 forcex = new Vec2(-(velx * velx)/6 ,0);
+		if( velx > 0 ){ //force.negateLocal();
+			body.applyForce(forcex, body.getWorldCenter());
 		}
 	}
 

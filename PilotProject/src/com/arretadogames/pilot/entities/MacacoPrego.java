@@ -48,6 +48,7 @@ public class MacacoPrego extends Player implements Steppable{
 	
 	public MacacoPrego(float x, float y, PlayerNumber number) {
 		super(x, y, number);
+		
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
