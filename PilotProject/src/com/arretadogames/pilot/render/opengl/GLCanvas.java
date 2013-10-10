@@ -114,6 +114,7 @@ public class GLCanvas {
 	
 	public void drawPhysicsLines(final Vec2[] lines) {
 		
+		
 		Vec2 vertices[] = lines;
     	int cont = vertices.length + 3;
     	float[] squareCoords = new float[3*cont];

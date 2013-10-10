@@ -196,7 +196,6 @@ public class GameWorld extends GameScreen {
 		}
 		
 		// Add Ground
-		System.out.println("WATER SPOTS: " + waterEntities.size());
 		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities);//new Vec2[ld.getGroundDescriptor().getPoints().size()];
 		int amountOfPoints = groundPoints.length;
 		

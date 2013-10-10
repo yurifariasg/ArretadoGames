@@ -144,18 +144,22 @@ public class PhysicalWorld implements ContactListener {
 			waterWidth = waterEntities.get(i).getWidth();
 			waterHeight = waterEntities.get(i).getHeight();
 			
+			// Ground-Water Top Left
 			pos = new Vec2(
 					waterEntities.get(i).getPosX() - waterWidth / 2, 0);
 			groundLines[groundLineIndex++] = pos;
 			
+			// Ground-Water Bottom Left
 			pos = new Vec2(waterEntities.get(i).getPosX() - waterWidth / 2,
 					waterEntities.get(i).getPosY() - waterHeight / 2);
 			groundLines[groundLineIndex++] = pos;
 			
+			// Ground-Water Bottom Right
 			pos = new Vec2(waterEntities.get(i).getPosX() + waterWidth / 2,
 					waterEntities.get(i).getPosY() - waterHeight / 2);
 			groundLines[groundLineIndex++] = pos;
 			
+			// Ground-Water Top Right
 			pos = new Vec2(
 					waterEntities.get(i).getPosX() + waterWidth / 2, 0);
 			groundLines[groundLineIndex++] = pos;
@@ -165,8 +169,6 @@ public class PhysicalWorld implements ContactListener {
 		pos = new Vec2(1000, 0);
 		groundLines[groundLineIndex++] = pos;
 		
-//		System.out.println(Arrays.toString(groundLines));
-//		return new Ground(groundLines, groundLineIndex);
 		return groundLines;
 	}
 }

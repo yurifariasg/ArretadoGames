@@ -21,25 +21,45 @@ public class Water extends Entity implements Steppable{
 		public float springHeight;
 		public float springRelativeX;
 		public float speed;
+		private float deltaFromNaturalheight;
 		
 		public void Update() {
-		    float deltaFromNaturalheight = springHeight - waterHeight;
+			deltaFromNaturalheight = springHeight - waterHeight;
 		    speed += -SPRING_SWIFTNESS * deltaFromNaturalheight - SPRING_DAMPENING * speed;
+		    
+		    if (Math.abs(speed) > SPRING_MAXIMUM_SPEED)
+		    	speed = SPRING_MAXIMUM_SPEED * (speed / Math.abs(speed));
+		    
 		    springHeight += speed;
 		}
 	}
 	
 	// Rendering Properties
-	private static final float SPRING_SWIFTNESS = 0.025f;
-	private static final float WAVES_SPREADNESS = 0.005f;
-	private static final float WATER_SPRINGS_MAX_DISTANCE = 0.25f; // Meters
-	private static final float SPRING_DAMPENING = 0.001f; //0.025f;
+	
+	// This is the factor that makes the collided wave goes further down or not
+	private static final float ENTITY_VELOCITY_REDUCTION_FACTOR = 30;
+	// This makes the springs more dense or not
+	private static final float SPRING_SWIFTNESS = 0.01f;
+	// This makes the waves spread more or less..
+	private static final float WAVES_SPREADNESS = 0.006f;
+	// Maximum distance between springs, smaller value causes more sprinsg to be created
+	private static final float WATER_SPRINGS_MAX_DISTANCE = 0.6f; // Meters
+	// Factor which makes the springs stop (higher value makes them stop faster)
+	private static final float SPRING_DAMPENING = 0.0005f; //0.025f;
+	// Maximum speed that a spring can go.. This avoids then to go a lot higher or lower
+	private static final float SPRING_MAXIMUM_SPEED = 0.05f; // 0.04
+	// Padding top for the water drawing
+	private static final float WATER_TOP_PADDING = 0.25f; // Meters
+	
+	// Colors
 	private static final int COLOR_ALPHA = 200;
 	private static final int WATER_SURFACE_COLOR = Color.argb(COLOR_ALPHA, 92, 133, 255);
 	private static final int WATER_BOTTOM_COLOR = Color.argb(COLOR_ALPHA, 0, 56, 224);
-	private static final float WATER_SURFACE_LINE_WIDTH = 4;
+	private static final float WATER_SURFACE_LINE_WIDTH = 3;
 	
 	private Spring[] springs;
+	float[] leftDeltas;
+	float[] rightDeltas;
 	
 	// Physics Properties
 	private PolygonShape shapeA;
@@ -77,6 +97,9 @@ public class Water extends Entity implements Steppable{
 			currentX += divisionlength;
 			springs[i].springHeight = this.waterHeight;
 		}
+		
+		leftDeltas = new float[springs.length];
+		rightDeltas = new float[springs.length];
 	}
 	
 	/**
@@ -90,7 +113,9 @@ public class Water extends Entity implements Steppable{
 		float waterRelativePosition = x - (getPosX() - waterWidth / 2);
 		int selectedDivision = (int) Math.floor(waterRelativePosition / WATER_SPRINGS_MAX_DISTANCE);
 		
-		System.out.println(yVel);
+		if (selectedDivision > springs.length)
+			selectedDivision = springs.length - 1;
+		
 		springs[selectedDivision].speed = yVel; // speed it up!
 		
 	}
@@ -192,34 +217,34 @@ public class Water extends Entity implements Steppable{
 		float initialX = getPosX() - waterWidth / 2;
 		
 		canvas.drawRect(
-				initialX, bottomY + waterHeight,
+				initialX, bottomY + waterHeight + WATER_TOP_PADDING,
 				initialX, bottomY,
 				initialX + springs[0].springRelativeX, bottomY,
-				initialX + springs[0].springRelativeX, bottomY + springs[0].springHeight,
+				initialX + springs[0].springRelativeX, bottomY + springs[0].springHeight + WATER_TOP_PADDING,
 				WATER_SURFACE_COLOR, WATER_BOTTOM_COLOR,
 				WATER_BOTTOM_COLOR, WATER_SURFACE_COLOR);
 		
 		for (int i = 1 ; i < springs.length ; i++) {
 			
 			canvas.drawRect(
-					initialX + springs[i-1].springRelativeX, bottomY + springs[i-1].springHeight,
+					initialX + springs[i-1].springRelativeX, bottomY + springs[i-1].springHeight + WATER_TOP_PADDING,
 					initialX + springs[i-1].springRelativeX, bottomY,
 					initialX + springs[i].springRelativeX, bottomY,
-					initialX + springs[i].springRelativeX, bottomY + springs[i-1].springHeight,
+					initialX + springs[i].springRelativeX, bottomY + springs[i].springHeight + WATER_TOP_PADDING,
 					WATER_SURFACE_COLOR, WATER_BOTTOM_COLOR,
 					WATER_BOTTOM_COLOR, WATER_SURFACE_COLOR);
 		}
 		
 		// Draw Surface Lines
 		canvas.drawLine(
-				initialX*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + waterHeight)*GLCanvas.physicsRatio, 
-				(initialX + springs[0].springRelativeX)*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + springs[0].springHeight)*GLCanvas.physicsRatio,
+				initialX*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + waterHeight + WATER_TOP_PADDING)*GLCanvas.physicsRatio, 
+				(initialX + springs[0].springRelativeX)*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + springs[0].springHeight + WATER_TOP_PADDING)*GLCanvas.physicsRatio,
 				WATER_SURFACE_LINE_WIDTH, WATER_BOTTOM_COLOR);
 		
 		for (int i = 1 ; i < springs.length ; i++) {
 			canvas.drawLine(
-					GLCanvas.physicsRatio * (initialX + springs[i-1].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i-1].springHeight), 
-					GLCanvas.physicsRatio * (initialX + springs[i].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i-1].springHeight),
+					GLCanvas.physicsRatio * (initialX + springs[i-1].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i-1].springHeight + WATER_TOP_PADDING), 
+					GLCanvas.physicsRatio * (initialX + springs[i].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i].springHeight + WATER_TOP_PADDING),
 					WATER_SURFACE_LINE_WIDTH, WATER_BOTTOM_COLOR);
 		}
 		
@@ -238,9 +263,6 @@ public class Water extends Entity implements Steppable{
 	private void updateWaterSprings() {
 		for (Spring s : springs)
 			s.Update();
-
-		float[] leftDeltas = new float[springs.length];
-		float[] rightDeltas = new float[springs.length];
 		             
 		// do some passes where springs pull on their neighbours
 		for (int j = 0; j < 8; j++) {
@@ -343,7 +365,7 @@ public class Water extends Entity implements Steppable{
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
 		entitiesContact.add(e);
-		splash(e.getPosX(), e.body.m_linearVelocity.y / 50);
+		splash(e.getPosX(), e.body.m_linearVelocity.y / ENTITY_VELOCITY_REDUCTION_FACTOR);
 	}
 	
 	@Override
