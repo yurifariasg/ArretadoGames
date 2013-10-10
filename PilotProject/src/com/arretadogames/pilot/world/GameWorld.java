@@ -112,7 +112,8 @@ public class GameWorld extends GameScreen {
 		
 		//TODO fzr direito
 		
-		worldEntities.add(new Fire(-5,0));
+		if (GameSettings.ACTIVATE_FIRE)
+			worldEntities.add(new Fire(-5,0));
 		
 //		worldEntities.add(new Liana(25,9,23,7));
 //		Entity spikeA = new Spike(18f, 6.23f);

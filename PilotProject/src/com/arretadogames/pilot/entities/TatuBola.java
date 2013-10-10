@@ -28,12 +28,12 @@ public class TatuBola extends Player implements Steppable{
 	private int contacts;
 	private Fixture footFixture;
 	private final float MAX_JUMP_VELOCITY = 5;
-	private final float MAX_RUN_VELOCITY = 4;
-	private float JUMP_ACELERATION = 4;
+	private final float MAX_RUN_VELOCITY = 3;
+	private float JUMP_ACELERATION = 3;
 	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	Date lastAct;
-	private final float TIME_WAITING_FOR_ACT = 3f;
+	private final float TIME_WAITING_FOR_ACT = 6f;
 	private float timeForNextAct = 0f;
 	
 	private static final int[] WALKING = {R.drawable.tatu1,
@@ -71,7 +71,6 @@ public class TatuBola extends Player implements Steppable{
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
 		bodiesContact = new HashSet<Body>();
-		lastAct = new Date(0,0,0);
 	}
 	
 	@Override
@@ -152,7 +151,7 @@ public class TatuBola extends Player implements Steppable{
 			if( timeForNextAct < 0.00000001 ){
 			timeForNextAct = TIME_WAITING_FOR_ACT;	
 			sprite.setAnimationState("act");
-			float impulse = (4) * body.getMass();
+			float impulse = (3) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
 			direction.normalize();

@@ -287,6 +287,21 @@ public class GLCanvas {
 		return loadImage(imageId, bitmap);
 	}
 	
+	public void drawRect(
+    		float x, float y,
+    		float x2, float y2,
+    		float x3, float y3,
+    		float x4, float y4,
+    		int colorV1, int colorV2,
+    		int colorV3, int colorV4) {
+		GLRect.draw(gl,
+				(x*physicsRatio), GameSettings.TARGET_HEIGHT - (y*physicsRatio),
+				(x2*physicsRatio), GameSettings.TARGET_HEIGHT - (y2*physicsRatio),
+				(x3*physicsRatio), GameSettings.TARGET_HEIGHT - (y3*physicsRatio),
+				(x4*physicsRatio), GameSettings.TARGET_HEIGHT - (y4*physicsRatio),
+				colorV1, colorV2, colorV3, colorV4);
+	}
+	
 	private int loadImage(int imageId, Bitmap bitmapToLoad) { /* We also load Bitmaps in FontTexture */
 		IntBuffer t = IntBuffer.allocate(1);
 		GLES11.glGenTextures(1, t);

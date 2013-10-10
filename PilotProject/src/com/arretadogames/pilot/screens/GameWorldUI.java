@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Fire;
@@ -87,7 +88,8 @@ public class GameWorldUI extends GameScreen {
 												centerImage(R.drawable.power, 2));
 		}
 		
-		canvas.drawBitmap(fire.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(fire.getPosX()), 415);
+		if (GameSettings.ACTIVATE_FIRE)
+			canvas.drawBitmap(fire.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(fire.getPosX()), 415);
 		
 //		System.out.println("Position Player2: "+p2.body.getPosition().x);
 	}
