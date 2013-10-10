@@ -23,6 +23,7 @@ import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
+import com.arretadogames.pilot.entities.HOOOOOOOLE_HOLY_SHIT;
 import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.MacacoPrego;
@@ -122,7 +123,7 @@ public class GameWorld extends GameScreen {
 		worldEntities.add(new Liana(25f,9f,23f,7f));
 //		worldEntities.add(new OneWayWall(30,6.5f));
 //		worldEntities.add(new Breakable(37,7.5f,0.2f,2f,0,false));
-		
+		worldEntities.add(new HOOOOOOOLE_HOLY_SHIT(10, 20));
 //		Entity a = new Box(26,6.3f, 0.7f);
 //		a.setSprite(sm.getSprite(a));
 //		Entity b = new Box(32,7f, 1.5f);

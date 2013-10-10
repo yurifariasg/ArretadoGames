@@ -32,7 +32,7 @@ public class MacacoPrego extends Player implements Steppable{
 	private final float MAX_JUMP_VELOCITY = 6;
 	private final float MAX_RUN_VELOCITY = 3;
 	private float JUMP_ACELERATION = 4;
-	private float RUN_ACELERATION = 3;
+	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	private float radius = 0.3f;
 	private boolean isonliana;

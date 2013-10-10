@@ -26,7 +26,7 @@ public class AraraAzul extends Player implements Steppable{
 	private final float MAX_JUMP_VELOCITY = 5;
 	private final float MAX_RUN_VELOCITY = 3;
 	private float JUMP_ACELERATION = 4;
-	private float RUN_ACELERATION = 3;
+	private float RUN_ACELERATION = 4;
 	Collection<Body> bodiesContact;
 	private float k = 3f;
 	private boolean doubleJump;
@@ -63,6 +63,7 @@ public class AraraAzul extends Player implements Steppable{
 		footFixture = body.createFixture(shape,  k);
 		footFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
+		
 		contJump = 0;
 		contacts = 0;
 		body.setFixedRotation(true);

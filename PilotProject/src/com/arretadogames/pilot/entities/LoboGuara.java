@@ -11,6 +11,7 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
@@ -30,7 +31,7 @@ public class LoboGuara extends Player implements Steppable{
 	private final float MAX_JUMP_VELOCITY = 5;
 	private final float MAX_RUN_VELOCITY = 3;
 	private float JUMP_ACELERATION = 3;
-	private float RUN_ACELERATION = 4;
+	private float RUN_ACELERATION = 5;
 	Collection<Body> bodiesContact;
 	Date lastAct;
 	private float size;
