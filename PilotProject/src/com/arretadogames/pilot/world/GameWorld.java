@@ -364,7 +364,7 @@ public class GameWorld extends GameScreen {
 		for (PlayerNumber n : players.keySet() ){
 			toWatch.put(n.getValue(), players.get(n));
 		}
-		gameCamera.setEntitiesToWatch(toWatch);
+//		gameCamera.setEntitiesToWatch(toWatch);
 	}
 
 	public Collection<Entity> getEntities(){
