@@ -374,7 +374,7 @@ public class GameCamera {
 			reached = 1;
 		}
 		
-//		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&	backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
+		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&	backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
 
 			float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
 			float backgroundWidth = backgroundImageWidth * factor;
@@ -403,37 +403,37 @@ public class GameCamera {
 			gameCanvas.fillScreen(255, 255, 255, 255);
 			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
 
-//		} else {
-//
-//			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH,
-//
-//			GameSettings.TARGET_HEIGHT);
-//
-//			int backgroundHeight = backgroundImageHeight;
-//			int backgroundWidth = backgroundHeight * (int)
-//
-//			(GameSettings.TARGET_WIDTH / GameSettings.TARGET_HEIGHT);
-//
-//			int translate_x = (int) (pos_rel_to_map * (backgroundImageWidth -
-//
-//			backgroundWidth));
-//			int translate_y = 0;
-//
-//			Rect showRect = new Rect(translate_x, translate_y, translate_x +
-//
-//			backgroundWidth, backgroundHeight + translate_y);
-//
-//			if (GameSettings.PROFILE_GAME_CAMERA) {
-//				Log.d("Profiling", "Calculate Background: " +
-//
-//				(System.nanoTime() / 1000000 - time));
-//				time = System.nanoTime() / 1000000;
-//			}
-//
-//			gameCanvas.fillScreen(255, 255, 255, 255);
-//			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
+		} else {
 
-//		}
+			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH,
+
+			GameSettings.TARGET_HEIGHT);
+
+			int backgroundHeight = backgroundImageHeight;
+			int backgroundWidth = backgroundHeight * (int)
+
+			(GameSettings.TARGET_WIDTH / GameSettings.TARGET_HEIGHT);
+
+			int translate_x = (int) (reached * (backgroundImageWidth -
+
+			backgroundWidth));
+			int translate_y = 0;
+
+			Rect showRect = new Rect(translate_x, translate_y, translate_x +
+
+			backgroundWidth, backgroundHeight + translate_y);
+
+			if (GameSettings.PROFILE_GAME_CAMERA) {
+				Log.d("Profiling", "Calculate Background: " +
+
+				(System.nanoTime() / 1000000 - time));
+				time = System.nanoTime() / 1000000;
+			}
+
+			gameCanvas.fillScreen(255, 255, 255, 255);
+			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
+
+		}
 	}
 
 	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 
