@@ -20,7 +20,7 @@ public class Box extends Entity {
 		this.size = size;
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(size/2, size/2);
-		body.createFixture(shape,  10f).setFriction(0.8f);
+		body.createFixture(shape,  0.5f).setFriction(0.8f);
 		body.setType(BodyType.DYNAMIC);
 		body.setFixedRotation(false);
 	}

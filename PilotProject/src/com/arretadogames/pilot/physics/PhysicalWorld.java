@@ -1,8 +1,11 @@
 package com.arretadogames.pilot.physics;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -15,6 +18,8 @@ import org.jbox2d.dynamics.joints.Joint;
 
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.Ground;
+import com.arretadogames.pilot.entities.Water;
 
 
 public class PhysicalWorld implements ContactListener {
@@ -108,5 +113,60 @@ public class PhysicalWorld implements ContactListener {
 	
 	public void destroyEntity(Entity e){
 		e.destroyBody();
+	}
+
+	/**
+	 * Create ground based on given entities
+	 */
+	public Vec2[] createGroundLines(List<Water> waterEntities) {
+		
+		// Sort Based on X
+		Collections.sort(waterEntities, new Comparator<Water>() {
+			@Override
+			public int compare(Water lhs, Water rhs) {
+				return (int) (lhs.getPosX() - rhs.getPosX());
+			}
+		});
+		
+		
+		Vec2[] groundLines = new Vec2[2 + waterEntities.size() * 4];
+		int groundLineIndex = 0;
+		
+		// Initial Pos
+		Vec2 pos = new Vec2(-1000, 0);
+		groundLines[groundLineIndex++] = pos;
+		
+		float waterWidth;
+		float waterHeight;
+		
+		for (int i = 0 ; i < waterEntities.size() ; i++) {
+			
+			waterWidth = waterEntities.get(i).getWidth();
+			waterHeight = waterEntities.get(i).getHeight();
+			
+			pos = new Vec2(
+					waterEntities.get(i).getPosX() - waterWidth / 2, 0);
+			groundLines[groundLineIndex++] = pos;
+			
+			pos = new Vec2(waterEntities.get(i).getPosX() - waterWidth / 2,
+					waterEntities.get(i).getPosY() - waterHeight / 2);
+			groundLines[groundLineIndex++] = pos;
+			
+			pos = new Vec2(waterEntities.get(i).getPosX() + waterWidth / 2,
+					waterEntities.get(i).getPosY() - waterHeight / 2);
+			groundLines[groundLineIndex++] = pos;
+			
+			pos = new Vec2(
+					waterEntities.get(i).getPosX() + waterWidth / 2, 0);
+			groundLines[groundLineIndex++] = pos;
+			
+		}
+		
+		pos = new Vec2(1000, 0);
+		groundLines[groundLineIndex++] = pos;
+		
+//		System.out.println(Arrays.toString(groundLines));
+//		return new Ground(groundLines, groundLineIndex);
+		return groundLines;
 	}
 }

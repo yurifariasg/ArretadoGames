@@ -72,6 +72,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
     
     public void drawGroundLine(int x,int y){
+        groundPos.add(new int[]{0, 1000});
+        groundPos.add(new int[]{100000000, 1000});
         int lastPointX = 0;
         
         if (groundPos.size() > 0)

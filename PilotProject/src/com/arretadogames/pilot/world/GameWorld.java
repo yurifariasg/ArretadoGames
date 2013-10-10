@@ -111,29 +111,19 @@ public class GameWorld extends GameScreen {
 		worldEntities = new ArrayList<Entity>();
 		steppables = new ArrayList<Steppable>();
 		
-		//TODO fzr direito
-		
 		if (GameSettings.ACTIVATE_FIRE)
 			worldEntities.add(new Fire(-5,0));
 		
-//		worldEntities.add(new Liana(25,9,23,7));
-//		Entity spikeA = new Spike(18f, 6.23f);
-//		spikeA.setSprite(sm.getSprite(spikeA));
-//		worldEntities.add(spikeA);
-		worldEntities.add(new Liana(25f,9f,23f,7f));
-//		worldEntities.add(new OneWayWall(30,6.5f));
-//		worldEntities.add(new Breakable(37,7.5f,0.2f,2f,0,false));
+		
+		//TODO hooolllleee hard coded
 		worldEntities.add(new HOOOOOOOLE_HOLY_SHIT(10, 20));
-//		Entity a = new Box(26,6.3f, 0.7f);
-//		a.setSprite(sm.getSprite(a));
-//		Entity b = new Box(32,7f, 1.5f);
-//		b.setSprite(sm.getSprite(b));
-//		worldEntities.add(a);
-//		worldEntities.add(b);
-//		worldEntities.add(new Pulley(a, new Vec2(26,6.3f), b, new Vec2(32,6.5f), new Vec2(28,7f), new Vec2(32,8.5f), 5));
+		
+		
 		List<EntityDescriptor> entities = ld.getEntities();
+		List<Water> waterEntities = new ArrayList<Water>();
 		
 		if (entities != null){
+			
 			for (EntityDescriptor entityDescriptor : entities) {
 				Entity entity = null;
 				switch (entityDescriptor.getType()) {
@@ -173,10 +163,6 @@ public class GameWorld extends GameScreen {
 							new Vec2(entityDescriptor.getX()-0.4f, 2),
 							new Vec2(entityDescriptor.getX()+1, 2.5f), 5);
 					break;
-/*TODO
- * 				case FLUID:
-					entity = new Fluid(entityDescriptor.getX(), entityDescriptor.getY(), entityDescriptor.getSize());
-					break;*/
 				case BREAKABLE:
 					entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,2f,0,false);
 					break;
@@ -192,6 +178,8 @@ public class GameWorld extends GameScreen {
 					break;
 				case WATER:
 					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),((WaterDescriptor)entityDescriptor).getWidth(),((WaterDescriptor)entityDescriptor).getHeight(),((WaterDescriptor)entityDescriptor).getDensity());
+					waterEntities.add((Water)entity);
+					break;
 				default:
 					break;
 				}
@@ -206,39 +194,36 @@ public class GameWorld extends GameScreen {
 				}
 			}
 		}
-	
 		
+		// Add Ground
+		System.out.println("WATER SPOTS: " + waterEntities.size());
+		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities);//new Vec2[ld.getGroundDescriptor().getPoints().size()];
+		int amountOfPoints = groundPoints.length;
 		
-		worldEntities.add(new Ground());
-//		// Add Ground
-//		Vec2[] groundPoints = new Vec2[ld.getGroundDescriptor().getPoints().size()];
-//		ld.getGroundDescriptor().getPoints().toArray(groundPoints);
-//		int amountOfPoints = groundPoints.length;
-//		
-//		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
-//		int internalPointer = 0;
-//		for (int i = 0 ; i < amountOfPoints ; i++) {
-//			
-//			vecs[internalPointer] = groundPoints[i];
-//			
-//			if (internalPointer == GameSettings.GROUND_ENTITY_THRESHOLD - 1) {
-//				worldEntities.add(new Ground(vecs, vecs.length));
-//				vecs = new Vec2[GameSettings.GROUND_ENTITY_THRESHOLD];
-//				vecs[0] = groundPoints[i];
-//				internalPointer = 1;
-//			} else {
-//				internalPointer %= GameSettings.GROUND_ENTITY_THRESHOLD;
-//				internalPointer++;
-//			}
-//			
-//		}
-//		
-//		if (internalPointer != 0) {
-//			Vec2[] lastVec = new Vec2[internalPointer];
-//			for (int i = 0 ; i < internalPointer ; i++)
-//				lastVec[i] = vecs[i];
-//			worldEntities.add(new Ground(lastVec, internalPointer));
-//		}
+		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
+		int internalPointer = 0;
+		for (int i = 0 ; i < amountOfPoints ; i++) {
+			
+			vecs[internalPointer] = groundPoints[i];
+			
+			if (internalPointer == GameSettings.GROUND_ENTITY_THRESHOLD - 1) {
+				worldEntities.add(new Ground(vecs, vecs.length));
+				vecs = new Vec2[GameSettings.GROUND_ENTITY_THRESHOLD];
+				vecs[0] = groundPoints[i];
+				internalPointer = 1;
+			} else {
+				internalPointer %= GameSettings.GROUND_ENTITY_THRESHOLD;
+				internalPointer++;
+			}
+			
+		}
+		
+		if (internalPointer != 0) {
+			Vec2[] lastVec = new Vec2[internalPointer];
+			for (int i = 0 ; i < internalPointer ; i++)
+				lastVec[i] = vecs[i];
+			worldEntities.add(new Ground(lastVec, internalPointer));
+		}
 		
 		
 		for(Entity e : worldEntities){
@@ -366,7 +351,7 @@ public class GameWorld extends GameScreen {
 		for (PlayerNumber n : players.keySet() ){
 			toWatch.put(n.getValue(), players.get(n));
 		}
-		gameCamera.setEntitiesToWatch(toWatch);
+//		gameCamera.setEntitiesToWatch(toWatch);
 	}
 
 	public Collection<Entity> getEntities(){

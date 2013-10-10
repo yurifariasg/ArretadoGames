@@ -10,7 +10,6 @@
  */
 package com.arretados.leveleditor.entities;
 
-import apple.laf.JRSUIConstants.Hit;
 import com.arretados.leveleditor.EntityPropertyDocumentListener;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
 import javax.swing.JSpinner;
