@@ -291,7 +291,6 @@ public class GameCamera {
 				targetUpperBound = null;
 				targetTranslator = null;
 				targetPhysicsRatio = 0;
-////			drawBackground(gameCanvas, lowerBound);
 			} else {
 
 				lowerBound = new Vec2(currentLowerBound);
@@ -305,13 +304,8 @@ public class GameCamera {
 
 				physicsRatio = currentPhysicsRatio;
 				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio) * reachedPercentage;
-
-////			drawBackground(gameCanvas, targetLowerBound);
 			}
 		}
-////	else{
-////		drawBackground(gameCanvas, lowerBound);
-////	}
 		
 		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Calculate Viewport: "
@@ -367,7 +361,7 @@ public class GameCamera {
 
 	private void drawBackground(GLCanvas gameCanvas, float pos) {
 
-		backgroundId = R.drawable.even_longer_background;
+		backgroundId = R.drawable.longer_background;
 
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
@@ -380,7 +374,7 @@ public class GameCamera {
 			reached = 1;
 		}
 		
-		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&	backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
+//		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&	backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
 
 			float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
 			float backgroundWidth = backgroundImageWidth * factor;
@@ -409,8 +403,8 @@ public class GameCamera {
 			gameCanvas.fillScreen(255, 255, 255, 255);
 			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
 
-		} else {
-
+//		} else {
+//
 //			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH,
 //
 //			GameSettings.TARGET_HEIGHT);
@@ -439,7 +433,7 @@ public class GameCamera {
 //			gameCanvas.fillScreen(255, 255, 255, 255);
 //			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
 
-		}
+//		}
 	}
 
 	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 
