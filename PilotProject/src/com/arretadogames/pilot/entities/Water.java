@@ -8,8 +8,8 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.contacts.Contact;
+
 import android.graphics.Color;
-import android.graphics.RectF;
 
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.Sprite;
@@ -27,14 +27,17 @@ public class Water extends Entity implements Steppable{
 		    speed += -SPRING_SWIFTNESS * deltaFromNaturalheight - SPRING_DAMPENING * speed;
 		    springHeight += speed;
 		}
-		
 	}
 	
 	// Rendering Properties
 	private static final float SPRING_SWIFTNESS = 0.025f;
 	private static final float WAVES_SPREADNESS = 0.005f;
-	private static final float WATER_SPRINGS_MAX_DISTANCE = 0.3f; // Meters
-	private static final float SPRING_DAMPENING = 0.025f;
+	private static final float WATER_SPRINGS_MAX_DISTANCE = 0.25f; // Meters
+	private static final float SPRING_DAMPENING = 0.001f; //0.025f;
+	private static final int COLOR_ALPHA = 200;
+	private static final int WATER_SURFACE_COLOR = Color.argb(COLOR_ALPHA, 92, 133, 255);
+	private static final int WATER_BOTTOM_COLOR = Color.argb(COLOR_ALPHA, 0, 56, 224);
+	private static final float WATER_SURFACE_LINE_WIDTH = 4;
 	
 	private Spring[] springs;
 	
@@ -80,14 +83,15 @@ public class Water extends Entity implements Steppable{
 	 * Causes the water to create waves and a splash effect in the given x position
 	 * @param x
 	 */
-	public void splash(float x) {
+	public void splash(float x, float yVel) {
 		if (x <= getPosX() - waterWidth / 2 || x >= getPosX() + waterWidth / 2) {
 			return; // Out of range
 		}
 		float waterRelativePosition = x - (getPosX() - waterWidth / 2);
 		int selectedDivision = (int) Math.floor(waterRelativePosition / WATER_SPRINGS_MAX_DISTANCE);
 		
-		springs[selectedDivision].speed = 0.1f; // speed it up!
+		System.out.println(yVel);
+		springs[selectedDivision].speed = yVel; // speed it up!
 		
 	}
 
@@ -184,50 +188,40 @@ public class Water extends Entity implements Steppable{
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-//		canvas.saveState();
-//		canvas.translatePhysics(getPosX(), getPosY());
-//		RectF rect = new RectF(
-//				(- waterWidth/2 * GLCanvas.physicsRatio), // Top Left
-//				(- waterHeight/2 * GLCanvas.physicsRatio), // Top Left
-//				(waterWidth/2 * GLCanvas.physicsRatio), // Bottom Right
-//				(waterHeight/2 * GLCanvas.physicsRatio)); // Bottom Right
-//		
-//		//canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
-//		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.BLUE);
-//		canvas.restoreState();
-		
 		float bottomY = getPosY() - waterHeight / 2;
 		float initialX = getPosX() - waterWidth / 2;
-		List<Vec2> points = new ArrayList<Vec2>();
-		points.add(new Vec2(initialX, bottomY)); // bottom left
-		points.add(new Vec2(initialX, bottomY + waterHeight)); // top left
 		
-		for (Spring spring : springs) {
+		canvas.drawRect(
+				initialX, bottomY + waterHeight,
+				initialX, bottomY,
+				initialX + springs[0].springRelativeX, bottomY,
+				initialX + springs[0].springRelativeX, bottomY + springs[0].springHeight,
+				WATER_SURFACE_COLOR, WATER_BOTTOM_COLOR,
+				WATER_BOTTOM_COLOR, WATER_SURFACE_COLOR);
+		
+		for (int i = 1 ; i < springs.length ; i++) {
 			
-			points.add(new Vec2(initialX + spring.springRelativeX, bottomY + spring.springHeight));
-			
+			canvas.drawRect(
+					initialX + springs[i-1].springRelativeX, bottomY + springs[i-1].springHeight,
+					initialX + springs[i-1].springRelativeX, bottomY,
+					initialX + springs[i].springRelativeX, bottomY,
+					initialX + springs[i].springRelativeX, bottomY + springs[i-1].springHeight,
+					WATER_SURFACE_COLOR, WATER_BOTTOM_COLOR,
+					WATER_BOTTOM_COLOR, WATER_SURFACE_COLOR);
 		}
 		
-		points.add(new Vec2(initialX + waterWidth, bottomY + waterHeight)); // top right
-		points.add(new Vec2(initialX + waterWidth, bottomY)); // bottom right
-		
-		
-		for (int i = 1 ; i < points.size() ; i++) {
-			canvas.drawLine(
-					points.get(i - 1).x * GLCanvas.physicsRatio,
-					GameSettings.TARGET_HEIGHT - points.get(i - 1).y * GLCanvas.physicsRatio,
-					points.get(i).x * GLCanvas.physicsRatio,
-					GameSettings.TARGET_HEIGHT - points.get(i).y * GLCanvas.physicsRatio,
-					5, Color.WHITE);
-		}
-		
+		// Draw Surface Lines
 		canvas.drawLine(
-				points.get(0).x * GLCanvas.physicsRatio,
-				GameSettings.TARGET_HEIGHT - points.get(0).y * GLCanvas.physicsRatio,
-				points.get(points.size() - 1).x * GLCanvas.physicsRatio,
-				GameSettings.TARGET_HEIGHT - points.get(points.size() - 1).y * GLCanvas.physicsRatio,
-				5, Color.WHITE);
+				initialX*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + waterHeight)*GLCanvas.physicsRatio, 
+				(initialX + springs[0].springRelativeX)*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + springs[0].springHeight)*GLCanvas.physicsRatio,
+				WATER_SURFACE_LINE_WIDTH, WATER_BOTTOM_COLOR);
 		
+		for (int i = 1 ; i < springs.length ; i++) {
+			canvas.drawLine(
+					GLCanvas.physicsRatio * (initialX + springs[i-1].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i-1].springHeight), 
+					GLCanvas.physicsRatio * (initialX + springs[i].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i-1].springHeight),
+					WATER_SURFACE_LINE_WIDTH, WATER_BOTTOM_COLOR);
+		}
 		
 	}
 
@@ -349,7 +343,7 @@ public class Water extends Entity implements Steppable{
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
 		entitiesContact.add(e);
-		splash(e.getPosX());
+		splash(e.getPosX(), e.body.m_linearVelocity.y / 50);
 	}
 	
 	@Override
