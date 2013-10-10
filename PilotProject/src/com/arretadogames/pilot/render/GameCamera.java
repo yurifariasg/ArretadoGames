@@ -16,7 +16,6 @@ import org.jbox2d.dynamics.Fixture;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
@@ -46,6 +45,11 @@ public class GameCamera {
 	private boolean transitioning;
 	private float transitionDuration; // Measured in milliseconds.
 	private long startTime;
+	
+	private enum TransitionTrigger{
+		NONE, PLAYER_NUM_CHANGED, VIEWPORT_SIDE_PRIORITY_CHANGED;
+	}
+	private TransitionTrigger transitionTrigger = TransitionTrigger.NONE;
 
 	private Vec2 targetLowerBound;
 	private Vec2 targetUpperBound;
@@ -106,6 +110,7 @@ public class GameCamera {
 			targetLowerBound = null;
 			targetUpperBound = null;
 			targetTranslator = null;
+			transitionTrigger = TransitionTrigger.PLAYER_NUM_CHANGED;
 			// System.out.println("TRANSITION IS STARTED");
 		}
 		currentNumberOfPlayers = numberOfPlayers;
@@ -206,6 +211,7 @@ public class GameCamera {
 				if (!calculateWidthFirst) {
 					transitioning = true;
 					startTime = getCurrentTime();
+					transitionTrigger = TransitionTrigger.VIEWPORT_SIDE_PRIORITY_CHANGED;
 					// System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = true;
@@ -221,6 +227,7 @@ public class GameCamera {
 				if (calculateWidthFirst) {
 					transitioning = true;
 					startTime = getCurrentTime();
+					transitionTrigger = TransitionTrigger.VIEWPORT_SIDE_PRIORITY_CHANGED;
 					// System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = false;
@@ -264,6 +271,7 @@ public class GameCamera {
 
 			if (reachedPercentage >= 1) {
 
+				transitionTrigger = TransitionTrigger.NONE;
 				// System.out.println("TRANSITION IS OVER");
 				transitioning = false;
 
@@ -286,27 +294,19 @@ public class GameCamera {
 			} else {
 
 				lowerBound = new Vec2(currentLowerBound);
-				lowerBound.addLocal(targetLowerBound.sub
-
-				(currentLowerBound).mul(reachedPercentage));
+				lowerBound.addLocal(targetLowerBound.sub(currentLowerBound).mul(reachedPercentage));
 
 				upperBound = new Vec2(currentUpperBound);
-				upperBound.addLocal(targetUpperBound.sub
-
-				(currentUpperBound).mul(reachedPercentage));
+				upperBound.addLocal(targetUpperBound.sub(currentUpperBound).mul(reachedPercentage));
 
 				translator = new Vec2(currentTranslator);
-				translator.addLocal(targetTranslator.sub
-
-				(currentTranslator).mul(reachedPercentage));
+				translator.addLocal(targetTranslator.sub(currentTranslator).mul(reachedPercentage));
 
 				physicsRatio = currentPhysicsRatio;
-				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio)
-
-				* reachedPercentage;
+				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio) * reachedPercentage;
 			}
 		}
-
+		
 		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Calculate Viewport: "
 					+ (System.nanoTime() / 1000000
@@ -317,8 +317,16 @@ public class GameCamera {
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
-		drawBackground(gameCanvas, center);
+		if ( transitionTrigger == TransitionTrigger.PLAYER_NUM_CHANGED || transitionTrigger == TransitionTrigger.NONE ){
+			float pos = lowerBound.x;// + (upperBound.x * (0.5f));
+			drawBackground(gameCanvas, pos);
+		}
+		else{
+			float pos = targetLowerBound.x;// + (targetUpperBound.x * (0.5f));
+			drawBackground(gameCanvas, pos);
+		}
 
+		
 		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Draw Background: "
 					+ (System.nanoTime() / 1000000 -
@@ -351,52 +359,39 @@ public class GameCamera {
 
 	}
 
-	private void drawBackground(GLCanvas gameCanvas, Vec2 center) {
+	private void drawBackground(GLCanvas gameCanvas, float pos) {
 
-		backgroundId = R.drawable.repeatable_background;
+		backgroundId = R.drawable.longer_background;
 
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
 
-		float pos_rel_to_map = (center.x / 199.74f);
-		if (pos_rel_to_map < 0) {
-			pos_rel_to_map = 0;
+		float reached = pos / gameWorld.getFlagPos();
+		if ( reached < 0 ){
+			reached = 0;
 		}
-		if (pos_rel_to_map > 1) {
-			pos_rel_to_map = 1;
+		else if ( reached > 1){
+			reached = 1;
 		}
+		
+//		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&	backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
 
-		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&
-
-		backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
-
-			float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT /
-
-			backgroundImageHeight));
+			float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
 			float backgroundWidth = backgroundImageWidth * factor;
 			float backgroundHeight = backgroundImageHeight * factor;
 
 			if (backgroundWidth < GameSettings.TARGET_WIDTH) {
-				factor = (float) Math.ceil(GameSettings.TARGET_WIDTH /
-
-				backgroundWidth);
+				factor = (float) Math.ceil(GameSettings.TARGET_WIDTH / backgroundWidth);
 				backgroundWidth *= factor;
 				backgroundHeight *= factor;
 			}
 
-			RectF displayRect = new RectF(0f, 0f, backgroundWidth,
+			RectF displayRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
 
-			backgroundHeight);
-
-			int translate_x = (int) (pos_rel_to_map * (backgroundWidth -
-
-			GameSettings.TARGET_WIDTH));
+			int translate_x = (int) (reached * (backgroundWidth - GameSettings.TARGET_WIDTH));
 			int translate_y = 0;
-
-			Rect showRect = new Rect(translate_x, translate_y, translate_x
-					+ (int) backgroundWidth, translate_y +
-
-			(int) backgroundHeight);
+			
+			Rect showRect = new Rect(translate_x, translate_y, translate_x + (int) backgroundWidth, translate_y + (int) backgroundHeight);
 
 			if (GameSettings.PROFILE_GAME_CAMERA) {
 				Log.d("Profiling", "Calculate Background: " +
@@ -408,37 +403,37 @@ public class GameCamera {
 			gameCanvas.fillScreen(255, 255, 255, 255);
 			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
 
-		} else {
+//		} else {
+//
+//			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH,
+//
+//			GameSettings.TARGET_HEIGHT);
+//
+//			int backgroundHeight = backgroundImageHeight;
+//			int backgroundWidth = backgroundHeight * (int)
+//
+//			(GameSettings.TARGET_WIDTH / GameSettings.TARGET_HEIGHT);
+//
+//			int translate_x = (int) (pos_rel_to_map * (backgroundImageWidth -
+//
+//			backgroundWidth));
+//			int translate_y = 0;
+//
+//			Rect showRect = new Rect(translate_x, translate_y, translate_x +
+//
+//			backgroundWidth, backgroundHeight + translate_y);
+//
+//			if (GameSettings.PROFILE_GAME_CAMERA) {
+//				Log.d("Profiling", "Calculate Background: " +
+//
+//				(System.nanoTime() / 1000000 - time));
+//				time = System.nanoTime() / 1000000;
+//			}
+//
+//			gameCanvas.fillScreen(255, 255, 255, 255);
+//			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
 
-			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH,
-
-			GameSettings.TARGET_HEIGHT);
-
-			int backgroundHeight = backgroundImageHeight;
-			int backgroundWidth = backgroundHeight * (int)
-
-			(GameSettings.TARGET_WIDTH / GameSettings.TARGET_HEIGHT);
-
-			int translate_x = (int) (pos_rel_to_map * (backgroundImageWidth -
-
-			backgroundWidth));
-			int translate_y = 0;
-
-			Rect showRect = new Rect(translate_x, translate_y, translate_x +
-
-			backgroundWidth, backgroundHeight + translate_y);
-
-			if (GameSettings.PROFILE_GAME_CAMERA) {
-				Log.d("Profiling", "Calculate Background: " +
-
-				(System.nanoTime() / 1000000 - time));
-				time = System.nanoTime() / 1000000;
-			}
-
-			gameCanvas.fillScreen(255, 255, 255, 255);
-			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
-
-		}
+//		}
 	}
 
 	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 
@@ -487,9 +482,6 @@ public class GameCamera {
 	private long getCurrentTime() {
 
 		return System.nanoTime() / 1000000;
-	}
-
-	public void setEntitiesToWatch(SparseArray<Watchable> toWatch) {
 	}
 
 }
