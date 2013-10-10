@@ -351,4 +351,13 @@ public class Water extends Entity implements Steppable{
 		super.endContact(e, contact);
 		entitiesContact.remove(e);
 	}
+
+	public float getWidth() {
+		return waterWidth;
+	}
+	
+	public float getHeight() {
+		return waterHeight;
+	}
+
 }
