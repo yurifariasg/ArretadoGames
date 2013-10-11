@@ -58,6 +58,9 @@ public class GameCamera {
 
 	private long time;
 
+	//FOR NOW THESE ARE CONSTANTS
+	private static final float NUMBER_OF_REPETITIONS = 3;
+
 	public GameCamera(GameWorld world, int backgroundId) {
 
 		this(world, 1000f);// Default is 1000 milliseconds
@@ -363,12 +366,15 @@ public class GameCamera {
 
 	private void drawBackground(GLCanvas gameCanvas, float pos) {
 
-		backgroundId = R.drawable.longer_background;
+//		float X = 0.702987f;
+//		int Y = 3;
+		
+		backgroundId = R.drawable.editing_background;
 
 		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
 		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
 
-		float reached = pos / gameWorld.getFlagPos();
+		float reached = (pos / gameWorld.getFlagPos());
 		if ( reached < 0 ){
 			reached = 0;
 		}
@@ -378,22 +384,41 @@ public class GameCamera {
 		
 //		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&	backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
 
+//			System.out.println("backgroundImageWidth: "+backgroundImageWidth);
+//			System.out.println("backgroundImageHeight: "+backgroundImageHeight);
+//			System.out.println("targetWidth: "+GameSettings.TARGET_WIDTH);
+//			System.out.println("targetHeight: "+GameSettings.TARGET_HEIGHT);
+			
 			float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
 			float backgroundWidth = backgroundImageWidth * factor;
 			float backgroundHeight = backgroundImageHeight * factor;
 
-			if (backgroundWidth < GameSettings.TARGET_WIDTH) {
-				factor = (float) Math.ceil(GameSettings.TARGET_WIDTH / backgroundWidth);
-				backgroundWidth *= factor;
-				backgroundHeight *= factor;
-			}
+//			if (backgroundWidth < GameSettings.TARGET_WIDTH) {
+//				factor = (float) Math.ceil(GameSettings.TARGET_WIDTH / backgroundWidth);
+//				backgroundWidth *= factor;
+//				backgroundHeight *= factor;
+//			}
 
-			RectF displayRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
-
-			int translate_x = (int) (reached * (backgroundWidth - GameSettings.TARGET_WIDTH));
+//			RectF displayRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
+			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH / 2, backgroundHeight);
+			RectF displayRect2 = new RectF((GameSettings.TARGET_WIDTH / 2) + 1, 0f, GameSettings.TARGET_WIDTH, backgroundHeight);
+			
+//			System.out.println("backgroundWidth: "+backgroundWidth);
+//			System.out.println("backgroundHeight: "+backgroundHeight);
+			
+			int translate_x = (int) (reached * ((backgroundWidth*NUMBER_OF_REPETITIONS) - GameSettings.TARGET_WIDTH));
+//			System.out.println("translate x: "+translate_x);
 			int translate_y = 0;
 			
-			Rect showRect = new Rect(translate_x, translate_y, translate_x + (int) backgroundWidth, translate_y + (int) backgroundHeight);
+			Rect showRect = new Rect(translate_x, translate_y,
+					(translate_x + (int) (GameSettings.TARGET_WIDTH / 2)),
+					(translate_y + (int) backgroundHeight));
+			Rect showRect2 = new Rect((translate_x + (int) (GameSettings.TARGET_WIDTH / 2))+1, translate_y,
+					translate_x + (int) (GameSettings.TARGET_WIDTH),
+					translate_y + (int) backgroundHeight);
+			
+//			System.out.println("displayRect: 0, 0, "+backgroundWidth+", "+backgroundHeight);
+//			System.out.println("showRect: "+translate_x+", "+translate_y+", "+(translate_x + (int) backgroundWidth)+", "+(translate_y + (int) backgroundHeight));
 
 			if (GameSettings.PROFILE_GAME_CAMERA) {
 				Log.d("Profiling", "Calculate Background: " +
@@ -404,7 +429,8 @@ public class GameCamera {
 
 			gameCanvas.fillScreen(255, 255, 255, 255);
 			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
-
+			gameCanvas.drawBitmap(backgroundId, showRect2, displayRect2, false);
+			
 //		} else {
 //
 //			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH,
