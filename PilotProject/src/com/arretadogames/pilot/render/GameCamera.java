@@ -60,7 +60,7 @@ public class GameCamera {
 	private long time;
 
 	//FOR NOW THESE ARE CONSTANTS
-	private static final float NUMBER_OF_REPETITIONS = 3;
+	private static final float NUMBER_OF_REPETITIONS = 4;
 	private static final int END_POSITION = 1600;
 
 	public GameCamera(GameWorld world, int backgroundId) {
@@ -419,10 +419,10 @@ public class GameCamera {
 				(translate_x + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
 				(translate_y + (int) backgroundHeight));
 
-		Rect showRectFinalPart = new Rect((translate_x + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
-				translate_y, translate_x + (int) (GameSettings.TARGET_WIDTH),
+		Rect showRectFinalPart = new Rect(((translate_x - (int) actualEndPos) + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
+				translate_y, (translate_x - (int) actualEndPos) + (int) (GameSettings.TARGET_WIDTH),
 				translate_y + (int) backgroundHeight);
-
+		
 		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profiling", "Calculate Background: " +
 
