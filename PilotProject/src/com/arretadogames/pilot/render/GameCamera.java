@@ -32,7 +32,8 @@ import com.arretadogames.pilot.world.GameWorld;
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;
-	private int backgroundId;
+	private int repeatableBackgroundId;
+	private int finalSliceBackgroundId;
 
 	private boolean calculateWidthFirst;
 	private int currentNumberOfPlayers;
@@ -45,7 +46,7 @@ public class GameCamera {
 	private boolean transitioning;
 	private float transitionDuration; // Measured in milliseconds.
 	private long startTime;
-	
+
 	private enum TransitionTrigger{
 		NONE, PLAYER_NUM_CHANGED, VIEWPORT_SIDE_PRIORITY_CHANGED;
 	}
@@ -60,11 +61,12 @@ public class GameCamera {
 
 	//FOR NOW THESE ARE CONSTANTS
 	private static final float NUMBER_OF_REPETITIONS = 3;
+	private static final int END_POSITION = 1600;
 
 	public GameCamera(GameWorld world, int backgroundId) {
 
 		this(world, 1000f);// Default is 1000 milliseconds
-		this.backgroundId = backgroundId;
+		this.repeatableBackgroundId = backgroundId;
 	}
 
 	public GameCamera(GameWorld world, float setTransitionDuration) {
@@ -168,7 +170,7 @@ public class GameCamera {
 		center.mulLocal(1f / numberOfPlayers);
 
 		float floorX = center.x + (maxXDistance / 2);
-		
+
 		iiterator = players.keySet().iterator();
 		while (iiterator.hasNext()) {
 
@@ -178,7 +180,7 @@ public class GameCamera {
 
 			float x = players.get(i).getPosX();
 			float y = players.get(i).getPosY();
-			
+
 			float x2 = floorX;
 			float y2 = 0;
 
@@ -195,15 +197,15 @@ public class GameCamera {
 			} else if (maxYDistance < currentYDistance) {
 				maxYDistance = currentYDistance;
 			}
-			
+
 		}
-		
+
 		center.addLocal(new Vec2(2, 0));
-		
+
 		if (maxYDistance <= maxXDistance * 0.5f) { // Threshold indicating when
-													// it is good to start
-													// calculating height first.
-													// Measured in meters.
+			// it is good to start
+			// calculating height first.
+			// Measured in meters.
 
 			viewportWidth = maxXDistance + 10;// + 15;//+ 30;
 			physicsRatio = GameSettings.TARGET_WIDTH / viewportWidth;
@@ -240,7 +242,7 @@ public class GameCamera {
 		lowerBound = new Vec2(center.x - viewportWidth / 2, center.y - viewportHeight / 2);
 		upperBound = new Vec2(center.x + viewportWidth / 2, center.y + viewportHeight / 2);
 		translator = new Vec2(-physicsRatio * (center.x - viewportWidth / 2),
-		physicsRatio * (center.y - viewportHeight / 2));
+				physicsRatio * (center.y - viewportHeight / 2));
 
 		if (!transitioning) {
 			currentLowerBound = lowerBound;
@@ -309,12 +311,12 @@ public class GameCamera {
 				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio) * reachedPercentage;
 			}
 		}
-		
+
 		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Calculate Viewport: "
 					+ (System.nanoTime() / 1000000
 
-					- time));
+							- time));
 			time = System.nanoTime() / 1000000;
 		}
 
@@ -322,21 +324,21 @@ public class GameCamera {
 
 		if ( transitionTrigger == TransitionTrigger.PLAYER_NUM_CHANGED || transitionTrigger == TransitionTrigger.NONE ){
 			float pos = upperBound.x;
-//			float pos = lowerBound.x;// + (upperBound.x * (0.5f));
+			//			float pos = lowerBound.x;// + (upperBound.x * (0.5f));
 			drawBackground(gameCanvas, pos);
 		}
 		else{
 			float pos = targetUpperBound.x;
-//			float pos = targetLowerBound.x;// + (targetUpperBound.x * (0.5f));
+			//			float pos = targetLowerBound.x;// + (targetUpperBound.x * (0.5f));
 			drawBackground(gameCanvas, pos);
 		}
 
-		
+
 		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Draw Background: "
 					+ (System.nanoTime() / 1000000 -
 
-					time));
+							time));
 			time = System.nanoTime() / 1000000;
 		}
 
@@ -348,7 +350,7 @@ public class GameCamera {
 
 		// Sort based on layer
 		Collections.sort(entities, Layer.getComparator());
-		
+
 		for (Entity entity : entities) {
 			entity.render(gameCanvas, timeElapsed);
 		}
@@ -356,7 +358,7 @@ public class GameCamera {
 		if (GameSettings.PROFILE_GAME_CAMERA) {
 			Log.d("Profling", "Draw Entities: " + (System.nanoTime() / 1000000 -
 
-			time));
+					time));
 			time = System.nanoTime() / 1000000;
 		}
 
@@ -366,13 +368,11 @@ public class GameCamera {
 
 	private void drawBackground(GLCanvas gameCanvas, float pos) {
 
-//		float X = 0.702987f;
-//		int Y = 3;
-		
-		backgroundId = R.drawable.editing_background;
+		repeatableBackgroundId = R.drawable.editing_background;
+		finalSliceBackgroundId = R.drawable.final_slice_background;
 
-		int backgroundImageWidth = ImageLoader.checkBitmapSize(backgroundId)[0];
-		int backgroundImageHeight = ImageLoader.checkBitmapSize(backgroundId)[1];
+		int backgroundImageWidth = ImageLoader.checkBitmapSize(repeatableBackgroundId)[0];
+		int backgroundImageHeight = ImageLoader.checkBitmapSize(repeatableBackgroundId)[1];
 
 		float reached = (pos / gameWorld.getFlagPos());
 		if ( reached < 0 ){
@@ -381,87 +381,64 @@ public class GameCamera {
 		else if ( reached > 1){
 			reached = 1;
 		}
+
+		float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
+		float backgroundWidth = backgroundImageWidth * factor;
+		float backgroundHeight = backgroundImageHeight * factor;
+
+//		if (backgroundWidth < GameSettings.TARGET_WIDTH) {
+//			factor = (float) Math.ceil(GameSettings.TARGET_WIDTH / backgroundWidth);
+//			backgroundWidth *= factor;
+//			backgroundHeight *= factor;
+//		}
 		
-//		if (backgroundImageWidth > GameSettings.TARGET_WIDTH &&	backgroundImageHeight > GameSettings.TARGET_HEIGHT) {
+		float actualEndPos = (backgroundWidth*(NUMBER_OF_REPETITIONS-1)) + END_POSITION;
 
-//			System.out.println("backgroundImageWidth: "+backgroundImageWidth);
-//			System.out.println("backgroundImageHeight: "+backgroundImageHeight);
-//			System.out.println("targetWidth: "+GameSettings.TARGET_WIDTH);
-//			System.out.println("targetHeight: "+GameSettings.TARGET_HEIGHT);
-			
-			float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
-			float backgroundWidth = backgroundImageWidth * factor;
-			float backgroundHeight = backgroundImageHeight * factor;
+		int translate_x = (int) (reached * ((backgroundWidth*NUMBER_OF_REPETITIONS)-GameSettings.TARGET_WIDTH));
+		int translate_y = 0;
 
-//			if (backgroundWidth < GameSettings.TARGET_WIDTH) {
-//				factor = (float) Math.ceil(GameSettings.TARGET_WIDTH / backgroundWidth);
-//				backgroundWidth *= factor;
-//				backgroundHeight *= factor;
-//			}
+		float endPosRelToScreen = 0;
 
-//			RectF displayRect = new RectF(0f, 0f, backgroundWidth, backgroundHeight);
-			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH / 2, backgroundHeight);
-			RectF displayRect2 = new RectF((GameSettings.TARGET_WIDTH / 2) + 1, 0f, GameSettings.TARGET_WIDTH, backgroundHeight);
-			
-//			System.out.println("backgroundWidth: "+backgroundWidth);
-//			System.out.println("backgroundHeight: "+backgroundHeight);
-			
-			int translate_x = (int) (reached * ((backgroundWidth*NUMBER_OF_REPETITIONS) - GameSettings.TARGET_WIDTH));
-//			System.out.println("translate x: "+translate_x);
-			int translate_y = 0;
-			
-			Rect showRect = new Rect(translate_x, translate_y,
-					(translate_x + (int) (GameSettings.TARGET_WIDTH / 2)),
-					(translate_y + (int) backgroundHeight));
-			Rect showRect2 = new Rect((translate_x + (int) (GameSettings.TARGET_WIDTH / 2))+1, translate_y,
-					translate_x + (int) (GameSettings.TARGET_WIDTH),
-					translate_y + (int) backgroundHeight);
-			
-//			System.out.println("displayRect: 0, 0, "+backgroundWidth+", "+backgroundHeight);
-//			System.out.println("showRect: "+translate_x+", "+translate_y+", "+(translate_x + (int) backgroundWidth)+", "+(translate_y + (int) backgroundHeight));
+		if ( ( translate_x + (int) GameSettings.TARGET_WIDTH ) < actualEndPos ){
+			endPosRelToScreen = 1;
+		}
+		else if ( translate_x > actualEndPos ){
+			endPosRelToScreen = 0;
+		}
+		else {
+			endPosRelToScreen = (actualEndPos - translate_x) / GameSettings.TARGET_WIDTH;
+		}
 
-			if (GameSettings.PROFILE_GAME_CAMERA) {
-				Log.d("Profiling", "Calculate Background: " +
+		RectF displayRectRepeatablePart = new RectF(0f, 0f,
+				GameSettings.TARGET_WIDTH * endPosRelToScreen, backgroundHeight);
+
+		RectF displayRectFinalPart = new RectF((GameSettings.TARGET_WIDTH * endPosRelToScreen),
+				0f,	GameSettings.TARGET_WIDTH, backgroundHeight);
+
+		Rect showRectRepeatablePart = new Rect(translate_x,	translate_y,
+				(translate_x + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
+				(translate_y + (int) backgroundHeight));
+
+		Rect showRectFinalPart = new Rect((translate_x + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
+				translate_y, translate_x + (int) (GameSettings.TARGET_WIDTH),
+				translate_y + (int) backgroundHeight);
+
+		if (GameSettings.PROFILE_GAME_CAMERA) {
+			Log.d("Profiling", "Calculate Background: " +
 
 				(System.nanoTime() / 1000000 - time));
-				time = System.nanoTime() / 1000000;
-			}
+			time = System.nanoTime() / 1000000;
+		}
 
-			gameCanvas.fillScreen(255, 255, 255, 255);
-			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
-			gameCanvas.drawBitmap(backgroundId, showRect2, displayRect2, false);
-			
-//		} else {
-//
-//			RectF displayRect = new RectF(0f, 0f, GameSettings.TARGET_WIDTH,
-//
-//			GameSettings.TARGET_HEIGHT);
-//
-//			int backgroundHeight = backgroundImageHeight;
-//			int backgroundWidth = backgroundHeight * (int)
-//
-//			(GameSettings.TARGET_WIDTH / GameSettings.TARGET_HEIGHT);
-//
-//			int translate_x = (int) (reached * (backgroundImageWidth -
-//
-//			backgroundWidth));
-//			int translate_y = 0;
-//
-//			Rect showRect = new Rect(translate_x, translate_y, translate_x +
-//
-//			backgroundWidth, backgroundHeight + translate_y);
-//
-//			if (GameSettings.PROFILE_GAME_CAMERA) {
-//				Log.d("Profiling", "Calculate Background: " +
-//
-//				(System.nanoTime() / 1000000 - time));
-//				time = System.nanoTime() / 1000000;
-//			}
-//
-//			gameCanvas.fillScreen(255, 255, 255, 255);
-//			gameCanvas.drawBitmap(backgroundId, showRect, displayRect, false);
-//
-//		}
+		gameCanvas.fillScreen(255, 255, 255, 255);
+
+		gameCanvas.drawBitmap(repeatableBackgroundId,
+				showRectRepeatablePart,
+				displayRectRepeatablePart, false);
+
+		gameCanvas.drawBitmap(finalSliceBackgroundId,
+				showRectFinalPart,
+				displayRectFinalPart, false);
 	}
 
 	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 
@@ -470,37 +447,37 @@ public class GameCamera {
 		final List<Entity> entities = new ArrayList<Entity>();
 
 		PhysicalWorld
-				.getInstance()
-				.getWorld()
-				.queryAABB(
-						new QueryCallback() {
+		.getInstance()
+		.getWorld()
+		.queryAABB(
+				new QueryCallback() {
 
-							@Override
-							public boolean reportFixture(Fixture fixture) {
+					@Override
+					public boolean reportFixture(Fixture fixture) {
 
-								Object e = fixture.getBody().getUserData();
-								if (e != null) {
+						Object e = fixture.getBody().getUserData();
+						if (e != null) {
 
-									Entity entity = (Entity) e;
-									entities.add(entity);
-								}
-								return true;
+							Entity entity = (Entity) e;
+							entities.add(entity);
+						}
+						return true;
+					}
+				},
+				new AABB(lowerBound.addLocal(-10, -10), upperBound
+						.addLocal(10, 10))); // TODO: Check this..
+
+						Body b = PhysicalWorld.getInstance().getWorld().getBodyList();
+						while (b != null) {
+							Object uData = b.getUserData();
+							if (uData != null && ((Entity) uData).getType() != null
+									&& ((Entity) uData).getType().equals(EntityType.PULLEY)) {
+								entities.add((Entity) uData);
 							}
-						},
-						new AABB(lowerBound.addLocal(-10, -10), upperBound
-								.addLocal(10, 10))); // TODO: Check this..
+							b = b.getNext();
+						}
 
-		Body b = PhysicalWorld.getInstance().getWorld().getBodyList();
-		while (b != null) {
-			Object uData = b.getUserData();
-			if (uData != null && ((Entity) uData).getType() != null
-					&& ((Entity) uData).getType().equals(EntityType.PULLEY)) {
-				entities.add((Entity) uData);
-			}
-			b = b.getNext();
-		}
-
-		return entities;
+						return entities;
 	}
 
 	public void render(final GLCanvas canvas, final float timeElapsed) {
