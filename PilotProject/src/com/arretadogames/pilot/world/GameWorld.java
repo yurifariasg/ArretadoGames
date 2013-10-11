@@ -23,7 +23,7 @@ import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
-import com.arretadogames.pilot.entities.HOOOOOOOLE_HOLY_SHIT;
+import com.arretadogames.pilot.entities.Hole;
 import com.arretadogames.pilot.entities.Liana;
 import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.MacacoPrego;
@@ -116,7 +116,7 @@ public class GameWorld extends GameScreen {
 		
 		
 		//TODO hooolllleee hard coded
-		worldEntities.add(new HOOOOOOOLE_HOLY_SHIT(10, 20));
+		worldEntities.add(new Hole(10, 20));
 		
 		
 		List<EntityDescriptor> entities = ld.getEntities();
