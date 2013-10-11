@@ -113,7 +113,7 @@ public class Water extends Entity implements Steppable{
 		float waterRelativePosition = x - (getPosX() - waterWidth / 2);
 		int selectedDivision = (int) Math.floor(waterRelativePosition / WATER_SPRINGS_MAX_DISTANCE);
 		
-		if (selectedDivision > springs.length)
+		if (selectedDivision >= springs.length)
 			selectedDivision = springs.length - 1;
 		
 		springs[selectedDivision].speed = yVel; // speed it up!
