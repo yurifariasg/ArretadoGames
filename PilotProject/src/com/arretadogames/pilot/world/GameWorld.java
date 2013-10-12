@@ -34,6 +34,7 @@ import com.arretadogames.pilot.entities.Spike;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.TatuBola;
 import com.arretadogames.pilot.entities.Water;
+import com.arretadogames.pilot.entities.scenario.Grass;
 import com.arretadogames.pilot.entities.scenario.Shrub;
 import com.arretadogames.pilot.entities.scenario.Tree;
 import com.arretadogames.pilot.game.Game;
@@ -180,6 +181,9 @@ public class GameWorld extends GameScreen {
 					break;
 				case SHRUB:
 					entity = new Shrub(entityDescriptor.getX(), entityDescriptor.getY());
+					break;
+				case GRASS:
+					entity = new Grass(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 				default:
 					break;
