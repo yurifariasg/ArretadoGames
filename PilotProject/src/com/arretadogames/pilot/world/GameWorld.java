@@ -55,6 +55,8 @@ import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
+import com.arretadogames.pilot.util.Profiler;
+import com.arretadogames.pilot.util.Profiler.ProfileType;
 
 /**
  * GameWorld class represents the World in our Game
@@ -74,8 +76,6 @@ public class GameWorld extends GameScreen {
 	private float firePos;
 	private SpriteManager sm;
 	private float totalElapsedSeconds;
-	
-	private long time;
 	
 	private boolean isInitialized;
 	private LevelDescriptor level;
@@ -255,30 +255,26 @@ public class GameWorld extends GameScreen {
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		if (GameSettings.PROFILE_RENDER_SPEED)
-			time = System.nanoTime()/1000000;
+		Profiler.initTick(ProfileType.RENDER);
+
 		if (!pauseScreen.isHidden()) {
 			gameCamera.render(canvas, 0); // Draw a fixed frame - Dont move anything
 		} else {
 			gameCamera.render(canvas, timeElapsed);
 		}
-		if (GameSettings.PROFILE_RENDER_SPEED) {
-			Log.d("Profile", "Camera Render Time: " + (System.nanoTime()/1000000 - time));
-			time = System.nanoTime()/1000000;
-		}
+		
+		Profiler.profileFromLastTick(ProfileType.RENDER, "Camera Render Time");
+		Profiler.initTick(ProfileType.RENDER);
 		
 		ui.render(canvas, timeElapsed);
 		
-		if (GameSettings.PROFILE_RENDER_SPEED) {
-			Log.d("Profile", "UI Render Time: " + (System.nanoTime()/1000000 - time));
-			time = System.nanoTime()/1000000;
-		}
+
+		Profiler.profileFromLastTick(ProfileType.RENDER, "UI Render Time");
+		Profiler.initTick(ProfileType.RENDER);
 		
 		pauseScreen.render(canvas, timeElapsed);
-		
-		if (GameSettings.PROFILE_RENDER_SPEED) {
-			Log.d("Profile", "Pause Screen Render Time: " + (System.nanoTime()/1000000 - time));
-		}
+
+		Profiler.profileFromLastTick(ProfileType.RENDER, "Pause Screen Render Time");
 	}
 	
 	public int getTotalElapsedTime() {

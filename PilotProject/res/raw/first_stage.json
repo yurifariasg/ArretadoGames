@@ -20,7 +20,7 @@
 {"type":"box","y":-9.16,"size":0.6,"x":149.29},
 {"type":"box","y":-9.15,"size":0.6,"x":149.97},
 {"type":"box","y":-9.15,"size":0.6,"x":150.65},
-{"type":"finalflag","y":8.59,"x":236.73},{"type":"water","y":-2.5,"width":4,"height":4,"x":8,"density":1.0},{"type":"water","y":-2.5,"width":7,"height":4,"x":16,"density":1.0},{"type":"water","y":-2.5,"width":14,"height":4,"x":32,"density":1.0},
+{"type":"finalflag","y":8.59,"x":236.73},{"type":"water","y":-2.5,"width":7,"height":4,"x":16,"density":1.0},{"type":"water","y":-2.5,"width":14,"height":4,"x":32,"density":1.0},
 {"type":"box","y":5,"size":0.6,"x":6},
 {"type":"box","y":5,"size":0.6,"x":8},
 {"type":"box","y":5,"size":0.6,"x":30},

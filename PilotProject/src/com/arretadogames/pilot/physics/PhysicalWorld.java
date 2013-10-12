@@ -1,6 +1,5 @@
 package com.arretadogames.pilot.physics;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,10 +15,13 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.Joint;
 
+import android.util.Log;
+
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.Water;
+import com.arretadogames.pilot.util.Profiler;
+import com.arretadogames.pilot.util.Profiler.ProfileType;
 
 
 public class PhysicalWorld implements ContactListener {
@@ -95,8 +97,13 @@ public class PhysicalWorld implements ContactListener {
 	}
 
 	public void step(float timeElapsed) {
-		world.step(GameSettings.PHYSICS_STEP < 0 ?
-				timeElapsed : GameSettings.PHYSICS_STEP, 8, 10);
+		Profiler.initTick(ProfileType.STEP);
+		
+		world.step(GameSettings.PHYSICS_TIMESTEP < 0 ?
+				timeElapsed : GameSettings.PHYSICS_TIMESTEP, 8, 10);
+		
+		Profiler.profileFromLastTick(ProfileType.STEP, "Box2D World Step Time");
+		
 	}
 
 	public void addDeadEntity(Entity e) {

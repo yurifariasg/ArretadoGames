@@ -188,7 +188,6 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 			canvas.restoreState();
 			
 			if (zoom == 2) {
-				
 				int stRecord = levels.get(currentIndex).getRecords()[0];
 				canvas.drawText(
 						"1st Coins: " + (stRecord == -1 ? "?" : String.valueOf(stRecord)),

@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.opengl.GLES11;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -18,6 +17,8 @@ import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.screens.InputEventHandler;
+import com.arretadogames.pilot.util.Profiler;
+import com.arretadogames.pilot.util.Profiler.ProfileType;
 
 /**
  * GameGLSurfaceView class represents a GLSurfaceView specific for our Game,
@@ -60,7 +61,6 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 
 	}
 	private long frameEndedTime;
-	private long time;
 	
 	public void run(GL10 gl) {
 		/*
@@ -72,24 +72,19 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		long frameCurrentTime = getCurrentTime();
 		float elapsedTime = (frameCurrentTime - frameEndedTime) / 1000f;
 		
-		if (GameSettings.PROFILE_SPEED)
-			time = getCurrentTime();
+		Profiler.initTick(ProfileType.BASIC);
 		
 		// Game Loop
 		Game.getInstance().step(elapsedTime);
 		
-		if (GameSettings.PROFILE_SPEED) {
-			Log.d("Profile", "Step Speed: " + (getCurrentTime() - time));
-			time = getCurrentTime();
-		}
+		Profiler.profileFromLastTick(ProfileType.BASIC, "Game Step Speed");
+		Profiler.initTick(ProfileType.BASIC);
 
 		gameCanvas.setGLInterface(gl);
 		gameCanvas.initiate();
 		Game.getInstance().render(gameCanvas, elapsedTime);
 		
-		if (GameSettings.PROFILE_SPEED) {
-			Log.d("Profile", "Render Speed: " + (getCurrentTime() - time));
-		}
+		Profiler.profileFromLastTick(ProfileType.BASIC, "Game Render Speed");
 		
 		// End Game Loop
 		

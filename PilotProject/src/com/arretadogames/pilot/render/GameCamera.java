@@ -15,7 +15,6 @@ import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
@@ -27,6 +26,8 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Profiler;
+import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.world.GameWorld;
 
 public class GameCamera {
@@ -56,8 +57,6 @@ public class GameCamera {
 	private Vec2 targetUpperBound;
 	private Vec2 targetTranslator;
 	private float targetPhysicsRatio;
-
-	private long time;
 
 	//FOR NOW THESE ARE CONSTANTS
 	private static final float NUMBER_OF_REPETITIONS = 4;
@@ -99,9 +98,8 @@ public class GameCamera {
 	// Determine viewport: portion of World that will be visible. Obviously, it
 	// is measured in meters.
 	private void determineViewport(GLCanvas gameCanvas, float timeElapsed) {
-
-		if (GameSettings.PROFILE_GAME_CAMERA)
-			time = System.nanoTime() / 1000000;
+		
+		Profiler.initTick(ProfileType.RENDER);
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
 
@@ -311,14 +309,9 @@ public class GameCamera {
 				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio) * reachedPercentage;
 			}
 		}
-
-		if (GameSettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profling", "Calculate Viewport: "
-					+ (System.nanoTime() / 1000000
-
-							- time));
-			time = System.nanoTime() / 1000000;
-		}
+		
+		Profiler.profileFromLastTick(ProfileType.RENDER, "Calculate Viewport");
+		Profiler.initTick(ProfileType.RENDER);
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
@@ -333,15 +326,9 @@ public class GameCamera {
 			drawBackground(gameCanvas, pos);
 		}
 
-
-		if (GameSettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profling", "Draw Background: "
-					+ (System.nanoTime() / 1000000 -
-
-							time));
-			time = System.nanoTime() / 1000000;
-		}
-
+		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw background");
+		Profiler.initTick(ProfileType.RENDER);
+		
 		gameCanvas.saveState();
 
 		gameCanvas.translate(translator.x, translator.y);
@@ -354,13 +341,9 @@ public class GameCamera {
 		for (Entity entity : entities) {
 			entity.render(gameCanvas, timeElapsed);
 		}
-
-		if (GameSettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profling", "Draw Entities: " + (System.nanoTime() / 1000000 -
-
-					time));
-			time = System.nanoTime() / 1000000;
-		}
+		
+		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
+		Profiler.initTick(ProfileType.RENDER);
 
 		gameCanvas.restoreState();
 
@@ -384,7 +367,7 @@ public class GameCamera {
 
 		float factor = (float) Math.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
 		float backgroundWidth = backgroundImageWidth * factor;
-		float backgroundHeight = backgroundImageHeight * factor;
+		float backgroundHeight = backgroundImageHeight * factor; // @yuri: This wil always be equals to TARGET_HEIGHT, isnt it ?
 
 //		if (backgroundWidth < GameSettings.TARGET_WIDTH) {
 //			factor = (float) Math.ceil(GameSettings.TARGET_WIDTH / backgroundWidth);
@@ -423,13 +406,9 @@ public class GameCamera {
 				translate_y, (translate_x - (int) actualEndPos) + (int) (GameSettings.TARGET_WIDTH),
 				translate_y + (int) backgroundHeight);
 		
-		if (GameSettings.PROFILE_GAME_CAMERA) {
-			Log.d("Profiling", "Calculate Background: " +
-
-				(System.nanoTime() / 1000000 - time));
-			time = System.nanoTime() / 1000000;
-		}
-
+		Profiler.profileFromLastTick(ProfileType.RENDER, "Calculate background");
+		Profiler.initTick(ProfileType.RENDER);
+		
 		gameCanvas.fillScreen(255, 255, 255, 255);
 
 		gameCanvas.drawBitmap(repeatableBackgroundId,
@@ -485,7 +464,6 @@ public class GameCamera {
 	}
 
 	private long getCurrentTime() {
-
 		return System.nanoTime() / 1000000;
 	}
 
