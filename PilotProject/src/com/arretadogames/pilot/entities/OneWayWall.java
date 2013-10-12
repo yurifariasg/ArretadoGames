@@ -11,9 +11,8 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -35,6 +34,8 @@ public class OneWayWall extends Entity{
 		m_platformFixture = body.createFixture(shape,  1f);
 		body.setType(BodyType.KINEMATIC);
 		contactSet = new HashSet<Contact>();
+		
+		physRect = new PhysicsRect(width, height + 2);
 	}
 
 	public void beginContact(Entity e, Contact contact) {
@@ -94,16 +95,17 @@ public class OneWayWall extends Entity{
 	public void render(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.translatePhysics(getPosX(), getPosY()); // TODO: move a little up ?
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		RectF rect = new RectF(
-				(- width/2 * GLCanvas.physicsRatio), // Top Left X
-				((- height/2 - 0.3f) * GLCanvas.physicsRatio), // Top Left Y
-				(width/2 * GLCanvas.physicsRatio), // Bottom Right X
-				((height/2 + 2) * GLCanvas.physicsRatio)); // Bottom Right Y
+//		RectF rect = new RectF(
+//				(- width/2 * GLCanvas.physicsRatio), // Top Left X
+//				((- height/2 - 0.3f) * GLCanvas.physicsRatio), // Top Left Y
+//				(width/2 * GLCanvas.physicsRatio), // Bottom Right X
+//				((height/2 + 2) * GLCanvas.physicsRatio)); // Bottom Right Y
 
 //		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.WHITE);
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 	}
 

@@ -4,10 +4,9 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -43,6 +42,8 @@ public class Coin extends Entity {
 		shape.setRadius(0.5f);
 		body.createFixture(shape, 0f).setSensor(true);
 		body.setType(BodyType.KINEMATIC);
+		
+		physRect = new PhysicsRect(0.4f, 0.4f);
 	}
 
 	@Override
@@ -50,13 +51,7 @@ public class Coin extends Entity {
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		RectF rect = new RectF(
-				(- 0.2f * GLCanvas.physicsRatio), // Top Left
-				(- 0.2f * GLCanvas.physicsRatio), // Top Left
-				(0.2f * GLCanvas.physicsRatio), // Bottom Right
-				(0.2f * GLCanvas.physicsRatio)); // Bottom Right
-		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 		
 	}

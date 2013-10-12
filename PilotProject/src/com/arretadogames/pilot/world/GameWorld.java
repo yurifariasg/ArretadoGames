@@ -20,7 +20,6 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
-import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.Hole;
 import com.arretadogames.pilot.entities.Liana;
@@ -74,7 +73,6 @@ public class GameWorld extends GameScreen {
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
 	private float flagPos;
-	private float firePos;
 	private SpriteManager sm;
 	private float totalElapsedSeconds;
 	
@@ -134,10 +132,6 @@ public class GameWorld extends GameScreen {
 					break;
 				case COIN:
 					entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
-					break;
-				case FRUIT:
-					entity = new Fruit(entityDescriptor.getX(), entityDescriptor.getY(),
-							entityDescriptor.getSize());
 					break;
 				case PLAYER:
 					entity = createPlayerCharacter(entityDescriptor.getX(), entityDescriptor.getY(),

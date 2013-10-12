@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.entities;
 
-import java.util.Arrays;
-
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;

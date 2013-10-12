@@ -4,10 +4,9 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -27,6 +26,7 @@ public class Spike extends Entity{
 		body.createFixture(shape, 1f).setSensor(true);
 		body.setType(BodyType.KINEMATIC);
 		
+		physRect = new PhysicsRect(width, height);
 	}
 
 	@Override
@@ -34,14 +34,7 @@ public class Spike extends Entity{
 		canvas.saveState();
 		canvas.translatePhysics(this.getPosX(), this.getPosY());
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		RectF rect = new RectF(
-				(- width/2 * GLCanvas.physicsRatio), // Top Left X
-				((- height/2) * GLCanvas.physicsRatio), // Top Left Y
-				(width/2 * GLCanvas.physicsRatio), // Bottom Right X
-				((height/2) * GLCanvas.physicsRatio)); // Bottom Right Y
-
-//		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.DKGRAY);
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.drawBitmap(R.drawable.sheave, physRect);
 		canvas.restoreState();
 	}
 	

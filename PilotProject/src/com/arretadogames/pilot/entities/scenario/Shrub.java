@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.entities.scenario;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.render.Sprite;
@@ -20,7 +18,6 @@ public class Shrub extends ScenarioEntity {
 	
 	// Object Properties
 	private int shrubType;
-	private RectF drawingRect;
 	
 	public Shrub(float x, float y) {
 		this(x, y, 0);
@@ -29,17 +26,11 @@ public class Shrub extends ScenarioEntity {
 	public Shrub(float x, float y, int type) {
 		super(x, y, SHRUB_SIZES[type][0], SHRUB_SIZES[type][1]);
 		this.shrubType = type;
-		
-		drawingRect = new RectF(
-				- getWidth() / 2f, - getHeight() / 2f,
-				getWidth() / 2f, getHeight() / 2f);
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		drawBasic(canvas, SHRUB_RESOURCES[shrubType],
-				drawingRect.left, drawingRect.top,
-				drawingRect.right, drawingRect.bottom);
+		drawBasic(canvas, SHRUB_RESOURCES[shrubType]);
 	}
 
 	@Override

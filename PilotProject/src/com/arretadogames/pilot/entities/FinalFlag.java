@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -31,6 +32,8 @@ public class FinalFlag extends Entity {
 		a.setSensor(true);
 		body.setType(BodyType.KINEMATIC);
 		body.setFixedRotation(false);
+		
+		physRect = new PhysicsRect(width, height);
 	}
 	
 	@Override
@@ -53,6 +56,7 @@ public class FinalFlag extends Entity {
 				(height * GLCanvas.physicsRatio)); // Bottom Right
 		
 		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.RED);
+//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 //		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.restoreState();
 	}

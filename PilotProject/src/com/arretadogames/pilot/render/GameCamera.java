@@ -410,14 +410,14 @@ public class GameCamera {
 		Profiler.initTick(ProfileType.RENDER);
 		
 		gameCanvas.fillScreen(255, 255, 255, 255);
-
+		
 		gameCanvas.drawBitmap(repeatableBackgroundId,
 				showRectRepeatablePart,
-				displayRectRepeatablePart, false);
+				displayRectRepeatablePart);
 
 		gameCanvas.drawBitmap(finalSliceBackgroundId,
 				showRectFinalPart,
-				displayRectFinalPart, false);
+				displayRectFinalPart);
 	}
 
 	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 

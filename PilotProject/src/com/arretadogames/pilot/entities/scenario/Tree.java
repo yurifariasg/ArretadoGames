@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.entities.scenario;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.render.Sprite;
@@ -21,7 +19,6 @@ public class Tree extends ScenarioEntity {
 	
 	// Object Properties
 	private int treeType;
-	private RectF drawingRect;
 	
 	public Tree(float x, float y) {
 		this(x, y, 0);
@@ -30,17 +27,11 @@ public class Tree extends ScenarioEntity {
 	public Tree(float x, float y, int type) {
 		super(x, y, TREE_SIZES[type][0], TREE_SIZES[type][1]);
 		this.treeType = type;
-		
-		drawingRect = new RectF(
-				- getWidth() / 2f, - getHeight() / 2f,
-				getWidth() / 2f, getHeight() / 2f);
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		drawBasic(canvas, TREE_RESOURCES[treeType],
-				drawingRect.left, drawingRect.top,
-				drawingRect.right, drawingRect.bottom);
+		drawBasic(canvas, TREE_RESOURCES[treeType]);
 	}
 
 	@Override

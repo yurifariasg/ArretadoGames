@@ -147,7 +147,7 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 
 			canvas.saveState();
 			if (selectorRect != null)
-				canvas.drawBitmap(imageId, selectorRect, false);
+				canvas.drawBitmap(imageId, selectorRect);
 			canvas.restoreState();
 		}
 		
@@ -219,7 +219,7 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 				System.out.println("No ImageId ERROR!");
 			}
 			
-			canvas.drawBitmap(imageId, rect, false);
+			canvas.drawBitmap(imageId, rect);
 		}
 	}
 	

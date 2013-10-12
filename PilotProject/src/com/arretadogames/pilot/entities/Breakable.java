@@ -7,10 +7,9 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -18,8 +17,6 @@ public class Breakable extends Entity implements Steppable{
 	
 	private static final int[] STOPPED = {R.drawable.breakable};
 
-	private float width;
-	private float height;
 	private boolean m_broke;
 	private boolean m_break;
 
@@ -36,8 +33,6 @@ public class Breakable extends Entity implements Steppable{
 	 */
 	public Breakable(float x, float y, float width, float height, float angle, boolean dynamic) {
 		super(x, y);
-		this.width = width;
-		this.height = height;
 		if( dynamic ){ 
 			body.setType(BodyType.DYNAMIC);
 		} else {
@@ -51,7 +46,8 @@ public class Breakable extends Entity implements Steppable{
 		body.setUserData(this);
 		m_break = false;
 		m_broke = false;
-	
+		
+		physRect = new PhysicsRect(width, height);
 	}
 
 	@Override
@@ -60,14 +56,7 @@ public class Breakable extends Entity implements Steppable{
 		canvas.saveState();
 		canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		RectF rect = new RectF(
-				(- width/2 * GLCanvas.physicsRatio), // Top Left
-				(- height/2 * GLCanvas.physicsRatio), // Top Left
-				(width/2 * GLCanvas.physicsRatio), // Bottom Right
-				(height/2 * GLCanvas.physicsRatio)); // Bottom Right
-
-//		canvas.drawRect(new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom), Color.RED);
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 
 	}

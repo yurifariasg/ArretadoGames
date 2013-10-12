@@ -53,49 +53,57 @@ public class GLTexturedRect extends GLRect {
 		vertices[11] = 0f;
 		 */
 
-//		((GL11Ext)gl).glDrawTexfOES(vertices[0], vertices[4], 0, vertices[6] - vertices[0], vertices[4] - vertices[1]);
-//		((GL11Ext) gl).glDrawTexfOES(160, 240, 0, 64, 64);
-	
 		GLES11.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		GLES11.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		GLES11.glDisable(GL10.GL_TEXTURE_2D);
     	
     }
     
-    private static void createTextureCoord(Rect src) {
-    	
-    	if (src == null) {
-    		
-    		textureCoords[0] = 0;
-    		textureCoords[1] = 0;
-    		textureCoords[2] = 0;
-    		textureCoords[3] = 1;
-    		textureCoords[4] = 1;
-    		textureCoords[5] = 1;
-    		textureCoords[6] = 1;
-    		textureCoords[7] = 0;
-
-    	} else {
-
-    		textureCoords[0] = (src.left + 0.5f) / image.getTextureWidth();
-    		textureCoords[1] = (src.top + 0.5f) / image.getTextureHeight();
-    		textureCoords[2] = (src.left + 0.5f) / image.getTextureWidth();
-    		textureCoords[3] = (src.bottom - 0.5f) / image.getTextureHeight();
-    		textureCoords[4] = (src.right - 0.5f) / image.getTextureWidth();
-    		textureCoords[5] = (src.bottom - 0.5f) / image.getTextureHeight();
-    		textureCoords[6] = (src.right - 0.5f) / image.getTextureWidth();
-    		textureCoords[7] = (src.top + 0.5f) / image.getTextureHeight();
-    		
-    	}
+    private static void fillTextureCoordArray() {
+    	textureCoords[0] = 0;
+		textureCoords[1] = 0;
+		textureCoords[2] = 0;
+		textureCoords[3] = 1;
+		textureCoords[4] = 1;
+		textureCoords[5] = 1;
+		textureCoords[6] = 1;
+		textureCoords[7] = 0;
+    }
+    
+    private static void fillTextureCoordArray(float left, float top, float right, float bottom) {
+    	textureCoords[0] = (left) / image.getTextureWidth();
+		textureCoords[1] = (top) / image.getTextureHeight();
+		
+		textureCoords[2] = (left) / image.getTextureWidth();
+		textureCoords[3] = (bottom) / image.getTextureHeight();
+		
+		textureCoords[4] = (right) / image.getTextureWidth();
+		textureCoords[5] = (bottom) / image.getTextureHeight();
+		
+		textureCoords[6] = (right) / image.getTextureWidth();
+		textureCoords[7] = (top) / image.getTextureHeight();
 	}
-	
-	
-	public static void draw(GL10 gl, Rect src, Rect dst, GLTexture image) {
-		if (indexBuffer == null)
+    
+    public static void draw(GL10 gl,
+    		float dstLeft, float dstTop, float dstRight, float dstBottom,
+    		GLTexture image) {
+    	draw(gl,
+			0, 0, image.getTextureWidth(), image.getTextureHeight(),
+			dstLeft, dstTop, dstRight, dstBottom,
+			image);
+    }
+    
+    
+    public static void draw(GL10 gl,
+    		float srcLeft, float srcTop, float srcRight, float srcBottom,
+    		float dstLeft, float dstTop, float dstRight, float dstBottom,
+    		GLTexture image) {
+    	
+    	if (indexBuffer == null)
 			createIndicesBuffer();
 		
 		GLTexturedRect.image = image;
-		fillVertices(dst.left, dst.top, dst.right, dst.bottom);
+		fillVertices(dstLeft, dstTop, dstRight, dstBottom);
 		
 		if (vertexBuffer == null) {
 	        ByteBuffer vbb  = ByteBuffer.allocateDirect(vertices.length * 4);
@@ -109,7 +117,7 @@ public class GLTexturedRect extends GLRect {
 	        textureBuffer = vbb.asFloatBuffer();
 		}
 		
-        createTextureCoord(src);
+		fillTextureCoordArray(srcLeft, srcTop, srcRight, srcBottom);
 		
 		textureBuffer.clear();
 		textureBuffer.put(textureCoords);
@@ -120,9 +128,13 @@ public class GLTexturedRect extends GLRect {
         vertexBuffer.position(0);
 
         draw(gl);
+    }
+    
+	public static void draw(GL10 gl, Rect src, Rect dst, GLTexture image) {
+		draw(gl, src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, image);
 	}
 
-	public static void draw(GL10 gl, int x, int y, int width, int height, int color, GLTexture image) {
+	public static void draw(GL10 gl, int x, int y, int width, int height, GLTexture image) {
 		if (indexBuffer == null)
 			createIndicesBuffer();
 
@@ -139,9 +151,9 @@ public class GLTexturedRect extends GLRect {
 			ByteBuffer vbb  = ByteBuffer.allocateDirect(textureCoords.length * 4);
 	        vbb.order(ByteOrder.nativeOrder());
 	        textureBuffer = vbb.asFloatBuffer();
-	        createTextureCoord(null);
+	        fillTextureCoordArray();
 		}
-        createTextureCoord(null);
+        fillTextureCoordArray();
 		
 		textureBuffer.clear();
 		textureBuffer.put(textureCoords);
@@ -151,10 +163,6 @@ public class GLTexturedRect extends GLRect {
         vertexBuffer.put(vertices);
         vertexBuffer.position(0);
         
-        
-//        GLES11.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
-//				Color.blue(color) / 255f, Color.alpha(color) / 255f);
         draw(gl);
-        GLES11.glColor4f(1, 1, 1, 1);
 	}
 }

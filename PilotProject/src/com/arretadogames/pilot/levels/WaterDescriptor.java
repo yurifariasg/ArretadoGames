@@ -1,7 +1,6 @@
 package com.arretadogames.pilot.levels;
 
 import com.arretadogames.pilot.entities.EntityType;
-import com.arretadogames.pilot.entities.PlayerNumber;
 
 public class WaterDescriptor extends EntityDescriptor {
 
