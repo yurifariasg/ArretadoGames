@@ -17,7 +17,7 @@ import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 
-public class HOOOOOOOLE_HOLY_SHIT extends Entity implements Steppable{
+public class Hole extends Entity implements Steppable{
 
 	final float HOLE_SIZE = 0.5f;
 	private Fixture fixture;
@@ -36,7 +36,7 @@ public class HOOOOOOOLE_HOLY_SHIT extends Entity implements Steppable{
 	 * @param x1 o inicio do primeiro buraco
 	 * @param x2 fim do buraco de saida
 	 */
-	public HOOOOOOOLE_HOLY_SHIT(float x1, float x2) {
+	public Hole(float x1, float x2) {
 		super(0,0);
 		Vec2 vec[] = new Vec2[4];
 		vec[0] = new Vec2(x1,0);
@@ -90,7 +90,7 @@ public class HOOOOOOOLE_HOLY_SHIT extends Entity implements Steppable{
 	@Override
 	public void endContact(Entity e, Contact contact) {
 		super.endContact(e, contact);
-		if(e instanceof TatuBola && (contact.m_fixtureA == fsaida || contact.m_fixtureB == fsaida) ){
+		if(e instanceof TatuBola && (contact.m_fixtureA == fsaida || contact.m_fixtureB == fsaida) && tatu != null){
 			sai = true;
 		}
 	}
@@ -129,12 +129,15 @@ public class HOOOOOOOLE_HOLY_SHIT extends Entity implements Steppable{
 			filter.categoryBits = 2;
 			filter.maskBits = 2;
 			tatu.bodyFixture.setFilterData(filter);
+			seta = false;
 		}
 		if (sai){
 			Filter filter = new Filter();
 			filter.categoryBits = data;
 			filter.maskBits = data2;
 			tatu.bodyFixture.setFilterData(filter);
+			sai = false;
+			tatu = null;
 		}
 	}
 
