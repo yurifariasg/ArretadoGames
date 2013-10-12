@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.jbox2d.common.Vec2;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
@@ -36,6 +35,8 @@ import com.arretadogames.pilot.entities.Spike;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.TatuBola;
 import com.arretadogames.pilot.entities.Water;
+import com.arretadogames.pilot.entities.scenario.Shrub;
+import com.arretadogames.pilot.entities.scenario.Tree;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.EntityDescriptor;
@@ -179,6 +180,12 @@ public class GameWorld extends GameScreen {
 				case WATER:
 					entity = new Water(entityDescriptor.getX(), entityDescriptor.getY(),((WaterDescriptor)entityDescriptor).getWidth(),((WaterDescriptor)entityDescriptor).getHeight(),((WaterDescriptor)entityDescriptor).getDensity());
 					waterEntities.add((Water)entity);
+					break;
+				case TREE:
+					entity = new Tree(entityDescriptor.getX(), entityDescriptor.getY());
+					break;
+				case SHRUB:
+					entity = new Shrub(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 				default:
 					break;

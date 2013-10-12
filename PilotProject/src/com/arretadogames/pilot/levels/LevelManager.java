@@ -3,7 +3,6 @@ package com.arretadogames.pilot.levels;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.res.Resources;

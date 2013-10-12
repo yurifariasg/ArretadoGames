@@ -3,7 +3,6 @@ package com.arretadogames.pilot.util.parsers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbox2d.common.Vec2;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,6 +87,17 @@ public class LevelParser {
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.FLUID);*/
+				} else if (EntityType.TREE.toString().equals(entityType)) {
+					
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.TREE);
+					
+				} else if (EntityType.SHRUB.toString().equals(entityType)) {
+					
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.SHRUB);
 					
 				} else if (EntityType.BREAKABLE.toString().equals(entityType)) { // BREAKABLE
 
