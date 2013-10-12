@@ -19,7 +19,7 @@ public class GameSettings {
 	public static final boolean LAZY_LOAD_ENABLED = true;
 	
 	// Bottom-most Y coordinate position that the ground will have, in meters
-	public static final float GROUND_BOTTOM = -5000;
+	public static final float GROUND_BOTTOM = -10;
 	public static final float DEFAULT_FONT_SIZE = 60;
 	
 	// Dynamic

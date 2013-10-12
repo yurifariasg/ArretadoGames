@@ -216,7 +216,7 @@ public class Water extends Entity implements Steppable{
 		float bottomY = getPosY() - waterHeight / 2;
 		float initialX = getPosX() - waterWidth / 2;
 		
-		canvas.drawRect(
+		canvas.drawRectFromPhysics(
 				initialX, bottomY + waterHeight + WATER_TOP_PADDING,
 				initialX, bottomY,
 				initialX + springs[0].springRelativeX, bottomY,
@@ -226,7 +226,7 @@ public class Water extends Entity implements Steppable{
 		
 		for (int i = 1 ; i < springs.length ; i++) {
 			
-			canvas.drawRect(
+			canvas.drawRectFromPhysics(
 					initialX + springs[i-1].springRelativeX, bottomY + springs[i-1].springHeight + WATER_TOP_PADDING,
 					initialX + springs[i-1].springRelativeX, bottomY,
 					initialX + springs[i].springRelativeX, bottomY,

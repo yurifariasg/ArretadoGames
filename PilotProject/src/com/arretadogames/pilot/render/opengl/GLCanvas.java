@@ -29,6 +29,7 @@ import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
+import com.arretadogames.pilot.util.Util;
 
 public class GLCanvas {
 	
@@ -112,78 +113,6 @@ public class GLCanvas {
 				auxiliaryRect.bottom, color);
 	}
 	
-	public void drawPhysicsLines(final Vec2[] lines) {
-		
-		
-		Vec2 vertices[] = lines;
-    	int cont = vertices.length + 3;
-    	float[] squareCoords = new float[3*cont];
-
-    	// Ultimo
-    	squareCoords[0] = vertices[0].x * physicsRatio;
-    	squareCoords[1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
-    	squareCoords[2] = 0.0f;
-    	
-    	for( int i = 0; i < vertices.length; i++){
-    		squareCoords[3 + 3*i] = vertices[i].x * physicsRatio;
-    		squareCoords[3 + 3*i+1] = GameSettings.TARGET_HEIGHT - vertices[i].y * physicsRatio;
-    		squareCoords[3 + 3*i+2] = 0.0f;
-    	}
-    	
-    	// Penultimo
-    	squareCoords[3 + 3 * vertices.length] = vertices[vertices.length - 1].x * physicsRatio;
-    	squareCoords[3 + 3 * vertices.length + 1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
-    	squareCoords[3 + 3 * vertices.length + 2] = 0.0f;
-
-    	// Ultimo
-    	squareCoords[3 + 3 * (vertices.length + 1)] = vertices[0].x * physicsRatio;
-    	squareCoords[3 + 3 * (vertices.length + 1) + 1] = GameSettings.TARGET_HEIGHT - GameSettings.GROUND_BOTTOM * physicsRatio;
-    	squareCoords[3 + 3 * (vertices.length + 1) + 2] = 0.0f;
-    	
-    	short[] drawOrder = new short[12]; // FIXME : refactor this method
-    	int i = 0;
-    	drawOrder[i++] = 0;
-    	drawOrder[i++] = 1;
-    	drawOrder[i++] = 2;
-    	
-    	drawOrder[i++] = 0;
-    	drawOrder[i++] = 2;
-    	drawOrder[i++] = 3;
-    	
-    	drawOrder[i++] = 0;
-    	drawOrder[i++] = 3;
-    	drawOrder[i++] = 4;
-    	
-    	drawOrder[i++] = 0;
-    	drawOrder[i++] = 4;
-    	drawOrder[i++] = 5;
-    	
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-        // (# of coordinate values * 4 bytes per float)
-                squareCoords.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        FloatBuffer vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(squareCoords);
-        vertexBuffer.position(0);
-
-        // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-        // (# of coordinate values * 2 bytes per short)
-                drawOrder.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
-        ShortBuffer drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
-        
-        GLES11.glColor4f(0.54f, 0.28f, 0.15f, 1f); // Brown
-        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        GLES11.glDrawElements(GL10.GL_TRIANGLE_STRIP, drawOrder.length, GL10.GL_UNSIGNED_SHORT, drawListBuffer);
-        GLES11.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        GLES11.glColor4f(1,1,1,1);
-	}
-
 	public void saveState() {
 		GLES11.glPushMatrix();
 	}
@@ -288,7 +217,7 @@ public class GLCanvas {
 		return loadImage(imageId, bitmap);
 	}
 	
-	public void drawRect(
+	public void drawRectFromPhysics(
     		float x, float y,
     		float x2, float y2,
     		float x3, float y3,
