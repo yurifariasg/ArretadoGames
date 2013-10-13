@@ -7,6 +7,7 @@ package com.arretados.leveleditor.entities;
 import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.GameCanvas;
 import com.arretados.leveleditor.ResourceManager;
+import com.arretados.leveleditor.ResourceManager.Resource;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import org.json.simple.JSONObject;
@@ -63,7 +64,7 @@ public class Breakable extends Entity{
 
     @Override
     public void drawMyself(Graphics g) {
-        g.drawImage(ResourceManager.getImageFor(DrawMode.BREAKABLE),
+        g.drawImage(ResourceManager.getImageFor(Resource.BREAKABLE),
                 x - ((int) (GameCanvas.METER_TO_PIXELS * this.width/2)),
                 y - ((int) (GameCanvas.METER_TO_PIXELS * this.height/2)),
                 (int) (this.width * GameCanvas.METER_TO_PIXELS),
@@ -73,7 +74,7 @@ public class Breakable extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "box");
+        json.put("type", "breakable");
         json.put("width", width);
         json.put("height", height);
         json.put("hitsUntilBreak", hitsUntilBreak);

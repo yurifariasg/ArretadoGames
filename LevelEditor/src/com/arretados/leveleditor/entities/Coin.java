@@ -7,6 +7,7 @@ package com.arretados.leveleditor.entities;
 import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.GameCanvas;
 import com.arretados.leveleditor.ResourceManager;
+import com.arretados.leveleditor.ResourceManager.Resource;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import org.json.simple.JSONObject;
@@ -47,7 +48,7 @@ public class Coin extends Entity{
 
     @Override
     public void drawMyself(Graphics g) {
-        g.drawImage(ResourceManager.getImageFor(DrawMode.COIN),
+        g.drawImage(ResourceManager.getImageFor(Resource.COIN),
                 x - ((int) (GameCanvas.METER_TO_PIXELS * SIZE/2)),
                 y - ((int) (GameCanvas.METER_TO_PIXELS * SIZE/2)),
                 (int) (SIZE * GameCanvas.METER_TO_PIXELS),

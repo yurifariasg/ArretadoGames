@@ -7,6 +7,7 @@ package com.arretados.leveleditor.entities;
 import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.GameCanvas;
 import com.arretados.leveleditor.ResourceManager;
+import com.arretados.leveleditor.ResourceManager.Resource;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -43,9 +44,9 @@ public class Player extends Entity{
     public void drawMyself(Graphics g) {
         Image img = null;
         if (this.player.equals("player1"))
-            img = ResourceManager.getImageFor(DrawMode.P1);
+            img = ResourceManager.getImageFor(Resource.P1);
         else
-            img = ResourceManager.getImageFor(DrawMode.P2);
+            img = ResourceManager.getImageFor(Resource.P2);
             
         g.drawImage(
                 img,
@@ -60,7 +61,7 @@ public class Player extends Entity{
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
         json.put("type", "player");
-        json.put("number", player);
+        json.put("number", this.player.equals("player1") ? 1 : 2 );
         return json;
     }
 }

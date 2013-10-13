@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import sun.tools.java.Constants;
 
 /**
  *
@@ -21,13 +22,15 @@ public class JSONGenerator {
     JSONObject j;
     
     private List<Entity> entities;
-    private List<int[]> groundLines;
     private Flag flag;
+    private final int groundHeight;
+    private final int totalHeight;
 
-    public JSONGenerator(List<Entity> entities, List<int[]> groundLines,
+    public JSONGenerator(List<Entity> entities, int groundHeight, int totalHeight,
             Flag flag) {
         this.entities = entities;
-        this.groundLines = groundLines;
+        this.groundHeight = groundHeight;
+        this.totalHeight = totalHeight;
         this.flag = flag;
     }
     
@@ -54,6 +57,17 @@ public class JSONGenerator {
         
         for (int i = 0 ; i < entities.size() ; i++) {
             jArrayEntities.add(entities.get(i).toJSON());
+        }
+        
+        jArrayEntities.add(flag.toJSON());
+        
+        
+        float yOffset = Utils.convertPixelToMeter(totalHeight - groundHeight);
+        
+        for (int i = 0 ; i < jArrayEntities.size() ; i++) {
+            // Update Y based on ground
+            float previousY = (Float) ((JSONObject)jArrayEntities.get(i)).get("y");
+            ((JSONObject)jArrayEntities.get(i)).put("y", yOffset - previousY);
         }
         
         /*
@@ -150,15 +164,15 @@ public class JSONGenerator {
 //        jArrayEntities.add(jObjFlag);
         
         hm.put("entities", jArrayEntities);
-        JSONArray jArrayGround = new JSONArray();
+//        JSONArray jArrayGround = new JSONArray();
         
-        for (int i = 0; i < groundLines.size(); i++){
-            JSONObject jObj = new JSONObject();
-            jObj.put("x", Utils.convertPixelToMeter(groundLines.get(i)[0]) );
-            jObj.put("y", 10-Utils.convertPixelToMeter(groundLines.get(i)[1]) );
-            jArrayGround.add(jObj);
-        }
-        hm.put("ground", jArrayGround);
+//        for (int i = 0; i < groundLines.size(); i++){
+//            JSONObject jObj = new JSONObject();
+//            jObj.put("x", Utils.convertPixelToMeter(groundLines.get(i)[0]) );
+//            jObj.put("y", 10-Utils.convertPixelToMeter(groundLines.get(i)[1]) );
+//            jArrayGround.add(jObj);
+//        }
+//        hm.put("ground", jArrayGround);
         return hm;
         
     }    

@@ -11,7 +11,7 @@ package com.arretados.leveleditor;
 public enum DrawMode {
     
     BOX, COIN, FRUIT, PLAYER, ONEWAY_WALL, PULLEY, FLUID, BREAKABLE, LIANA, FLAG, LINE,
-    P1, P2, TREE, GROUND;
+    P1, P2, TREE, GROUND, GRASS, SHRUB;
     
     public int toInt() {
         return ordinal();

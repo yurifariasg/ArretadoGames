@@ -18,6 +18,12 @@ import com.arretados.leveleditor.entities.FluidPanel;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.OneWayWallPanel;
 import com.arretados.leveleditor.entities.Player;
+import com.arretados.leveleditor.entities.layer.Grass;
+import com.arretados.leveleditor.entities.layer.GrassPanel;
+import com.arretados.leveleditor.entities.layer.Shrub;
+import com.arretados.leveleditor.entities.layer.ShrubPanel;
+import com.arretados.leveleditor.entities.layer.Tree;
+import com.arretados.leveleditor.entities.layer.TreePanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -37,6 +43,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     
     private LevelEditorView mainView;
     private short playersAdded = 0;
+    private int groundHeight = 50;
     
     private List<Entity> entities = new ArrayList<Entity>();
     private List<int[]> groundPos = new ArrayList<int[]>();
@@ -52,6 +59,14 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     
     public void setMainView(LevelEditorView mainView) {
         this.mainView = mainView;
+    }
+
+    public int getGroundHeight() {
+        return groundHeight;
+    }
+
+    public void setGroundHeight(int groundHeight) {
+        this.groundHeight = groundHeight;
     }
 
     @Override
@@ -119,6 +134,11 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         
         return null;
     }
+    
+    public void switchEntityPanelToSelectedEntity() {
+        mainView.switchEntityPanel(selectedEntity.getEntityPanel());
+        mainView.getEntityPanel().setEntity(selectedEntity);
+    }
 
     public void mouseClicked(MouseEvent e) {
         
@@ -127,8 +147,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         if (clickedEntity != null) {
             
             selectedEntity = clickedEntity;
-            mainView.switchEntityPanel(selectedEntity.getEntityPanel());
-            mainView.getEntityPanel().setEntity(selectedEntity);
+            switchEntityPanelToSelectedEntity();
             
             return ;
             
@@ -185,17 +204,28 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                     ((Breakable)entityToAdd).setHeight(heightBreakable);
                     ((Breakable)entityToAdd).setHitsUntilBreak(hitUntilBreak);
                 break;
+                    
+                case TREE:
+                    float treeType = ((TreePanel)mainView.getEntityPanel()).getCurrentTreeType();
+                    entityToAdd = new Tree(e.getX(), e.getY());
+                    ((Tree)entityToAdd).setTreeType((int) treeType);
+                    break;
+                case GRASS:
+                    float grassType = ((GrassPanel)mainView.getEntityPanel()).getCurrentGrassType();
+                    entityToAdd = new Grass(e.getX(), e.getY());
+                    ((Grass)entityToAdd).setGrassType((int) grassType);
+                    break;
+                case SHRUB:
+                    float shrubType = ((ShrubPanel)mainView.getEntityPanel()).getCurrentShrubType();
+                    entityToAdd = new Shrub(e.getX(), e.getY());
+                    ((Shrub)entityToAdd).setShrubType((int) shrubType);
+                    break;
 
                 case LIANA:
                     //drawLiana(e.getX(), e.getY(), e.getX(), e.getY());
                 break;
 
-                case GROUND:
-                    drawGroundLine(e.getX(), e.getY());
-                break;
-
                 case PLAYER:
-                    //drawPlayer(e.getX(), e.getY());
                     if (playersAdded == 0) {
                         entityToAdd = new Player(e.getX(), e.getY(), "player1");
                         playersAdded++;
@@ -222,6 +252,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     
     public void mousePressed(MouseEvent e) {
         selectedEntity = checkClickOn(e.getX(), e.getY());
+        if (selectedEntity != null)
+            switchEntityPanelToSelectedEntity();
     }
     
     public void mouseReleased(MouseEvent e) { }
@@ -312,7 +344,7 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
 
     private void drawGround(Graphics g) {
-        if (groundPos.size() < 2)
+        /*if (groundPos.size() < 2)
             return;
         
         int[] xPos = new int[groundPos.size() + 2];
@@ -338,7 +370,14 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         yPos[yPos.length - 1] = highestY + 1000; // Draw the ground 1000 pixels below the lowest
         
         g.setColor(new Color(153, 76, 0));
-        g.fillPolygon(xPos, yPos, xPos.length);
+        g.fillPolygon(xPos, yPos, xPos.length);*/
+        
+        g.setColor(new Color(153, 76, 0));
+        
+        g.fillPolygon(
+                new int[] {0, 0, getWidth(), getWidth()},
+                new int[] {getHeight(), getHeight() - groundHeight, getHeight() - groundHeight, getHeight()}, 4);
+        
     }
 
     private void drawSelection(Entity selectedEntity) {

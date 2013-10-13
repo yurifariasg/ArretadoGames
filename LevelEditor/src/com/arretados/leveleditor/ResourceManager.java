@@ -8,9 +8,15 @@ import javax.imageio.ImageIO;
 
 public class ResourceManager {
     
-    private static HashMap<DrawMode, Image> images = null;
+    public enum Resource {
+        COIN, ONEWAY_WALL, BOX, BREAKABLE, P1, P2, TREE1,
+        SHRUB, GRASS
+    }
     
-    public static Image getImageFor(DrawMode entity) {
+    
+    private static HashMap<Resource, Image> images = null;
+    
+    public static Image getImageFor(Resource entity) {
         validateImageMap();
         return images.get(entity);
     }
@@ -21,14 +27,17 @@ public class ResourceManager {
     }
 
     private static void createImages() {
-        images = new HashMap<DrawMode, Image>();
+        images = new HashMap<Resource, Image>();
         try {
-            images.put(DrawMode.COIN, ImageIO.read(new File("imgs/coin.png")));
-            images.put(DrawMode.ONEWAY_WALL, ImageIO.read(new File("imgs/forest_platform.png")));
-            images.put(DrawMode.BOX, ImageIO.read(new File("imgs/box.png")));
-            images.put(DrawMode.BREAKABLE, ImageIO.read(new File("imgs/breakable.png")));
-            images.put(DrawMode.P1, ImageIO.read(new File("imgs/p1.png")));
-            images.put(DrawMode.P2, ImageIO.read(new File("imgs/p2.png")));
+            images.put(Resource.COIN, ImageIO.read(new File("imgs/coin.png")));
+            images.put(Resource.ONEWAY_WALL, ImageIO.read(new File("imgs/forest_platform.png")));
+            images.put(Resource.BOX, ImageIO.read(new File("imgs/box.png")));
+            images.put(Resource.BREAKABLE, ImageIO.read(new File("imgs/breakable.png")));
+            images.put(Resource.P1, ImageIO.read(new File("imgs/p1.png")));
+            images.put(Resource.P2, ImageIO.read(new File("imgs/p2.png")));
+            images.put(Resource.TREE1, ImageIO.read(new File("imgs/tree1.png")));
+            images.put(Resource.SHRUB, ImageIO.read(new File("imgs/shrub.png")));
+            images.put(Resource.GRASS, ImageIO.read(new File("imgs/grass.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

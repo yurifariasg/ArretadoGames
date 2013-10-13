@@ -7,6 +7,7 @@ package com.arretados.leveleditor.entities;
 import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.GameCanvas;
 import com.arretados.leveleditor.ResourceManager;
+import com.arretados.leveleditor.ResourceManager.Resource;
 import com.sun.xml.internal.bind.v2.util.CollisionCheckStack;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -57,7 +58,7 @@ public class OneWayWall extends Entity{
     }
 
     public void drawMyself(Graphics g) { // 3.0, 0.1
-	g.drawImage(ResourceManager.getImageFor(DrawMode.ONEWAY_WALL),
+	g.drawImage(ResourceManager.getImageFor(Resource.ONEWAY_WALL),
                 x + (int) (- width/2 * GameCanvas.METER_TO_PIXELS), // Top Left X
                 y + (int) ((- height/2 - 0.3f) * GameCanvas.METER_TO_PIXELS), // Top Left Y
                 (int) (width * GameCanvas.METER_TO_PIXELS), // Bottom Right X
