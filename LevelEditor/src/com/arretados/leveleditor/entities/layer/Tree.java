@@ -1,41 +1,76 @@
 package com.arretados.leveleditor.entities.layer;
 
 import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.GameCanvas;
 import com.arretados.leveleditor.ResourceManager;
+import com.arretados.leveleditor.ResourceManager.Resource;
 import com.arretados.leveleditor.entities.Entity;
+import com.arretados.leveleditor.entities.EntityPanel;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import org.json.simple.JSONObject;
 
 
 public class Tree extends Entity {
     
-    public Tree(int x, int y) {
-        super(x, y);
-    }
-
-    @Override
-    public void drawMyself(Graphics g) {
-            g.drawImage(ResourceManager.getImageFor(DrawMode.TREE), (int)(x-(50/2)), (int)(y-(50/2)), (int) (50), (int)(50), null);
-    }
+    private static float[][] TREE_SIZES = new float[][] {
+        {3, 4},
+        {3, 4}    
+    };
+    
+    public static EntityPanel tree_panel;
 
     //@Override
     public DrawMode getType() {
         return DrawMode.TREE;
     }
+    
+    private int treeType;
 
-    @Override
-    public Entity clone() {
-        Tree t = new Tree(x, y);
-        return t;
+    public Tree(int x, int y) {
+        super(x, y);
+        treeType = 0;
     }
 
-    public void onPropertyChanged(String propertyName, String newValue) {
-        
+    public int getTreeType() {
+        return treeType;
+    }
+
+    public void setTreeType(int treeType) {
+        this.treeType = treeType;
+    }
+    
+
+    @Override
+    public boolean collides(int x, int y) {
+        Rectangle rect = new Rectangle(
+                this.x - ((int) (GameCanvas.METER_TO_PIXELS * TREE_SIZES[treeType][0]/2)),
+                this.y - ((int) (GameCanvas.METER_TO_PIXELS * TREE_SIZES[treeType][1]/2)),
+                (int) (TREE_SIZES[treeType][0] * GameCanvas.METER_TO_PIXELS),
+                (int) (TREE_SIZES[treeType][1] * GameCanvas.METER_TO_PIXELS));
+        return rect.contains(x, y);
+    }
+
+    @Override
+    public void drawMyself(Graphics g) {
+        g.drawImage(ResourceManager.getImageFor(Resource.TREE1),
+                x - ((int) (GameCanvas.METER_TO_PIXELS * TREE_SIZES[treeType][0]/2)),
+                y - ((int) (GameCanvas.METER_TO_PIXELS * TREE_SIZES[treeType][1]/2)),
+                (int) (TREE_SIZES[treeType][0] * GameCanvas.METER_TO_PIXELS),
+                (int) (TREE_SIZES[treeType][1] * GameCanvas.METER_TO_PIXELS), null);
     }
 
     @Override
     public JSONObject toJSON() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JSONObject json = super.toJSON();
+        json.put("type", "tree");
+        json.put("treeType", treeType);
+        return json;
+    }
+
+    @Override
+    public EntityPanel getEntityPanel() {
+        return tree_panel;
     }
     
 }

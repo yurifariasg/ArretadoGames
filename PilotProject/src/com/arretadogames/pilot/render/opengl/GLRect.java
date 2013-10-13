@@ -163,7 +163,7 @@ public class GLRect {
 	
 
 
-	protected static void fillVertices(int left, int top, int right, int bottom) {
+	protected static void fillVertices(float left, float top, float right, float bottom) {
 		fillVertices(left, top, left, bottom, right, bottom, right, top);
 	}
 }

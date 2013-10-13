@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.entities;
 
-
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -9,15 +7,13 @@ import java.util.HashSet;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.Filter;
+import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -71,6 +67,8 @@ public class LoboGuara extends Player implements Steppable{
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
 		bodiesContact = new HashSet<Body>();
+		
+		physRect = new PhysicsRect(1.4f, 1.6f);
 	}
 	
 	@Override
@@ -240,15 +238,9 @@ public class LoboGuara extends Player implements Steppable{
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.translatePhysics(getPosX(), getPosY() + 0.3f);
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		RectF rect = new RectF(
-				(- 0.7f* GLCanvas.physicsRatio), // Top Left
-				(- 1f * GLCanvas.physicsRatio), // Top Top Left
-				(0.71f * GLCanvas.physicsRatio), // Bottom Right
-				(0.55f * GLCanvas.physicsRatio)); // Bottom Right
-		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 	}
 	

@@ -5,38 +5,37 @@ import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class Tree extends ScenarioEntity {
+public class Grass extends ScenarioEntity {
 	
-	private static int[] TREE_RESOURCES = {
-		R.drawable.tree1 // We may change where this is currently located when we refactor sprites 
+	private static int[] GRASS_RESOURCES = {
+		R.drawable.grass // We may change where this is currently located when we refactor sprites 
 	};
 	
 	// Tree Sizes
-	private static float[][] TREE_SIZES = { // {width, height}
-		{3, 4}, // Tree Type 0
-		{1, 4} // Tree Type 1
+	private static float[][] GRASS_SIZES = { // {width, height}
+		{0.4f, 0.4f}, // Tree Type 0
 	};
 	
 	// Object Properties
-	private int treeType;
+	private int grassType;
 	
-	public Tree(float x, float y) {
+	public Grass(float x, float y) {
 		this(x, y, 0);
 	}
 	
-	public Tree(float x, float y, int type) {
-		super(x, y, TREE_SIZES[type][0], TREE_SIZES[type][1]);
-		this.treeType = type;
+	public Grass(float x, float y, int type) {
+		super(x, y, GRASS_SIZES[type][0], GRASS_SIZES[type][1]);
+		this.grassType = type;
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		drawBasic(canvas, TREE_RESOURCES[treeType]);
+		drawBasic(canvas, GRASS_RESOURCES[grassType]);
 	}
 
 	@Override
 	public EntityType getType() {
-		return EntityType.TREE;
+		return EntityType.GRASS;
 	}
 
 	@Override
@@ -48,5 +47,5 @@ public class Tree extends ScenarioEntity {
 	public int getLayerPosition() {
 		return 10;
 	}
-
+	
 }

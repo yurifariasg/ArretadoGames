@@ -8,8 +8,9 @@
  *
  * Created on Aug 29, 2013, 11:50:14 PM
  */
-package com.arretados.leveleditor.entities;
+package com.arretados.leveleditor.entities.layer;
 
+import com.arretados.leveleditor.entities.*;
 import com.arretados.leveleditor.EntityPropertyDocumentListener;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
 import javax.swing.JSpinner;
@@ -21,54 +22,40 @@ import javax.swing.text.DefaultFormatter;
  *
  * @author Yuri
  */
-public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedListener {
+public class ShrubPanel extends EntityPanel<Shrub> implements ItemPropertyChangedListener {
 
     /** Creates new form BoxPanel */
-    public BoxPanel(ItemPropertyChangedListener listener) {
+    public ShrubPanel(ItemPropertyChangedListener listener) {
         initComponents();
         
         JSpinner.NumberEditor jsEditor = (JSpinner.NumberEditor)jSpinner1.getEditor();
         DefaultFormatter formatter = (DefaultFormatter) jsEditor.getTextField().getFormatter();
         formatter.setAllowsInvalid(false);
         ((NumberEditor)jSpinner1.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Size", this));
+                addDocumentListener(new EntityPropertyDocumentListener("shrubType", this));
         ((NumberEditor)jSpinner1.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Size", listener));
-        jSpinner1.setValue(1.0);
-        
-        jsEditor = (JSpinner.NumberEditor)jSpinner2.getEditor();
-        formatter = (DefaultFormatter) jsEditor.getTextField().getFormatter();
-        formatter.setAllowsInvalid(false);
-        ((NumberEditor)jSpinner2.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Weight", this));
-        ((NumberEditor)jSpinner2.getEditor()).getTextField().getDocument().
-                addDocumentListener(new EntityPropertyDocumentListener("Weight", listener));
-        jSpinner2.setValue(1.0);
+                addDocumentListener(new EntityPropertyDocumentListener("shrubType", listener));
+        jSpinner1.setValue(0.0);
         
     }
     
-    public float getCurrentSize() {
+    public float getCurrentShrubType() {
         return (float) ((Double) jSpinner1.getValue()).doubleValue();
-    }
-    
-    public float getCurrentWeight() {
-        return (float) ((Double) jSpinner2.getValue()).doubleValue();
     }
     
     public void onPropertyChanged(String propertyName, String newValue) {
         if (getEntity() == null)
             return;
         
-        if (propertyName.equals("Size")) {
-            getEntity().setSize(Float.parseFloat(newValue));
+        if (propertyName.equals("shrubType")) {
+            getEntity().setShrubType((int) Float.parseFloat(newValue));
         }
-        
     }
 
     @Override
-    public void setEntity(Box entity) {
+    public void setEntity(Shrub entity) {
         super.setEntity(entity);
-        jSpinner1.setValue((double) getEntity().getSize());
+        jSpinner1.setValue((double) getEntity().getShrubType());
     }
 
     /** This method is called from within the constructor to
@@ -82,44 +69,27 @@ public class BoxPanel extends EntityPanel<Box> implements ItemPropertyChangedLis
 
         jLabel1 = new javax.swing.JLabel();
         jSpinner1 = new javax.swing.JSpinner();
-        jLabel2 = new javax.swing.JLabel();
-        jSpinner2 = new javax.swing.JSpinner();
 
         setName("Form"); // NOI18N
         setLayout(new java.awt.GridLayout(10, 1));
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(BoxPanel.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.arretados.leveleditor.LevelEditorApp.class).getContext().getResourceMap(ShrubPanel.class);
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
         add(jLabel1);
 
         jSpinner1.setModel(new SpinnerNumberModel(
-            1.0, // value
-            0.1, // min
-            10.0, // max
-            0.1 // step
+            0.0, // value
+            0.0, // min
+            2.0, // max
+            1.0 // step
         ));
         jSpinner1.setName("jSpinner1"); // NOI18N
         add(jSpinner1);
-
-        jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
-        add(jLabel2);
-
-        jSpinner2.setModel(new SpinnerNumberModel(
-            1.0, // value
-            0.1, // min
-            50.0, // max
-            0.1 // step
-        ));
-        jSpinner2.setName("jSpinner2"); // NOI18N
-        add(jSpinner2);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -20,7 +20,6 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.entities.Fire;
-import com.arretadogames.pilot.entities.Fruit;
 import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.Hole;
 import com.arretadogames.pilot.entities.Liana;
@@ -35,6 +34,7 @@ import com.arretadogames.pilot.entities.Spike;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.TatuBola;
 import com.arretadogames.pilot.entities.Water;
+import com.arretadogames.pilot.entities.scenario.Grass;
 import com.arretadogames.pilot.entities.scenario.Shrub;
 import com.arretadogames.pilot.entities.scenario.Tree;
 import com.arretadogames.pilot.game.Game;
@@ -74,7 +74,6 @@ public class GameWorld extends GameScreen {
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
 	private float flagPos;
-	private float firePos;
 	private SpriteManager sm;
 	private float totalElapsedSeconds;
 	
@@ -135,10 +134,6 @@ public class GameWorld extends GameScreen {
 				case COIN:
 					entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
 					break;
-				case FRUIT:
-					entity = new Fruit(entityDescriptor.getX(), entityDescriptor.getY(),
-							entityDescriptor.getSize());
-					break;
 				case PLAYER:
 					entity = createPlayerCharacter(entityDescriptor.getX(), entityDescriptor.getY(),
 							((PlayerDescriptor)entityDescriptor).getPlayerNumber());
@@ -186,6 +181,9 @@ public class GameWorld extends GameScreen {
 					break;
 				case SHRUB:
 					entity = new Shrub(entityDescriptor.getX(), entityDescriptor.getY());
+					break;
+				case GRASS:
+					entity = new Grass(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 				default:
 					break;

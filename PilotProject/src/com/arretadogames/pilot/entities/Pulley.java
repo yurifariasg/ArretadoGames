@@ -5,10 +5,10 @@ import org.jbox2d.dynamics.joints.PulleyJoint;
 import org.jbox2d.dynamics.joints.PulleyJointDef;
 
 import android.graphics.Color;
-import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -35,6 +35,8 @@ public class Pulley extends Entity {
 		PulleyJointDef pd = new PulleyJointDef();
 		pd.initialize(a.body, b.body, groundAnchorA, groundAnchorB, anchorA, anchorB, ratio);
 		joint = (PulleyJoint) world.createJoint(pd);
+		
+		physRect = new PhysicsRect(0.4f, 0.4f);
 	}
 
 	@Override
@@ -58,24 +60,26 @@ public class Pulley extends Entity {
 		// Draw First Sheave
 		canvas.saveState();
 		canvas.translatePhysics(anchorA.x, anchorA.y);
-		RectF rect = new RectF(
-				(- 0.2f * GLCanvas.physicsRatio), // Top Left
-				(- 0.2f * GLCanvas.physicsRatio), // Top Left
-				(0.2f * GLCanvas.physicsRatio), // Bottom Right
-				(0.2f * GLCanvas.physicsRatio)); // Bottom Right
+//		RectF rect = new RectF(
+//				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+//				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+//				(0.2f * GLCanvas.physicsRatio), // Bottom Right
+//				(0.2f * GLCanvas.physicsRatio)); // Bottom Right
 		
-		canvas.drawBitmap(R.drawable.sheave, rect, false);
+//		canvas.drawBitmap(R.drawable.sheave, rect, false);
+		canvas.drawBitmap(R.drawable.sheave, physRect);
 		canvas.restoreState();
 		
 		canvas.saveState();
 		canvas.translatePhysics(anchorB.x, anchorB.y);
-		rect = new RectF(
-				(- 0.2f * GLCanvas.physicsRatio), // Top Left
-				(- 0.2f * GLCanvas.physicsRatio), // Top Left
-				(0.2f * GLCanvas.physicsRatio), // Bottom Right
-				(0.2f * GLCanvas.physicsRatio)); // Bottom Right
-		
-		canvas.drawBitmap(R.drawable.sheave, rect, false);
+//		rect = new RectF(
+//				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+//				(- 0.2f * GLCanvas.physicsRatio), // Top Left
+//				(0.2f * GLCanvas.physicsRatio), // Bottom Right
+//				(0.2f * GLCanvas.physicsRatio)); // Bottom Right
+//		
+//		canvas.drawBitmap(R.drawable.sheave, rect, false);
+		canvas.drawBitmap(R.drawable.sheave, physRect);
 		canvas.restoreState();
 		
 		canvas.restoreState();

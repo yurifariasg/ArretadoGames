@@ -10,6 +10,7 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.Sprite;
 
@@ -19,6 +20,7 @@ public abstract class Entity implements Renderable, LayerEntity {
 	public Body body;
 	protected World world;
 	private boolean isDead;
+	protected PhysicsRect physRect;
 
 	public Entity(float x, float y) {
 		world = PhysicalWorld.getInstance().getWorld();

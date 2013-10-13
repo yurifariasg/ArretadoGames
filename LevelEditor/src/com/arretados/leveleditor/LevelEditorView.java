@@ -20,6 +20,12 @@ import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.OneWayWallPanel;
 import com.arretados.leveleditor.entities.Pulley;
 import com.arretados.leveleditor.entities.PulleyPanel;
+import com.arretados.leveleditor.entities.layer.Grass;
+import com.arretados.leveleditor.entities.layer.GrassPanel;
+import com.arretados.leveleditor.entities.layer.Shrub;
+import com.arretados.leveleditor.entities.layer.ShrubPanel;
+import com.arretados.leveleditor.entities.layer.Tree;
+import com.arretados.leveleditor.entities.layer.TreePanel;
 import com.arretados.leveleditor.parsers.JSONGenerator;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -76,6 +82,9 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         Liana.liana_panel = new LianaPanel(this);
         OneWayWall.onewaywall_panel = new OneWayWallPanel(this);
         Pulley.pulley_panel = new PulleyPanel(this);
+        Tree.tree_panel = new TreePanel(this);
+        Grass.grass_panel = new GrassPanel(this);
+        Shrub.shrub_panel = new ShrubPanel(this);
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -196,17 +205,17 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
 
         gameCanvas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         gameCanvas1.setName("gameCanvas1"); // NOI18N
-        gameCanvas1.setPreferredSize(new java.awt.Dimension(1500, 1000));
+        gameCanvas1.setPreferredSize(new java.awt.Dimension(3000, 600));
 
         javax.swing.GroupLayout gameCanvas1Layout = new javax.swing.GroupLayout(gameCanvas1);
         gameCanvas1.setLayout(gameCanvas1Layout);
         gameCanvas1Layout.setHorizontalGroup(
             gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1498, Short.MAX_VALUE)
+            .addGap(0, 2998, Short.MAX_VALUE)
         );
         gameCanvas1Layout.setVerticalGroup(
             gameCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 998, Short.MAX_VALUE)
+            .addGap(0, 598, Short.MAX_VALUE)
         );
 
         jScrollInternalPanel.add(gameCanvas1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, -1, -1));
@@ -242,7 +251,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
         jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
 
-        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.GROUND}));
+        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB}));
         itemComboBox.setName("itemComboBox"); // NOI18N
         itemComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -383,8 +392,10 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JSONGenerator json = new JSONGenerator(gameCanvas1.getEntitiesPos(),
-                gameCanvas1.getLinesPos(), gameCanvas1.getFlag());
+        JSONGenerator json = new JSONGenerator(
+                gameCanvas1.getEntitiesPos(),
+                gameCanvas1.getGroundHeight(),
+                gameCanvas1.getHeight(), gameCanvas1.getFlag());
         
         String jsonString = json.generateJson().toJSONString();
         
@@ -446,8 +457,13 @@ private void itemComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//G
 }//GEN-LAST:event_itemComboBoxPropertyChange
 
 public void switchEntityPanel(EntityPanel entityPanel) {
+   
     itemPanel.removeAll();
-    itemPanel.add(entityPanel);
+    if (entityPanel != null) {
+        itemPanel.add(entityPanel);
+    }
+    itemPanel.validate();
+    itemPanel.repaint();
 }
 
 public EntityPanel getEntityPanel() {
@@ -491,6 +507,15 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
         break;
         case PLAYER:
             
+        break;
+        case TREE:
+            itemPanel.add(Tree.tree_panel);
+        break;
+        case GRASS:
+            itemPanel.add(Grass.grass_panel);
+        break;
+        case SHRUB:
+            itemPanel.add(Shrub.shrub_panel);
         break;
         case PULLEY:
             itemPanel.add(Pulley.pulley_panel);

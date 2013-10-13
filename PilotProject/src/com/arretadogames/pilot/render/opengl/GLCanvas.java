@@ -1,15 +1,9 @@
 package com.arretadogames.pilot.render.opengl;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
-
-import org.jbox2d.common.Vec2;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -29,7 +23,7 @@ import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
-import com.arretadogames.pilot.util.Util;
+import com.arretadogames.pilot.render.PhysicsRect;
 
 public class GLCanvas {
 	
@@ -95,23 +89,6 @@ public class GLCanvas {
 		
 		GLRect.draw(gl, x, y, x2, y2, Color.RED);
 	}
-
-	
-	public void drawPhysicsDebugRect(float centerX, float centerY,
-			float sideLength) {
-		drawPhysicsDebugRect(centerX, centerY, sideLength, Color.RED);
-	}
-	
-	public void drawPhysicsDebugRect(float centerX, float centerY,
-			float sideLength, int color) {
-		auxiliaryRect.left = (int) ((centerX - sideLength / 2) * physicsRatio);
-		auxiliaryRect.top = (int) (GameSettings.TARGET_HEIGHT - (centerY - sideLength / 2) * physicsRatio);
-		auxiliaryRect.right = (int) ((centerX + sideLength / 2) * physicsRatio);
-		auxiliaryRect.bottom = (int) (GameSettings.TARGET_HEIGHT - (centerY + sideLength / 2) * physicsRatio);
-		
-		GLRect.draw(gl, auxiliaryRect.left, auxiliaryRect.top, auxiliaryRect.right,
-				auxiliaryRect.bottom, color);
-	}
 	
 	public void saveState() {
 		GLES11.glPushMatrix();
@@ -166,12 +143,11 @@ public class GLCanvas {
 			translate(x, y);
 	
 			GLTexture texture = textures.get(imageId);
-			GLTexturedRect.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), Color.WHITE, texture);
+			GLTexturedRect.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), texture);
 		restoreState();
 	}
 	
-	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect,
-			boolean convertFromPhysics) {
+	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect) {
 		if (textures.get(imageId) == null) {
 			Log.e("GLCanvas", "Texture not loaded " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
@@ -179,37 +155,57 @@ public class GLCanvas {
 				loadImage(imageId);
 		}
 		
+		GLTexture tex = textures.get(imageId);
+		GLES11.glColor4f(1, 1, 1, 1);
+		
+		auxiliaryRect.left = (int) dstRect.left;
+		auxiliaryRect.top = (int) dstRect.top;
+		auxiliaryRect.right = (int) dstRect.right;
+		auxiliaryRect.bottom = (int) dstRect.bottom;
+		
+		GLTexturedRect.draw(gl, srcRect, auxiliaryRect, tex);
+	}
+	
+	public void drawBitmap(int imageId, RectF dstRect) {
+		if (textures.get(imageId) == null) {
+			Log.e("GLCanvas", "Texture not loaded " +
+					MainActivity.getContext().getResources().getResourceEntryName(imageId));
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadImage(imageId);
+		}
+		GLTexturedRect.draw(gl,
+				dstRect.left, dstRect.top,
+				dstRect.right, dstRect.bottom,
+				textures.get(imageId));
+	}
+	
+	public void drawColorRect(int color, PhysicsRect physicsRect) {
+		GLRect.draw(gl,
+				physicsRect.left * physicsRatio,
+				physicsRect.top * physicsRatio,
+				physicsRect.right * physicsRatio,
+				physicsRect.bottom * physicsRatio,
+				color);
+	}
+
+	public void drawBitmap(int imageId, PhysicsRect physicsRect) {
+		if (textures.get(imageId) == null) {
+			Log.e("GLCanvas", "Texture not loaded " +
+					MainActivity.getContext().getResources().getResourceEntryName(imageId));
+			if (GameSettings.LAZY_LOAD_ENABLED)
+				loadImage(imageId);
+		}
 		
 		GLTexture tex = textures.get(imageId);
 		GLES11.glColor4f(1, 1, 1, 1);
 		
-		if (convertFromPhysics) {
-			auxiliaryRect.left = (int) (dstRect.left * physicsRatio);
-			auxiliaryRect.top = (int) (GameSettings.TARGET_HEIGHT - dstRect.top * physicsRatio);
-			auxiliaryRect.right = (int) (dstRect.right * physicsRatio);
-			auxiliaryRect.bottom = (int) (GameSettings.TARGET_HEIGHT - dstRect.bottom * physicsRatio);
-		} else {
-			auxiliaryRect.left = (int) dstRect.left;
-			auxiliaryRect.top = (int) dstRect.top;
-			auxiliaryRect.right = (int) dstRect.right;
-			auxiliaryRect.bottom = (int) dstRect.bottom;
-		}
-		
-		GLTexturedRect.draw(gl, srcRect, auxiliaryRect, tex);
+		GLTexturedRect.draw(gl,
+				physicsRect.left * physicsRatio,
+				physicsRect.top * physicsRatio,
+				physicsRect.right * physicsRatio,
+				physicsRect.bottom * physicsRatio,
+				tex);
 	}
-
-	
-	public void drawBitmap(int imageId, RectF dstRect,
-			boolean convertFromPhysics, Paint paint) {
-		drawBitmap(imageId, null, dstRect, convertFromPhysics);
-	}
-
-	
-	public void drawBitmap(int imageId, RectF dstRect,
-			boolean convertFromPhysics) {
-		drawBitmap(imageId, null, dstRect, convertFromPhysics);
-	}
-
 	
 	public int loadImage(int imageId) {
 		// Get bitmap
@@ -296,6 +292,6 @@ public class GLCanvas {
 		} else if (object.getType().equals(LoadableType.FONT)) {
 			object.setGLId(loadFont(FontLoader.getInstance().getFont(FontTypeFace.values()[object.getId()])));
 		}
-		
 	}
+	
 }

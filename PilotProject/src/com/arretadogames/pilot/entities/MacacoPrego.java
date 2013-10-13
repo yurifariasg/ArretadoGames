@@ -16,9 +16,8 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -86,6 +85,8 @@ public class MacacoPrego extends Player implements Steppable{
 		
 		jd2.localAnchorB.set(new Vec2(0f,0.1f));
 		world.createJoint(jd2);
+		
+		physRect = new PhysicsRect(0.5f, 0.6f);
 	}
 	@Override
 	public PolygonShape getWaterContactShape() {
@@ -185,8 +186,9 @@ public class MacacoPrego extends Player implements Steppable{
 	public void beginContact(Entity e, Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
 			sprite.setAnimationState("walking");
-			contacts++;
 			bodiesContact.add(e.body);
+
+			contacts++;
 		}
 	}
 
@@ -240,34 +242,10 @@ public class MacacoPrego extends Player implements Steppable{
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		
-		
-		
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		
-		RectF rect = new RectF(
-				(- radius* GLCanvas.physicsRatio), // Top Left
-				(- radius * GLCanvas.physicsRatio), // Top Top Left
-				((radius + 0.06f) * GLCanvas.physicsRatio), // Bottom Right
-				((radius + 0.06f) * GLCanvas.physicsRatio)); // Bottom Right
-		
-		if (this.isAlive()) {
-			canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
-		}
-//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
-		canvas.restoreState();
-		
-		canvas.saveState();
-		canvas.translatePhysics(b.getPosition().x, b.getPosition().y);
-		canvas.rotate((float) (180 * - b.getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		RectF rect2 = new RectF(
-				(- 0.1f* GLCanvas.physicsRatio), // Top Left
-				(- 0.3f * GLCanvas.physicsRatio), // Top Top Left
-				(0.1f * GLCanvas.physicsRatio), // Bottom Right
-				(0.3f * GLCanvas.physicsRatio)); // Bottom Right
-		
-//		canvas.drawRect((int) rect2.left, (int) rect2.top, (int) rect2.right, (int) rect2.bottom, Color.YELLOW);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 		
 	}

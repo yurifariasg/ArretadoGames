@@ -344,6 +344,9 @@ public class GameCamera {
 		
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
 		Profiler.initTick(ProfileType.RENDER);
+		
+		if (GameSettings.DRAW_PHYSICS)
+			PhysicalWorld.getInstance().render(gameCanvas, timeElapsed);
 
 		gameCanvas.restoreState();
 
@@ -410,14 +413,14 @@ public class GameCamera {
 		Profiler.initTick(ProfileType.RENDER);
 		
 		gameCanvas.fillScreen(255, 255, 255, 255);
-
+		
 		gameCanvas.drawBitmap(repeatableBackgroundId,
 				showRectRepeatablePart,
-				displayRectRepeatablePart, false);
+				displayRectRepeatablePart);
 
 		gameCanvas.drawBitmap(finalSliceBackgroundId,
 				showRectFinalPart,
-				displayRectFinalPart, false);
+				displayRectFinalPart);
 	}
 
 	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 

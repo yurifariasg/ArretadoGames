@@ -11,9 +11,8 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -73,6 +72,9 @@ public class AraraAzul extends Player implements Steppable{
 		footFixture.setSensor(true);
 		
 		bodiesContact = new HashSet<Body>();
+		
+		// Drawing Rect
+		physRect = new PhysicsRect(1, 1);
 	}
 
 	@Override
@@ -242,14 +244,7 @@ public class AraraAzul extends Player implements Steppable{
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		RectF rect = new RectF(
-				(- 0.5f * GLCanvas.physicsRatio), // Top Left
-				(- 0.5f * GLCanvas.physicsRatio), // Top Left
-				(0.4f * GLCanvas.physicsRatio), // Bottom Right
-				(0.4f * GLCanvas.physicsRatio)); // Bottom Right
-		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
-//		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.BLACK);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 		
 	}

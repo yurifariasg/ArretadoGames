@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.levels;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class LevelDescriptor {
@@ -13,13 +14,14 @@ public class LevelDescriptor {
 	private boolean isEnabled;
 	
 	public int[] getRecords() {
-		if (theBest == 0 && secondBest == 0 && thirdBest == 0)
-			return null;
+//		if (theBest == 0 && secondBest == 0 && thirdBest == 0)
+//			return null;
 		
 		return new int[] {theBest, secondBest, thirdBest};
 	}
 
 	public void setRecords(int[] records) {
+		System.out.println("Settings Records: " + Arrays.toString(records));
 		this.theBest = records[0];
 		this.secondBest = records[1];
 		this.thirdBest = records[2];

@@ -2,7 +2,6 @@ package com.arretadogames.pilot.screens;
 
 import java.util.List;
 
-import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector.OnGestureListener;
@@ -18,8 +17,8 @@ import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LevelManager;
 import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
+import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
@@ -182,7 +181,7 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 		public void render(GLCanvas canvas, float timeElapsed) {
 			canvas.saveState();
 			canvas.scale(zoom, zoom, drawRect.centerX(), drawRect.centerY());
-			canvas.drawBitmap(R.drawable.bt_level_selector, drawRect, false);
+			canvas.drawBitmap(R.drawable.bt_level_selector, drawRect);
 			canvas.drawText(String.valueOf(index+1), drawRect.centerX(),
 					drawRect.centerY(), textSpecification, 1, true);
 			canvas.restoreState();

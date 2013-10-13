@@ -15,9 +15,8 @@ import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.RectF;
-
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -77,6 +76,8 @@ public class TatuBola extends Player implements Steppable{
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
 		bodiesContact = new HashSet<Body>();
+		
+		physRect = new PhysicsRect(rad + 0.2f, rad + 0.2f);
 	}
 	
 	@Override
@@ -247,14 +248,15 @@ public class TatuBola extends Player implements Steppable{
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		RectF rect = new RectF(
-				(- (rad + 0.25f)* GLCanvas.physicsRatio), // Top Left
-				(- (rad + 0.25f) * GLCanvas.physicsRatio), // Top Top Left
-				((rad + 0.0f) * GLCanvas.physicsRatio), // Bottom Right
-				((rad + 0.0f) * GLCanvas.physicsRatio)); // Bottom Right
-		
-		
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+//		RectF rect = new RectF(
+//				(- (rad + 0.25f)* GLCanvas.physicsRatio), // Top Left
+//				(- (rad + 0.25f) * GLCanvas.physicsRatio), // Top Top Left
+//				((rad + 0.0f) * GLCanvas.physicsRatio), // Bottom Right
+//				((rad + 0.0f) * GLCanvas.physicsRatio)); // Bottom Right
+//		
+//		
+//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 		
 	}

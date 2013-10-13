@@ -5,8 +5,6 @@ import com.arretadogames.pilot.entities.Breakable;
 import com.arretadogames.pilot.entities.Coin;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
-import com.arretadogames.pilot.entities.Fruit;
-import com.arretadogames.pilot.entities.Ground;
 import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.Spike;
@@ -23,11 +21,6 @@ public class SpriteManager {
 		}else if(en.getType() == EntityType.BOX){
 			Box box = (Box) en;
 			setBoxSprites(sprite, box);
-		}else if(en.getType() == EntityType.FRUIT){
-			Fruit fruit = (Fruit) en;
-			setFruitSprites(sprite, fruit);
-		}else if(en.getType() == EntityType.GROUND){
-			Ground ground = (Ground) en;
 		}else if(en.getType() == EntityType.COIN){
 			Coin coin = (Coin) en;
 			setCoinSprites(sprite);
@@ -102,23 +95,4 @@ public class SpriteManager {
 		sprite.addState(new SpriteState(STOPPED_NAME, frames, framesDur));
 	}
 	
-	
-	private void setFruitSprites(Sprite sprite, Fruit fruit) {
-		int[] frames = fruit.getStoppedFrames();
-		float[] framesDur = fruit.getStoppedFramesDuration();
-		sprite.setAnimationState(STOPPED_NAME);
-		sprite.addState(new SpriteState(STOPPED_NAME, frames, framesDur));
-	}
-	
-	private void setGroundImage(Sprite sprite) {
-		int[] frames = new int[1];
-		for (int i = 0; i < frames.length; i++) {
-//			frames[i] = ImageLoader.loadImage(BOX_STOPPED[i]);			
-		}
-		float[] framesDur = {1f};
-		sprite.addState(new SpriteState(STOPPED_NAME, frames, framesDur));
-	}
-
-	private void setFruitImage(Sprite sprite) {
-	}
 }

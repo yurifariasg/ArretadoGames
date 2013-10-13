@@ -30,7 +30,7 @@ public class Flag extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "flag");
+        json.put("type", "finalflag");
         return json;
     }
     

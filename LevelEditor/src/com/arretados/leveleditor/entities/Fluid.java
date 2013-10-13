@@ -63,9 +63,10 @@ public class Fluid extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "fluid");
+        json.put("type", "water");
         json.put("width", width);
         json.put("height", height);
+        json.put("density", density);
         return json;
     }
 
