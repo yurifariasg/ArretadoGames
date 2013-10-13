@@ -9,20 +9,30 @@ import java.util.List;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.shapes.ChainShape;
+import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.shapes.EdgeShape;
+import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.Joint;
 
+import android.graphics.Color;
+
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.Water;
+import com.arretadogames.pilot.render.Renderable;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.render.opengl.GLCircle;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 
 
-public class PhysicalWorld implements ContactListener {
+public class PhysicalWorld implements ContactListener, Renderable {
 	private static PhysicalWorld gworld;
 	World world;
 	private Collection<Entity> deadEntities;
@@ -175,5 +185,107 @@ public class PhysicalWorld implements ContactListener {
 		groundLines[groundLineIndex++] = pos;
 		
 		return groundLines;
+	}
+	
+//	private PhysicsRect auxRect = new PhysicsRect(0, 0);
+
+	@Override
+	public void render(GLCanvas canvas, float timeElapsed) {
+		//Render All bodies
+		Body body = world.getBodyList();
+		
+		while (body != null) {
+			
+			Fixture fixture = body.getFixtureList();
+			
+			canvas.saveState();
+			canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
+			canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
+			
+			while (fixture != null) {
+				
+				switch (fixture.getShape().getType()) {
+				
+				case POLYGON:
+					drawPolygon(canvas, (PolygonShape) fixture.getShape());
+					break;
+				case CIRCLE:
+					drawCircle(canvas, (CircleShape) fixture.getShape());
+					break;
+					
+				case CHAIN:
+					drawChain(canvas, (ChainShape) fixture.getShape());
+					break;
+				case EDGE:
+					drawEdge(canvas, (EdgeShape) fixture.getShape());
+					break;
+				}
+				
+				fixture = fixture.getNext();
+			}
+			
+			canvas.restoreState();
+			
+			body = body.getNext();
+		}
+	}
+
+	private void drawEdge(GLCanvas canvas, EdgeShape shape) {
+		canvas.drawLine(
+				shape.m_vertex1.x * GLCanvas.physicsRatio,
+				shape.m_vertex1.y * GLCanvas.physicsRatio,
+				shape.m_vertex2.x * GLCanvas.physicsRatio,
+				shape.m_vertex2.y * GLCanvas.physicsRatio,
+				3, Color.YELLOW);
+	}
+
+	private void drawChain(GLCanvas canvas, ChainShape shape) {
+		Vec2[] vertices = shape.m_vertices;
+		for (int i = 1 ; i < shape.m_count ; i++) {
+			
+			canvas.drawLine(
+					vertices[i-1].x * GLCanvas.physicsRatio,
+					vertices[i-1].y * GLCanvas.physicsRatio,
+					vertices[i].x * GLCanvas.physicsRatio,
+					vertices[i].y * GLCanvas.physicsRatio,
+					3, Color.WHITE);
+			
+		}
+		
+		canvas.drawLine(
+				vertices[0].x * GLCanvas.physicsRatio,
+				vertices[0].y * GLCanvas.physicsRatio,
+				vertices[shape.m_count - 1].x * GLCanvas.physicsRatio,
+				vertices[shape.m_count - 1].y * GLCanvas.physicsRatio,
+				3, Color.WHITE);
+		
+	}
+
+	private void drawCircle(GLCanvas canvas, CircleShape shape) {
+		new GLCircle(shape.m_radius * GLCanvas.physicsRatio).drawCircle(canvas, 0, 0, Color.YELLOW, false);
+	}
+
+	private void drawPolygon(GLCanvas canvas, PolygonShape shape) {
+
+		Vec2[] vertices = shape.getVertices();
+		
+		for (int i = 1 ; i < shape.getVertexCount() ; i++) {
+			
+			canvas.drawLine(
+					vertices[i-1].x * GLCanvas.physicsRatio,
+					vertices[i-1].y * GLCanvas.physicsRatio,
+					vertices[i].x * GLCanvas.physicsRatio,
+					vertices[i].y * GLCanvas.physicsRatio,
+					3, Color.YELLOW);
+			
+		}
+		
+		canvas.drawLine(
+				vertices[0].x * GLCanvas.physicsRatio,
+				vertices[0].y * GLCanvas.physicsRatio,
+				vertices[shape.getVertexCount() - 1].x * GLCanvas.physicsRatio,
+				vertices[shape.getVertexCount() - 1].y * GLCanvas.physicsRatio,
+				3, Color.YELLOW);
+		
 	}
 }

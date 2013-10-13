@@ -178,6 +178,15 @@ public class GLCanvas {
 				dstRect.right, dstRect.bottom,
 				textures.get(imageId));
 	}
+	
+	public void drawColorRect(int color, PhysicsRect physicsRect) {
+		GLRect.draw(gl,
+				physicsRect.left * physicsRatio,
+				physicsRect.top * physicsRatio,
+				physicsRect.right * physicsRatio,
+				physicsRect.bottom * physicsRatio,
+				color);
+	}
 
 	public void drawBitmap(int imageId, PhysicsRect physicsRect) {
 		if (textures.get(imageId) == null) {
@@ -283,6 +292,6 @@ public class GLCanvas {
 		} else if (object.getType().equals(LoadableType.FONT)) {
 			object.setGLId(loadFont(FontLoader.getInstance().getFont(FontTypeFace.values()[object.getId()])));
 		}
-		
 	}
+	
 }

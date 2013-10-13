@@ -344,6 +344,9 @@ public class GameCamera {
 		
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
 		Profiler.initTick(ProfileType.RENDER);
+		
+		if (GameSettings.DRAW_PHYSICS)
+			PhysicalWorld.getInstance().render(gameCanvas, timeElapsed);
 
 		gameCanvas.restoreState();
 
