@@ -214,6 +214,8 @@ public class PhysicalWorld implements ContactListener, Renderable {
 					break;
 					
 				case CHAIN:
+					canvas.restoreState(); // TODO: Remove this hack when we stop rotating OpenGL
+					canvas.saveState(); // TODO: same as above
 					drawChain(canvas, (ChainShape) fixture.getShape());
 					break;
 				case EDGE:
@@ -229,63 +231,27 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			body = body.getNext();
 		}
 	}
+	
+	private Vec2[] auxVec = new Vec2[2];
 
 	private void drawEdge(GLCanvas canvas, EdgeShape shape) {
-		canvas.drawLine(
-				shape.m_vertex1.x * GLCanvas.physicsRatio,
-				shape.m_vertex1.y * GLCanvas.physicsRatio,
-				shape.m_vertex2.x * GLCanvas.physicsRatio,
-				shape.m_vertex2.y * GLCanvas.physicsRatio,
-				3, Color.YELLOW);
+		
+		auxVec[0] = shape.m_vertex1;
+		auxVec[1] = shape.m_vertex2;
+		canvas.drawLines(auxVec, 3, Color.YELLOW, false);
+		
 	}
 
 	private void drawChain(GLCanvas canvas, ChainShape shape) {
-		Vec2[] vertices = shape.m_vertices;
-		for (int i = 1 ; i < shape.m_count ; i++) {
-			
-			canvas.drawLine(
-					vertices[i-1].x * GLCanvas.physicsRatio,
-					vertices[i-1].y * GLCanvas.physicsRatio,
-					vertices[i].x * GLCanvas.physicsRatio,
-					vertices[i].y * GLCanvas.physicsRatio,
-					3, Color.WHITE);
-			
-		}
-		
-		canvas.drawLine(
-				vertices[0].x * GLCanvas.physicsRatio,
-				vertices[0].y * GLCanvas.physicsRatio,
-				vertices[shape.m_count - 1].x * GLCanvas.physicsRatio,
-				vertices[shape.m_count - 1].y * GLCanvas.physicsRatio,
-				3, Color.WHITE);
-		
+		canvas.drawGroundLines(shape.m_vertices, shape.m_vertices.length, 3, Color.WHITE);
 	}
 
 	private void drawCircle(GLCanvas canvas, CircleShape shape) {
-		new GLCircle(shape.m_radius * GLCanvas.physicsRatio).drawCircle(canvas, 0, 0, Color.YELLOW, false);
+		new GLCircle(shape.m_radius * GLCanvas.physicsRatio).drawCircle(canvas, 0, 0, Color.YELLOW, 3, false);
 	}
 
 	private void drawPolygon(GLCanvas canvas, PolygonShape shape) {
-
-		Vec2[] vertices = shape.getVertices();
-		
-		for (int i = 1 ; i < shape.getVertexCount() ; i++) {
-			
-			canvas.drawLine(
-					vertices[i-1].x * GLCanvas.physicsRatio,
-					vertices[i-1].y * GLCanvas.physicsRatio,
-					vertices[i].x * GLCanvas.physicsRatio,
-					vertices[i].y * GLCanvas.physicsRatio,
-					3, Color.YELLOW);
-			
-		}
-		
-		canvas.drawLine(
-				vertices[0].x * GLCanvas.physicsRatio,
-				vertices[0].y * GLCanvas.physicsRatio,
-				vertices[shape.getVertexCount() - 1].x * GLCanvas.physicsRatio,
-				vertices[shape.getVertexCount() - 1].y * GLCanvas.physicsRatio,
-				3, Color.YELLOW);
+		canvas.drawPhysicsLines(shape.getVertices(), shape.getVertexCount(), 3, Color.YELLOW, true);
 		
 	}
 }

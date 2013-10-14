@@ -76,14 +76,16 @@ public class GameWorldUI extends GameScreen {
 		
 		if (p1.isAlive()){
 			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390);
-			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, p1.getPercentageLeftToNextAct());
+			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, 5, p1.getPercentageLeftToNextAct());
+			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLACK, false, 5, p1.getPercentageLeftToNextAct());
 			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0),
 												centerImage(R.drawable.power, 2));			
 		}
 		
 		if (p2.isAlive()){
 			canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2.body.getPosition().x), 440);
-			coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true, p2.getPercentageLeftToNextAct());
+			coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true, 5, p2.getPercentageLeftToNextAct());
+			coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.BLACK, false, 5, p2.getPercentageLeftToNextAct());
 			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1),
 												centerImage(R.drawable.power, 2));
 		}

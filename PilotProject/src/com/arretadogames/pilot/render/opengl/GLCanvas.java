@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import org.jbox2d.common.Vec2;
+
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -122,8 +124,16 @@ public class GLCanvas {
 		GLRect.draw(gl, left, top, right, bottom, color);
 	}
 	
-	public void drawLine(float x, float y, float x2, float y2, float width, int color) {
-		GLLine.draw(x, y, x2, y2, width, color);
+	public void drawLines(Vec2[] vecs, float width, int color, boolean connectStartAndEnd) {
+		GLLine.drawLineStrip(vecs, vecs.length, width, color, connectStartAndEnd, 1);
+	}
+	
+	public void drawPhysicsLines(Vec2[] vecs, int count, float width, int color, boolean connectStartAndEnd) {
+		GLLine.drawLineStrip(vecs, count, width, color, connectStartAndEnd, GLCanvas.physicsRatio);
+	}
+	
+	public void drawGroundLines(Vec2[] vecs, int count, float width, int color) {
+		GLLine.drawLineStrip(vecs, count, width, color, false, GLCanvas.physicsRatio, true);
 	}
 
 	public void drawBitmap(int imageId, float x, float y) {
@@ -292,6 +302,14 @@ public class GLCanvas {
 		} else if (object.getType().equals(LoadableType.FONT)) {
 			object.setGLId(loadFont(FontLoader.getInstance().getFont(FontTypeFace.values()[object.getId()])));
 		}
+	}
+	
+	private Vec2[] auxVec = new Vec2[2];
+	
+	public void drawLine(float f, float g, float h, float i, float width, int color) {
+		auxVec[0] = new Vec2(f, g);
+		auxVec[1] = new Vec2(h, i);
+		drawLines(auxVec, width, color, false);
 	}
 	
 }

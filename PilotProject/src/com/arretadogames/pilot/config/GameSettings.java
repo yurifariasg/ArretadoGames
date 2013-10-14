@@ -10,7 +10,7 @@ public class GameSettings {
 	public static final boolean PROFILE_STEP_SPEED = false;
 	public static final boolean PROFILE_RENDER_SPEED = false;
 	public static final int GROUND_ENTITY_THRESHOLD = 3; // How many points should the ground be blocked
-	public static final boolean SHOW_FPS = false;
+	public static final boolean SHOW_FPS = true;
 	public static final int FPS_AVG_BUFFER_SIZE = 10;
 	public static final boolean DRAW_PHYSICS = true;
 	

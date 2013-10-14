@@ -32,8 +32,8 @@ public class GLTexturedFont {
 	private int charStart = 32;
 	private int charEnd = 126;
 	private int charUnknown = 32; // Must be between start and end
-	private int padX = 4; // X Padding
-	private int padY = 4; // Y Padding
+	private int padX = 4; // X Padding 4
+	private int padY = 2; // Y Padding 4
 
 	private GLTexture spriteData;
 
@@ -55,6 +55,9 @@ public class GLTexturedFont {
 			// Adjust to centre text about x,y
 			x -= textWidth / 2;
 		}
+		
+//		Uncomment the following line to draw the baseline
+//		GLLine.draw(x, y, x + textWidth, y, 2, Color.YELLOW);
 		
 		y -= scale * fontHeight / 2;
 
@@ -174,18 +177,24 @@ public class GLTexturedFont {
 		for (char c = (char) charStart; c <= (char) charEnd; c++) {
 			// Draw char
 			s[0] = c;
-			canvas.drawText(s, 0, 1, x, y, paint);
-			if (hasStroke)
-				canvas.drawText(s, 0, 1, x, y, mStrokePaint);
 			// Store source rectangle
 			if (hasStroke)
 				characterRects.put((int) c,
-					new Rect(x - (int)(Math.floor(mStrokePaint.getStrokeWidth())), (int) (y - cellHeight * 0.7), x
-					+ cellWidth, (int) (y + cellHeight * 0.3)));
+					new Rect(
+							x - (int)(Math.floor(mStrokePaint.getStrokeWidth())),
+							(int) (y - cellHeight * 0.7),
+							x + cellWidth - padX * 4,
+							(int) (y + cellHeight * 0.3 - padY)));
 			else
 				characterRects.put((int) c,
 						new Rect(x, (int) (y - cellHeight * 0.7), x
 						+ cellWidth, (int) (y + cellHeight * 0.3)));
+			
+
+			canvas.drawText(s, 0, 1, x, y, paint);
+			if (hasStroke)
+				canvas.drawText(s, 0, 1, x, y, mStrokePaint);
+			
 			// Increment and wrap at end of line
 			x += cellWidth;
 			if ((x + cellWidth) > textureSize) {
