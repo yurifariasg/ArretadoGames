@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.entities;
 
+import java.util.Arrays;
+
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
@@ -49,21 +51,17 @@ public class Ground extends Entity {
         // Draw Darker Lines
         int width = 2;
         int color = Color.rgb(77, 34, 0);
-        for (int lineIndex = 1 ; lineIndex < vec.length ; lineIndex++) {
-        	canvas.drawLine(
-        			vec[lineIndex - 1].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[lineIndex - 1].y * GLCanvas.physicsRatio,
-        			vec[lineIndex].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[lineIndex].y * GLCanvas.physicsRatio,
-        			width, color);
-        	
-        }
+        canvas.saveState();
+        
+//        canvas.translatePhysics(0, 0);
+        
+        canvas.drawGroundLines(vec, vec.length, width, color);
+        canvas.restoreState();
 		}else{
 			drawGround(canvas, vec);
 			int width = 2;
 	        int color = Color.rgb(77, 34, 0);
-			canvas.drawLine(
-        			vec[0].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[0].y * GLCanvas.physicsRatio,
-        			vec[1].x * GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - vec[1].y * GLCanvas.physicsRatio,
-        			width, color);
+	        canvas.drawGroundLines(vec, vec.length, width, color);
 		}
 	}
 	
@@ -87,7 +85,7 @@ public class Ground extends Entity {
 
 	@Override
 	public int getLayerPosition() {
-		return 2;
+		return -10;
 	}
 
 	@Override

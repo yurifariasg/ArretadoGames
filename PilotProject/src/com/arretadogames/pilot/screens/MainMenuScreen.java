@@ -69,10 +69,10 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	private void createUserInfoLabels() {
 		Account acc = AccountManager.get().getAccount1();
-		welcomeLabel = new Text(170, 320, "Welcome, " + acc.getName(),
+		welcomeLabel = new Text(400, 395, "Welcome, " + acc.getName(),
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
-		nameLabel = new Text(20, 360, "You have " + acc.getCoins() + " coins",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
+		nameLabel = new Text(400, 445, "You have " + acc.getCoins() + " coins",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 	}
 
 	@Override

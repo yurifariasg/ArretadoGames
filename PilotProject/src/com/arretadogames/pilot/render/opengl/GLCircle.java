@@ -12,7 +12,7 @@ import android.opengl.GLES11;
 
 public class GLCircle {
 	
-	private static final int DEFAULT_NUM_SEGMENTS = 100; // Minimum: 3 (Triangle)
+	private static final int DEFAULT_NUM_SEGMENTS = 60; // Minimum: 3 (Triangle)
 	
     private FloatBuffer vertexBuffer;
     private ShortBuffer indexBuffer;
@@ -71,18 +71,18 @@ public class GLCircle {
     }
     
     // default draw
-	public void drawCircle(GLCanvas gl, float x, float y, int color, boolean filled) {
-		drawCircle(gl, x, y, color, filled, 0, numSegments);
+	public void drawCircle(GLCanvas gl, float x, float y, int color, int lineWidth, boolean filled) {
+		drawCircle(gl, x, y, color, filled, lineWidth, 0, numSegments);
 	}
     
 	// percent: 0 to 100
-    public void drawCircle(GLCanvas gl, float x, float y, int color, boolean filled, int percent) {
-    	drawCircle(gl, x, y, color, filled, 0, percent * numSegments / 100);
+    public void drawCircle(GLCanvas gl, float x, float y, int color, boolean filled, int lineWidth, int percent) {
+    	drawCircle(gl, x, y, color, filled, lineWidth, 0, percent * numSegments / 100);
     }
     
     // fromsegment - starting segment to draw
     // tosegment - last segment to draw
-    public void drawCircle(GLCanvas gl, float x, float y, int color, boolean filled, int fromSegment, int toSegment) {
+    public void drawCircle(GLCanvas gl, float x, float y, int color, boolean filled, int lineWidth, int fromSegment, int toSegment) {
     	if (fromSegment > toSegment || fromSegment < 0 || toSegment > numSegments)
     		throw new IllegalArgumentException("Error in segment parameter while drawing circle");
     	
@@ -97,12 +97,20 @@ public class GLCircle {
 		
 		GLES11.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
 				Color.blue(color) / 255f, Color.alpha(color) / 255f);
-        
-        // Draw
-        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer); // Sets Vertex Buffer
-        GLES11.glDrawElements(GL10.GL_TRIANGLES, (toSegment - fromSegment) * 3, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
-        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		
+		if (filled) {
+	        // Draw
+	        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+	        GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer); // Sets Vertex Buffer
+	        GLES11.glDrawElements(GL10.GL_TRIANGLES, (toSegment - fromSegment) * 3, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
+	        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		} else {
+			
+			vertexBuffer.position(fromSegment * 3 + 3); // Jump Center
+			GLLine.drawLineStrip(vertexBuffer, (toSegment - fromSegment), lineWidth, color,
+					(toSegment == numSegments && fromSegment == 0));
+			
+		}
         
         // Reset Color
         GLES11.glColor4f(1, 1, 1, 1);

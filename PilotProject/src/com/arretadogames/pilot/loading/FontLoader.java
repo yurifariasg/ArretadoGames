@@ -56,16 +56,16 @@ public class FontLoader {
 			Paint paint = new Paint(); // Create Android Paint Instance
 			paint.setAntiAlias(true); // Enable Anti Alias
 			paint.setTypeface(tf); // Set Typeface
-			paint.setTextSize(GameSettings.DEFAULT_FONT_SIZE); // Set Text Size
+			paint.setTextSize(GameSettings.DEFAULT_FONT_SIZE * 1.5f); // Set Text Size
 			paint.setColor(Color.WHITE); // Set ARGB (White, Opaque)
 			paint.setTextAlign(Paint.Align.LEFT);
 			
 			Paint mStrokePaint = new Paint();
 			mStrokePaint.setTypeface(tf);
 			mStrokePaint.setStyle(Style.STROKE);
-			mStrokePaint.setStrokeWidth(2);
+			mStrokePaint.setStrokeWidth(5);
 			mStrokePaint.setColor(Color.rgb(89, 103, 213));
-			mStrokePaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE);
+			mStrokePaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE * 1.5f);
 			mStrokePaint.setAntiAlias(true);
 			mStrokePaint.setTextAlign(Paint.Align.LEFT);
 			

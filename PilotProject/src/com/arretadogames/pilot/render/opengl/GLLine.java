@@ -9,6 +9,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import org.jbox2d.common.Vec2;
 
+import com.arretadogames.pilot.config.GameSettings;
+
 import android.graphics.Color;
 import android.opengl.GLES11;
 
@@ -16,84 +18,92 @@ public class GLLine {
 	
     protected static FloatBuffer vertexBuffer;
     protected static ShortBuffer indexBuffer;
+    
+    public static void drawLineStrip(Vec2[] vecs, int count, float width, int color, boolean connectEndAndStart, float multiplier) {
+    	drawLineStrip(vecs, count, width, color, connectEndAndStart, multiplier, false);
+    }
 
-	public static void draw(float x, float y, float x2, float y2, float width, int color) {
-		drawLine(x, y, x2, y2, width, color);
-	}
-	
-	private static void drawLine(float x, float y, float x2, float y2, float width, int color) {
-		
-//		Algorithm:
-//		vec2  p1(x1, y1);
-//		vec2  p2(x2, y2);
-//		vec2  v = p2 - p1;
-//		v /= v.length();  // make it a unit vector
-//		vec2  vp(-v.y, v.x);  // compute the vector perpendicular to v
-//		vec2  v[4];
-//		v[0] = p1 + W/2 * vp;
-//		v[1] = p1 - W/2 * vp;
-//		v[2] = p2 + W/2 * vp;
-//		v[3] = p2 - W/2 * vp;    
-//		// Load the v[] array into a vertex-buffer object
-//		Order: { 0, 1, 2, 3, 3, 4, 5, 6, 7 }
-		
-		Vec2 v = new Vec2(x, y);
-		Vec2 v2 = new Vec2(x2, y2);
-		Vec2 v3 = v2.add(v.negate());
-		v3.normalize();
-		
-		Vec2 perpendicular = new Vec2(-v3.y, v3.x);
-		perpendicular.mulLocal(width/2);
-		
-		Vec2[] quad = new Vec2[4];
-		quad[0] = v.add(perpendicular);
-		quad[1] = v.sub(perpendicular);
-		quad[2] = v2.add(perpendicular);
-		quad[3] = v2.sub(perpendicular);
-		
-		if (indexBuffer == null) {
-			createIndicesBuffer(new short[] {1, 0, 2, 1, 2, 3});
+	public static void drawLineStrip(Vec2[] vecs, int count, float width, int color, boolean connectEndAndStart, float multiplier, boolean invertY) {
+		if (indexBuffer == null || indexBuffer.capacity() < count) {
+			createIndicesBuffer(count);
 		}
 		indexBuffer.position(0);
-		
-	    float vertices[] = new float[12];
-	    int verticesIndex = 0;
-	    for (int i = 0 ; i < 4 ; i++) {
-	    	vertices[verticesIndex++] = quad[i].x;
-	    	vertices[verticesIndex++] = quad[i].y;
-	    	vertices[verticesIndex++] = 0; // z
-	    }
-		
-		if (vertexBuffer == null) {
-	        ByteBuffer vbb  = ByteBuffer.allocateDirect(vertices.length * 4);
-	        vbb.order(ByteOrder.nativeOrder());
-	        vertexBuffer = vbb.asFloatBuffer();
+		if (vertexBuffer == null || vertexBuffer.capacity() < count * 3) {
+			createVertexBuffer(count * 3);
 		}
 		
-		vertexBuffer.clear();
-        vertexBuffer.put(vertices);
-        vertexBuffer.position(0);
-        
+		// Fill VertexBuffer
+		vertexBuffer.position(0);
+		for (int i = 0 ; i < count ; i++) {
+			vertexBuffer.put(vecs[i].x * multiplier);
+			
+			if (invertY) // TODO: This hack should be removed when we invert OpenGL coordinates
+				vertexBuffer.put(GameSettings.TARGET_HEIGHT - vecs[i].y * multiplier);
+			else
+				vertexBuffer.put(vecs[i].y * multiplier);
+			
+			vertexBuffer.put(0);
+			
+		}
+		
+		// Resets position
+		vertexBuffer.position(0);
+		
 		GLES11.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
 				Color.blue(color) / 255f, Color.alpha(color) / 255f);
         
+		GLES11.glLineWidth(width);
+		
         // Draw
         GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer); // Sets Vertex Buffer
-        GLES11.glDrawElements(GL10.GL_TRIANGLES, 6, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
+        GLES11.glDrawElements(connectEndAndStart ? GL10.GL_LINE_LOOP : GL10.GL_LINE_STRIP,
+        		count, GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
         GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         
         // Reset Color
         GLES11.glColor4f(1, 1, 1, 1);
-		
+	}
+
+	private static void createVertexBuffer(int length) {
+		ByteBuffer vbb  = ByteBuffer.allocateDirect(length * 4);
+        vbb.order(ByteOrder.nativeOrder());
+        vertexBuffer = vbb.asFloatBuffer();
 	}
 	
-	protected static void createIndicesBuffer(short[] indices) {
-        ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
+	protected static void createIndicesBuffer(int length) {
+        ByteBuffer ibb = ByteBuffer.allocateDirect(length * 2);
         ibb.order(ByteOrder.nativeOrder());
         indexBuffer = ibb.asShortBuffer();
-        indexBuffer.put(indices);
+        for (short i = 0 ; i < length ; i++)
+        	indexBuffer.put(i);
         indexBuffer.position(0);
     }
+
+	public static void drawLineStrip(FloatBuffer vBuffer, int count, int lineWidth, int color, boolean loop) {
+		if (indexBuffer == null || indexBuffer.capacity() < count) {
+			createIndicesBuffer(count);
+		}
+		indexBuffer.position(0);
+		
+		GLES11.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
+				Color.blue(color) / 255f, Color.alpha(color) / 255f);
+        
+		GLES11.glLineWidth(lineWidth);
+		
+        // Draw
+        GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        GLES11.glEnable(GL10.GL_LINE_SMOOTH);
+        GLES11.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
+        GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vBuffer); // Sets Vertex Buffer
+        GLES11.glDrawElements(loop ? GL10.GL_LINE_LOOP : GL10.GL_LINE_STRIP,
+        		count + (loop ? 0 : 1), // plus one to get the next vertex for strip
+        		GL10.GL_UNSIGNED_SHORT, indexBuffer); // Sets Index Buffer
+        GLES11.glDisable(GL10.GL_LINE_SMOOTH);
+        GLES11.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        
+        // Reset Color
+        GLES11.glColor4f(1, 1, 1, 1);
+	}
 
 }
