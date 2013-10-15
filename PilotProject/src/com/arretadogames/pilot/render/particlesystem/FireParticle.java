@@ -4,33 +4,37 @@ import org.jbox2d.common.Vec2;
 
 import android.graphics.Color;
 
-import com.arretadogames.pilot.entities.Steppable;
-import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.render.opengl.GLCircle;
 
-public abstract class Particle implements Renderable, Steppable{
+public class FireParticle extends Particle{
+
 	private Vec2 location;
-	private Vec2 velocity;
-	private Vec2 acceleration;
 	private float lifespan;
+	
+	private Vec2 acceleration;
+	private Vec2 velocity;
 	private int currentColor;
 	private GLCircle circle;
-	private ParticleType pType;
 
-	public Particle(Vec2 location, float lifespan){
+	public FireParticle(Vec2 location, float lifespan){
+		super(location, lifespan);		
 		this.location = location;
 		this.lifespan = lifespan;
 		
 		// Setting the Particle Configurations
-//		this.acceleration = new Vec2( 0f, -0.05f );
-//		this.velocity = new Vec2( ((float) Math.random()*1 ), (float) Math.random()*-2 );
-//		this.currentColor = Color.RED;
-//		this.circle = new GLCircle(8);
+		this.acceleration = new Vec2( 0f, -0.05f );
+		this.velocity = new Vec2( generateNum((float) Math.random()), (float) Math.random()*-2 );
+		this.currentColor = Color.RED;
+		this.circle = new GLCircle(8);
 	}
 
 	@Override
-	public abstract void step(float timeElapsed);
+	public void step(float timeElapsed) {
+		velocity.addLocal(acceleration);
+		location.addLocal(velocity);
+	    lifespan -= timeElapsed;
+	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
@@ -43,9 +47,9 @@ public abstract class Particle implements Renderable, Steppable{
     }
 	
 	public void setColor(){
-		if (this.lifespan <= 0.7f){
+		if (this.lifespan <= 0.5f){
 			currentColor = Color.YELLOW;
-		}else if (this.lifespan < 1.3f)
+		}else if (this.lifespan < 1.1f)
 			currentColor = Color.rgb(255, 128, 0);			 //Orange
 		else{
 			currentColor = Color.RED;
@@ -60,6 +64,23 @@ public abstract class Particle implements Renderable, Steppable{
 		this.lifespan = newLifespan;
 	}
 	
-	public abstract ParticleType getType();
+	private float generateNum(float num){
+		if (isOdd(num))
+			num *= -1;
+		return num;
+	}
+	
+	private boolean isOdd(float numb){
+		numb *= 10;
+		int num = (int) numb;
+		if (num%2 == 0)
+			return false;
+		return true;
+	}
+
+	@Override
+	public ParticleType getType() {
+		return ParticleType.FIRE_PARTICLE;
+	}
 }
 

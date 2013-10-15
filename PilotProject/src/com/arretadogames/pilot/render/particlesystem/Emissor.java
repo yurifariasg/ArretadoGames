@@ -12,41 +12,76 @@ public class Emissor implements Renderable, Steppable{
 	private Vec2 velocity;
 	private Particle[] particles;
 	
-	public Emissor(Vec2 location, Vec2 velocity){
+	public Emissor(Vec2 location, Vec2 velocity, ParticleType pType){
 		this.eLocation = location;
 		this.velocity = velocity;
-		particles = new Particle[NUMBER_OF_PARTICLES];
-		setUpParticles();
+		setParticlesType(pType);
 	}
-
-	private void setUpParticles() {
-		for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
-			particles[i] = new Particle( this.eLocation.clone(), new Vec2(0.025f, 0.025f), 1f, 0.4f, 3f );
+	
+	private void setParticlesType(ParticleType p){
+		switch (p) {
+		case FIRE_PARTICLE:
+			particles = new FireParticle[NUMBER_OF_PARTICLES];
+			for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
+				particles[i] = new FireParticle( this.eLocation.clone(), (float)Math.random() * 2f );
+			}
+			break;
+		case WATER_PARTICLE:
+			particles = new WaterParticle[NUMBER_OF_PARTICLES];
+			for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
+				particles[i] = new WaterParticle( this.eLocation.clone(), (float)Math.random() * 2f );
+			}
+			break;
+		case SAND_PARTICLE:
+			particles = new SandParticle[NUMBER_OF_PARTICLES];
+			for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
+				particles[i] = new SandParticle( this.eLocation.clone(), (float)Math.random() * 2f );
+			}
+			break;
+		default:
+			break;
 		}
 	}
 
 	@Override
 	public void step(float timeElapsed) {
-//		location.addLocal(velocity);
+		eLocation.addLocal(velocity);
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
+//		Particle p;
+//		for (int i = 0; i < particles.length; i++){
+//			p = particles[i];
+//			if (p.isDead()){
+//				if (p.getType() == ParticleType.FIRE_PARTICLE)
+//					p = new FireParticle(this.eLocation.clone(), (float)Math.random() * 2f);
+//				
+//				else if(p.getType() == ParticleType.WATER_PARTICLE)
+//					p = new WaterParticle(this.eLocation.clone(), (float)Math.random() * 2f);
+//				
+//				else
+//					p = new SandParticle(this.eLocation.clone(), (float)Math.random() * 2f);
+//			}
+//			p.step(timeElapsed);
+//			p.render(canvas, timeElapsed);
+//		}
+		for (int i = 0; i < NUMBER_OF_PARTICLES; i++){
 			if (particles[i].isDead()){
-				particles[i].setLocation(this.eLocation);
+				if (particles[i].getType() == ParticleType.FIRE_PARTICLE)
+					particles[i] = new FireParticle(this.eLocation.clone(), (float)Math.random() * 2f);
+				
+				else if (particles[i].getType() == ParticleType.WATER_PARTICLE)
+					particles[i] = new WaterParticle(this.eLocation.clone(), (float)Math.random() * 2f);
+				
+				else if (particles[i].getType() == ParticleType.SAND_PARTICLE)
+					particles[i] = new SandParticle(this.eLocation.clone(), (float)Math.random() * 2f);
 			}
+			
 			particles[i].step(timeElapsed);
 			particles[i].render(canvas, timeElapsed);
 		}
+		
+		
 	}
 }
-
-/*
-p = new Particle(	
-location		new Vec2(GameSettings.TARGET_WIDTH/2, GameSettings.TARGET_HEIGHT/2),
-aceleration		new Vec2(GameSettings.TARGET_WIDTH/2,GameSettings.TARGET_HEIGHT/2),
-velx			1f,
-vely		 	0.4f,
-lifespan		3f);
-*/

@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.screens;
 
+import org.jbox2d.common.Vec2;
+
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
@@ -13,6 +15,8 @@ import com.arretadogames.pilot.googlesync.SyncManager;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.render.particlesystem.Emissor;
+import com.arretadogames.pilot.render.particlesystem.ParticleType;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
@@ -42,6 +46,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private float currentZoom;
 	private State currentState;
 	
+	private Emissor e;
+	
 	public MainMenuScreen() {
 		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
 				R.drawable.bt_play_selected,
@@ -65,6 +71,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		currentState = State.MAIN;
 		settingsScreen = new SettingsScreen(this);
+		
+		//TODO EMISSOR
+//		e = new Emissor(new Vec2(100 , GameSettings.TARGET_HEIGHT - 15), new Vec2(1.2f,0f), ParticleType.FIRE_PARTICLE);
 	}
 	
 	private void createUserInfoLabels() {
@@ -112,6 +121,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.restoreState();
+		
+		e.step(timeElapsed);
+		e.render(canvas, timeElapsed);
 	}
 
 	@Override
@@ -137,7 +149,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
