@@ -26,7 +26,7 @@ public class TatuBola extends Player implements Steppable{
 	private int contJump;
 	private int contAct;
 	private int contacts;
-	private Fixture footFixture;
+	protected Fixture footFixture;
 	private final float MAX_JUMP_VELOCITY = 5;
 	private final float MAX_RUN_VELOCITY = 3;
 	private float JUMP_ACELERATION = 3;

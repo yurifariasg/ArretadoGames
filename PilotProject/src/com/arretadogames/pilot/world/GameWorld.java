@@ -115,10 +115,6 @@ public class GameWorld extends GameScreen {
 			worldEntities.add(new Fire(-5,0));
 		
 		
-		//TODO hooolllleee hard coded
-		worldEntities.add(new Hole(10, 20));
-		
-		
 		List<EntityDescriptor> entities = ld.getEntities();
 		List<Water> waterEntities = new ArrayList<Water>();
 		
@@ -133,6 +129,9 @@ public class GameWorld extends GameScreen {
 					break;
 				case COIN:
 					entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
+					break;
+				case HOLE:
+					entity = new Hole(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 				case PLAYER:
 					entity = createPlayerCharacter(entityDescriptor.getX(), entityDescriptor.getY(),

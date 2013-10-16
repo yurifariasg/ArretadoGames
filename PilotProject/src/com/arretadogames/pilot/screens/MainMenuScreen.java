@@ -122,8 +122,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.restoreState();
 		
-		e.step(timeElapsed);
-		e.render(canvas, timeElapsed);
+//		e.step(timeElapsed);
+//		e.render(canvas, timeElapsed);
 	}
 
 	@Override
