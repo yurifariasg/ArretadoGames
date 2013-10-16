@@ -80,6 +80,8 @@ public class GameWorld extends GameScreen {
 	private boolean isInitialized;
 	private LevelDescriptor level;
 	
+	private Fire fire;
+	
 	public GameWorld() {
 		backgroundId = R.drawable.repeatable_background;
 		pWorld = PhysicalWorld.getInstance();
@@ -111,8 +113,10 @@ public class GameWorld extends GameScreen {
 		worldEntities = new ArrayList<Entity>();
 		steppables = new ArrayList<Steppable>();
 		
-		if (GameSettings.ACTIVATE_FIRE)
-			worldEntities.add(new Fire(-5,0));
+		if (GameSettings.ACTIVATE_FIRE){
+			fire = new Fire(-5,0);
+			worldEntities.add(fire);
+		}
 		
 		
 		List<EntityDescriptor> entities = ld.getEntities();
@@ -382,5 +386,9 @@ public class GameWorld extends GameScreen {
 	
 	public float getFlagPos(){
 		return flagPos;
+	}
+	
+	public Fire getFire(){
+		return fire;
 	}
 }

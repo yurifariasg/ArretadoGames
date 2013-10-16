@@ -18,7 +18,8 @@ public class Fire extends Entity implements Steppable{
 
 	private float height;
 	private float width;
-	private float velocity = 3.2f;
+	private float base_velocity = 3.2f;
+	private float velocity = 3.2f;//3.2f;
 	
 	public Fire(float x, float y) {
 		super(x, y);
@@ -78,4 +79,12 @@ public class Fire extends Entity implements Steppable{
 		return R.drawable.fire_status;
 	}
 
+	public float getBaseVelocity(){
+		return base_velocity;
+	}
+
+	public void setCurrentVelocity(float newVelocity) {
+		velocity = newVelocity;
+	}
+	
 }

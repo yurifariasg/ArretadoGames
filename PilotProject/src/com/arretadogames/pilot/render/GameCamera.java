@@ -59,7 +59,7 @@ public class GameCamera {
 	private float targetPhysicsRatio;
 
 	//FOR NOW THESE ARE CONSTANTS
-	private static final float NUMBER_OF_REPETITIONS = 4;
+	private static final float NUMBER_OF_REPETITIONS = 2;
 	private static final int END_POSITION = 1600;
 
 	public GameCamera(GameWorld world, int backgroundId) {
@@ -315,6 +315,18 @@ public class GameCamera {
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
+		if (GameSettings.ACTIVATE_FIRE){
+			float cameraWidth = upperBound.x - lowerBound.x;
+			float velocityIncrease = 0;
+			if ( cameraWidth >= 11 ){
+				velocityIncrease = (cameraWidth - 11) / 20.0f;
+			}
+			System.out.println("~INCREASE OF " + velocityIncrease + "%~");
+			float newVelocity = gameWorld.getFire().getBaseVelocity() * (1 + velocityIncrease);
+			System.out.println("~NEW SPEED IS " + newVelocity + "!!~");
+			gameWorld.getFire().setCurrentVelocity(newVelocity);
+		}
+		
 		if ( transitionTrigger == TransitionTrigger.PLAYER_NUM_CHANGED || transitionTrigger == TransitionTrigger.NONE ){
 			float pos = upperBound.x;
 			//			float pos = lowerBound.x;// + (upperBound.x * (0.5f));
