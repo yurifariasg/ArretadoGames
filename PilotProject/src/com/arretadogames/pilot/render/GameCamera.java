@@ -321,9 +321,7 @@ public class GameCamera {
 			if ( cameraWidth >= 11 ){
 				velocityIncrease = (cameraWidth - 11) / 20.0f;
 			}
-			System.out.println("~INCREASE OF " + velocityIncrease + "%~");
 			float newVelocity = gameWorld.getFire().getBaseVelocity() * (1 + velocityIncrease);
-			System.out.println("~NEW SPEED IS " + newVelocity + "!!~");
 			gameWorld.getFire().setCurrentVelocity(newVelocity);
 		}
 		
