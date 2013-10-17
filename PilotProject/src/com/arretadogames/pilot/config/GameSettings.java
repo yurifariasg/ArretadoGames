@@ -12,7 +12,7 @@ public class GameSettings {
 	public static final int GROUND_ENTITY_THRESHOLD = 3; // How many points should the ground be blocked
 	public static final boolean SHOW_FPS = true;
 	public static final int FPS_AVG_BUFFER_SIZE = 10;
-	public static final boolean DRAW_PHYSICS = true;
+	public static final boolean DRAW_PHYSICS = false;
 	
 	public static final boolean ACTIVATE_FIRE = false;
 	

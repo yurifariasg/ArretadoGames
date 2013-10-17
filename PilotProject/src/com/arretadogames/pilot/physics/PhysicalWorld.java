@@ -133,7 +133,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 	/**
 	 * Create ground based on given entities
 	 */
-	public Vec2[] createGroundLines(List<Water> waterEntities) {
+	public Vec2[] createGroundLines(List<Water> waterEntities, float lastX) {
 		
 		// Sort Based on X
 		Collections.sort(waterEntities, new Comparator<Water>() {
@@ -143,12 +143,11 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			}
 		});
 		
-		
 		Vec2[] groundLines = new Vec2[2 + waterEntities.size() * 4];
 		int groundLineIndex = 0;
 		
 		// Initial Pos
-		Vec2 pos = new Vec2(-1000, 0);
+		Vec2 pos = new Vec2(-10, 0);
 		groundLines[groundLineIndex++] = pos;
 		
 		float waterWidth;
@@ -181,14 +180,12 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			
 		}
 		
-		pos = new Vec2(1000, 0);
+		pos = new Vec2(lastX + 10, 0);
 		groundLines[groundLineIndex++] = pos;
 		
 		return groundLines;
 	}
 	
-//	private PhysicsRect auxRect = new PhysicsRect(0, 0);
-
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		//Render All bodies

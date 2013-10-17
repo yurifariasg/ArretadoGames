@@ -204,7 +204,7 @@ public class GameWorld extends GameScreen {
 		}
 		
 		// Add Ground
-		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities);//new Vec2[ld.getGroundDescriptor().getPoints().size()];
+		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities, flagPos);//new Vec2[ld.getGroundDescriptor().getPoints().size()];
 		int amountOfPoints = groundPoints.length;
 		
 		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];
