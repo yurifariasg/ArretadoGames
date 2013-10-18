@@ -14,6 +14,9 @@ import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 
+import android.graphics.Color;
+
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.LayerEntity.Layer;
@@ -60,7 +63,7 @@ public class GameCamera {
 	public GameCamera(GameWorld world, int backgroundId) {
 		this(world, 1000f);// Default is 1000 milliseconds
 		
-		movingBackground = new MovingBackground(backgroundId);
+		movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
 		entitiesToDraw = new ArrayList<Entity>();
 	}
 
@@ -322,7 +325,14 @@ public class GameCamera {
 		}
 		
 		// Draw Background
-		gameCanvas.fillScreen(255, 255, 255, 255);
+//		gameCanvas.fillScreen(255, 255, 255, 255);
+		// Draw Sky
+		int topSky = Color.rgb(0, 134, 168);//, green, blue)
+		int bottomSky = Color.rgb(277, 251, 145);
+		
+		gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT, GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT, GameSettings.TARGET_WIDTH, 0,
+				topSky, bottomSky, bottomSky, topSky);
+		
 		movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x, center.y, initialX, flagX);
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw background");

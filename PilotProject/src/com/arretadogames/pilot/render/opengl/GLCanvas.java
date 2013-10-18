@@ -223,6 +223,21 @@ public class GLCanvas {
 		return loadImage(imageId, bitmap);
 	}
 	
+	public void drawRect(
+    		float x, float y,
+    		float x2, float y2,
+    		float x3, float y3,
+    		float x4, float y4,
+    		int colorV1, int colorV2,
+    		int colorV3, int colorV4) {
+		GLRect.draw(gl,
+				(x), (y),
+				(x2),(y2),
+				(x3), (y3),
+				(x4), (y4),
+				colorV1, colorV2, colorV3, colorV4);
+	}
+	
 	public void drawRectFromPhysics(
     		float x, float y,
     		float x2, float y2,
