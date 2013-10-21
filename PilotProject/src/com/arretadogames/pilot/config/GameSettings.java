@@ -13,6 +13,7 @@ public class GameSettings {
 	public static final boolean SHOW_FPS = true;
 	public static final int FPS_AVG_BUFFER_SIZE = 10;
 	public static final boolean DRAW_PHYSICS = false;
+	public static final boolean USE_OLD_BACKGROUND = false;
 	
 	public static final boolean ACTIVATE_FIRE = false;
 	

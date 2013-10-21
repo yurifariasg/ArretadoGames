@@ -1,21 +1,19 @@
 package com.arretadogames.pilot.render;
 
+import org.jbox2d.common.Vec2;
+
 import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.entities.FinalFlag;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class MovingBackground {
 	
-	private static final float IMAGE_TOP = -40; // Baseline
-	
 	private int imageId;
 	private float width;
 	private float height;
-	private float ratio;
 	private float imageMeterRatio = -1;
 	private Rect srcRectF;
 	private RectF dstRectF;
@@ -23,9 +21,8 @@ public class MovingBackground {
 	public MovingBackground(int imageId) {
 		this.imageId = imageId;
 		int[] imageSize = ImageLoader.checkBitmapSize(imageId);
-		this.width = imageSize[0];// * imageWidthMultiplier;
+		this.width = imageSize[0];
 		this.height = imageSize[1];
-		this.ratio = imageSize[0] / imageSize[1];
 		this.srcRectF = new Rect();
 		this.dstRectF = new RectF(0, 0, GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT);
 	}
@@ -36,38 +33,29 @@ public class MovingBackground {
 		srcRectF.right = (int) (centerX + width / 2);
 		srcRectF.bottom = (int) (centerY + height / 2);
 	}
-	
-	private void setDstRect(float centerX, float centerY, float width, float height) {
-		dstRectF.left = (centerX - width / 2);
-		dstRectF.top = (centerY - height / 2);
-		dstRectF.right = (centerX + width / 2);
-		dstRectF.bottom = (centerY + height / 2);
-	}
 
-	public void render(GLCanvas canvas, float timeElapsed, float zoomRatio, float currentX, float currentY, float initialX, float finalX) {
+	public void render(GLCanvas canvas, float timeElapsed, float zoomRatio, float currentX, float currentY, float initialX, float finalX, Vec2 translator) {
 		
 		if (imageMeterRatio == -1) {
-			initialX -= 30;
-			finalX += 30;
-			this.width *= (finalX - initialX) / 100f;
+			initialX -= 30; // GAP
+			finalX += 30; // GAP
+			this.width *= (finalX - initialX) / 100f; // Adjust this.. will affect speed
 			imageMeterRatio = this.width / (finalX - initialX);
 		}
 		
+		dstRectF.bottom = GameSettings.TARGET_HEIGHT + translator.y;
+		dstRectF.bottom +=  110 // ADAPT THIS DEPENDING ON THE IMAGE (just to make sure it is where it is supposed to be)
+				*  Math.abs(zoomRatio) / 70f; // MaximumZoom = 70
+		dstRectF.top = dstRectF.bottom - height * Math.abs(zoomRatio) / 70f; // MaximumZoom = 70
+		
+		dstRectF.left = 0;
+		dstRectF.right = GameSettings.TARGET_WIDTH;
+		
+		// Source Rect
 		setSrcRect((currentX + 30) * imageMeterRatio ,
-                GameSettings.TARGET_HEIGHT / 2,
-                this.width,
-                GameSettings.TARGET_HEIGHT);
-
-		dstRectF.top = ( -(currentY / 50f)) * imageMeterRatio;
-		dstRectF.bottom = height;
-		
-		float bgMultiplier = 1 + (zoomRatio - 40) / 50f;
-		currentY -= (zoomRatio / 8); // 8
-		
-		setDstRect(GameSettings.TARGET_WIDTH / 2,
-		                GameSettings.TARGET_HEIGHT / 2 - IMAGE_TOP + currentY * 20,
-		                this.width * bgMultiplier,
-		                dstRectF.height() * bgMultiplier);
+                height / 2,
+                dstRectF.width() * height / dstRectF.height(),
+                height);
 		
 		canvas.drawBitmap(imageId, srcRectF, dstRectF);
 	}

@@ -15,6 +15,8 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
@@ -22,6 +24,7 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.LayerEntity.Layer;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.util.Profiler;
@@ -31,6 +34,8 @@ import com.arretadogames.pilot.world.GameWorld;
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;
+	private int repeatableBackgroundId;
+	private int finalSliceBackgroundId;
 
 	private boolean calculateWidthFirst;
 	private int currentNumberOfPlayers;
@@ -43,26 +48,32 @@ public class GameCamera {
 	private boolean transitioning;
 	private float transitionDuration; // Measured in milliseconds.
 	private long startTime;
-	
+
 	private MovingBackground movingBackground;
 	private List<Entity> entitiesToDraw;
 
-	private enum TransitionTrigger{
+	private enum TransitionTrigger {
 		NONE, PLAYER_NUM_CHANGED, VIEWPORT_SIDE_PRIORITY_CHANGED;
 	}
+
 	private TransitionTrigger transitionTrigger = TransitionTrigger.NONE;
 
 	private Vec2 targetLowerBound;
 	private Vec2 targetUpperBound;
 	private Vec2 targetTranslator;
 	private float targetPhysicsRatio;
-	
+
+	// FOR NOW THESE ARE CONSTANTS
+	private static final float NUMBER_OF_REPETITIONS = 2;
+	private static final int END_POSITION = 1600;
+
 	private float initialX = -1; // Initial X position from players
 	private float flagX = -1;
 
 	public GameCamera(GameWorld world, int backgroundId) {
 		this(world, 1000f);// Default is 1000 milliseconds
-		
+		this.repeatableBackgroundId = backgroundId;
+
 		movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
 		entitiesToDraw = new ArrayList<Entity>();
 	}
@@ -97,7 +108,7 @@ public class GameCamera {
 	// Determine viewport: portion of World that will be visible. Obviously, it
 	// is measured in meters.
 	private void determineViewport(GLCanvas gameCanvas, float timeElapsed) {
-		
+
 		Profiler.initTick(ProfileType.RENDER);
 
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
@@ -236,8 +247,10 @@ public class GameCamera {
 			}
 		}
 
-		lowerBound = new Vec2(center.x - viewportWidth / 2, center.y - viewportHeight / 2);
-		upperBound = new Vec2(center.x + viewportWidth / 2, center.y + viewportHeight / 2);
+		lowerBound = new Vec2(center.x - viewportWidth / 2, center.y
+				- viewportHeight / 2);
+		upperBound = new Vec2(center.x + viewportWidth / 2, center.y
+				+ viewportHeight / 2);
 		translator = new Vec2(-physicsRatio * (center.x - viewportWidth / 2),
 				physicsRatio * (center.y - viewportHeight / 2));
 
@@ -296,83 +309,188 @@ public class GameCamera {
 			} else {
 
 				lowerBound = new Vec2(currentLowerBound);
-				lowerBound.addLocal(targetLowerBound.sub(currentLowerBound).mul(reachedPercentage));
+				lowerBound.addLocal(targetLowerBound.sub(currentLowerBound)
+						.mul(reachedPercentage));
 
 				upperBound = new Vec2(currentUpperBound);
-				upperBound.addLocal(targetUpperBound.sub(currentUpperBound).mul(reachedPercentage));
+				upperBound.addLocal(targetUpperBound.sub(currentUpperBound)
+						.mul(reachedPercentage));
 
 				translator = new Vec2(currentTranslator);
-				translator.addLocal(targetTranslator.sub(currentTranslator).mul(reachedPercentage));
+				translator.addLocal(targetTranslator.sub(currentTranslator)
+						.mul(reachedPercentage));
 
 				physicsRatio = currentPhysicsRatio;
-				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio) * reachedPercentage;
+				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio)
+						* reachedPercentage;
 			}
 		}
-		
+
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Calculate Viewport");
 		Profiler.initTick(ProfileType.RENDER);
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
 
-		if (GameSettings.ACTIVATE_FIRE){
+		if (GameSettings.ACTIVATE_FIRE) {
 			float cameraWidth = upperBound.x - lowerBound.x;
 			float velocityIncrease = 0;
-			if ( cameraWidth >= 11 ){
+			if (cameraWidth >= 11) {
 				velocityIncrease = (cameraWidth - 11) / 20.0f;
 			}
-			float newVelocity = gameWorld.getFire().getBaseVelocity() * (1 + velocityIncrease);
+			float newVelocity = gameWorld.getFire().getBaseVelocity()
+					* (1 + velocityIncrease);
 			gameWorld.getFire().setCurrentVelocity(newVelocity);
 		}
-		
+
 		// Draw Background
-//		gameCanvas.fillScreen(255, 255, 255, 255);
-		// Draw Sky
-		int topSky = Color.rgb(0, 134, 168);//, green, blue)
-		int bottomSky = Color.rgb(277, 251, 145);
-		
-		gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT, GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT, GameSettings.TARGET_WIDTH, 0,
-				topSky, bottomSky, bottomSky, topSky);
-		
-		movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x, center.y, initialX, flagX);
+		if (GameSettings.USE_OLD_BACKGROUND) {
+			gameCanvas.fillScreen(255, 255, 255, 255);
+			if (transitionTrigger == TransitionTrigger.PLAYER_NUM_CHANGED
+					|| transitionTrigger == TransitionTrigger.NONE) {
+				float pos = upperBound.x;
+				// float pos = lowerBound.x;// + (upperBound.x * (0.5f));
+				drawBackground(gameCanvas, pos);
+			} else {
+				float pos = targetUpperBound.x;
+				// float pos = targetLowerBound.x;// + (targetUpperBound.x *
+				// (0.5f));
+				drawBackground(gameCanvas, pos);
+			}
+		} else {
+			// Draw Sky
+			int topSky = Color.rgb(0, 134, 168);
+			int bottomSky = Color.rgb(277, 251, 145);
+	
+			gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT,
+					GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT,
+					GameSettings.TARGET_WIDTH, 0, topSky, bottomSky, bottomSky,
+					topSky);
+	
+			movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
+					center.y, initialX, flagX, translator);
+		}
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw background");
 		Profiler.initTick(ProfileType.RENDER);
-		
+
 		gameCanvas.saveState();
 
 		gameCanvas.translate(translator.x, translator.y);
 
-		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound, upperBound);
+		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound,
+				upperBound);
 		entitiesToDraw.addAll(entities);
-		
+
 		// Sort based on layer
 		Collections.sort(entitiesToDraw, Layer.getComparator());
 
 		for (Entity entity : entitiesToDraw) {
 			entity.render(gameCanvas, timeElapsed);
 		}
-		
+
 		entitiesToDraw.clear();
-		
+
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
 		Profiler.initTick(ProfileType.RENDER);
-		
+
 		if (GameSettings.DRAW_PHYSICS)
 			PhysicalWorld.getInstance().render(gameCanvas, timeElapsed);
 
 		gameCanvas.restoreState();
 	}
 
-	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound, Vec2 
-			upperBound) {
+	private void drawBackground(GLCanvas gameCanvas, float pos) {
+
+		repeatableBackgroundId = R.drawable.editing_background;
+		finalSliceBackgroundId = R.drawable.final_slice_background;
+
+		int backgroundImageWidth = ImageLoader
+				.checkBitmapSize(repeatableBackgroundId)[0];
+		int backgroundImageHeight = ImageLoader
+				.checkBitmapSize(repeatableBackgroundId)[1];
+
+		float reached = (pos / gameWorld.getFlagPos());
+		if (reached < 0) {
+			reached = 0;
+		} else if (reached > 1) {
+			reached = 1;
+		}
+
+		float factor = (float) Math
+				.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
+		float backgroundWidth = backgroundImageWidth * factor;
+		float backgroundHeight = backgroundImageHeight * factor; // @yuri: This
+																	// wil
+																	// always be
+																	// equals to
+																	// TARGET_HEIGHT,
+																	// isnt it ?
+
+		// if (backgroundWidth < GameSettings.TARGET_WIDTH) {
+		// factor = (float) Math.ceil(GameSettings.TARGET_WIDTH /
+		// backgroundWidth);
+		// backgroundWidth *= factor;
+		// backgroundHeight *= factor;
+		// }
+
+		float actualEndPos = (backgroundWidth * (NUMBER_OF_REPETITIONS - 1))
+				+ END_POSITION;
+
+		int translate_x = (int) (reached * ((backgroundWidth * NUMBER_OF_REPETITIONS) - GameSettings.TARGET_WIDTH));
+		int translate_y = 0;
+
+		float endPosRelToScreen = 0;
+
+		if ((translate_x + (int) GameSettings.TARGET_WIDTH) < actualEndPos) {
+			endPosRelToScreen = 1;
+		} else if (translate_x > actualEndPos) {
+			endPosRelToScreen = 0;
+		} else {
+			endPosRelToScreen = (actualEndPos - translate_x)
+					/ GameSettings.TARGET_WIDTH;
+		}
+
+		RectF displayRectRepeatablePart = new RectF(0f, 0f,
+				GameSettings.TARGET_WIDTH * endPosRelToScreen, backgroundHeight);
+
+		RectF displayRectFinalPart = new RectF(
+				(GameSettings.TARGET_WIDTH * endPosRelToScreen), 0f,
+				GameSettings.TARGET_WIDTH, backgroundHeight);
+
+		Rect showRectRepeatablePart = new Rect(
+				translate_x,
+				translate_y,
+				(translate_x + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
+				(translate_y + (int) backgroundHeight));
+
+		Rect showRectFinalPart = new Rect(
+				((translate_x - (int) actualEndPos) + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
+				translate_y, (translate_x - (int) actualEndPos)
+						+ (int) (GameSettings.TARGET_WIDTH), translate_y
+						+ (int) backgroundHeight);
+
+		Profiler.profileFromLastTick(ProfileType.RENDER, "Calculate background");
+		Profiler.initTick(ProfileType.RENDER);
+
+		gameCanvas.fillScreen(255, 255, 255, 255);
+
+		gameCanvas.drawBitmap(repeatableBackgroundId, showRectRepeatablePart,
+				displayRectRepeatablePart);
+
+		gameCanvas.drawBitmap(finalSliceBackgroundId, showRectFinalPart,
+				displayRectFinalPart);
+	}
+
+	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound,
+			Vec2 upperBound) {
 
 		final Set<Entity> entities = new HashSet<Entity>();
 
-		PhysicalWorld
-		.getInstance()
-		.getWorld()
-		.queryAABB(
-				new QueryCallback() { // TODO: create QueryCallback just once
+		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() { // TODO:
+																				// create
+																				// QueryCallback
+																				// just
+																				// once
 
 					@Override
 					public boolean reportFixture(Fixture fixture) {
@@ -385,9 +503,9 @@ public class GameCamera {
 						}
 						return true;
 					}
-				},
-				new AABB(lowerBound, upperBound)); // TODO: create AABB just once
-		
+				}, new AABB(lowerBound, upperBound)); // TODO: create AABB just
+														// once
+
 		return entities;
 	}
 
@@ -396,7 +514,7 @@ public class GameCamera {
 			flagX = gameWorld.getFlagPos();
 			initialX = gameWorld.getPlayers().get(PlayerNumber.ONE).getPosX();
 		}
-		
+
 		determineViewport(canvas, timeElapsed);
 	}
 
