@@ -110,17 +110,20 @@ public class TatuBola extends Player implements Steppable{
 	
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0)
+		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0) {
+			if (hasFinished())
+				stopAction();
 			return;
+		}
 		
-			sprite.setAnimationState("jump");
-			float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
-			Vec2 direction = new Vec2(0,6);
-			direction.normalize();
-			direction.mulLocal(impulseX);
-			body.applyLinearImpulse(direction, body.getWorldCenter());
-			contJump = 5;
-			applyReturn(direction);
+		sprite.setAnimationState("jump");
+		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
+		Vec2 direction = new Vec2(0,6);
+		direction.normalize();
+		direction.mulLocal(impulseX);
+		body.applyLinearImpulse(direction, body.getWorldCenter());
+		contJump = 5;
+		applyReturn(direction);
 		
 	}
 	
@@ -139,7 +142,7 @@ public class TatuBola extends Player implements Steppable{
 			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
 		}
 		if(body.getLinearVelocity().length() > 8){
-			Vec2 vel = body.getLinearVelocity();
+			Vec2 vel = body.getLinearVelocity().clone();
 			vel.normalize();
 			body.setLinearVelocity(vel.mul(8));
 		}

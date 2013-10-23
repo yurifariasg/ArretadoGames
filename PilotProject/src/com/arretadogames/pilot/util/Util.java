@@ -23,6 +23,10 @@ public class Util {
 
 	/** Returns an interpoloated color, between <code>a</code> and <code>b</code> */
 	public static int interpolateColor(int a, int b, float proportion) {
+		if (proportion < 0)
+			proportion = 0;
+		if (proportion > 1)
+			proportion = 1;
 		return (Integer) evaluate(proportion, a, b);
 	}
 	

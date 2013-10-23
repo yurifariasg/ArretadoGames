@@ -125,7 +125,7 @@ public class LoboGuara extends Player implements Steppable{
 			body.applyLinearImpulse(new Vec2(0.5f * body.getMass(),0f), body.getWorldCenter());
 		}
 		if(body.getLinearVelocity().length() > 8){
-			Vec2 vel = body.getLinearVelocity();
+			Vec2 vel = body.getLinearVelocity().clone();
 			vel.normalize();
 			body.setLinearVelocity(vel.mul(8));
 		}
@@ -166,6 +166,8 @@ public class LoboGuara extends Player implements Steppable{
 	public void step(float timeElapsed) {
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
 		if (hasFinished() || !isAlive()) {
+			if (hasFinished())
+				stopAction();
 			return;
 		}
 		if (jumpActive) {

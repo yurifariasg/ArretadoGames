@@ -38,7 +38,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	private float currentWidth;
 	
 	private TextImageButton continueBt;
-	private TextImageButton optionsBt;
+//	private TextImageButton optionsBt;
 	private TextImageButton quitBt;
 	
 	public PauseScreen() {
@@ -54,13 +54,14 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 				"continue",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
 		
-		optionsBt = new TextImageButton(OPTIONS_BT, 0, 146, this,
-				R.drawable.bt_pause_selected,
-				0,
-				"options",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
+//		optionsBt = new TextImageButton(OPTIONS_BT, 0, 146, this,
+//				R.drawable.bt_pause_selected,
+//				0,
+//				"options",
+//				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
 		
-		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
+//		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
+		quitBt = new TextImageButton(QUIT_BT, 0, 146, this,
 				R.drawable.bt_pause_selected,
 				0,
 				"quit",
@@ -78,8 +79,8 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			float buttonX = 800 - currentWidth + ARROW_WIDTH + 2;
 			continueBt.setX(buttonX);
 			continueBt.render(canvas, timeElapsed);
-			optionsBt.setX(buttonX);
-			optionsBt.render(canvas, timeElapsed);
+//			optionsBt.setX(buttonX);
+//			optionsBt.render(canvas, timeElapsed);
 			quitBt.setX(buttonX);
 			quitBt.render(canvas, timeElapsed);
 			
@@ -101,7 +102,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			}
 		} else if (!isHidden) {
 			continueBt.input(event);
-			optionsBt.input(event);
+//			optionsBt.input(event);
 			quitBt.input(event);
 		}
 		

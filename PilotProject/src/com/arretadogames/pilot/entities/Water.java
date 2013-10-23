@@ -291,10 +291,10 @@ public class Water extends Entity implements Steppable{
 
 	private void applyBuoyancy(Entity caixa) {
 		
-		Vec2 v[] = caixa.getWaterContactShape().getVertices();
+		final Vec2 v[] = caixa.getWaterContactShape().getVertices();
 		int cont = caixa.getWaterContactShape().getVertexCount();
 		
-		Vec2 v2[] = shapeA.getVertices();
+		final Vec2 v2[] = shapeA.getVertices();
 		int cont2 = shapeA.getVertexCount();
 		
 		List<List<Float>> a = new ArrayList<List<Float>>();

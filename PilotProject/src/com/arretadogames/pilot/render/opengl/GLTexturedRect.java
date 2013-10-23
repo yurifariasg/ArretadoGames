@@ -154,7 +154,7 @@ public class GLTexturedRect extends GLRect {
 	        fillTextureCoordArray();
 		}
         fillTextureCoordArray();
-		
+        
 		textureBuffer.clear();
 		textureBuffer.put(textureCoords);
 		textureBuffer.position(0);

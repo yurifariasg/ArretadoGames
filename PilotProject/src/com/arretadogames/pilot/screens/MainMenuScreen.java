@@ -32,7 +32,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private static final int G_SIGN_IN_BUTTON = 3;
 	
 	private ImageButton playBt;
-	private ImageButton settingsBt;
+//	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
 	private Text welcomeLabel;
 	private Text nameLabel;
@@ -46,17 +46,17 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private float currentZoom;
 	private State currentState;
 	
-	private Emissor e;
+//	private Emissor e;
 	
 	public MainMenuScreen() {
 		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
 				R.drawable.bt_play_selected,
 				R.drawable.bt_play_unselected);
 		
-		settingsBt = new ImageButton(SETTINGS_BUTTON,
-				700, 390, this,
-				R.drawable.bt_settings_selected,
-				R.drawable.bt_settings_unselected);
+//		settingsBt = new ImageButton(SETTINGS_BUTTON,
+//				700, 390, this,
+//				R.drawable.bt_settings_selected,
+//				R.drawable.bt_settings_unselected);
 		
 		gPlusBt = new ImageButton(G_SIGN_IN_BUTTON,
 				20, 390, this,
@@ -95,7 +95,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
 		
 		if (currentState == State.MAIN) {
-			settingsBt.render(canvas, timeElapsed);
+//			settingsBt.render(canvas, timeElapsed);
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			
@@ -139,7 +139,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void input(InputEventHandler event) {
 		if (currentState == State.MAIN) {
 			playBt.input(event);
-			settingsBt.input(event);
+//			settingsBt.input(event);
 			gPlusBt.input(event);
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.input(event);

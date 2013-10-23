@@ -322,12 +322,20 @@ public class GLCanvas {
 		}
 	}
 	
-	private Vec2[] auxVec = new Vec2[2];
-	
+	private Vec2[] auxVec = new Vec2[] { new Vec2(), new Vec2() };
 	public void drawLine(float f, float g, float h, float i, float width, int color) {
-		auxVec[0] = new Vec2(f, g);
-		auxVec[1] = new Vec2(h, i);
+		auxVec[0].x = f;
+		auxVec[0].y = g;
+		auxVec[1].x = h;
+		auxVec[1].y = i;
 		drawLines(auxVec, width, color, false);
 	}
+	
+	
+	public void drawFireParticle() {
+		
+	}
+	
+	
 	
 }
