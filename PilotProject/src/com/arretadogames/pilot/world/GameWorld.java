@@ -106,6 +106,7 @@ public class GameWorld extends GameScreen {
 		if (!ld.isLoaded())
 			ld.load();
 		createEntities(ld);
+		PhysicalWorld.getInstance().sleepAllEntities();
 	}
 	
 	private void createEntities(LevelDescriptor ld) {
@@ -117,7 +118,6 @@ public class GameWorld extends GameScreen {
 			fire = new Fire(-5,0);
 			worldEntities.add(fire);
 		}
-		
 		
 		List<EntityDescriptor> entities = ld.getEntities();
 		List<Water> waterEntities = new ArrayList<Water>();

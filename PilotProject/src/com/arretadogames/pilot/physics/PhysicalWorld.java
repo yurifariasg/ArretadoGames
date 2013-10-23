@@ -51,7 +51,18 @@ public class PhysicalWorld implements ContactListener, Renderable {
 		return gworld;
 	}
 	
-	public static void restart() {
+	/**
+	 * Puts all bodies to sleep
+	 */
+	public void sleepAllEntities() {
+		Body body = world.getBodyList();
+		while (body != null) {
+			body.setAwake(false);
+			body = body.getNext();
+		}
+	}
+	
+	public static void removeAll() {
 		Body b = gworld.world.getBodyList();
 		while (b != null) { // Remove Bodies
 			gworld.getWorld().destroyBody(b);
@@ -197,7 +208,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			
 			canvas.saveState();
 			canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
-			canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
+			canvas.rotate((float) (180 *  body.getAngle() / Math.PI));
 			
 			while (fixture != null) {
 				

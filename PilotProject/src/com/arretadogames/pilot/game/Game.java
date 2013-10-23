@@ -110,7 +110,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	 */
 	public void step(float timeElapsed) {
 		if (resetWorld) {
-			PhysicalWorld.restart();
+			PhysicalWorld.removeAll();
 			((GameWorld) gameScreens.get(GameState.RUNNING_GAME)).destroyResources();
 			gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 			resetWorld = false;

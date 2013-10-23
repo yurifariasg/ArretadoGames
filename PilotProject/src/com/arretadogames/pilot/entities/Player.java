@@ -89,11 +89,17 @@ public abstract class Player extends Watchable {
 		return acquiredCoins;
 	}
 	
-	private Vec2 stopImpulse = new Vec2(-0.25f, 0);
+	private Vec2 stopImpulse = new Vec2(-1f, 0);
 	
 	protected void stopAction() {
-		if (body.getLinearVelocity().x > 0)
-			body.applyLinearImpulse(stopImpulse, body.getWorldCenter());
+		if (body.getLinearVelocity().x != 0) {
+			if (body.getLinearVelocity().x > 0) {
+				body.applyLinearImpulse(stopImpulse.mul(body.getMass()/ 10f), body.getPosition());
+			} else {
+				body.setLinearVelocity(new Vec2(0, 0)); // Just done once
+				
+			}
+		}
 	}
 	
 	public int getPercentageLeftToNextAct(){

@@ -15,7 +15,7 @@ public class GameSettings {
 	public static final boolean DRAW_PHYSICS = false;
 	public static final boolean USE_OLD_BACKGROUND = false;
 	
-	public static final boolean ACTIVATE_FIRE = false;
+	public static final boolean ACTIVATE_FIRE = true;
 	
 	// Should the texture be loaded when they need to be used ?
 	public static final boolean LAZY_LOAD_ENABLED = true;

@@ -111,8 +111,6 @@ public class TatuBola extends Player implements Steppable{
 
 	public void jump() {
 		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0) {
-			if (hasFinished())
-				stopAction();
 			return;
 		}
 		
@@ -177,6 +175,8 @@ public class TatuBola extends Player implements Steppable{
 	public void step(float timeElapsed) {
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
 		if (hasFinished() || !isAlive()) {
+			if (hasFinished())
+				stopAction();
 			return;
 		}
 		if (jumpActive) {
