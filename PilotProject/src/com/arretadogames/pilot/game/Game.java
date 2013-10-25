@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.Log;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -12,7 +13,6 @@ import aurelienribon.tweenengine.TweenCallback;
 
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.loading.LoadManager;
-import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.CharacterSelectionScreen;
 import com.arretadogames.pilot.screens.EndScreen;
@@ -39,11 +39,9 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	
 	private HashMap<GameState, GameScreen> gameScreens;
 	
+	// Transition
 	private boolean transitionStateOn;
 	private Rect transitionRect;
-	
-	private boolean resetWorld;
-	
 	private LoadManager loadManager;
 	private GameState nextState;
 	
@@ -61,7 +59,6 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		gameScreens.put(GameState.CHARACTER_SELECTION, new CharacterSelectionScreen());
 		gameScreens.put(GameState.LEVEL_SELECTION, new LevelSelectionScreen());
 		transitionStateOn = false;
-		resetWorld = false;
 		loadManager.prepareLoad(new GameState[] { nextState });
 		currentState = GameState.LOADING;
 	}
@@ -92,7 +89,8 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			loadManager.swapTextures(game, canvas);
 			return;
 		} else {
-			getScreen(currentState).render(canvas, timeElapsed);
+			if (gameScreens.containsKey(currentState))
+				getScreen(currentState).render(canvas, timeElapsed);
 		}
 		
 		if (transitionStateOn) {
@@ -101,7 +99,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 					Color.rgb(0, 0, 0));
 		}
 	}
-
+	
 	/**
 	 * Performs a step in the current game state's logic
 	 * 
@@ -109,14 +107,12 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	 *            Time Elapsed since last frame
 	 */
 	public void step(float timeElapsed) {
-		if (resetWorld) {
-			PhysicalWorld.removeAll();
-			((GameWorld) gameScreens.get(GameState.RUNNING_GAME)).destroyResources();
-			gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
-			resetWorld = false;
+		if (currentState.equals(GameState.LEVEL_RESTART)) {
+			goTo(GameState.RUNNING_GAME);
+			return;
 		}
 		
-		if (!currentState.equals(GameState.LOADING))
+		if (gameScreens.containsKey(currentState))
 			gameScreens.get(currentState).step(timeElapsed);
 	}
 
@@ -140,12 +136,13 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	 *            new game's current state
 	 */
 	public void goTo(GameState state) {
-		if (state == GameState.CHARACTER_SELECTION){
-			((CharacterSelectionScreen) gameScreens.get(GameState.CHARACTER_SELECTION)).resetSelections();
+		if (transitionStateOn) {
+			Log.e("Game", "Tried to call goTo while on transition state");
+			return;
 		}
 		nextState = state;
-		startTransitionAnimation();
 		loadManager.prepareLoad(new GameState[] { state });
+		startTransitionAnimation();
 	}
 	
 	
@@ -153,8 +150,17 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	 * (Asynchronous method) Changes the current state of the Game
 	 */
 	private void changeState(GameState state) {
-		if (state != null)
+		if (state != null) {
+
+			if (getScreen(currentState) != null) // Unloads if there is a screen
+				getScreen(currentState).onUnloading();
+
 			currentState = state;
+
+			if (getScreen(currentState) != null) // Loads if there is a screen
+				getScreen(currentState).onLoading();
+			
+		}
 	}
 	
 	/**
@@ -198,6 +204,10 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	private void startTransitionAnimation() {
 		transitionStateOn = true;
 		
+		// Stop All tweens associated with game
+		AnimationManager.getInstance().killTarget(this);
+		System.out.println("KILL TARGET (Start Animation)");
+		
 		transitionRect = new Rect(
 				(int) GameSettings.TARGET_WIDTH, 0,
 				(int) GameSettings.TARGET_WIDTH, (int) GameSettings.TARGET_HEIGHT);
@@ -212,13 +222,6 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 					}
 				}))
 				.start(AnimationManager.getInstance());
-	}
-
-	/**
-	 * (Asynchronous method) Sets a flag to reset world on the next frame
-	 */
-	public void resetWorld() {
-		resetWorld = true;
 	}
 
 	/**
@@ -254,9 +257,11 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			public void onEvent(int arg0, BaseTween<?> arg1) {
 				changeState(nextState);
 				nextState = null;
+				
+				transitionRect.left = 0;
 			}
 		}))
-		.push(Tween.to(game, RIGHT, 0.4f).target(0f))
+		.push(Tween.to(game, RIGHT, 0.5f).target(0f))
 		.push(Tween.call(new TweenCallback() {
 			
 			@Override

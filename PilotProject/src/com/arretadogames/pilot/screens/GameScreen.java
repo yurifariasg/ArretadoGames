@@ -40,5 +40,17 @@ public abstract class GameScreen {
 	 * Handles the pause event, when the user receives a call or locks the screen
 	 */
 	public abstract void onPause();
+	
+	// Asynchronous method. Called when the screen should be unloaded
+	public void onLoading() {
+		// TODO Auto-generated method stub
+	}
+	
+	
+	// Asynchronous method. Called when the screen should unloaded
+	public void onUnloading() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

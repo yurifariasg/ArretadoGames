@@ -60,14 +60,15 @@ public class GLTexturedRect extends GLRect {
     }
     
     private static void fillTextureCoordArray() {
-    	textureCoords[0] = 0;
-		textureCoords[1] = 0;
-		textureCoords[2] = 0;
+    	// @yuri: some weirdness happens when those values are actually 0
+    	textureCoords[0] = 0.001f;
+		textureCoords[1] = 0.001f;
+		textureCoords[2] = 0.001f;
 		textureCoords[3] = 1;
 		textureCoords[4] = 1;
 		textureCoords[5] = 1;
 		textureCoords[6] = 1;
-		textureCoords[7] = 0;
+		textureCoords[7] = 0.001f;
     }
     
     private static void fillTextureCoordArray(float left, float top, float right, float bottom) {

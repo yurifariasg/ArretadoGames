@@ -62,21 +62,18 @@ public class PhysicalWorld implements ContactListener, Renderable {
 		}
 	}
 	
-	public static void removeAll() {
-		Body b = gworld.world.getBodyList();
+	public void removeAll() {
+		Body b = getWorld().getBodyList();
 		while (b != null) { // Remove Bodies
-			gworld.getWorld().destroyBody(b);
+			getWorld().destroyBody(b);
 			b = b.getNext();
 		}
 		
-		Joint j = gworld.world.getJointList();
+		Joint j = getWorld().getJointList();
 		while (j != null) { // Remove Bodies
-			gworld.getWorld().destroyJoint(j);
+			getWorld().destroyJoint(j);
 			j = j.getNext();
 		}
-		
-		gworld.world = null;
-		gworld = null;
 	}
 	
 	public World getWorld() {

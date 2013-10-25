@@ -331,11 +331,4 @@ public class GLCanvas {
 		drawLines(auxVec, width, color, false);
 	}
 	
-	
-	public void drawFireParticle() {
-		
-	}
-	
-	
-	
 }

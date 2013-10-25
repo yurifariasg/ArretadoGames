@@ -85,11 +85,31 @@ public class GameWorld extends GameScreen {
 	public GameWorld() {
 		backgroundId = R.drawable.repeatable_background;
 		pWorld = PhysicalWorld.getInstance();
-		gameCamera = new GameCamera(this, backgroundId);
-		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		totalElapsedSeconds = 0;
 		isInitialized = false;
+	}
+	
+	@Override
+	public void onLoading() {
+		gameCamera = new GameCamera(this, backgroundId);
+		pauseScreen = new PauseScreen();
+		initialize();
+	}
+	
+	@Override
+	public void onUnloading() {
+		totalElapsedSeconds = 0;
+		isInitialized = false;
+		pWorld.removeAll();
+		fire = null;
+		flagPos = 0;
+		players.clear();
+		steppables.clear();
+		worldEntities.clear();
+		gameCamera = null;
+		pauseScreen = null;
+		System.gc();
 	}
 	
 	public void initialize() {

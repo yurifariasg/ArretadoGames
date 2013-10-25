@@ -10,6 +10,7 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.arretadogames.pilot.BaseGameActivity;
 import com.arretadogames.pilot.R;
 import com.google.android.gms.appstate.AppStateClient;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -73,9 +74,11 @@ public class SyncManager implements
 
 	private static SyncManager syncManager;
 
-	public static void create(Activity activity) {
-		if (syncManager == null)
+	public static void create(BaseGameActivity activity) {
+		if (syncManager == null) {
 			syncManager = new SyncManager(activity);
+			syncManager.setup(activity);
+		}
 	}
 
 	public static SyncManager get() {

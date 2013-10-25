@@ -2,15 +2,13 @@ package com.arretadogames.pilot.screens;
 
 import android.view.MotionEvent;
 import android.widget.Toast;
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
-import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Quart;
 
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -24,7 +22,7 @@ import com.arretadogames.pilot.ui.TextImageButton;
 public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen>, GameButtonListener {
 	
 	private static final int CONTINUE_BT = 1;
-	private static final int OPTIONS_BT = 2;
+	private static final int RESTART_BT = 2;
 	private static final int QUIT_BT = 3;
 	
 	private static final float PAUSE_MENU_SIZE = 277;
@@ -38,7 +36,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	private float currentWidth;
 	
 	private TextImageButton continueBt;
-//	private TextImageButton optionsBt;
+	private TextImageButton restartBt;
 	private TextImageButton quitBt;
 	
 	public PauseScreen() {
@@ -54,14 +52,13 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 				"continue",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
 		
-//		optionsBt = new TextImageButton(OPTIONS_BT, 0, 146, this,
-//				R.drawable.bt_pause_selected,
-//				0,
-//				"options",
-//				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
+		restartBt = new TextImageButton(RESTART_BT, 0, 146, this,
+				R.drawable.bt_pause_selected,
+				0,
+				"restart",
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
 		
-//		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
-		quitBt = new TextImageButton(QUIT_BT, 0, 146, this,
+		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
 				R.drawable.bt_pause_selected,
 				0,
 				"quit",
@@ -74,13 +71,12 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.drawBitmap(backgroundId, (800 - currentWidth), 1);
 		
-		
 		if (!isHidden) {
 			float buttonX = 800 - currentWidth + ARROW_WIDTH + 2;
 			continueBt.setX(buttonX);
 			continueBt.render(canvas, timeElapsed);
-//			optionsBt.setX(buttonX);
-//			optionsBt.render(canvas, timeElapsed);
+			restartBt.setX(buttonX);
+			restartBt.render(canvas, timeElapsed);
 			quitBt.setX(buttonX);
 			quitBt.render(canvas, timeElapsed);
 			
@@ -102,8 +98,11 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			}
 		} else if (!isHidden) {
 			continueBt.input(event);
-//			optionsBt.input(event);
+			restartBt.input(event);
 			quitBt.input(event);
+			if (event.getX() < GameSettings.TARGET_WIDTH - PAUSE_MENU_SIZE + ARROW_WIDTH)
+				hide();
+			
 		}
 		
 	}
@@ -149,26 +148,16 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	@SuppressWarnings("static-access")
 	@Override
 	public void onClick(int buttonId) {
-		
+		// All functions here are ASYNCHRONOUS
 		switch (buttonId) {
 		case CONTINUE_BT:
 			hide();
 			break;
-		case OPTIONS_BT:
-			Toast.makeText(MainActivity.getContext(), "Not Implemented YET!", Toast.LENGTH_SHORT).show();
+		case RESTART_BT:
+			Game.getInstance().goTo(GameState.LEVEL_RESTART);
 			break;
 		case QUIT_BT:
 			Game.getInstance().goTo(GameState.MAIN_MENU);
-			
-			Timeline.createSequence().delay(1.5f).push( // TODO @yuri: FIX THIS
-			Tween.from(this, 0, 2).call(new TweenCallback() {
-				
-				@Override
-				public void onEvent(int arg0, BaseTween<?> arg1) {
-					Game.getInstance().resetWorld();
-				}
-			})).start(AnimationManager.getInstance());
-			
 			break;
 		default:
 			break;

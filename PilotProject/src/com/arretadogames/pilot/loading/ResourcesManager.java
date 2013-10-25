@@ -116,9 +116,11 @@ public class ResourcesManager {
 	private static List<LoadableGLObject> convertDrawablesToLoadableObjects(int[] drawableResources) {
 		List<LoadableGLObject> objects = new ArrayList<LoadableGLObject>();
 		
-		for (int i = 0 ; i < drawableResources.length ; i++) {
-			LoadableGLObject object = new LoadableGLObject(drawableResources[i], LoadableType.TEXTURE);
-			objects.add(object);
+		if (drawableResources != null) { // If any resource...
+			for (int i = 0 ; i < drawableResources.length ; i++) {
+				LoadableGLObject object = new LoadableGLObject(drawableResources[i], LoadableType.TEXTURE);
+				objects.add(object);
+			}
 		}
 		
 		return objects;
@@ -126,10 +128,12 @@ public class ResourcesManager {
 	
 	private static List<LoadableGLObject> convertFontsToLoadableObjects(FontTypeFace[] fontsResources) {
 		List<LoadableGLObject> objects = new ArrayList<LoadableGLObject>();
-		
-		for (int i = 0 ; i < fontsResources.length ; i++) {
-			LoadableGLObject object = new LoadableGLObject(fontsResources[i].ordinal(), LoadableType.FONT);
-			objects.add(object);
+
+		if (fontsResources != null) { // If any resource...
+			for (int i = 0 ; i < fontsResources.length ; i++) {
+				LoadableGLObject object = new LoadableGLObject(fontsResources[i].ordinal(), LoadableType.FONT);
+				objects.add(object);
+			}
 		}
 		
 		return objects;

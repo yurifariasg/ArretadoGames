@@ -1,5 +1,6 @@
 package com.arretadogames.pilot;
 
+import com.crashlytics.android.Crashlytics;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.arretadogames.pilot.android.KeyboardManager;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -32,6 +34,8 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (GameSettings.USE_CRASHLYTICS)
+			Crashlytics.start(this);
 		context = getApplicationContext(); // Sets the Context for external use
 		FontLoader.create(context); // Create the FontLoader
 		GameDatabase.createDatabase(getApplicationContext());
