@@ -206,7 +206,6 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		
 		// Stop All tweens associated with game
 		AnimationManager.getInstance().killTarget(this);
-		System.out.println("KILL TARGET (Start Animation)");
 		
 		transitionRect = new Rect(
 				(int) GameSettings.TARGET_WIDTH, 0,

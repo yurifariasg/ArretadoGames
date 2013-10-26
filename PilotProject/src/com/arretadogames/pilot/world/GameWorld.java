@@ -109,6 +109,7 @@ public class GameWorld extends GameScreen {
 		worldEntities.clear();
 		gameCamera = null;
 		pauseScreen = null;
+		finishWorld = false;
 		System.gc();
 	}
 	
