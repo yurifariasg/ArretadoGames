@@ -4,6 +4,8 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.GameCanvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import org.json.simple.JSONObject;
@@ -17,7 +19,13 @@ public class Flag extends Entity{
     public final static float SIZE = 0.5f;
     
     public Flag(int x, int y, int size) {
-        super(x, y);
+        super(x, y, DrawMode.FLAG);
+    }
+    
+    public Flag(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.FLAG);        
     }
 
     public void drawMyself(Graphics g) {
@@ -30,7 +38,7 @@ public class Flag extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "finalflag");
+        json.put("type", this.type.toString());
         return json;
     }
     

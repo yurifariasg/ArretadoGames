@@ -28,8 +28,14 @@ public class Tree extends Entity {
     private int treeType;
 
     public Tree(int x, int y) {
-        super(x, y);
+        super(x, y, DrawMode.TREE);
         treeType = 0;
+    }
+    
+    public Tree(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.TREE);        
     }
 
     public int getTreeType() {
@@ -63,7 +69,7 @@ public class Tree extends Entity {
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "tree");
+        json.put("type", this.type.toString());
         json.put("treeType", treeType);
         return json;
     }

@@ -4,6 +4,7 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.Utils;
 import java.awt.Graphics;
 import org.json.simple.JSONObject;
@@ -15,12 +16,14 @@ import org.json.simple.JSONObject;
 public abstract class Entity {
     
     protected int x, y;
+    protected DrawMode type;
     
-    public Entity(int x, int y) {
+    public Entity(int x, int y, DrawMode type) {
         this.x = x;
         this.y = y;
+        this.type = type;
     }
-
+    
     public int getX() {
         return x;
     }

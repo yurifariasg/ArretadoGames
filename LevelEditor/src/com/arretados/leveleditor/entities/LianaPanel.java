@@ -11,6 +11,7 @@
 package com.arretados.leveleditor.entities;
 
 import com.arretados.leveleditor.EntityPropertyDocumentListener;
+import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.NumberEditor;
@@ -48,11 +49,11 @@ public class LianaPanel extends EntityPanel<Liana> implements ItemPropertyChange
     }
     
     public float getCurrentSize() {
-        return (float) ((Double) jSpinner1.getValue()).doubleValue();
+        return Utils.parseValue(jSpinner1.getValue());
     }
     
     public float getCurrentWeight() {
-        return (float) ((Double) jSpinner2.getValue()).doubleValue();
+        return Utils.parseValue(jSpinner2.getValue());
     }
     
     public void onPropertyChanged(String propertyName, String newValue) {

@@ -4,6 +4,8 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.GameCanvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import org.json.simple.JSONObject;
@@ -19,8 +21,15 @@ public class Pulley extends Entity{
     private int size;
     
     public Pulley(int x, int y, int size){
-        super(x, y);
+        super(x, y, DrawMode.PULLEY);
         this.size = size;
+    }
+    
+    public Pulley(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.PULLEY);
+        
     }
     
     public int getX(){

@@ -4,6 +4,8 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
+import com.arretados.leveleditor.GameCanvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import org.json.simple.JSONObject;
@@ -18,12 +20,22 @@ public class Liana extends Entity{
 
     private int x1;
     private int y1;
-    private int size;
+    private float size;
     
     public Liana(int x0, int y0, int x1, int  y1){
-        super(x0, y0);
+        super(x0, y0, DrawMode.LIANA);
         this.x1 = x1;
         this.y1 = y1;
+    }
+    
+    public Liana(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x0"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y0"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.LIANA);
+        
+        this.setX1((int) (Double.parseDouble(String.valueOf(json.get("x1"))) * GameCanvas.METER_TO_PIXELS));
+        this.setY1((int) (Double.parseDouble(String.valueOf(json.get("y1"))) * GameCanvas.METER_TO_PIXELS));
+        this.setSize( ((Double) Double.parseDouble( String.valueOf(json.get("size")))).floatValue() );
     }
     
     public int getX0(){
@@ -58,8 +70,12 @@ public class Liana extends Entity{
         this.y1 = y1;
     }
     
-    public int getSize(){
-        return 5;
+    public float getSize(){
+        return size;
+    }
+    
+    public void setSize(float size){
+        this.size = size;
     }
 
     @Override

@@ -27,9 +27,15 @@ public class Grass extends Entity {
     private int grassType;
 
     public Grass(int x, int y) {
-        super(x, y);
+        super(x, y, DrawMode.GRASS);
         grassType = 0;
     }
+    
+    public Grass(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.GRASS);
+    }            
 
     public int getGrassType() {
         return grassType;
@@ -62,7 +68,7 @@ public class Grass extends Entity {
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "grass");
+        json.put("type", this.type.toString());
         json.put("grassType", grassType);
         return json;
     }

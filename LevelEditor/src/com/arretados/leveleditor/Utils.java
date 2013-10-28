@@ -16,4 +16,8 @@ public class Utils {
         return calc;
     }
     
+    public static float parseValue(Object floatValue) {
+        return (float) Float.valueOf((String.valueOf(floatValue)).replace(",", ".") + "f");
+    }
+    
 }

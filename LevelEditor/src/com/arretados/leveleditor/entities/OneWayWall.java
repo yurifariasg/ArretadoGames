@@ -8,7 +8,6 @@ import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.GameCanvas;
 import com.arretados.leveleditor.ResourceManager;
 import com.arretados.leveleditor.ResourceManager.Resource;
-import com.sun.xml.internal.bind.v2.util.CollisionCheckStack;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -26,9 +25,20 @@ public class OneWayWall extends Entity{
     private float height;
     
     public OneWayWall(int x, int y, float width, float height) {
-        super(x, y);
+        super(x, y, DrawMode.ONEWAY_WALL);
         this.width = width;
         this.height = height;
+    }
+    
+    public OneWayWall(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.ONEWAY_WALL);
+        
+        this.setWidth(1.5f);
+        this.setHeight(0.8f);
+//        this.setWidth( ((Double) Double.parseDouble(String.valueOf(json.get("width")))).floatValue() );
+//        this.setHeight(((Double) Double.parseDouble(String.valueOf(json.get("height")))).floatValue() );
     }
 
     public float getWidth() {
@@ -74,7 +84,7 @@ public class OneWayWall extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "onewaywall");
+        json.put("type", this.type.toString());
         json.put("width", width);
         json.put("height", height);
         return json;

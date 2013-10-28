@@ -25,7 +25,16 @@ public class Breakable extends Entity{
     private float hitsUntilBreak;
     
     public Breakable(int x, int y){
-        super(x, y);
+        super(x, y, DrawMode.BREAKABLE);
+    }
+    
+    public Breakable(JSONObject json){
+        super( (int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+               (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+               DrawMode.BREAKABLE);
+        
+//        this.setX( (int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS) );
+//        this.setY( (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS) );
     }
 
     public float getWidth() {
@@ -74,7 +83,7 @@ public class Breakable extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "breakable");
+        json.put("type", this.type.toString());
         json.put("width", width);
         json.put("height", height);
         json.put("hitsUntilBreak", hitsUntilBreak);
@@ -85,5 +94,5 @@ public class Breakable extends Entity{
     public EntityPanel getEntityPanel() {
         return breakable_panel;
     }
-    
+
 }

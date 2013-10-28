@@ -22,8 +22,17 @@ public class Player extends Entity{
     private String player;
     
     public Player(int x, int y, String player){
-        super(x, y);
+        super(x, y, DrawMode.PLAYER);
         this.player = player;
+    }
+    
+    public Player(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.PLAYER);
+        
+        player = "player" + String.valueOf(json.get("number"));
+        
     }
     
     public String getPlayer(){
@@ -60,7 +69,7 @@ public class Player extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "player");
+        json.put("type", this.type.toString());
         json.put("number", this.player.equals("player1") ? 1 : 2 );
         return json;
     }

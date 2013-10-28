@@ -29,6 +29,8 @@ import com.arretados.leveleditor.entities.layer.TreePanel;
 import com.arretados.leveleditor.parsers.JSONGenerator;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
@@ -39,16 +41,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.event.ChangeListener;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * The application's main frame.
@@ -58,6 +64,10 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
     public LevelEditorView(SingleFrameApplication app) {
         super(app);
         initComponents();
+        
+        fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        
         itemComboBox.setSelectedItem(null);
         gameCanvas1.setMainView(this);
         
@@ -175,6 +185,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jLabel3 = new javax.swing.JLabel();
         itemPanel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
+        jButton_LoadLevel = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -276,6 +287,14 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jLabel4.setName("jLabel4"); // NOI18N
         itemPanel.add(jLabel4);
 
+        jButton_LoadLevel.setText(resourceMap.getString("jButton_LoadLevel.text")); // NOI18N
+        jButton_LoadLevel.setName("jButton_LoadLevel"); // NOI18N
+        jButton_LoadLevel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_LoadLevelActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -283,35 +302,40 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                     .addComponent(jLabel1)
-                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 326, Short.MAX_VALUE)
+                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 338, Short.MAX_VALUE)
                     .addComponent(jLabel3)
-                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_LoadLevel, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(itemComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton_LoadLevel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextWidthValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -499,9 +523,6 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
         case LIANA:
             itemPanel.add(Liana.liana_panel);
         break;
-        case LINE:
-            
-        break;
         case ONEWAY_WALL:
             itemPanel.add(OneWayWall.onewaywall_panel);
         break;
@@ -525,6 +546,46 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
     itemPanel.repaint();
 }//GEN-LAST:event_itemComboBoxItemStateChanged
 
+    private void jButton_LoadLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_LoadLevelActionPerformed
+        int returnVal = fc.showOpenDialog(this.getComponent());
+        File file = null;
+        String content = "";
+        
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            file = fc.getSelectedFile();
+            System.out.println("Opening: " + file.getName() + "." + "/n");
+        } else {
+            System.out.println("Open command cancelled by user." + "/n");
+        }
+        
+        if (file != null){
+            try {
+                FileReader reader = new FileReader(file);
+                char[] chars = new char[(int) file.length()];
+                reader.read(chars);
+                content = new String(chars);
+                reader.close();
+            }catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        System.out.println("=====================================================\n"+content);
+        
+        JSONParser jsonParse = new JSONParser();
+        JSONObject json = null;
+        try {
+            json = (JSONObject) jsonParse.parse(content);
+        } catch (ParseException ex) {
+            Logger.getLogger(LevelEditorView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        LevelLoader lvl = new LevelLoader(json, gameCanvas1);
+        lvl.parseJson();
+        
+        gameCanvas1.repaint();
+    }//GEN-LAST:event_jButton_LoadLevelActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton clearScrBtn;
     private com.arretados.leveleditor.GameCanvas gameCanvas1;
@@ -532,6 +593,7 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
     private javax.swing.JPanel itemPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton_LoadLevel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -553,6 +615,8 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
     private final Icon idleIcon;
     private final Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
+    
+    private JFileChooser fc;
 
     private JDialog aboutBox;
 

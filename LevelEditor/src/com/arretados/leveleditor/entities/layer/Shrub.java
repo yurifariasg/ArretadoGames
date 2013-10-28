@@ -27,8 +27,14 @@ public class Shrub extends Entity {
     private int shrubType;
 
     public Shrub(int x, int y) {
-        super(x, y);
+        super(x, y, DrawMode.SHRUB);
         shrubType = 0;
+    }
+    
+    public Shrub(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.SHRUB);        
     }
 
     public int getShrubType() {
@@ -62,7 +68,7 @@ public class Shrub extends Entity {
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "shrub");
+        json.put("type", this.type.toString());
         json.put("shrubType", shrubType);
         return json;
     }

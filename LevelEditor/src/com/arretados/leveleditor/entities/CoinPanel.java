@@ -11,6 +11,7 @@
 package com.arretados.leveleditor.entities;
 
 import com.arretados.leveleditor.EntityPropertyDocumentListener;
+import com.arretados.leveleditor.Utils;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.NumberEditor;
@@ -39,7 +40,7 @@ public class CoinPanel extends EntityPanel<Coin> implements ItemPropertyChangedL
     }
     
     public float getCurrentValue() {
-        return (float) ((Double) jSpinner1.getValue()).doubleValue();
+        return Utils.parseValue(jSpinner1.getValue());
     }
     
     public void onPropertyChanged(String propertyName, String newValue) {

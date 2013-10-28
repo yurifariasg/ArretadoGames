@@ -21,11 +21,18 @@ public class Coin extends Entity{
     public static float SIZE = 0.4f;
     
     public static EntityPanel coin_panel;
-    
     private int value;
 
     public Coin(int x, int y) {
-        super(x, y);
+        super(x, y, DrawMode.COIN);
+    }
+    
+    public Coin(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) *
+                                                GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * 
+                                                GameCanvas.METER_TO_PIXELS),
+              DrawMode.COIN);
     }
 
     public int getValue() {
@@ -58,7 +65,7 @@ public class Coin extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "coin");
+        json.put("type", this.type.toString());
         json.put("value", value);
         return json;
     }

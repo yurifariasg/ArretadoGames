@@ -8,13 +8,28 @@ package com.arretados.leveleditor;
  *
  * @author Bruno
  */
+
 public enum DrawMode {
+	
+    BOX("box"), GROUND("ground"), PLAYER("player"), FIRE("fire"),
+    PULLEY("pulley"), ONEWAY_WALL("oneway_wall"), FLAG("finalflag"),
+    COIN("coin"), FLUID("water"), BREAKABLE("breakable"), LIANA("liana"),
+    SPIKE("spike"), HOLE("hole"),
+    TREE("tree"), SHRUB("shrub"), GRASS("grass");
+
+    private String name;
+
+    DrawMode(String name) {
+            this.name = name;
+    }
     
-    BOX, COIN, FRUIT, PLAYER, ONEWAY_WALL, PULLEY, FLUID, BREAKABLE, LIANA, FLAG, LINE,
-    P1, P2, TREE, GROUND, GRASS, SHRUB;
+    @Override
+    public String toString(){
+            return this.name;
+    }
     
     public int toInt() {
         return ordinal();
     }
-    
+	
 }

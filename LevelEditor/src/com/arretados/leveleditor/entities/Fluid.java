@@ -4,6 +4,7 @@
  */
 package com.arretados.leveleditor.entities;
 
+import com.arretados.leveleditor.DrawMode;
 import com.arretados.leveleditor.GameCanvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -23,7 +24,21 @@ public class Fluid extends Entity{
     private float density;
     
     public Fluid(int x, int y) {
-        super(x, y);
+        super(x, y, DrawMode.FLUID);
+    }
+    
+    public Fluid(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.FLUID);
+        
+        this.setDensity( ((Double) Double.parseDouble(String.valueOf(json.get("density")))).floatValue() );
+        this.setWidth( ((Double) Double.parseDouble(String.valueOf(json.get("width")))).floatValue() );
+        this.setHeight( ((Double) Double.parseDouble(String.valueOf(json.get("height")))).floatValue() );        
+        
+//        this.setDensity( ((Double) json.get("density")).floatValue() );
+//        this.setWidth( ((Double) json.get("width")).floatValue() );
+//        this.setHeight(((Double) json.get("height")).floatValue() );   
     }
 
     public float getDensity() {
@@ -63,7 +78,7 @@ public class Fluid extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "water");
+        json.put("type", this.type.toString());
         json.put("width", width);
         json.put("height", height);
         json.put("density", density);

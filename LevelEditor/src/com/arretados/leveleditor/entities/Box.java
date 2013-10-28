@@ -24,8 +24,16 @@ public class Box extends Entity{
     private float weight;
     
     public Box(int x, int y, float size) {
-        super(x, y);
+        super(x, y, DrawMode.BOX);
         this.size = size;
+    }
+
+    public Box(JSONObject json){
+        super((int) (Double.parseDouble(String.valueOf(json.get("x"))) * GameCanvas.METER_TO_PIXELS),
+              (int) (Double.parseDouble(String.valueOf(json.get("y"))) * GameCanvas.METER_TO_PIXELS),
+              DrawMode.BOX);
+        
+        this.setSize( ((Double) Double.parseDouble( String.valueOf(json.get("size")))).floatValue() );
     }
 
     public float getWeight() {
@@ -43,7 +51,7 @@ public class Box extends Entity{
     public void setSize(float size) {
         this.size = size;
     }
-
+    
     @Override
     public boolean collides(int x, int y) {
         Rectangle rect = new Rectangle(
@@ -66,7 +74,7 @@ public class Box extends Entity{
     @Override
     public JSONObject toJSON() {
         JSONObject json = super.toJSON();
-        json.put("type", "box");
+        json.put("type", this.type.toString());
         json.put("size", size);
         return json;
     }

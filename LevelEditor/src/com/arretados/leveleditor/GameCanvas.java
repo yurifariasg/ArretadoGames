@@ -60,6 +60,11 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public void setMainView(LevelEditorView mainView) {
         this.mainView = mainView;
     }
+    
+    // Created to LevelLoader
+    public void addEntities(Entity e){
+        entities.add(e);
+    }
 
     public int getGroundHeight() {
         return groundHeight;
@@ -126,7 +131,6 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
     
     private Entity checkClickOn(int x, int y) {
-        
         for (int i = 0; i < entities.size() ; i++) {
             if (entities.get(i).collides(x, y))
                 return entities.get(i);
@@ -165,9 +169,9 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                     ((Box)entityToAdd).setWeight(weightBox);
                 break;
 
-                case FRUIT:
-                    //drawApple(e.getX(), e.getY());
-                break;
+//                case FRUIT:
+//                    //drawApple(e.getX(), e.getY());
+//                break;
 
                 case COIN:
                     float coinValue = ((CoinPanel)mainView.getEntityPanel()).getCurrentValue();
@@ -267,6 +271,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
             selectedEntity.setX(e.getX());
             selectedEntity.setY(e.getY());
             repaint();
+            validate();
+            System.out.println("chamou repaint");
         }
         
         /*switch (mode) {
@@ -386,6 +392,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     public void changeMode(DrawMode drawMode) {
         insertionMode = drawMode;
         
+    }
+    
+    public List<Entity> getEntities(){
+        return entities;
     }
 
 }
