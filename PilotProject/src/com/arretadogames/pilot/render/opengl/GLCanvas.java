@@ -223,6 +223,21 @@ public class GLCanvas {
 		return loadImage(imageId, bitmap);
 	}
 	
+	public void drawRect(
+    		float x, float y,
+    		float x2, float y2,
+    		float x3, float y3,
+    		float x4, float y4,
+    		int colorV1, int colorV2,
+    		int colorV3, int colorV4) {
+		GLRect.draw(gl,
+				(x), (y),
+				(x2),(y2),
+				(x3), (y3),
+				(x4), (y4),
+				colorV1, colorV2, colorV3, colorV4);
+	}
+	
 	public void drawRectFromPhysics(
     		float x, float y,
     		float x2, float y2,
@@ -257,6 +272,9 @@ public class GLCanvas {
 				GL10.GL_LINEAR);
 		// Clamp to edge behaviour at edge of texture (repeats last pixel)
 		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+				GL10.GL_REPEAT);
+		
+		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
 				GL10.GL_REPEAT);
 
 		// Attach bitmap to current texture
@@ -304,11 +322,12 @@ public class GLCanvas {
 		}
 	}
 	
-	private Vec2[] auxVec = new Vec2[2];
-	
+	private Vec2[] auxVec = new Vec2[] { new Vec2(), new Vec2() };
 	public void drawLine(float f, float g, float h, float i, float width, int color) {
-		auxVec[0] = new Vec2(f, g);
-		auxVec[1] = new Vec2(h, i);
+		auxVec[0].x = f;
+		auxVec[0].y = g;
+		auxVec[1].x = h;
+		auxVec[1].y = i;
 		drawLines(auxVec, width, color, false);
 	}
 	

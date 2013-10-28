@@ -28,7 +28,7 @@ public class EndScreen extends GameScreen {
 	private static final int PLAYER_INFO_Y_SPACING = 50;
 	private static final int PLAYER_INFO_X_OFFSET = 0;
 	private static final int SECONDS_TO_WAIT = 5;
-	private static final int TOTAL_OF_RECORDS = 3;
+//	private static final int TOTAL_OF_RECORDS = 3;
 	
 	private float totalTimeElapsed;
 	private boolean hasWon;
@@ -165,9 +165,6 @@ public class EndScreen extends GameScreen {
 	private void callNextScreen() {
 		if (!nextScreenCalled) {
 			nextScreenCalled = true;
-			
-			// Reset GameWorld
-			Game.getInstance().resetWorld();
 			
 			// Go To Main Menu
 			Game.getInstance().goTo(GameState.MAIN_MENU);

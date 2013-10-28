@@ -46,7 +46,6 @@ public class BaseGameActivity extends FragmentActivity implements
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         SyncManager.create(this);
-        SyncManager.get().setup(this);
     }
 
     @Override

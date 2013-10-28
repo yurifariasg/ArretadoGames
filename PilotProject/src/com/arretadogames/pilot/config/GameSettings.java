@@ -12,9 +12,11 @@ public class GameSettings {
 	public static final int GROUND_ENTITY_THRESHOLD = 3; // How many points should the ground be blocked
 	public static final boolean SHOW_FPS = true;
 	public static final int FPS_AVG_BUFFER_SIZE = 10;
-	public static final boolean DRAW_PHYSICS = true;
+	public static final boolean DRAW_PHYSICS = false;
+	public static final boolean USE_OLD_BACKGROUND = false;
+	public static final boolean USE_CRASHLYTICS = false;
 	
-	public static final boolean ACTIVATE_FIRE = false;
+	public static final boolean ACTIVATE_FIRE = true;
 	
 	// Should the texture be loaded when they need to be used ?
 	public static final boolean LAZY_LOAD_ENABLED = true;

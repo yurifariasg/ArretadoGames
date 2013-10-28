@@ -35,6 +35,11 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 		initializeSpots();
 	}
 	
+	@Override
+		public void onUnloading() {
+			resetSelections();
+		}
+	
 	private void initializeSelectors() {
 		selectors = new PlayerSelector[2];
 		
@@ -238,7 +243,7 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 		}
 		
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
-		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
+//		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
 	}
 

@@ -82,7 +82,7 @@ public class GLRect {
     	
     }
     
-    private static void fillColor(int colorV1, int colorV2, int colorV3,
+    protected static void fillColor(int colorV1, int colorV2, int colorV3,
 			int colorV4) {
     	
     	//V1

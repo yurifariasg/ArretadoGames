@@ -85,11 +85,32 @@ public class GameWorld extends GameScreen {
 	public GameWorld() {
 		backgroundId = R.drawable.repeatable_background;
 		pWorld = PhysicalWorld.getInstance();
-		gameCamera = new GameCamera(this, backgroundId);
-		pauseScreen = new PauseScreen();
 		sm = new SpriteManager();
 		totalElapsedSeconds = 0;
 		isInitialized = false;
+	}
+	
+	@Override
+	public void onLoading() {
+		gameCamera = new GameCamera(this, backgroundId);
+		pauseScreen = new PauseScreen();
+		initialize();
+	}
+	
+	@Override
+	public void onUnloading() {
+		totalElapsedSeconds = 0;
+		isInitialized = false;
+		pWorld.removeAll();
+		fire = null;
+		flagPos = 0;
+		players.clear();
+		steppables.clear();
+		worldEntities.clear();
+		gameCamera = null;
+		pauseScreen = null;
+		finishWorld = false;
+		System.gc();
 	}
 	
 	public void initialize() {
@@ -106,6 +127,7 @@ public class GameWorld extends GameScreen {
 		if (!ld.isLoaded())
 			ld.load();
 		createEntities(ld);
+		PhysicalWorld.getInstance().sleepAllEntities();
 	}
 	
 	private void createEntities(LevelDescriptor ld) {
@@ -117,7 +139,6 @@ public class GameWorld extends GameScreen {
 			fire = new Fire(-5,0);
 			worldEntities.add(fire);
 		}
-		
 		
 		List<EntityDescriptor> entities = ld.getEntities();
 		List<Water> waterEntities = new ArrayList<Water>();
@@ -204,7 +225,7 @@ public class GameWorld extends GameScreen {
 		}
 		
 		// Add Ground
-		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities);//new Vec2[ld.getGroundDescriptor().getPoints().size()];
+		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities, flagPos);//new Vec2[ld.getGroundDescriptor().getPoints().size()];
 		int amountOfPoints = groundPoints.length;
 		
 		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];

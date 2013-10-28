@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.entities;
 
+import org.jbox2d.common.Vec2;
+
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.render.Watchable;
@@ -85,6 +87,19 @@ public abstract class Player extends Watchable {
 	
 	public int getCoins() {
 		return acquiredCoins;
+	}
+	
+	private Vec2 stopImpulse = new Vec2(-1f, 0);
+	
+	protected void stopAction() {
+		if (body.getLinearVelocity().x != 0) {
+			if (body.getLinearVelocity().x > 0) {
+				body.applyLinearImpulse(stopImpulse.mul(body.getMass()/ 10f), body.getPosition());
+			} else {
+				body.setLinearVelocity(new Vec2(0, 0)); // Just done once
+				
+			}
+		}
 	}
 	
 	public int getPercentageLeftToNextAct(){

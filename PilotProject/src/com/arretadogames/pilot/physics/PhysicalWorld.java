@@ -51,21 +51,29 @@ public class PhysicalWorld implements ContactListener, Renderable {
 		return gworld;
 	}
 	
-	public static void restart() {
-		Body b = gworld.world.getBodyList();
+	/**
+	 * Puts all bodies to sleep
+	 */
+	public void sleepAllEntities() {
+		Body body = world.getBodyList();
+		while (body != null) {
+			body.setAwake(false);
+			body = body.getNext();
+		}
+	}
+	
+	public void removeAll() {
+		Body b = getWorld().getBodyList();
 		while (b != null) { // Remove Bodies
-			gworld.getWorld().destroyBody(b);
+			getWorld().destroyBody(b);
 			b = b.getNext();
 		}
 		
-		Joint j = gworld.world.getJointList();
+		Joint j = getWorld().getJointList();
 		while (j != null) { // Remove Bodies
-			gworld.getWorld().destroyJoint(j);
+			getWorld().destroyJoint(j);
 			j = j.getNext();
 		}
-		
-		gworld.world = null;
-		gworld = null;
 	}
 	
 	public World getWorld() {
@@ -133,7 +141,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 	/**
 	 * Create ground based on given entities
 	 */
-	public Vec2[] createGroundLines(List<Water> waterEntities) {
+	public Vec2[] createGroundLines(List<Water> waterEntities, float lastX) {
 		
 		// Sort Based on X
 		Collections.sort(waterEntities, new Comparator<Water>() {
@@ -143,12 +151,11 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			}
 		});
 		
-		
 		Vec2[] groundLines = new Vec2[2 + waterEntities.size() * 4];
 		int groundLineIndex = 0;
 		
 		// Initial Pos
-		Vec2 pos = new Vec2(-1000, 0);
+		Vec2 pos = new Vec2(-10, 0);
 		groundLines[groundLineIndex++] = pos;
 		
 		float waterWidth;
@@ -181,14 +188,12 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			
 		}
 		
-		pos = new Vec2(1000, 0);
+		pos = new Vec2(lastX + 10, 0);
 		groundLines[groundLineIndex++] = pos;
 		
 		return groundLines;
 	}
 	
-//	private PhysicsRect auxRect = new PhysicsRect(0, 0);
-
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		//Render All bodies
@@ -200,7 +205,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			
 			canvas.saveState();
 			canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
-			canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
+			canvas.rotate((float) (180 *  body.getAngle() / Math.PI));
 			
 			while (fixture != null) {
 				

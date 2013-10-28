@@ -1,13 +1,15 @@
 package com.arretadogames.pilot.render.particlesystem;
 
 import org.jbox2d.common.Vec2;
+
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Emissor implements Renderable, Steppable{
 	
-	private final int NUMBER_OF_PARTICLES = 50;
+	private final int NUMBER_OF_PARTICLES = 200;
 	private final Vec2 eLocation;
 	private Vec2 velocity;
 	private Particle[] particles;
@@ -23,7 +25,7 @@ public class Emissor implements Renderable, Steppable{
 		case FIRE_PARTICLE:
 			particles = new FireParticle[NUMBER_OF_PARTICLES];
 			for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
-				particles[i] = new FireParticle( this.eLocation.clone(), (float)Math.random() * 2f );
+				particles[i] = new FireParticle( this.eLocation.clone(), 0.5f + (float)Math.random() * 2f );
 			}
 			break;
 		case WATER_PARTICLE:
@@ -46,6 +48,8 @@ public class Emissor implements Renderable, Steppable{
 	@Override
 	public void step(float timeElapsed) {
 		eLocation.addLocal(velocity);
+		if (eLocation.x > GameSettings.TARGET_WIDTH || eLocation.x < 0)
+			velocity.mulLocal(-1);
 	}
 
 	@Override
@@ -66,10 +70,11 @@ public class Emissor implements Renderable, Steppable{
 //			p.step(timeElapsed);
 //			p.render(canvas, timeElapsed);
 //		}
+//		canvas.drawRect(0, 0, 800, 480, Color.BLACK);
 		for (int i = 0; i < NUMBER_OF_PARTICLES; i++){
 			if (particles[i].isDead()){
 				if (particles[i].getType() == ParticleType.FIRE_PARTICLE)
-					particles[i] = new FireParticle(this.eLocation.clone(), (float)Math.random() * 2f);
+					particles[i] = new FireParticle(this.eLocation.clone(), 3f + (float)Math.random() * 1f);
 				
 				else if (particles[i].getType() == ParticleType.WATER_PARTICLE)
 					particles[i] = new WaterParticle(this.eLocation.clone(), (float)Math.random() * 2f);
@@ -81,7 +86,6 @@ public class Emissor implements Renderable, Steppable{
 			particles[i].step(timeElapsed);
 			particles[i].render(canvas, timeElapsed);
 		}
-		
 		
 	}
 }

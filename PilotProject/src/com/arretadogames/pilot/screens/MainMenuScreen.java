@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import org.jbox2d.common.Vec2;
-
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
@@ -15,8 +13,6 @@ import com.arretadogames.pilot.googlesync.SyncManager;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.render.particlesystem.Emissor;
-import com.arretadogames.pilot.render.particlesystem.ParticleType;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
@@ -32,7 +28,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private static final int G_SIGN_IN_BUTTON = 3;
 	
 	private ImageButton playBt;
-	private ImageButton settingsBt;
+//	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
 	private Text welcomeLabel;
 	private Text nameLabel;
@@ -46,17 +42,15 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private float currentZoom;
 	private State currentState;
 	
-	private Emissor e;
-	
 	public MainMenuScreen() {
 		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
 				R.drawable.bt_play_selected,
 				R.drawable.bt_play_unselected);
 		
-		settingsBt = new ImageButton(SETTINGS_BUTTON,
-				700, 390, this,
-				R.drawable.bt_settings_selected,
-				R.drawable.bt_settings_unselected);
+//		settingsBt = new ImageButton(SETTINGS_BUTTON,
+//				700, 390, this,
+//				R.drawable.bt_settings_selected,
+//				R.drawable.bt_settings_unselected);
 		
 		gPlusBt = new ImageButton(G_SIGN_IN_BUTTON,
 				20, 390, this,
@@ -71,9 +65,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		currentState = State.MAIN;
 		settingsScreen = new SettingsScreen(this);
-		
-		//TODO EMISSOR
-//		e = new Emissor(new Vec2(100 , GameSettings.TARGET_HEIGHT - 15), new Vec2(1.2f,0f), ParticleType.FIRE_PARTICLE);
 	}
 	
 	private void createUserInfoLabels() {
@@ -95,7 +86,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
 		
 		if (currentState == State.MAIN) {
-			settingsBt.render(canvas, timeElapsed);
+//			settingsBt.render(canvas, timeElapsed);
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			
@@ -121,9 +112,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.restoreState();
-		
-//		e.step(timeElapsed);
-//		e.render(canvas, timeElapsed);
 	}
 
 	@Override
@@ -139,7 +127,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void input(InputEventHandler event) {
 		if (currentState == State.MAIN) {
 			playBt.input(event);
-			settingsBt.input(event);
+//			settingsBt.input(event);
 			gPlusBt.input(event);
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.input(event);
