@@ -13,6 +13,7 @@ import com.arretados.leveleditor.entities.Liana;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
 import com.arretados.leveleditor.entities.Pulley;
+import com.arretados.leveleditor.entities.Spike;
 import com.arretados.leveleditor.entities.layer.Grass;
 import com.arretados.leveleditor.entities.layer.Shrub;
 import com.arretados.leveleditor.entities.layer.Tree;
@@ -115,6 +116,13 @@ public class LevelLoader {
                 System.out.println("SHRUB_in");
                 gc.addEntities(new Shrub(jObj));
                 System.out.println("SHRUB_out");
+                
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.SPIKE)){
+                
+                //SHRUB
+                System.out.println("SPIKE_in");
+                gc.addEntities(new Spike(jObj));
+                System.out.println("SPIKE_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.TREE)){
 

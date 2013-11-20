@@ -39,16 +39,17 @@ public class JSONGenerator {
     }
     
     public HashMap<String, JSONArray> createMap(){
-        final String TYPE_BOX = "box";
-        final String TYPE_FRUIT = "fruit";
-        final String TYPE_COIN = "coin";
-        final String TYPE_ONEWAY_WALL = "oneway_wall";
-        final String TYPE_PULLEY = "pulley";
-        final String TYPE_FLUID = "fluid";
-        final String TYPE_BREAKABLE = "breakable";
-        final String TYPE_LIANA = "liana";
-        final String TYPE_PLAYER = "player";
-        final String TYPE_FLAG = "finalflag";
+//        final String TYPE_BOX = "box";
+//        final String TYPE_FRUIT = "fruit";
+//        final String TYPE_COIN = "coin";
+//        final String TYPE_ONEWAY_WALL = "oneway_wall";
+//        final String TYPE_PULLEY = "pulley";
+//        final String TYPE_FLUID = "fluid";
+//        final String TYPE_BREAKABLE = "breakable";
+//        final String TYPE_LIANA = "liana";
+//        final String TYPE_PLAYER = "player";
+//        final String TYPE_FLAG = "finalflag";
+//        final String TYPE_SPIKE = "spike";
         
         HashMap<String, JSONArray> hm = new HashMap<String, JSONArray>();
         JSONArray jArrayEntities = new JSONArray();

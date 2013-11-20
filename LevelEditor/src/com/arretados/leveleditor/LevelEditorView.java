@@ -20,6 +20,8 @@ import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.OneWayWallPanel;
 import com.arretados.leveleditor.entities.Pulley;
 import com.arretados.leveleditor.entities.PulleyPanel;
+import com.arretados.leveleditor.entities.Spike;
+import com.arretados.leveleditor.entities.SpikePanel;
 import com.arretados.leveleditor.entities.layer.Grass;
 import com.arretados.leveleditor.entities.layer.GrassPanel;
 import com.arretados.leveleditor.entities.layer.Shrub;
@@ -95,6 +97,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         Tree.tree_panel = new TreePanel(this);
         Grass.grass_panel = new GrassPanel(this);
         Shrub.shrub_panel = new ShrubPanel(this);
+        Spike.spike_panel = new SpikePanel(this);
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -262,7 +265,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
         jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
 
-        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB}));
+        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB, DrawMode.SPIKE}));
         itemComboBox.setName("itemComboBox"); // NOI18N
         itemComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -537,6 +540,9 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
         break;
         case SHRUB:
             itemPanel.add(Shrub.shrub_panel);
+        break;
+        case SPIKE:
+            itemPanel.add(Spike.spike_panel);
         break;
         case PULLEY:
             itemPanel.add(Pulley.pulley_panel);

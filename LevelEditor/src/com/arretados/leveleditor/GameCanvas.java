@@ -18,6 +18,8 @@ import com.arretados.leveleditor.entities.FluidPanel;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.OneWayWallPanel;
 import com.arretados.leveleditor.entities.Player;
+import com.arretados.leveleditor.entities.Spike;
+import com.arretados.leveleditor.entities.SpikePanel;
 import com.arretados.leveleditor.entities.layer.Grass;
 import com.arretados.leveleditor.entities.layer.GrassPanel;
 import com.arretados.leveleditor.entities.layer.Shrub;
@@ -224,6 +226,12 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                     entityToAdd = new Shrub(e.getX(), e.getY());
                     ((Shrub)entityToAdd).setShrubType((int) shrubType);
                     break;
+                    
+                case SPIKE:
+                    float sizeSpike = ((SpikePanel)mainView.getEntityPanel()).getCurrentSize();
+                    float weightSpike = ((SpikePanel)mainView.getEntityPanel()).getCurrentWeight(); // TODO: set Weight
+                    entityToAdd = new Spike(e.getX(), e.getY(), sizeSpike);
+                    ((Spike)entityToAdd).setWeight(weightSpike);
 
                 case LIANA:
                     //drawLiana(e.getX(), e.getY(), e.getX(), e.getY());
