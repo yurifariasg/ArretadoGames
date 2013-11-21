@@ -25,7 +25,6 @@ public class TatuBola extends Player implements Steppable{
 	private Sprite sprite;
 	private int contJump;
 	private int contAct;
-	private int contacts;
 	protected Fixture footFixture;
 	private final float MAX_JUMP_VELOCITY = 5;
 	private final float MAX_RUN_VELOCITY = 3;
@@ -64,12 +63,11 @@ public class TatuBola extends Player implements Steppable{
 		bodyFixture = body.createFixture(shape,  3f);
 		bodyFixture.setFriction(0f);
 		Filter filter = new Filter();
-		filter.categoryBits = 3;
-		filter.maskBits = bodyFixture.getFilterData().maskBits;
+		filter.categoryBits = CollisionFlag.GROUP_1.getValue() | CollisionFlag.GROUP_2.getValue();
+		filter.maskBits = CollisionFlag.GROUP_1.getValue() | CollisionFlag.GROUP_2.getValue();
 		bodyFixture.setFilterData(filter);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
-		contacts = 0;
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(rad, 0.1f, new Vec2(0f,-rad + 0.1f), 0f);
@@ -110,7 +108,7 @@ public class TatuBola extends Player implements Steppable{
 	
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0) {
+		if (hasFinished() || !isAlive() || contJump > 0 || bodiesContact.size() <= 0) {
 			return;
 		}
 		
@@ -144,7 +142,7 @@ public class TatuBola extends Player implements Steppable{
 			vel.normalize();
 			body.setLinearVelocity(vel.mul(8));
 		}
-		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
+		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
 			float force = (RUN_ACELERATION) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
@@ -155,7 +153,7 @@ public class TatuBola extends Player implements Steppable{
 	}
 
 	public void act() {
-		if( contacts > 0 && contAct == 0){
+		if( bodiesContact.size() > 0 && contAct == 0){
 			if( timeForNextAct < 0.00000001 ){
 			timeForNextAct = TIME_WAITING_FOR_ACT;	
 			sprite.setAnimationState("act");
@@ -188,7 +186,7 @@ public class TatuBola extends Player implements Steppable{
 		}
 		
 		Date t = new Date();
-		if( contacts > 0 && !actActive && (lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  )){
+		if( bodiesContact.size() > 0 && !actActive && (lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  )){
 			sprite.setAnimationState("walking");
 		}
 		
@@ -198,18 +196,20 @@ public class TatuBola extends Player implements Steppable{
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
-		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			contacts++;
+		if( (contact.m_fixtureA.equals(footFixture) &&(!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID))|| (contact.m_fixtureB.equals(footFixture) &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
 			bodiesContact.add(e.body);
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			contacts--;
-			bodiesContact.remove(e.body);
+			if(bodiesContact.contains(e.body)){
+				bodiesContact.remove(e.body);
+				
+			}
+			
 		}
-		if(contacts==0){
+		if(bodiesContact.size()==0){
 			sprite.setAnimationState("jump");
 		}
 	}

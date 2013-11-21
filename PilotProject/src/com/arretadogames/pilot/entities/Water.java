@@ -7,6 +7,8 @@ import java.util.List;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Filter;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import android.graphics.Color;
@@ -67,6 +69,7 @@ public class Water extends Entity implements Steppable{
 	private float waterHeight;
 	private float waterWidth;
 	private float density;
+	private Fixture fixture;
 	
 	public Water(float x, float y, float width, float height, float density) {
 		super(x, y);
@@ -75,9 +78,11 @@ public class Water extends Entity implements Steppable{
 		this.density = density;
 		shapeA = new PolygonShape();
 		shapeA.setAsBox(width/2,height/2);
-		body.createFixture(shapeA,0.0f).setSensor(true);
+		fixture = body.createFixture(shapeA,0.0f);
 		body.setType(BodyType.STATIC);
 		entitiesContact = new ArrayList<Entity>();
+		
+		fixture.setSensor(true);
 		
 		initializeWaterSprings();
 	}

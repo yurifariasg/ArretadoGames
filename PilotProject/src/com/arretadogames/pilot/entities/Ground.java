@@ -3,6 +3,8 @@ package com.arretadogames.pilot.entities;
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Filter;
+import org.jbox2d.dynamics.Fixture;
 
 import android.graphics.Color;
 
@@ -18,6 +20,7 @@ public class Ground extends Entity {
 	
 	private Vec2[] vec;
 	boolean chain = true;
+	private Fixture fixture;
 	
 	public Ground(Vec2[] vec, int count) {
 		super(0, 0);
@@ -25,7 +28,7 @@ public class Ground extends Entity {
 		this.vec = vec;
 		ChainShape shape = new ChainShape();
 		shape.createChain(vec, count);
-		body.createFixture(shape, 0.5f);
+		fixture = body.createFixture(shape, 0.5f);
 		body.setType(BodyType.STATIC);
 	}
 

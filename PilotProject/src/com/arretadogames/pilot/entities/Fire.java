@@ -3,6 +3,7 @@ package com.arretadogames.pilot.entities;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
@@ -40,6 +41,10 @@ public class Fire extends Entity implements Steppable {
 		shape.setAsBox(WIDTH/2, HEIGHT/2);
 		Fixture f = body.createFixture(shape,  1f);
 		f.setSensor(true);
+		Filter filter = new Filter();
+		filter.categoryBits = CollisionFlag.GROUP_3.getValue() ;
+		filter.maskBits = f.m_filter.maskBits ;
+		f.setFilterData(filter);
 		
 		// Create the destroyer-fixture
 		shape = new PolygonShape();
