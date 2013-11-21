@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.arretadogames.pilot.BaseGameActivity;
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.game.Game;
 import com.google.android.gms.appstate.AppStateClient;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
@@ -702,9 +705,14 @@ public class SyncManager implements
 		setState(STATE_CONNECTED);
 		mSignInFailureReason = null;
 		mAutoSignIn = true;
+		
+		if (mUserInitiatedSignIn) {
+			Toast.makeText(MainActivity.getContext(),
+					"You are logged in! Yea!", Toast.LENGTH_SHORT).show();
+		}
+		
 		mUserInitiatedSignIn = false;
 		notifyListener(true);
-		System.out.println("Account Name : " + mPlusClient.getAccountName());
 	}
 
 	/** Handles a connection failure reported by a client. */
@@ -960,6 +968,10 @@ public class SyncManager implements
 				mAppStateClient.disconnect();
 			mPlusClient.clearDefaultAccount();
 			mPlusClient.revokeAccessAndDisconnect(this);
+			
+			Toast.makeText(MainActivity.getContext(),
+					"You have successfully logged out", Toast.LENGTH_SHORT).show();
+			
 		}
 	}
 

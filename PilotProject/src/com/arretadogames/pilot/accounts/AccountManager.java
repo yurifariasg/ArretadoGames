@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import android.util.Log;
 
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.googlesync.SyncManager;
 import com.arretadogames.pilot.util.Logger;
 import com.google.android.gms.appstate.AppState;
@@ -14,12 +15,16 @@ import com.google.android.gms.appstate.OnStateListLoadedListener;
 public class AccountManager implements OnStateListLoadedListener {
 	
 	private SyncManager syncManager;
+	
+	private static Account defaultUser;
+	
 	private Account account1;
 	private Account account2;
 	
 	private AccountManager() {
 		syncManager = SyncManager.get();
-		account1 = new Account();
+		defaultUser = GameDatabase.getInstance().getDefaultUser();
+		account1 = defaultUser;
 		account2 = new Account();
 	}
 	
@@ -35,7 +40,7 @@ public class AccountManager implements OnStateListLoadedListener {
 		if (syncManager.getAppStateClient().isConnected()) {
 			System.out.println("Requesting List States");
 			// App State Client supports only one player, so we suppose it is player one
-			account1 = null; // Avoid wrong info
+//			account1 = null; // Avoid wrong info
 			syncManager.getAppStateClient().listStates(this);
 			
 		}
@@ -137,7 +142,7 @@ public class AccountManager implements OnStateListLoadedListener {
 	}
 
 	public void clearArrount1() {
-		account1 = null;
+		account1 = defaultUser;
 //		account1 = new Account();
 //		account1.setAccountId(Account.PLAYER_1_DEFAULT_ACCOUNT_NAME);
 //		account1.setAccountName(Account.PLAYER_1_DEFAULT_ACCOUNT_NAME);

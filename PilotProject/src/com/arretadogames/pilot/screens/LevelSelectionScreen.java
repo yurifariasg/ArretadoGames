@@ -189,17 +189,17 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 			if (zoom == 2) {
 				int stRecord = levels.get(currentIndex).getRecords()[0];
 				canvas.drawText(
-						"1st Coins: " + (stRecord == -1 ? "?" : String.valueOf(stRecord)),
+						"1st Seeds: " + (stRecord == -1 ? "?" : String.valueOf(stRecord)),
 						drawRect.centerX(),	drawRect.centerY() + 130, textSpecification, 1, true);
 				
 				int ndRecord = levels.get(currentIndex).getRecords()[1];
 				canvas.drawText(
-						"2nd Coins: " + (ndRecord == -1 ? "?" : String.valueOf(ndRecord)),
+						"2nd Seeds: " + (ndRecord == -1 ? "?" : String.valueOf(ndRecord)),
 						drawRect.centerX(),	drawRect.centerY() + 160, textSpecification, 1, true);
 				
 				int rdRecord = levels.get(currentIndex).getRecords()[2];
 				canvas.drawText(
-						"3rd Coins: " + (rdRecord == -1 ? "?" : String.valueOf(rdRecord)),
+						"3rd Seeds: " + (rdRecord == -1 ? "?" : String.valueOf(rdRecord)),
 						drawRect.centerX(),	drawRect.centerY() + 190, textSpecification, 1, true);
 
 				

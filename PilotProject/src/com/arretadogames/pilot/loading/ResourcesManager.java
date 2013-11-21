@@ -91,7 +91,7 @@ public class ResourcesManager {
 		} else if (state.equals(GameState.RUNNING_GAME)) {
 			resources = new int[] {
 					R.drawable.ui_buttons,
-					R.drawable.coin_1_1,
+					R.drawable.seed1,
 					R.drawable.pause_menu_bg,
 					R.drawable.bt_pause_selected,
 					R.drawable.repeatable_background,

@@ -148,16 +148,16 @@ public class GLRect {
 			float x4, float y4) {
 		vertices[0] = x;
 		vertices[1] = y;
-		vertices[2] = 0f;
+		vertices[2] = 0.0001f;
 		vertices[3] = x2;
 		vertices[4] = y2;
-		vertices[5] = 0f;
+		vertices[5] = 0.0001f;
 		vertices[6] = x3;
 		vertices[7] = y3;
-		vertices[8] = 0f;
+		vertices[8] = 0.0001f;
 		vertices[9] = x4;
 		vertices[10] = y4;
-		vertices[11] = 0f;
+		vertices[11] = 0.0001f;
 		
 	}
 	

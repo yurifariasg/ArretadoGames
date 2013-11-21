@@ -132,7 +132,7 @@ public class EndScreen extends GameScreen {
 		currentY += PLAYER_INFO_Y_SPACING;
 
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
-				currentY, "Coins: " + player.getCoins(),
+				currentY, "Seeds: " + player.getCoins(),
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 		

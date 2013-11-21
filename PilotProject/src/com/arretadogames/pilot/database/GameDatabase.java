@@ -7,18 +7,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 
 public class GameDatabase {
 	
 	public static final String TABLE_ACCOUNT = "ACCOUNT";
 	public static final String ACCOUNT_ID = "acount_id";
-	public static final String ACC_NAME = "acount_name";
 	public static final String ACC_COINS = "account_coins";
-	public static final String ACC_ID = "acc_id";
-	public static final String NAME = "user_name";
+	public static final String USER_NAME = "user_name";
 	public static final String IMAGE = "user_image";
 	public static final String ACC_PROVIDER = "acc_provided_id";
+	public static final String PROVIDER_ACC_ID = "provider_acc_id";
 	
     public static final String TABLE_LEVEL = "LEVEL";
     public static final String LEVEL_ID = "level_id";
@@ -60,6 +60,22 @@ public class GameDatabase {
     public boolean getStarted(){
         return this.started;
     }
+    
+    public Account getDefaultUser() {
+    	Cursor c = db.query(TABLE_ACCOUNT, null, ACC_PROVIDER + " = 'self'", null, null, null, null);
+    	c.moveToFirst();
+    	
+    	Account a = new Account();
+    	
+    	a.setName(c.getString(c.getColumnIndex(GameDatabase.USER_NAME)));
+    	a.setCoins(c.getInt(c.getColumnIndex(GameDatabase.ACC_COINS)));
+    	a.setAccountName(c.getString(c.getColumnIndex(GameDatabase.PROVIDER_ACC_ID)));
+    	a.setAccountId(String.valueOf(c.getInt(c.getColumnIndex(GameDatabase.ACCOUNT_ID))));
+    	
+    	c.close();
+    	
+    	return a;
+	}
     
     public ArrayList<LevelDescriptor> getAllLevels(){
     	ArrayList<LevelDescriptor> allLevels = new ArrayList<LevelDescriptor>();

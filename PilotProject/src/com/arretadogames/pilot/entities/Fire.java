@@ -14,7 +14,7 @@ import com.arretadogames.pilot.render.particlesystem.FireParticle;
 
 public class Fire extends Entity implements Steppable {
 
-	private float base_velocity = 3.2f;
+	private float base_velocity = 2.6f; // 3.2f
 	private float velocity = 3.2f;//3.2f;
 	
 	private static final float WIDTH = 10;

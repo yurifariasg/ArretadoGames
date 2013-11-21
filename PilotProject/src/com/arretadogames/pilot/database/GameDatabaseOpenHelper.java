@@ -9,10 +9,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 	
-    private static final int DATABASE_VERSION = 42;
+    private static final int DATABASE_VERSION = 43;
     private static final String DATABASE_NAME = "pilotproject_db";
     
     private static final String LEVEL_TABLE_CREATE = "CREATE TABLE " +
+		    GameDatabase.TABLE_ACCOUNT + " (" +
+			GameDatabase.ACCOUNT_ID + " INTEGER PRIMARY KEY, " +
+			GameDatabase.ACC_COINS + " INTEGER, " +
+			GameDatabase.USER_NAME + " TEXT, " +
+			GameDatabase.IMAGE + " NONE, " +
+			GameDatabase.PROVIDER_ACC_ID + " TEXT, " +
+			GameDatabase.ACC_PROVIDER + " TEXT); ";
+    
+    private static final String USER_TABLE_CREATE = "CREATE TABLE " +
 		    GameDatabase.TABLE_LEVEL + " (" +
 			GameDatabase.LEVEL_ID + " INTEGER PRIMARY KEY, " +
 			GameDatabase.ACC_ID_RECORD_FIRST + " INTEGER, " +
@@ -29,10 +38,16 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+    	initializeDB(db);
+    }
+    
+    private void initializeDB(SQLiteDatabase db) {
         db.execSQL(LEVEL_TABLE_CREATE);
+        db.execSQL(USER_TABLE_CREATE);
         
         ContentValues values = new ContentValues();
         
+        // Add Levels
         for(int i = 0; i < LevelTable.LEVELS.length; i++){
 	        values.put(GameDatabase.LEVEL_ID, i);
 	        values.put(GameDatabase.LEVEL_ENABLED, true);
@@ -43,11 +58,29 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 	        
 	        values.clear();
 	    }
+        
+        // Add Anonymous Account
+        
+        values.put(GameDatabase.ACCOUNT_ID, 0);
+        values.put(GameDatabase.USER_NAME, "Anonymous");
+        values.put(GameDatabase.ACC_COINS, 0);
+        values.put(GameDatabase.PROVIDER_ACC_ID, "self");
+        values.putNull(GameDatabase.IMAGE);
+        values.put(GameDatabase.ACC_PROVIDER, "self");
+
+        db.insert(GameDatabase.TABLE_ACCOUNT, null, values);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    	//TODO
+    	
+    	if (oldVersion < newVersion) {
+    		
+    		db.execSQL("DROP TABLE IF EXISTS " + GameDatabase.TABLE_LEVEL);
+    		db.execSQL("DROP TABLE IF EXISTS " + GameDatabase.TABLE_ACCOUNT);
+    		
+    		initializeDB(db);
+    	}
     }
    
     @Override

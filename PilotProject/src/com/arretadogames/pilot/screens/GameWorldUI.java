@@ -1,6 +1,7 @@
 package com.arretadogames.pilot.screens;
 
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
@@ -38,6 +39,7 @@ public class GameWorldUI extends GameScreen {
 	private GLCircle coolDown2;
 	
 	float totalDistance = Float.MIN_VALUE;
+	private RectF seedRenderingRect = new RectF(0, 0, 40, 40);
 	
 	public GameWorldUI(GameWorld gameWorld) {
 		this.gWorld = gameWorld;
@@ -49,9 +51,6 @@ public class GameWorldUI extends GameScreen {
 			if (e.getType() == EntityType.FIRE)
 				fire = (Fire) e;
 		}
-		
-//		completionText = new Text(400, 430, "0% completed",
-//				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 		
 		coin1Text = new Text(140, 40, "0",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
@@ -66,12 +65,19 @@ public class GameWorldUI extends GameScreen {
 	public void render(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.drawBitmap(R.drawable.ui_buttons, 0, 340);
-//		completionText.render(canvas, timeElapsed);
 		
-		canvas.drawBitmap(R.drawable.coin_1_1, 90, 25);
+		seedRenderingRect.right = 90 + seedRenderingRect.width();
+		seedRenderingRect.left = 90;
+		seedRenderingRect.bottom = 20 + seedRenderingRect.height();
+		seedRenderingRect.top = 20;
+		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
 		coin1Text.render(canvas, timeElapsed);
 		
-		canvas.drawBitmap(R.drawable.coin_1_1, 640, 25);
+		seedRenderingRect.right = 640 + seedRenderingRect.width();
+		seedRenderingRect.left = 640;
+		seedRenderingRect.bottom = 20 + seedRenderingRect.height();
+		seedRenderingRect.top = 20;
+		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
 		coin2Text.render(canvas, timeElapsed);
 		
 		if (p1.isAlive()){

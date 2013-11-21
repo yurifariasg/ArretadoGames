@@ -44,7 +44,9 @@ public class MovingBackground {
 		}
 		
 		dstRectF.bottom = GameSettings.TARGET_HEIGHT + translator.y;
-		dstRectF.bottom +=  110 // ADAPT THIS DEPENDING ON THE IMAGE (just to make sure it is where it is supposed to be)
+		// ADAPT THIS DEPENDING ON THE IMAGE (just to make sure it is where it is supposed to be)
+		// Higher Values means..
+		dstRectF.bottom +=  80f // 110
 				*  Math.abs(zoomRatio) / 70f; // MaximumZoom = 70
 		dstRectF.top = dstRectF.bottom - height * Math.abs(zoomRatio) / 70f; // MaximumZoom = 70
 		

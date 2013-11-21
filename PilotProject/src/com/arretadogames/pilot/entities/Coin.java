@@ -15,15 +15,9 @@ public class Coin extends Entity {
 	private static final int DEFAULT_VALUE = 10;
 	
 	public final static int[] FRAMES = {
-		R.drawable.coin_1_1,R.drawable.coin_1_2,R.drawable.coin_1_3,R.drawable.coin_1_4,
-		R.drawable.coin_2_1,R.drawable.coin_2_2,R.drawable.coin_2_3,R.drawable.coin_2_4,
-		R.drawable.coin_3_1,R.drawable.coin_3_2,R.drawable.coin_3_3,R.drawable.coin_3_4,
-		R.drawable.coin_4_1,R.drawable.coin_4_2,R.drawable.coin_4_3,R.drawable.coin_4_4};
+		R.drawable.seed0,R.drawable.seed1,R.drawable.seed2,R.drawable.seed1};
 	
 	public final static float[] DURATION = {
-		0.08f, 0.08f, 0.08f, 0.08f,
-		0.08f, 0.08f, 0.08f, 0.08f,
-		0.08f, 0.08f, 0.08f, 0.08f,
 		0.08f, 0.08f, 0.08f, 0.08f
 	};
 	

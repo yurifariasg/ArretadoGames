@@ -33,6 +33,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private Text welcomeLabel;
 	private Text nameLabel;
 	private Text inputLabel;
+	private boolean labelsAreRelatedToAccountProvider;
 	private long p1Coins; // Variable to detect if the account coins have changed since last time
 	
 	// Main Menu Screens
@@ -53,7 +54,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 //				R.drawable.bt_settings_unselected);
 		
 		gPlusBt = new ImageButton(G_SIGN_IN_BUTTON,
-				20, 390, this,
+				700, 20, this,
 				R.drawable.bt_gplus_selected,
 				R.drawable.bt_gplus_unselected);
 		
@@ -69,9 +70,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	private void createUserInfoLabels() {
 		Account acc = AccountManager.get().getAccount1();
-		welcomeLabel = new Text(400, 395, "Welcome, " + acc.getName(),
+		welcomeLabel = new Text(400, 395, "Welcome, " + (acc.isAnnonymous() ? "" : acc.getName()),
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
-		nameLabel = new Text(400, 445, "You have " + acc.getCoins() + " coins",
+		nameLabel = new Text(400, 445, "You have " + acc.getCoins() + " seeds",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 	}
 
@@ -90,12 +91,13 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			
-			if (SyncManager.get().isSignedIn() && AccountManager.get().getAccount1() != null) {
+			if ( AccountManager.get().getAccount1() != null) { // SyncManager.get().isSignedIn() &&
 				if (nameLabel == null || welcomeLabel == null ||
 						AccountManager.get().getAccount1().getCoins() != p1Coins) {
 					
 					createUserInfoLabels();
 					p1Coins = AccountManager.get().getAccount1().getCoins();
+					labelsAreRelatedToAccountProvider = true;
 				}
 				
 				nameLabel.render(canvas, timeElapsed);

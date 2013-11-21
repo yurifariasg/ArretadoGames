@@ -145,7 +145,6 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			pScreen.currentBlackAlpha = newValues[0];
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public void onClick(int buttonId) {
 		// All functions here are ASYNCHRONOUS
