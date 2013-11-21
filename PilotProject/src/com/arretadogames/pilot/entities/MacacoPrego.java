@@ -11,6 +11,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -26,7 +27,6 @@ public class MacacoPrego extends Player implements Steppable{
 	private Sprite sprite;
 	private int contJump;
 	private int contAct;
-	private int contacts;
 	private Fixture footFixture;
 	private final float MAX_JUMP_VELOCITY = 6;
 	private final float MAX_RUN_VELOCITY = 3;
@@ -54,14 +54,22 @@ public class MacacoPrego extends Player implements Steppable{
 		shape.setRadius(radius );
 		footFixture = body.createFixture(shape,  3f);
 		footFixture.setFriction(0f);
+		
+		Filter filter = new Filter();
+		filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
+		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
+		footFixture.setFilterData(filter);
+		
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
-		contacts = 0;
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(radius, 0.1f, new Vec2(0f,-radius+0.1f), 0f);
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
+		
+		footFixture.setFilterData(filter);
+		
 		bodiesContact = new HashSet<Body>();
 		isonliana = false;
 		
@@ -75,7 +83,7 @@ public class MacacoPrego extends Player implements Steppable{
 		BodyDef bf = new BodyDef();
 		bf.type = BodyType.DYNAMIC;
 		b = world.createBody(bf);
-		b.createFixture(fd);
+		b.createFixture(fd).setFilterData(filter);;
 		b.setUserData(this);
 		RevoluteJointDef jd2 = new RevoluteJointDef();
 		jd2.bodyA = body;
@@ -115,7 +123,7 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || contacts <= 0)
+		if (hasFinished() || !isAlive() || contJump > 0 || bodiesContact.size() <= 0)
 			return;
 		sprite.setAnimationState("jump");
 		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
@@ -150,7 +158,7 @@ public class MacacoPrego extends Player implements Steppable{
 			vel.normalize();
 			body.setLinearVelocity(vel.mul(8));
 		}
-		if(contacts > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
+		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
 			float force = (RUN_ACELERATION) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
@@ -161,7 +169,7 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 
 	public void act() {	
-		if( contacts > 0 && contAct == 0){
+		if( bodiesContact.size() > 0 && contAct == 0){
 			
 		}
 	}
@@ -186,20 +194,21 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 	
 	public void beginContact(Entity e, Contact contact) {
-		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			sprite.setAnimationState("walking");
+		if( (contact.m_fixtureA.equals(footFixture) &&(!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID))|| (contact.m_fixtureB.equals(footFixture) &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
 			bodiesContact.add(e.body);
-
-			contacts++;
+			sprite.setAnimationState("walking");
 		}
 	}
 
 	public void endContact(Entity e , Contact contact) {
 		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			contacts--;
-			bodiesContact.remove(e.body);
+			if(bodiesContact.contains(e.body)){
+				bodiesContact.remove(e.body);
+				
+			}
+			
 		}
-		if(contacts==0){
+		if(bodiesContact.size()==0){
 			sprite.setAnimationState("jump");
 		}
 	}
