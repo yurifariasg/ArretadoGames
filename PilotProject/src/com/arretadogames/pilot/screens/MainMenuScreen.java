@@ -26,10 +26,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private static final int PLAY_BUTTON = 1;
 	private static final int SETTINGS_BUTTON = 2;
 	private static final int G_SIGN_IN_BUTTON = 3;
+	private static final int STORE_BUTTON = 4; // NOWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 	
 	private ImageButton playBt;
 //	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
+	private ImageButton storeBt; // NOWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 	private Text welcomeLabel;
 	private Text nameLabel;
 	private Text inputLabel;
@@ -57,6 +59,11 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				700, 20, this,
 				R.drawable.bt_gplus_selected,
 				R.drawable.bt_gplus_unselected);
+		
+		storeBt = new ImageButton(STORE_BUTTON,
+				700, 220, this,
+				R.drawable.bt_store_selected,
+				R.drawable.bt_store_unselected);
 		
 		inputLabel = new Text(400, 50, "",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
@@ -90,6 +97,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 //			settingsBt.render(canvas, timeElapsed);
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
+			storeBt.render(canvas, timeElapsed);
 			
 			if ( AccountManager.get().getAccount1() != null) { // SyncManager.get().isSignedIn() &&
 				if (nameLabel == null || welcomeLabel == null ||
@@ -131,6 +139,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			playBt.input(event);
 //			settingsBt.input(event);
 			gPlusBt.input(event);
+			storeBt.input(event);
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.input(event);
 		}
@@ -158,7 +167,11 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				SyncManager.get().userClickedSignIn();
 			}
 			break;
+		case STORE_BUTTON:
+			startStore();
+			break;
 		}
+			
 	}
 	
 	private void startGame() {
@@ -166,6 +179,11 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		currentBlackAlpha = 0;
 		currentZoom = 1;
 	}
+	
+	private void startStore() {
+		Game.getInstance().goTo(GameState.GAME_STORE);
+	}
+	
 
 	@Override
 	public int getValues(MainMenuScreen target, int tweenType, float[] returnValues) {

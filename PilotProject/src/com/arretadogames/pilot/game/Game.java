@@ -17,6 +17,7 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.CharacterSelectionScreen;
 import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
+import com.arretadogames.pilot.screens.GameStore;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.LevelSelectionScreen;
 import com.arretadogames.pilot.screens.MainMenuScreen;
@@ -58,6 +59,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		gameScreens.put(GameState.GAME_OVER, new EndScreen());
 		gameScreens.put(GameState.CHARACTER_SELECTION, new CharacterSelectionScreen());
 		gameScreens.put(GameState.LEVEL_SELECTION, new LevelSelectionScreen());
+		gameScreens.put(GameState.GAME_STORE, new GameStore());		
 		transitionStateOn = false;
 		loadManager.prepareLoad(new GameState[] { nextState });
 		currentState = GameState.LOADING;
