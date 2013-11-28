@@ -1,7 +1,9 @@
 package com.arretadogames.pilot.screens;
 
+import android.widget.Toast;
 import aurelienribon.tweenengine.TweenAccessor;
 
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
@@ -17,6 +19,10 @@ import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.ui.ZoomImageButton;
+import com.arretadogames.pilot.util.billing.IabHelper;
+import com.arretadogames.pilot.util.billing.Purchase;
+import com.arretadogames.pilot.util.billing.IabHelper.OnIabSetupFinishedListener;
+import com.arretadogames.pilot.util.billing.IabResult;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener, TweenAccessor<MainMenuScreen> {
 	
@@ -26,10 +32,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private static final int PLAY_BUTTON = 1;
 	private static final int SETTINGS_BUTTON = 2;
 	private static final int G_SIGN_IN_BUTTON = 3;
+	private static final int BUY_BUTTON = 4;
 	
 	private ImageButton playBt;
 //	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
+	private ImageButton buyBt;
 	private Text welcomeLabel;
 	private Text nameLabel;
 	private Text inputLabel;
@@ -55,6 +63,11 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		gPlusBt = new ImageButton(G_SIGN_IN_BUTTON,
 				700, 20, this,
+				R.drawable.bt_gplus_selected,
+				R.drawable.bt_gplus_unselected);
+		
+		buyBt = new ImageButton(BUY_BUTTON,
+				700, 90, this,
 				R.drawable.bt_gplus_selected,
 				R.drawable.bt_gplus_unselected);
 		
@@ -90,6 +103,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 //			settingsBt.render(canvas, timeElapsed);
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
+			buyBt.render(canvas, timeElapsed);
 			
 			if ( AccountManager.get().getAccount1() != null) { // SyncManager.get().isSignedIn() &&
 				if (nameLabel == null || welcomeLabel == null ||
@@ -131,6 +145,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			playBt.input(event);
 //			settingsBt.input(event);
 			gPlusBt.input(event);
+			buyBt.input(event);
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.input(event);
 		}
@@ -157,6 +172,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			} else {
 				SyncManager.get().userClickedSignIn();
 			}
+			break;
+		case BUY_BUTTON:
+			MainActivity.getActivity().purchase("small_seed_pack");
 			break;
 		}
 	}

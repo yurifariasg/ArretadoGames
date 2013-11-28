@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.arretadogames.pilot.android;
+package com.android.vending.billing;
 
 import android.os.Bundle;
 
