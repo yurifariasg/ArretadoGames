@@ -29,7 +29,7 @@ public class TatuBola extends Player implements Steppable{
 	private final float MAX_JUMP_VELOCITY = 5;
 	private final float MAX_RUN_VELOCITY = 3;
 	private float JUMP_ACELERATION = 3;
-	private float RUN_ACELERATION = 5;
+	private float RUN_ACELERATION = 3;
 	Collection<Body> bodiesContact;
 	Date lastAct;
 	private final float TIME_WAITING_FOR_ACT = 6f;

@@ -184,7 +184,7 @@ public class GameWorld extends GameScreen {
 							new Vec2(entityDescriptor.getX()+1, 2.5f), 5);
 					break;
 				case BREAKABLE:
-					entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,2f,0,false);
+					entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,1.5f,0,false);
 					break;
 				
 				case LIANA:

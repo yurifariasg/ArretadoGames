@@ -22,6 +22,8 @@ public class Breakable extends Entity implements Steppable{
 
 	private Sprite sprite;
 
+	private int life = 5;
+
 	/**
 	 * 
 	 * @param x center x position
@@ -56,7 +58,8 @@ public class Breakable extends Entity implements Steppable{
 		canvas.saveState();
 		canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
+		if( life > 3 )canvas.drawBitmap(R.drawable.muro_inteiro, physRect);
+		else canvas.drawBitmap(R.drawable.muro_quebrado, physRect);
 		canvas.restoreState();
 
 	}
@@ -69,13 +72,17 @@ public class Breakable extends Entity implements Steppable{
 		for (int i = 0; i < count; ++i) {
 			maxImpulse = MathUtils.max(maxImpulse, impulse.normalImpulses[i]);
 		}
-		if (maxImpulse > 6.0f) {
-			m_break = true;
-		}
+		System.out.println("dano: " + maxImpulse);
+//		if (maxImpulse > 6.0f) {
+//			m_break = true;
+//		}
+		life -= (int)((maxImpulse)/2);
+		System.out.println("life: " + life);
 	}
 
 	@Override
 	public void step(float timeElapsed) {
+		if(life  <= 0) Break();
 		if(m_break) Break();
 	}
 
