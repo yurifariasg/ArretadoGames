@@ -8,6 +8,7 @@ import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.ui.ItemWidget;
 import com.arretadogames.pilot.ui.Text;
 
 public class GameStore extends GameScreen{
@@ -16,15 +17,19 @@ public class GameStore extends GameScreen{
 	private Text nameLabel;
 	private Text priceLabel;
 	private RectF seedRenderingRect = new RectF(0, 0, 40, 40);
+	
+//	private ItemWidget item = new ItemWidget(0, 10, 10, 40, 40);
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		
 		canvas.drawBitmap(R.drawable.store_background, 0, 0);
 		seedRenderingRect.right = 550 + seedRenderingRect.width();
 		seedRenderingRect.left = 550;
 		seedRenderingRect.bottom = 170 + seedRenderingRect.height();
 		seedRenderingRect.top = 170;
 		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
+//		item.render(canvas, timeElapsed);
 		
 		if ( AccountManager.get().getAccount1() != null) { // SyncManager.get().isSignedIn() &&
 			if (nameLabel == null || welcomeLabel == null ||
