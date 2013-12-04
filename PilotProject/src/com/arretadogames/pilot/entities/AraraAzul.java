@@ -13,6 +13,7 @@ import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -22,10 +23,6 @@ public class AraraAzul extends Player implements Steppable{
 	private Sprite sprite;
 	private int contJump;
 	private Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 5;
-	private final float MAX_RUN_VELOCITY = 3;
-	private float JUMP_ACELERATION = 4;
-	private float RUN_ACELERATION = 5;
 	Collection<Body> bodiesContact;
 	private float k = 3f;
 	private boolean doubleJump;
@@ -54,6 +51,7 @@ public class AraraAzul extends Player implements Steppable{
 	
 	public AraraAzul(float x, float y, PlayerNumber number) {
 		super(x, y, number);
+		applyConstants();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
@@ -81,6 +79,14 @@ public class AraraAzul extends Player implements Steppable{
 		
 		// Drawing Rect
 		physRect = new PhysicsRect(1, 1);
+	}
+	
+	private void applyConstants() {
+		setMaxJumpVelocity(GameSettings.ARARA_MAX_JUMP_VELOCITY);
+		setMaxRunVelocity(GameSettings.ARARA_MAX_RUN_VELOCITY);
+		setJumpAceleration(GameSettings.ARARA_JUMP_ACELERATION);
+		setRunAceleration(GameSettings.ARARA_RUN_ACELERATION);
+		setTimeWaitingForAct(GameSettings.ARARA_TIME_WAITING_FOR_ACT);
 	}
 
 	@Override
@@ -118,7 +124,7 @@ public class AraraAzul extends Player implements Steppable{
 		}
 		sprite.setAnimationState("jump");
 //		Math.max(Math.min(,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)
-		float impulseX = (JUMP_ACELERATION-body.getLinearVelocity().y) * body.getMass();
+		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
 		Vec2 direction = new Vec2(0,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
@@ -146,8 +152,8 @@ public class AraraAzul extends Player implements Steppable{
 			vel.normalize();
 			body.setLinearVelocity(vel.mul(8));
 		}
-		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
-			float force = (RUN_ACELERATION) * body.getMass();
+		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < getMaxRunVelocity()){
+			float force = (getRunAceleration()) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
@@ -173,6 +179,8 @@ public class AraraAzul extends Player implements Steppable{
 
 	@Override
 	public void step(float timeElapsed) {
+		applyConstants();
+		super.step(timeElapsed);
 		if (hasFinished() || !isAlive()) {
 			if (hasFinished())
 				stopAction();

@@ -31,4 +31,33 @@ public class GameSettings {
 	
 	public static float WidthRatio = 1f;
 	public static float HeightRatio = 1f;
+	
+	
+	//LoboGuara
+	public static final float LOBO_MAX_JUMP_VELOCITY = 5;
+	public static final float LOBO_MAX_RUN_VELOCITY = 3;
+	public static float LOBO_JUMP_ACELERATION = 3;
+	public static float LOBO_RUN_ACELERATION = 5;
+	public static final float LOBO_TIME_WAITING_FOR_ACT = 6;
+	
+	//Arara
+		public static final float ARARA_MAX_JUMP_VELOCITY = 5;
+		public static final float ARARA_MAX_RUN_VELOCITY = 3;
+		public static float ARARA_JUMP_ACELERATION = 3;
+		public static float ARARA_RUN_ACELERATION = 5;
+		public static final float ARARA_TIME_WAITING_FOR_ACT = 6;
+		
+		//Tatu
+		public static final float TATU_MAX_JUMP_VELOCITY = 5;
+		public static final float TATU_MAX_RUN_VELOCITY = 3;
+		public static float TATU_JUMP_ACELERATION = 3;
+		public static float TATU_RUN_ACELERATION = 5;
+		public static final float TATU_TIME_WAITING_FOR_ACT = 6;
+		
+		//Macaco
+		public static final float MACACO_MAX_JUMP_VELOCITY = 5;
+		public static final float MACACO_MAX_RUN_VELOCITY = 3;
+		public static float MACACO_JUMP_ACELERATION = 3;
+		public static float MACACO_RUN_ACELERATION = 5;
+		public static final float MACACO_TIME_WAITING_FOR_ACT = 6;
 }

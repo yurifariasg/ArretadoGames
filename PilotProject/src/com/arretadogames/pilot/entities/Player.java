@@ -1,15 +1,26 @@
 package com.arretadogames.pilot.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.jbox2d.common.Vec2;
 
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.items.Item;
+import com.arretadogames.pilot.items.Velocity;
 import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.world.GameWorld;
 
 
 
-public abstract class Player extends Watchable {
+public abstract class Player extends Watchable implements Steppable{
+
+	private float maxJumpVelocity = 5;
+	private float maxRunVelocity = 3;
+	private float jumpAceleration = 3;
+	private float runAceleration = 5;
+	private float timeWaitingForAct = 6;
 	
 	private PlayerNumber playerNumber;
 	private boolean hasFinished; /* Player has finished level */
@@ -21,12 +32,32 @@ public abstract class Player extends Watchable {
 	private int deathCount;
 	private int timeFinished;
 
+	private Collection<Item> items;
+	
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
 		this.playerNumber = playerNumber;
 		hasFinished = false;
 		jumpActive = false;
 		actActive = false;
+		items = new ArrayList<Item>();
+		
+		items.add(new Velocity(10f));
+	}
+	
+	public boolean addItem(Item i){
+		return items.add(i);
+	}
+	
+	public boolean remove(Item i){
+		return items.remove(i);
+	}
+	
+	@Override
+	public void step(float timeElapsed){
+		for(Item i : items){
+			i.applyEffect(this);
+		}
 	}
 	
 	public PlayerNumber getNumber() {
@@ -100,6 +131,46 @@ public abstract class Player extends Watchable {
 				
 			}
 		}
+	}
+	
+	public float getMaxJumpVelocity() {
+		return maxJumpVelocity;
+	}
+
+	public void setMaxJumpVelocity(float maxJumpVelocity) {
+		this.maxJumpVelocity = maxJumpVelocity;
+	}
+
+	public float getMaxRunVelocity() {
+		return maxRunVelocity;
+	}
+
+	public void setMaxRunVelocity(float maxRunVelocity) {
+		this.maxRunVelocity = maxRunVelocity;
+	}
+
+	public float getJumpAceleration() {
+		return jumpAceleration;
+	}
+
+	public void setJumpAceleration(float jumpAceleration) {
+		this.jumpAceleration = jumpAceleration;
+	}
+
+	public float getRunAceleration() {
+		return runAceleration;
+	}
+
+	public void setRunAceleration(float runAceleration) {
+		this.runAceleration = runAceleration;
+	}
+
+	public float getTimeWaitingForAct() {
+		return timeWaitingForAct;
+	}
+
+	public void setTimeWaitingForAct(float timeWaitingForAct) {
+		this.timeWaitingForAct = timeWaitingForAct;
 	}
 	
 	public int getPercentageLeftToNextAct(){

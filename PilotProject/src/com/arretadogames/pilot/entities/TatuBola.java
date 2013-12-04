@@ -16,6 +16,7 @@ import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -26,10 +27,7 @@ public class TatuBola extends Player implements Steppable{
 	private int contJump;
 	private int contAct;
 	protected Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 5;
-	private final float MAX_RUN_VELOCITY = 3;
-	private float JUMP_ACELERATION = 3;
-	private float RUN_ACELERATION = 3;
+	
 	Collection<Body> bodiesContact;
 	Date lastAct;
 	private final float TIME_WAITING_FOR_ACT = 6f;
@@ -56,6 +54,7 @@ public class TatuBola extends Player implements Steppable{
 	protected Fixture bodyFixture;
 	public TatuBola(float x, float y, PlayerNumber number) {
 		super(x, y, number);
+		applyConstants();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
@@ -76,6 +75,13 @@ public class TatuBola extends Player implements Steppable{
 		bodiesContact = new HashSet<Body>();
 		
 		physRect = new PhysicsRect(rad + 0.2f, rad + 0.2f);
+	}
+	private void applyConstants() {
+		setMaxJumpVelocity(GameSettings.TATU_MAX_JUMP_VELOCITY);
+		setMaxRunVelocity(GameSettings.TATU_MAX_RUN_VELOCITY);
+		setJumpAceleration(GameSettings.TATU_JUMP_ACELERATION);
+		setRunAceleration(GameSettings.TATU_RUN_ACELERATION);
+		setTimeWaitingForAct(GameSettings.TATU_TIME_WAITING_FOR_ACT);
 	}
 	
 	@Override
@@ -113,7 +119,7 @@ public class TatuBola extends Player implements Steppable{
 		}
 		
 		sprite.setAnimationState("jump");
-		float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
+		float impulseX = Math.max(Math.min(getJumpAceleration(),(getMaxJumpVelocity() - body.getLinearVelocity().y)) * body.getMass(),0);
 		Vec2 direction = new Vec2(0,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
@@ -142,8 +148,8 @@ public class TatuBola extends Player implements Steppable{
 			vel.normalize();
 			body.setLinearVelocity(vel.mul(8));
 		}
-		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
-			float force = (RUN_ACELERATION) * body.getMass();
+		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < getMaxRunVelocity()){
+			float force = (getRunAceleration()) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
@@ -171,6 +177,8 @@ public class TatuBola extends Player implements Steppable{
 
 	@Override
 	public void step(float timeElapsed) {
+		applyConstants();
+		super.step(timeElapsed);
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
 		if (hasFinished() || !isAlive()) {
 			if (hasFinished())
