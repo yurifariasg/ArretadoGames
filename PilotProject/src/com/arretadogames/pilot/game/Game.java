@@ -128,9 +128,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		if (transitionStateOn)
 			return; // Input Disabled when Transition
 
-		System.out.println("até aqui foooi: " + gameScreens.get(currentState));
 		gameScreens.get(currentState).input(event);
-		System.out.println("até aqui foooi2: " + gameScreens.get(currentState));
 	}
 
 	/**

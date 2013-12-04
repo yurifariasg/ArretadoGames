@@ -26,12 +26,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private static final int PLAY_BUTTON = 1;
 	private static final int SETTINGS_BUTTON = 2;
 	private static final int G_SIGN_IN_BUTTON = 3;
-	private static final int STORE_BUTTON = 4; // NOWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+	private static final int STORE_BUTTON = 4;
 	
 	private ImageButton playBt;
 //	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
-	private ImageButton storeBt; // NOWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+	private ImageButton storeBt;
 	private Text welcomeLabel;
 	private Text nameLabel;
 	private Text inputLabel;
