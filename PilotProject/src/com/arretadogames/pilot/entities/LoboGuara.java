@@ -14,25 +14,22 @@ import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class LoboGuara extends Player implements Steppable{
+public class LoboGuara extends Player {
 
 	private Sprite sprite;
 	private int contJump;
 	private int contAct;
 	private Fixture footFixture;
-	private final float MAX_JUMP_VELOCITY = 5;
-	private final float MAX_RUN_VELOCITY = 3;
-	private float JUMP_ACELERATION = 3;
-	private float RUN_ACELERATION = 5;
 	Collection<Body> bodiesContact;
 	Date lastAct;
 	private float size;
-	private final float TIME_WAITING_FOR_ACT = 6;
 	private float timeForNextAct = 0f;
+	
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
 								  		     R.drawable.lobo_g_walking3,
@@ -51,6 +48,7 @@ public class LoboGuara extends Player implements Steppable{
 	
 	public LoboGuara(float x, float y, PlayerNumber number) {
 		super(x, y, number);
+		applyConstants();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
@@ -77,6 +75,14 @@ public class LoboGuara extends Player implements Steppable{
 		physRect = new PhysicsRect(1.4f, 1.6f);
 	}
 	
+	private void applyConstants() {
+		setMaxJumpVelocity(GameSettings.LOBO_MAX_JUMP_VELOCITY);
+		setMaxRunVelocity(GameSettings.LOBO_MAX_RUN_VELOCITY);
+		setJumpAceleration(GameSettings.LOBO_JUMP_ACELERATION);
+		setRunAceleration(GameSettings.LOBO_RUN_ACELERATION);
+		setTimeWaitingForAct(GameSettings.LOBO_TIME_WAITING_FOR_ACT);
+	}
+
 	@Override
 	public PolygonShape getWaterContactShape() {
 		PolygonShape a = new PolygonShape();
@@ -106,7 +112,7 @@ public class LoboGuara extends Player implements Steppable{
 			return;
 		
 			sprite.setAnimationState("jump");
-			float impulseX = Math.max(Math.min(JUMP_ACELERATION,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)) * body.getMass(),0);
+			float impulseX = Math.max(Math.min(getJumpAceleration(),(getMaxJumpVelocity() - body.getLinearVelocity().y)) * body.getMass(),0);
 			Vec2 direction = new Vec2(0,6);
 			direction.normalize();
 			direction.mulLocal(impulseX);
@@ -135,8 +141,8 @@ public class LoboGuara extends Player implements Steppable{
 			vel.normalize();
 			body.setLinearVelocity(vel.mul(8));
 		}
-		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < MAX_RUN_VELOCITY){
-			float force = (RUN_ACELERATION) * body.getMass();
+		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < getMaxRunVelocity()){
+			float force = (getRunAceleration()) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
@@ -147,8 +153,8 @@ public class LoboGuara extends Player implements Steppable{
 
 	public void act() {	
 		if( bodiesContact.size() > 0 && contAct == 0){
-			if( timeForNextAct < 0.00000001 ){
-			timeForNextAct = TIME_WAITING_FOR_ACT;
+			if( getTimeForNextAct() < 0.00000001 ){
+			setTimeForNextAct(getTimeWaitingForAct());
 			float impulse = (3) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
@@ -163,14 +169,16 @@ public class LoboGuara extends Player implements Steppable{
 	
 	@Override
 	public int getPercentageLeftToNextAct() {
-		return Math.min((int)((((TIME_WAITING_FOR_ACT-timeForNextAct)/TIME_WAITING_FOR_ACT) * 100) + 0.000000001),100);
+		return Math.min((int)((((getTimeWaitingForAct()-getTimeForNextAct())/getTimeWaitingForAct()) * 100) + 0.000000001),100);
 	}
 	
 	
 	
 	@Override
 	public void step(float timeElapsed) {
-		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
+		applyConstants();
+		super.step(timeElapsed);
+		setTimeForNextAct(Math.max(0.0f,getTimeForNextAct()-timeElapsed));
 		if (hasFinished() || !isAlive()) {
 			if (hasFinished())
 				stopAction();
@@ -257,5 +265,13 @@ public class LoboGuara extends Player implements Steppable{
 	@Override
 	public int getStatusImg() {
 		return R.drawable.lobo_status;
+	}
+
+	public float getTimeForNextAct() {
+		return timeForNextAct;
+	}
+
+	public void setTimeForNextAct(float timeForNextAct) {
+		this.timeForNextAct = timeForNextAct;
 	}
 }
