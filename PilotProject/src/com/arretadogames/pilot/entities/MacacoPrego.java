@@ -33,6 +33,7 @@ public class MacacoPrego extends Player implements Steppable{
 	private float radius = 0.3f;
 	private boolean isonliana;
 	private Body b;
+	private int doubleJump;
 	
 	private static final int[] WALKING = {R.drawable.monkey_walk_right_1, R.drawable.monkey_walk_right_2};
 	private static final int[] JUMP = {R.drawable.monkey_jump_right, R.drawable.monkey_jump_right_1, R.drawable.monkey_jump_right_2, R.drawable.monkey_jump_right_3};
@@ -45,6 +46,7 @@ public class MacacoPrego extends Player implements Steppable{
 	public MacacoPrego(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		applyConstants();
+		doubleJump = getMaxDoubleJumps();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
@@ -100,6 +102,7 @@ public class MacacoPrego extends Player implements Steppable{
 		setJumpAceleration(GameSettings.MACACO_JUMP_ACELERATION);
 		setRunAceleration(GameSettings.MACACO_RUN_ACELERATION);
 		setTimeWaitingForAct(GameSettings.MACACO_TIME_WAITING_FOR_ACT);
+		setMaxDoubleJumps(0);
 	}
 	
 	@Override
@@ -129,10 +132,15 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || bodiesContact.size() <= 0)
+		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
 			return;
+		if(bodiesContact.size() <= 0 && doubleJump > 0){
+			doubleJump--;
+		} else {
+			doubleJump = getMaxDoubleJumps();
+		}
 		sprite.setAnimationState("jump");
-		float impulseX = Math.max(Math.min(getJumpAceleration(),(getMaxJumpVelocity() - body.getLinearVelocity().y)) * body.getMass(),0);
+		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
 		Vec2 direction = new Vec2(1,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);

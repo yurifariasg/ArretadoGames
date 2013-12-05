@@ -29,6 +29,7 @@ public class LoboGuara extends Player {
 	Date lastAct;
 	private float size;
 	private float timeForNextAct = 0f;
+	private int doubleJump;
 	
 	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
 								  		     R.drawable.lobo_g_walking2,
@@ -49,6 +50,7 @@ public class LoboGuara extends Player {
 	public LoboGuara(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		applyConstants();
+		doubleJump = getMaxDoubleJumps();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
@@ -81,6 +83,7 @@ public class LoboGuara extends Player {
 		setJumpAceleration(GameSettings.LOBO_JUMP_ACELERATION);
 		setRunAceleration(GameSettings.LOBO_RUN_ACELERATION);
 		setTimeWaitingForAct(GameSettings.LOBO_TIME_WAITING_FOR_ACT);
+		setMaxDoubleJumps(0);
 	}
 
 	@Override
@@ -108,11 +111,16 @@ public class LoboGuara extends Player {
 	
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || bodiesContact.size() <= 0)
+		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
 			return;
+		if(bodiesContact.size() <= 0 && doubleJump > 0){
+			doubleJump--;
+		} else {
+			doubleJump = getMaxDoubleJumps() ;
+		}
 		
 			sprite.setAnimationState("jump");
-			float impulseX = Math.max(Math.min(getJumpAceleration(),(getMaxJumpVelocity() - body.getLinearVelocity().y)) * body.getMass(),0);
+			float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
 			Vec2 direction = new Vec2(0,6);
 			direction.normalize();
 			direction.mulLocal(impulseX);

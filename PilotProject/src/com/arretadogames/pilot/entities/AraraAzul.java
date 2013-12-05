@@ -25,7 +25,7 @@ public class AraraAzul extends Player implements Steppable{
 	private Fixture footFixture;
 	Collection<Body> bodiesContact;
 	private float k = 3f;
-	private boolean doubleJump;
+	private int doubleJump;
 	private float radius;
 	
 	private static final int[] WALKING = {R.drawable.bird_1,
@@ -52,6 +52,7 @@ public class AraraAzul extends Player implements Steppable{
 	public AraraAzul(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		applyConstants();
+		doubleJump = getMaxDoubleJumps();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
 		CircleShape shape = new CircleShape();
@@ -87,6 +88,7 @@ public class AraraAzul extends Player implements Steppable{
 		setJumpAceleration(GameSettings.ARARA_JUMP_ACELERATION);
 		setRunAceleration(GameSettings.ARARA_RUN_ACELERATION);
 		setTimeWaitingForAct(GameSettings.ARARA_TIME_WAITING_FOR_ACT);
+		setMaxDoubleJumps(1);
 	}
 
 	@Override
@@ -115,12 +117,12 @@ public class AraraAzul extends Player implements Steppable{
 
 	public void jump() {
 		
-		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && !doubleJump))
+		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
 			return;
-		if(bodiesContact.size() <= 0 && doubleJump){
-			doubleJump = false;
+		if(bodiesContact.size() <= 0 && doubleJump > 0){
+			doubleJump--;
 		} else {
-			doubleJump = true;
+			doubleJump = getMaxDoubleJumps();
 		}
 		sprite.setAnimationState("jump");
 //		Math.max(Math.min(,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)

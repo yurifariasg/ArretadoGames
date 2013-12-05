@@ -7,6 +7,7 @@ import org.jbox2d.common.Vec2;
 
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.items.DoubleJump;
 import com.arretadogames.pilot.items.Item;
 import com.arretadogames.pilot.items.Velocity;
 import com.arretadogames.pilot.render.Watchable;
@@ -18,6 +19,7 @@ public abstract class Player extends Watchable implements Steppable{
 
 	private float maxJumpVelocity = 5;
 	private float maxRunVelocity = 3;
+	private int maxDoubleJumps = 0;
 	private float jumpAceleration = 3;
 	private float runAceleration = 5;
 	private float timeWaitingForAct = 6;
@@ -42,7 +44,7 @@ public abstract class Player extends Watchable implements Steppable{
 		actActive = false;
 		items = new ArrayList<Item>();
 		
-		items.add(new Velocity(10f));
+		items.add(new DoubleJump());
 	}
 	
 	public boolean addItem(Item i){
@@ -189,5 +191,13 @@ public abstract class Player extends Watchable implements Steppable{
 	public abstract float[] getJumpFramesDuration();
 	
 	public abstract float[] getActFramesDuration();
+
+	public int getMaxDoubleJumps() {
+		return maxDoubleJumps;
+	}
+
+	public void setMaxDoubleJumps(int maxDoubleJumps) {
+		this.maxDoubleJumps = maxDoubleJumps;
+	}
 	
 }
