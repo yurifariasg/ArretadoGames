@@ -9,4 +9,5 @@
 	<string name="gamehelper_license_failed">Licence Failed</string>
 	<string name="gamehelper_unknown_error">Unknown Error</string>
 	<string name="app_id">403782597740</string>
+	<string name="app_public_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmavLwxk8N/n4NodMkvvKXiUWGMKRp54iG7FShZekL+4FBwfIbkn3g3OgamffJmFyhEdLZdszZ+mp1sTi5HHYJGxnGtXQweK+eSJo1jNGfJsKhQGT7APsV28tKrKeXyFQ9OS2zdwhW9H+dvlE2WI15ytk+5V1FGThvC3xi8H/eiBVTS10oA7+FYTKUEWE8dYln4N6JTxBLUor9mAqKhlH8DnUKH9i8nzp36u1B6G3i9U5u0WqxktcbzfU5vxcXgJR6/91lCSZBO2/CR+j6myn61h6tF3hCT19L6GxN5B2mZqOeH5ntRP5T1pC9KCTM3HAaBAAvSvA1T7NIZXkp8pJtwIDAQAB</string>
 </resources>

@@ -13,6 +13,9 @@
     <!--  Required if we need to invalidate access tokens -->
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     
+    <!-- Billing Permission -->
+    <uses-permission android:name="com.android.vending.BILLING" />
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />

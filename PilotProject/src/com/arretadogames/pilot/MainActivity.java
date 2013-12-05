@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.arretadogames.pilot.android.KeyboardManager;
-import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -25,10 +24,16 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 public class MainActivity extends BaseGameActivity implements OnTouchListener {
 	
 	private static Context context;
+	private static MainActivity mainActivity;
 	private GameGLSurfaceView renderingSurface;
 	
 	public MainActivity() {
 		super();
+		MainActivity.mainActivity = this;
+	}
+	
+	public static MainActivity getActivity() {
+		return mainActivity;
 	}
 	
 	@Override
