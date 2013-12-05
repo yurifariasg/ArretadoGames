@@ -45,8 +45,6 @@ public abstract class Player extends Watchable implements Steppable{
 		jumpActive = false;
 		actActive = false;
 		items = new ArrayList<Item>();
-		
-		items.add(new SuperStrength(10));
 	}
 	
 	public boolean addItem(Item i){

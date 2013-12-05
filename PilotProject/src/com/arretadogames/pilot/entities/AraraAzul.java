@@ -14,6 +14,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.items.Velocity;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Sprite;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -52,6 +53,7 @@ public class AraraAzul extends Player implements Steppable{
 	public AraraAzul(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		applyConstants();
+		addItem(new Velocity(5));
 		doubleJump = getMaxDoubleJumps();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
