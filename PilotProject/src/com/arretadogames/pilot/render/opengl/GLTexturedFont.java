@@ -80,6 +80,10 @@ public class GLTexturedFont {
 				src = characterRects.get(text.charAt(charUnknown));
 				charWidth = charWidths.get(text.charAt(charUnknown));
 			}
+			// add less space between letters
+			charWidth -= 5;
+			if (text.charAt(i) == ' ')
+				charWidth /= 2;
 			src = new Rect(src);
 			src.right -= 1; // Adjust
 

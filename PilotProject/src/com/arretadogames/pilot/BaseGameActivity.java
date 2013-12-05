@@ -19,13 +19,11 @@ package com.arretadogames.pilot;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
 
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.googlesync.SyncManager;
+import com.arretadogames.pilot.store.StorePurchaseHandler;
 import com.arretadogames.pilot.util.billing.IabHelper;
-import com.arretadogames.pilot.util.billing.IabResult;
-import com.arretadogames.pilot.util.billing.Purchase;
 import com.google.android.gms.appstate.AppStateClient;
 
 
@@ -54,38 +52,17 @@ public class BaseGameActivity extends FragmentActivity implements
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         SyncManager.create(this);
-        iabHelper = new IabHelper(this);
     }
     
     public void purchase(String sku) {
-    	iabHelper.launchPurchaseFlow(this, sku, PURCHASE_REQUEST_CODE, new IabHelper.OnIabPurchaseFinishedListener() {
-			@Override
-			public void onIabPurchaseFinished(IabResult result, Purchase info) {
-				if (result.isSuccess()) {
-					Toast.makeText(MainActivity.getContext(), "You've just purchased a small pack of seeds!",
-							Toast.LENGTH_SHORT).show();
-					iabHelper.consumeAsync(info, new IabHelper.OnConsumeFinishedListener() {
-						
-						@Override
-						public void onConsumeFinished(Purchase purchase, IabResult result) {
-							Toast.makeText(MainActivity.getContext(), "Consumed!!",
-									Toast.LENGTH_SHORT).show();
-							AccountManager.get().getAccount1().setCoins(
-									AccountManager.get().getAccount1().getCoins() + 1000);
-						}
-					});
-				} else {
-					Toast.makeText(MainActivity.getContext(), "Purchase Failed!",
-							Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
+    	iabHelper.launchPurchaseFlow(this, sku, PURCHASE_REQUEST_CODE, StorePurchaseHandler.get());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         SyncManager.get().onStart(this);
+        iabHelper = new IabHelper(this);
         iabHelper.startSetup(null);
     }
 

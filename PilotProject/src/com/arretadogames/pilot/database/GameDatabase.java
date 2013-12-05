@@ -1,6 +1,7 @@
 package com.arretadogames.pilot.database;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +9,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.arretadogames.pilot.accounts.Account;
+import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
+import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 
 public class GameDatabase {
@@ -29,6 +32,14 @@ public class GameDatabase {
     public static final String RECORD_VALUE_SECOND = "record_value_second";
     public static final String ACC_ID_RECORD_THIRD = "acc_id_third";
     public static final String RECORD_VALUE_THIRD = "record_value_third";
+    
+    public static final String TABLE_REAL_ITEMS = "REAL_ITEMS";
+    public static final String R_ITEM_ID = "item_id";
+    public static final String R_ITEM_NAME = "item_name";
+    public static final String R_ITEM_DESCRIPTION = "item_desc";
+    public static final String R_ITEM_PRICE = "item_price";
+    public static final String R_ITEM_SKU_CODE = "item_sku_code";
+	public static final String R_ITEM_RES_NAME = "item_res_id";
     
     public static final String TABLE_NEXT_LEVEL = "NEXT_LEVEL";
 //    public static final String LEVEL_ID = "level_id";
@@ -114,6 +125,34 @@ public class GameDatabase {
        	values.put(RECORD_VALUE_THIRD, thiRec );
         
         db.insertWithOnConflict(TABLE_LEVEL, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+	}
+	
+	public List<StoreItemDescriptor> getStoreItems() {
+		ArrayList<StoreItemDescriptor> items = new ArrayList<StoreItemDescriptor>();
+		
+		Cursor c = db.query(TABLE_REAL_ITEMS, null, null, null, null, null, null);
+    	c.moveToFirst();
+    	
+    	int nameIndex = c.getColumnIndexOrThrow(R_ITEM_NAME);
+    	int descIndex = c.getColumnIndexOrThrow(R_ITEM_DESCRIPTION);
+    	int priceIndex = c.getColumnIndexOrThrow(R_ITEM_PRICE);
+    	int skuIndex = c.getColumnIndexOrThrow(R_ITEM_SKU_CODE);
+    	int resIdIndex = c.getColumnIndexOrThrow(R_ITEM_RES_NAME);
+    	
+	    while(!c.isAfterLast()){
+	    	RealStoreItemDescriptor item;
+	    	item = new RealStoreItemDescriptor(
+	    			c.getString(nameIndex), c.getString(descIndex),
+	    			c.getString(resIdIndex), c.getString(skuIndex),
+	    			c.getFloat(priceIndex));
+	    	items.add(item);
+	        c.moveToNext();
+	    }
+	    c.close();
+		
+		
+		
+		return items;
 	}
 	
 }

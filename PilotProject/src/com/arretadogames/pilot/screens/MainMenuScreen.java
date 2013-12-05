@@ -35,7 +35,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private Text welcomeLabel;
 	private Text nameLabel;
 	private Text inputLabel;
-	private boolean labelsAreRelatedToAccountProvider;
 	private long p1Coins; // Variable to detect if the account coins have changed since last time
 	
 	// Main Menu Screens
@@ -105,7 +104,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 					
 					createUserInfoLabels();
 					p1Coins = AccountManager.get().getAccount1().getCoins();
-					labelsAreRelatedToAccountProvider = true;
 				}
 				
 				nameLabel.render(canvas, timeElapsed);

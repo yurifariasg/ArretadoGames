@@ -323,7 +323,7 @@ public class IabHelper {
          * @param result The result of the purchase.
          * @param info The purchase information (null if purchase failed)
          */
-        public void onIabPurchaseFinished(IabResult result, Purchase info);
+        public void onIabPurchaseFinished(IabResult result, Purchase info, IabHelper iabHelper);
     }
 
     // The listener registered on launchPurchaseFlow, which we have to call back when
@@ -378,7 +378,7 @@ public class IabHelper {
             IabResult r = new IabResult(IABHELPER_SUBSCRIPTIONS_NOT_AVAILABLE,
                     "Subscriptions are not available.");
             flagEndAsync();
-            if (listener != null) listener.onIabPurchaseFinished(r, null);
+            if (listener != null) listener.onIabPurchaseFinished(r, null, this);
             return;
         }
 
@@ -390,7 +390,7 @@ public class IabHelper {
                 logError("Unable to buy item, Error response: " + getResponseDesc(response));
                 flagEndAsync();
                 result = new IabResult(response, "Unable to buy item");
-                if (listener != null) listener.onIabPurchaseFinished(result, null);
+                if (listener != null) listener.onIabPurchaseFinished(result, null, this);
                 return;
             }
 
@@ -410,7 +410,7 @@ public class IabHelper {
             flagEndAsync();
 
             result = new IabResult(IABHELPER_SEND_INTENT_FAILED, "Failed to send intent.");
-            if (listener != null) listener.onIabPurchaseFinished(result, null);
+            if (listener != null) listener.onIabPurchaseFinished(result, null, this);
         }
         catch (RemoteException e) {
             logError("RemoteException while launching purchase flow for sku " + sku);
@@ -418,7 +418,7 @@ public class IabHelper {
             flagEndAsync();
 
             result = new IabResult(IABHELPER_REMOTE_EXCEPTION, "Remote exception while starting purchase flow");
-            if (listener != null) listener.onIabPurchaseFinished(result, null);
+            if (listener != null) listener.onIabPurchaseFinished(result, null, this);
         }
     }
 
@@ -448,7 +448,7 @@ public class IabHelper {
         if (data == null) {
             logError("Null data in IAB activity result.");
             result = new IabResult(IABHELPER_BAD_RESPONSE, "Null data in IAB result");
-            if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
+            if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null, this);
             return true;
         }
 
@@ -467,7 +467,7 @@ public class IabHelper {
                 logError("BUG: either purchaseData or dataSignature is null.");
                 logDebug("Extras: " + data.getExtras().toString());
                 result = new IabResult(IABHELPER_UNKNOWN_ERROR, "IAB returned null purchaseData or dataSignature");
-                if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
+                if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null, this);
                 return true;
             }
 
@@ -480,7 +480,7 @@ public class IabHelper {
                 if (!Security.verifyPurchase(mSignatureBase64, purchaseData, dataSignature)) {
                     logError("Purchase signature verification FAILED for sku " + sku);
                     result = new IabResult(IABHELPER_VERIFICATION_FAILED, "Signature verification failed for sku " + sku);
-                    if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, purchase);
+                    if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, purchase, this);
                     return true;
                 }
                 logDebug("Purchase signature successfully verified.");
@@ -489,12 +489,12 @@ public class IabHelper {
                 logError("Failed to parse purchase data.");
                 e.printStackTrace();
                 result = new IabResult(IABHELPER_BAD_RESPONSE, "Failed to parse purchase data.");
-                if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
+                if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null, this);
                 return true;
             }
 
             if (mPurchaseListener != null) {
-                mPurchaseListener.onIabPurchaseFinished(new IabResult(BILLING_RESPONSE_RESULT_OK, "Success"), purchase);
+                mPurchaseListener.onIabPurchaseFinished(new IabResult(BILLING_RESPONSE_RESULT_OK, "Success"), purchase, this);
             }
         }
         else if (resultCode == Activity.RESULT_OK) {
@@ -502,19 +502,19 @@ public class IabHelper {
             logDebug("Result code was OK but in-app billing response was not OK: " + getResponseDesc(responseCode));
             if (mPurchaseListener != null) {
                 result = new IabResult(responseCode, "Problem purchashing item.");
-                mPurchaseListener.onIabPurchaseFinished(result, null);
+                mPurchaseListener.onIabPurchaseFinished(result, null, this);
             }
         }
         else if (resultCode == Activity.RESULT_CANCELED) {
             logDebug("Purchase canceled - Response: " + getResponseDesc(responseCode));
             result = new IabResult(IABHELPER_USER_CANCELLED, "User canceled.");
-            if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
+            if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null, this);
         }
         else {
             logError("Purchase failed. Result code: " + Integer.toString(resultCode)
                     + ". Response: " + getResponseDesc(responseCode));
             result = new IabResult(IABHELPER_UNKNOWN_PURCHASE_RESPONSE, "Unknown purchase response.");
-            if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
+            if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null, this);
         }
         return true;
     }

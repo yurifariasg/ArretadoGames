@@ -15,7 +15,7 @@ public class TextImageButton extends ImageButton {
 
 	private String text = "";
 	private FontSpecification fontSpecification;
-	private int textSize;
+	private float textSize;
 	
 	/**
 	 * Creates a TextImageButton based on the given position and Images
@@ -36,7 +36,7 @@ public class TextImageButton extends ImageButton {
 	 *            Text to be rendered
 	 */
 	public TextImageButton(int id, float x, float y, GameButtonListener listener,
-			int selectedImageId, int unselectedImageId, String text, FontSpecification fs, int textSize) {
+			int selectedImageId, int unselectedImageId, String text, FontSpecification fs, float textSize) {
 		super(id, x, y, listener, selectedImageId, unselectedImageId);
 		this.text = text;
 		this.textSize = textSize;

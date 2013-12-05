@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 	
-    private static final int DATABASE_VERSION = 43;
+    private static final int DATABASE_VERSION = 44;
     private static final String DATABASE_NAME = "pilotproject_db";
     
     private static final String LEVEL_TABLE_CREATE = "CREATE TABLE " +
@@ -31,7 +31,16 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 			GameDatabase.ACC_ID_RECORD_THIRD + " INTEGER, " +
 			GameDatabase.RECORD_VALUE_THIRD + " INTEGER, " +
 			GameDatabase.LEVEL_ENABLED + " BOOLEAN); ";
-
+    
+    private static final String REAL_ITEMS_TABLE_CREATE = "CREATE TABLE " +
+		    GameDatabase.TABLE_REAL_ITEMS + " (" +
+			GameDatabase.R_ITEM_ID + " INTEGER PRIMARY KEY, " +
+			GameDatabase.R_ITEM_NAME + " TEXT, " +
+			GameDatabase.R_ITEM_DESCRIPTION + " TEXT, " +
+			GameDatabase.R_ITEM_RES_NAME + " TEXT, " +
+			GameDatabase.R_ITEM_PRICE + " REAL, " +
+			GameDatabase.R_ITEM_SKU_CODE + " TEXT); ";
+    
     public GameDatabaseOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -44,6 +53,7 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
     private void initializeDB(SQLiteDatabase db) {
         db.execSQL(LEVEL_TABLE_CREATE);
         db.execSQL(USER_TABLE_CREATE);
+        db.execSQL(REAL_ITEMS_TABLE_CREATE);
         
         ContentValues values = new ContentValues();
         
@@ -69,6 +79,8 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
         values.put(GameDatabase.ACC_PROVIDER, "self");
 
         db.insert(GameDatabase.TABLE_ACCOUNT, null, values);
+        
+        StoreInitializeHelper.initializeStore(db);
     }
 
     @Override
@@ -77,7 +89,9 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
     	if (oldVersion < newVersion) {
     		
     		db.execSQL("DROP TABLE IF EXISTS " + GameDatabase.TABLE_LEVEL);
+    		db.execSQL("DROP TABLE IF EXISTS " + GameDatabase.TABLE_NEXT_LEVEL);
     		db.execSQL("DROP TABLE IF EXISTS " + GameDatabase.TABLE_ACCOUNT);
+    		db.execSQL("DROP TABLE IF EXISTS " + GameDatabase.TABLE_REAL_ITEMS);
     		
     		initializeDB(db);
     	}
