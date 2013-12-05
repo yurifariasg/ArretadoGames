@@ -9,6 +9,8 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.items.DoubleJump;
 import com.arretadogames.pilot.items.Item;
+import com.arretadogames.pilot.items.SuperJump;
+import com.arretadogames.pilot.items.SuperStrength;
 import com.arretadogames.pilot.items.Velocity;
 import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.world.GameWorld;
@@ -44,7 +46,7 @@ public abstract class Player extends Watchable implements Steppable{
 		actActive = false;
 		items = new ArrayList<Item>();
 		
-		items.add(new DoubleJump());
+		items.add(new SuperStrength(10));
 	}
 	
 	public boolean addItem(Item i){
