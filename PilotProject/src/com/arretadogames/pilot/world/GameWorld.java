@@ -267,15 +267,11 @@ public class GameWorld extends GameScreen {
 		}
 	}
 	
-	private void setItemToPlayer(Player p, PlayableItem item){
-		System.out.println("Setou ITEMMMMM");
-		if (item != null) {
-			
-			System.out.println("FUNFOU?!");
-			switch (item) {
+	private void setItemToPlayer(Player p, List<PlayableItem> list){
+		if (list != null && list.size() > 0) {
+			switch (list.get(0)) {
 			case SUPER_JUMP:
 				p.addItem(new SuperJump(5));
-				System.out.println("FUNFOU222?!");
 				break;
 				
 			case SUPER_STRENGTH:
@@ -304,19 +300,19 @@ public class GameWorld extends GameScreen {
 		switch (chosenCharacter) {
 		case LOBO_GUARA:
 			p = new LoboGuara(x, y, playerNumber);
-			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
+			setItemToPlayer(p, selectedItems.get(playerNumber));
 			return p;
 		case ARARA_AZUL:
 			p = new AraraAzul(x, y, playerNumber);
-			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
+			setItemToPlayer(p, selectedItems.get(playerNumber));
 			return p;
 		case MACACO_PREGO:
 			p = new MacacoPrego(x, y, playerNumber);
-			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
+			setItemToPlayer(p, selectedItems.get(playerNumber));
 			return p;
 		case TATU_BOLA:
 			p = new TatuBola(x, y, playerNumber);
-			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
+			setItemToPlayer(p, selectedItems.get(playerNumber));
 			return p;
 		default:
 			break;
