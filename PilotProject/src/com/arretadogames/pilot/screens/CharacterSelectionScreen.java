@@ -109,14 +109,14 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		
 		itemsButtons = new ToggleButton[8];
 		
-		itemsButtons[0] = new ToggleButton(0, 8, 58, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
-		itemsButtons[1] = new ToggleButton(1, 8, 148, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
-		itemsButtons[2] = new ToggleButton(2, 8, 238, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
-		itemsButtons[3] = new ToggleButton(3, 8, 328, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
-		itemsButtons[4] = new ToggleButton(4, 712, 58, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
-		itemsButtons[5] = new ToggleButton(5, 712, 148, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
-		itemsButtons[6] = new ToggleButton(6, 712, 238, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
-		itemsButtons[7] = new ToggleButton(7, 712, 328, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[0] = new ToggleButton(0, 8, 58, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[1] = new ToggleButton(1, 8, 148, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[2] = new ToggleButton(2, 8, 238, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[3] = new ToggleButton(3, 8, 328, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[4] = new ToggleButton(4, 712, 58, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
+		itemsButtons[5] = new ToggleButton(5, 712, 148, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
+		itemsButtons[6] = new ToggleButton(6, 712, 238, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
+		itemsButtons[7] = new ToggleButton(7, 712, 328, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
 	}
 	
 	private int getItemIconById(int id){
