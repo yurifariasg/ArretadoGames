@@ -133,6 +133,7 @@ public class GameCamera {
 
 		float maxXDistance = 0;
 		float maxYDistance = 0;
+		float minX = Float.MAX_VALUE;
 		Vec2 center = new Vec2();
 
 		Iterator<PlayerNumber> iiterator = players.keySet().iterator();
@@ -144,6 +145,9 @@ public class GameCamera {
 
 			float x = players.get(i).getPosX();
 			float y = players.get(i).getPosY();
+			
+			if (minX > x)
+				minX = x;
 
 			center.addLocal(x, y);
 
@@ -174,9 +178,33 @@ public class GameCamera {
 				}
 			}
 		}
+		
+		float fireDistance = minX - gameWorld.getFire().getPosX();
 
+		// This function says:
+		// If the distance is negative (fire is in front of players), the firePositionWeight is 1 (maximum)
+		// If the distance is higher than 5, the firePositionWeight is 0 (insignificant)
+		// If it is between 0 and 5, it gets between 0 and 1, higher if it gets closer to 0
+//		float k;
+//		if (fireDistance < 0)
+//			k = 1;
+//		else if (fireDistance > 5)
+//			k = 0;
+//		else
+//			k = 1 - (fireDistance - 1f) / 4f;
+			
+		// Add fire
 		center.mulLocal(1f / numberOfPlayers);
-
+		
+//		center.addLocal(gameWorld.getFire().getPosX() / (2 + fireDistance), 0);
+//		center.addLocal(gameWorld.getFire().getPosX() * k, 0);
+//		if (k > 0) {
+//			k = 2f * k;
+//			if (k <= 1)
+//				k = 1;
+//			center.mulLocal(1f / (2f *k));
+//		}
+		
 		float floorX = center.x + (maxXDistance / 2);
 
 		iiterator = players.keySet().iterator();

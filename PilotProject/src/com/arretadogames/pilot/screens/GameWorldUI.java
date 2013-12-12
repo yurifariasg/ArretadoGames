@@ -28,6 +28,10 @@ public class GameWorldUI extends GameScreen {
 	private final int COOLDOWN2_X = 590;
 	private final int COOLDOWN_Y = 40;
 	
+	private final int COIN1_X = 140;
+	private final int COIN2_X = 690;
+	private final int COINS_Y = 40;
+	
 	private Player p1;
 	private Player p2;
 	private Fire fire;
@@ -52,9 +56,9 @@ public class GameWorldUI extends GameScreen {
 				fire = (Fire) e;
 		}
 		
-		coin1Text = new Text(140, 40, "0",
+		coin1Text = new Text(COIN1_X, COINS_Y, "0",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
-		coin2Text = new Text(690, 40, "0",
+		coin2Text = new Text(COIN2_X, COINS_Y, "0",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
 		
 		coolDown1 = new GLCircle(COOLDOWN_RADIUS);
@@ -68,6 +72,12 @@ public class GameWorldUI extends GameScreen {
 		
 		seedRenderingRect.right = 90 + seedRenderingRect.width();
 		seedRenderingRect.left = 90;
+		if (!p1.getItems().isEmpty()) {
+			seedRenderingRect.right += 80;
+			seedRenderingRect.left += 80;
+			coin1Text.setX(COIN1_X + 80);
+		}
+		
 		seedRenderingRect.bottom = 20 + seedRenderingRect.height();
 		seedRenderingRect.top = 20;
 		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
@@ -80,20 +90,49 @@ public class GameWorldUI extends GameScreen {
 		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
 		coin2Text.render(canvas, timeElapsed);
 		
+		// Draw Items
+		if (p1.getItems().size() > 0) {
+			// For now, just show 1 Item
+			canvas.drawBitmap(p1.getItems().get(0).getImage(), COOLDOWN1_X + 40, COOLDOWN_Y - 40);
+		}
+		
+		if (p2.getItems().size() > 0) {
+			// For now, just show 1 Item
+			canvas.drawBitmap(p2.getItems().get(0).getImage(), COOLDOWN2_X - 40, COOLDOWN_Y - 40);
+		}
+		
 		if (p1.isAlive()){
 			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390);
 			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, 5, p1.getPercentageLeftToNextAct());
 			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLACK, false, 5, p1.getPercentageLeftToNextAct());
-			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0),
-												centerImage(R.drawable.power, 2));			
+			
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0, COOLDOWN1_X),
+												centerImage(R.drawable.power, 2, COOLDOWN_Y));			
+		} else {
+			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.GRAY, true, 5, 100);
+			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLACK, false, 5, 100);
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0, COOLDOWN1_X),
+					centerImage(R.drawable.power, 2, COOLDOWN_Y));		
 		}
 		
 		if (p2.isAlive()){
+			int cooldownX = COOLDOWN2_X;
+			if (!p2.getItems().isEmpty())
+				cooldownX -= 80;
+			
 			canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2.body.getPosition().x), 440);
-			coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.RED, true, 5, p2.getPercentageLeftToNextAct());
-			coolDown2.drawCircle(canvas, COOLDOWN2_X, COOLDOWN_Y, Color.BLACK, false, 5, p2.getPercentageLeftToNextAct());
-			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1),
-												centerImage(R.drawable.power, 2));
+			coolDown2.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.RED, true, 5, p2.getPercentageLeftToNextAct());
+			coolDown2.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.BLACK, false, 5, p2.getPercentageLeftToNextAct());
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1, cooldownX),
+												centerImage(R.drawable.power, 2, COOLDOWN_Y));
+		} else {
+			int cooldownX = COOLDOWN2_X;
+			if (!p2.getItems().isEmpty())
+				cooldownX -= 80;
+			coolDown1.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.GRAY, true, 5, 100);
+			coolDown1.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.BLACK, false, 5, 100);
+			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1, cooldownX),
+					centerImage(R.drawable.power, 2, COOLDOWN_Y));
 		}
 		
 		if (GameSettings.ACTIVATE_FIRE)
@@ -102,27 +141,21 @@ public class GameWorldUI extends GameScreen {
 //		System.out.println("Position Player2: "+p2.body.getPosition().x);
 	}
 		
-	private float centerImage(int imgId, int cooldown){
-		int[] size = ImageLoader.checkBitmapSize(R.drawable.power); 
+	private float centerImage(int imgId, int cooldown, float cooldownValue){
+		int[] size = ImageLoader.checkBitmapSize(imgId); 
 		int width = size[0];
 		int height = size[1];
 		float x = 0.0f;
 		
 		switch(cooldown){
 		case 0://First Player - Horizontal
-			//int[] size = ImageLoader.checkBitmapSize(R.drawable.power);//take from the player your image
-			//width = size[0];
-			x = COOLDOWN1_X - (width/2);
+			x = cooldownValue - (width/2);
 			break;
 		case 1://Second Player - Horizontal
-			//int[] size = ImageLoader.checkBitmapSize(R.drawable.power);//take from the player your image
-			//width = size[0];		
-			x = COOLDOWN2_X - (width/2);
+			x = cooldownValue - (width/2);
 			break;
 		case 2://Players - Vertical
-			//int[] size = ImageLoader.checkBitmapSize(R.drawable.power);//take from the player your image
-			//height = size[1];
-			x = COOLDOWN_Y - (height/2);
+			x = cooldownValue - (height/2);
 			break;
 		default:
 			break;

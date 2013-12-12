@@ -246,5 +246,10 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 //		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
 	}
+	
+	@Override
+	public void onBackPressed() {
+		Game.getInstance().goTo(GameState.LEVEL_SELECTION);
+	}
 
 }

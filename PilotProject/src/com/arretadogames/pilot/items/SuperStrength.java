@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.items;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Player;
 
 public class SuperStrength implements Item {
@@ -18,6 +19,11 @@ public class SuperStrength implements Item {
 	public void applyEffect(Player p) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public int getImage() {
+		return R.drawable.it_strength;
 	}
 
 }

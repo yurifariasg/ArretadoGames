@@ -1,12 +1,11 @@
 package com.arretadogames.pilot.screens;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
-import android.widget.Toast;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.equations.Quart;
 
-import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
@@ -68,7 +67,8 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 
-		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
+		canvas.drawRect(0, 0, 800, 480, Color.argb((int)currentBlackAlpha, 0, 0, 0));
+		
 		canvas.drawBitmap(backgroundId, (800 - currentWidth), 1);
 		
 		if (!isHidden) {
@@ -110,7 +110,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	public void show() {
 		isHidden = false;
 		Tween.to(this, 1, 0.5f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).ease(Quart.OUT).start(AnimationManager.getInstance());
-		Tween.to(this, 2, 0.5f).target(150f).start(AnimationManager.getInstance());
+		Tween.to(this, 2, 0.5f).target(80f).start(AnimationManager.getInstance());
 		
 	}
 	

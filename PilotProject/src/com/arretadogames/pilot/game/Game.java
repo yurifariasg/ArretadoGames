@@ -272,4 +272,9 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		}))
 		.start(AnimationManager.getInstance());
 	}
+
+	public void onBackPressed() {
+		gameScreens.get(currentState).onBackPressed();
+		System.out.println("Game Back");
+	}
 }

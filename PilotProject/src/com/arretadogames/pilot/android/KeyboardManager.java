@@ -66,7 +66,7 @@ public class KeyboardManager {
 				String s = Character.toString((char)event.getUnicodeChar());
 				if (AVAILABLE_CHARACTERS.contains(s.toLowerCase()))
 					currentString += s;
-				System.out.println(currentString);
+				System.out.println("DispatchKeyEvent " + currentString);
 			}
 		}
 		
