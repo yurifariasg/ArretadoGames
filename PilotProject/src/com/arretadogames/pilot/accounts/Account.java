@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.googlesync.SyncManager;
 import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.util.Logger;
@@ -100,6 +101,11 @@ public class Account implements OnStateLoadedListener {
 	
 	public HashMap<ItemType, Integer> getAccountItems() {
 		return new HashMap<ItemType, Integer>();
+	}
+	
+	public boolean useItem(ItemType it){
+		GameDatabase.getInstance().useItem(it);
+		return true;
 	}
 	
 	private String toJSON() {
