@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.items;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Player;
 
 public class SuperJump implements Item {
@@ -17,6 +18,11 @@ public class SuperJump implements Item {
 	@Override
 	public void applyEffect(Player p) {
 		p.setJumpAceleration(p.getJumpAceleration()+c);
+	}
+
+	@Override
+	public int getImage() {
+		return R.drawable.it_superjump;
 	}
 
 }

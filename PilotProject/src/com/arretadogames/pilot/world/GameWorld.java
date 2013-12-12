@@ -265,10 +265,15 @@ public class GameWorld extends GameScreen {
 			PlayerNumber playerNumber) {
 		
 		PlayableCharacter chosenCharacter = selectedCharacters.get(playerNumber);
+		Player p;
 		switch (chosenCharacter) {
-		
 		case LOBO_GUARA:
-			return new LoboGuara(x, y, playerNumber);
+			p = new LoboGuara(x, y, playerNumber);
+//			if (playerNumber == PlayerNumber.ONE) { << Botar isso numa funcao
+//				lista1.get(0).
+//			}
+//			p.addItem(new SuperStr)
+			return p;
 		case ARARA_AZUL:
 			return new AraraAzul(x, y, playerNumber);
 		case MACACO_PREGO:

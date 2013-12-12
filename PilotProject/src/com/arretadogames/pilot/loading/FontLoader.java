@@ -85,12 +85,35 @@ public class FontLoader {
 			transmetalsPaint.setTextAlign(Paint.Align.LEFT);
 			
 			return new FontSpecification(transmetalsPaint, null);
+		case TRANSMETALS_STORE:
+			Typeface tfStore = Typeface.create(Typeface.createFromAsset(
+					context.getAssets(), "Transmetals.ttf"),
+					Typeface.NORMAL);
+
+			// Set-up Paint object for drawing letters to bitmap
+			Paint transmetalStorePaint = new Paint(); // Create Android Paint Instance
+			transmetalStorePaint.setAntiAlias(true); // Enable Anti Alias
+			transmetalStorePaint.setTypeface(tfStore); // Set Typeface
+			transmetalStorePaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE * 1.5f); // Set Text Size
+			transmetalStorePaint.setColor(Color.WHITE); // Set ARGB (White, Opaque)
+			transmetalStorePaint.setTextAlign(Paint.Align.LEFT);
+			
+			Paint mStoreStrokePaint = new Paint();
+			mStoreStrokePaint.setTypeface(tfStore);
+			mStoreStrokePaint.setStyle(Style.STROKE);
+			mStoreStrokePaint.setStrokeWidth(5);
+			mStoreStrokePaint.setColor(Color.rgb(62, 35, 0));
+			mStoreStrokePaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE * 1.5f);
+			mStoreStrokePaint.setAntiAlias(true);
+			mStoreStrokePaint.setTextAlign(Paint.Align.LEFT);
+			
+			return new FontSpecification(transmetalStorePaint, mStoreStrokePaint);
 		}
 		
 		return null;
 	}
 	
 	public enum FontTypeFace {
-		TRANSMETALS_STROKED, TRANSMETALS;
+		TRANSMETALS_STROKED, TRANSMETALS, TRANSMETALS_STORE;
 	}
 }

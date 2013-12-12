@@ -296,8 +296,14 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		}
 		
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
+//		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setItems(List<ItemEnum>, lista2);
 //		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		Game.getInstance().goTo(GameState.LEVEL_SELECTION);
 	}
 
 	@Override

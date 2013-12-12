@@ -1,17 +1,13 @@
 package com.arretadogames.pilot.entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.jbox2d.common.Vec2;
 
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.items.DoubleJump;
 import com.arretadogames.pilot.items.Item;
-import com.arretadogames.pilot.items.SuperJump;
-import com.arretadogames.pilot.items.SuperStrength;
-import com.arretadogames.pilot.items.Velocity;
 import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.world.GameWorld;
 
@@ -36,7 +32,7 @@ public abstract class Player extends Watchable implements Steppable{
 	private int deathCount;
 	private int timeFinished;
 
-	private Collection<Item> items;
+	private List<Item> items;
 	
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
@@ -53,6 +49,10 @@ public abstract class Player extends Watchable implements Steppable{
 	
 	public boolean remove(Item i){
 		return items.remove(i);
+	}
+	
+	public List<Item> getItems() {
+		return items;
 	}
 	
 	@Override

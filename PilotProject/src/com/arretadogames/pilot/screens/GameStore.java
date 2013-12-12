@@ -70,8 +70,8 @@ public class GameStore extends GameScreen implements GameButtonListener {
 //				labelsAreRelatedToAccountProvider = true;
 			}
 			
-			seedRenderingMoneyRect.right = 220 + seedRenderingMoneyRect.width();
-			seedRenderingMoneyRect.left = 220;
+			seedRenderingMoneyRect.right = 10 + seedRenderingMoneyRect.width();
+			seedRenderingMoneyRect.left = 10;
 			seedRenderingMoneyRect.bottom = 13 + seedRenderingMoneyRect.height();
 			seedRenderingMoneyRect.top = 13;
 			canvas.drawBitmap(R.drawable.seed1, seedRenderingMoneyRect);
@@ -80,15 +80,15 @@ public class GameStore extends GameScreen implements GameButtonListener {
 			moneyLabel.render(canvas, timeElapsed);
 		}
 		
-		canvas.drawBitmap(R.drawable.bt_back_unselected, 702, 388);
+		buttonBack.render(canvas, timeElapsed);
 	}
 	
 	private void createUserInfoLabels() {
 		Account acc = AccountManager.get().getAccount1();
 		storeLabel = new Text(333, 100, "Store",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1.3f, false);
-		moneyLabel = new Text(98, 34, String.valueOf(acc.getCoins()),
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.9f, false);
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 1.3f, false);
+		moneyLabel = new Text(70, 34, String.valueOf(acc.getCoins()),
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.9f, false);
 	}
 
 	@Override
@@ -116,5 +116,10 @@ public class GameStore extends GameScreen implements GameButtonListener {
 			Game.getInstance().goTo(GameState.MAIN_MENU);
 			break;
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}
 }

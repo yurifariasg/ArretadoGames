@@ -1,10 +1,11 @@
 package com.arretadogames.pilot;
 
 //import com.crashlytics.android.Crashlytics;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -48,10 +49,10 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 		KeyboardManager.setup(this);
 	}
 	
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		return KeyboardManager.dispatchKeyEvent(event);
-	}
+//	@Override
+//	public boolean dispatchKeyEvent(KeyEvent event) {
+//		return KeyboardManager.dispatchKeyEvent(event);
+//	}
 	
 	@Override
 	protected void onPause() {
@@ -85,7 +86,8 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 	@Override
 	public void onBackPressed() {
 		// TODO Handles the Back Button input from a Physical Button
-//		Game.getInstance().onBackPressed();
+		Game.getInstance().onBackPressed();
+		System.out.println("Back Pressed");
 	}
 	
 	/**
@@ -100,6 +102,25 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 	public boolean onTouch(View view, MotionEvent event) {
 		Game.getInstance().input(new InputEventHandler(event));
 		return true;
+	}
+
+	public void showExitDialog() {
+		new AlertDialog.Builder(this)
+        .setIcon(android.R.drawable.ic_dialog_alert)
+        .setTitle("Quit")
+        .setMessage("Are you really leaving?")
+        .setPositiveButton("Yea..", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //Stop the activity
+            	finish();
+            }
+
+        })
+        .setNegativeButton("Play More!", null)
+        .show();
 	}
 
 }

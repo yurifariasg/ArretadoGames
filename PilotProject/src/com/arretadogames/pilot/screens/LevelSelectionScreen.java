@@ -331,5 +331,10 @@ public class LevelSelectionScreen extends GameScreen implements GameButtonListen
 			previous();
 		return false;
 	}
+	
+	@Override
+	public void onBackPressed() {
+		Game.getInstance().goTo(GameState.MAIN_MENU);
+	}
 }
 

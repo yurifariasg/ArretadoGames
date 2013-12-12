@@ -46,7 +46,7 @@ public class ItemWidget implements Renderable, GameButtonListener {
 				R.drawable.buy_bg,
 				R.drawable.buy_bg,
 				"BUY",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.5f);
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.5f);
 	}
 	
 	public int getId(){
@@ -92,7 +92,8 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		canvas.drawBitmap(R.drawable.item_bg, x + 25, y + 22);
 		canvas.drawBitmap(itemDescriptor.getIconId(), x + 38, y + 35); // THE ITEM ICON
 		
-		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
+		if (itemDescriptor.getType() != StoreItemType.REAL)
+			canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
 		priceLabel.render(canvas, timeElapsed);
 		
 		// TODO @yuri: avoid this calc every frame
@@ -106,16 +107,16 @@ public class ItemWidget implements Renderable, GameButtonListener {
 	private void createItemInfoLabels() {
 		Account acc = AccountManager.get().getAccount1();
 		titleLabel = new Text(x + 143, y + 45, itemDescriptor.getName(),
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.75f, false);
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.75f, false);
 		descriptionLabel = new Text(x + 141, y + 96, itemDescriptor.getDescription(),
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.424f, false);
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.524f, false);
 //		descriptionLabel2 = new Text(x + 141, y + 110, "all obstacles in your way",
 //				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.424f, false);	
 		
 		if (itemDescriptor.getType() == StoreItemType.REAL) {
 
-			priceLabel = new Text(x + 489, y + 115, getPrice(((RealStoreItemDescriptor)itemDescriptor).getPrice()),
-					FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.5f, true);
+			priceLabel = new Text(x + 500, y + 100, getPrice(((RealStoreItemDescriptor)itemDescriptor).getPrice()),
+					FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.65f, true);
 			
 			
 		}

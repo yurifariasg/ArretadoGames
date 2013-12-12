@@ -50,7 +50,11 @@ public abstract class GameScreen {
 	// Asynchronous method. Called when the screen should unloaded
 	public void onUnloading() {
 		// TODO Auto-generated method stub
-		
 	}
+	
+	/**
+	 * Handles the physical back button
+	 */
+	public void onBackPressed() { }
 
 }

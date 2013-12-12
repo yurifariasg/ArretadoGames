@@ -2,8 +2,8 @@ package com.arretadogames.pilot.screens;
 
 import aurelienribon.tweenengine.TweenAccessor;
 
+import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
 import com.arretadogames.pilot.config.GameSettings;
@@ -32,8 +32,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 //	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
 	private ImageButton storeBt;
-	private Text welcomeLabel;
-	private Text nameLabel;
 	private Text inputLabel;
 	private long p1Coins; // Variable to detect if the account coins have changed since last time
 	
@@ -60,7 +58,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				R.drawable.bt_gplus_unselected);
 		
 		storeBt = new ImageButton(STORE_BUTTON,
-				700, 220, this,
+				700, 380, this,
 				R.drawable.bt_store_selected,
 				R.drawable.bt_store_unselected);
 		
@@ -72,14 +70,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		
 		currentState = State.MAIN;
 		settingsScreen = new SettingsScreen(this);
-	}
-	
-	private void createUserInfoLabels() {
-		Account acc = AccountManager.get().getAccount1();
-		welcomeLabel = new Text(400, 395, "Welcome, " + (acc.isAnnonymous() ? "" : acc.getName()),
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
-		nameLabel = new Text(400, 445, "You have " + acc.getCoins() + " seeds",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
 	}
 
 	@Override
@@ -97,18 +87,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			storeBt.render(canvas, timeElapsed);
-			
-			if ( AccountManager.get().getAccount1() != null) { // SyncManager.get().isSignedIn() &&
-				if (nameLabel == null || welcomeLabel == null ||
-						AccountManager.get().getAccount1().getCoins() != p1Coins) {
-					
-					createUserInfoLabels();
-					p1Coins = AccountManager.get().getAccount1().getCoins();
-				}
-				
-				nameLabel.render(canvas, timeElapsed);
-				welcomeLabel.render(canvas, timeElapsed);
-			}
 			
 			if (KeyboardManager.isShowing()) {
 				inputLabel.render(canvas, timeElapsed);
@@ -208,5 +186,10 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	
 	public enum State {
 		MAIN, SETTINGS;
+	}
+	
+	@Override
+	public void onBackPressed() {
+		MainActivity.getActivity().showExitDialog();
 	}
 }
