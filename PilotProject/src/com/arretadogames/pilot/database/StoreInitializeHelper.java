@@ -43,7 +43,7 @@ public class StoreInitializeHelper {
         values.clear();
         
         values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_JUMP.getValue());
-		values.put(GameDatabase.R_QUANT_ITEMS, 11);
+		values.put(GameDatabase.R_QUANT_ITEMS, 0);
         db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
         values.clear();
         

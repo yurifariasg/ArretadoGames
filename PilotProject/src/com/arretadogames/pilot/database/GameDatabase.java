@@ -179,16 +179,12 @@ public class GameDatabase {
     	int nameIndex = c.getColumnIndexOrThrow(R_ITEM_NAME);
     	int priceIndex = c.getColumnIndexOrThrow(R_QUANT_ITEMS);
     	
-    	System.out.println("agora vaaaii  " + itype.getValue());
 	    while(!c.isAfterLast()){
-	    	System.out.println(" poooxa " + c.getString(nameIndex) + " " + c.getInt(priceIndex));
 	    			if(c.getString(nameIndex).equals(itype.getValue())){
-	    				System.out.println("axou  " + c.getInt(priceIndex));
 	    				return c.getInt(priceIndex);
 	    			}
 	        c.moveToNext();
 	    }
-	    System.out.println("nao axo");
 	    c.close();
 		return 0;
 	}

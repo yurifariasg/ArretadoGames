@@ -68,11 +68,23 @@ public class ItemWidget implements Renderable, GameButtonListener {
 	}
 	
 	public void setX(float x){
-		this.x = x;
+		if (this.x != x) {
+			itemRenderingRect = new RectF(x, y, x + itemRenderingRect.width(), y + itemRenderingRect.height());
+			this.x = x;
+			createItemInfoLabels();
+		} else {
+			this.x = x;
+		}
 	}
 	
 	public void setY(float y){
-		this.y = y;
+		if (this.y != y) {
+			itemRenderingRect = new RectF(x, y, x + itemRenderingRect.width(), y + itemRenderingRect.height());
+			this.y = y;
+			createItemInfoLabels();
+		} else {
+			this.y = y;
+		}
 	}	
 
 	@Override
@@ -145,8 +157,12 @@ public class ItemWidget implements Renderable, GameButtonListener {
 				int valor = it.getValue();	
 				if(AccountManager.get().getAccount1().getCoins() >= valor ){
 					AccountManager.get().getAccount1().setCoins(AccountManager.get().getAccount1().getCoins()-valor);
-					GameDatabase.getInstance().buyItem(ItemType.SUPER_JUMP);
-					Toast.makeText(MainActivity.getContext(),"Item comprado! Agora voce tem " + GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP), Toast.LENGTH_SHORT).show();
+					ItemType type = ItemType.SUPER_JUMP;
+					if(it.getName().equals("Double Jump")) type = ItemType.DOUBLE_JUMP;
+					else if(it.getName().equals("Super Velocity")) type = ItemType.SUPER_VELOCITY;
+					else type = ItemType.SUPER_STRENGHT;
+					GameDatabase.getInstance().buyItem(type);
+					Toast.makeText(MainActivity.getContext(),"Item comprado! Agora voce tem " + GameDatabase.getInstance().getQuantItems(type), Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(MainActivity.getContext(),"Sem sementes suficientes!", Toast.LENGTH_SHORT).show();
 				}
