@@ -243,6 +243,7 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 		}
 		
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
+//		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setItems(List<ItemEnum>, lista2);
 //		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
 	}
