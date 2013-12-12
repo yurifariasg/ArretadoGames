@@ -5,15 +5,18 @@ import java.text.NumberFormat;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.widget.Toast;
 
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.database.descriptors.DigitalStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemType;
+import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.Renderable;
@@ -137,6 +140,16 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		case BUY_BT:
 			if (itemDescriptor.getType() == StoreItemType.REAL) {
 				MainActivity.getActivity().purchase(((RealStoreItemDescriptor) itemDescriptor).getSkuCode());
+			} else {
+				DigitalStoreItemDescriptor it = (DigitalStoreItemDescriptor) itemDescriptor;
+				int valor = it.getValue();	
+				if(AccountManager.get().getAccount1().getCoins() >= valor ){
+					AccountManager.get().getAccount1().setCoins(AccountManager.get().getAccount1().getCoins()-valor);
+					GameDatabase.getInstance().buyItem(ItemType.SUPER_JUMP);
+					Toast.makeText(MainActivity.getContext(),"Item comprado! Agora voce tem " + GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP), Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(MainActivity.getContext(),"Sem sementes suficientes!", Toast.LENGTH_SHORT).show();
+				}
 			}
 			
 			break;

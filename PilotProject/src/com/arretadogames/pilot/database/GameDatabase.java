@@ -12,6 +12,7 @@ import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.database.descriptors.DigitalStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
+import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 
 public class GameDatabase {
@@ -171,6 +172,29 @@ public class GameDatabase {
 		return items;
 	}
 	
+	public int getQuantItems(ItemType itype) {
+		Cursor c = db.query(TABLE_PLAYER_ITEMS, null, null, null, null, null, null);
+    	c.moveToFirst();
+    	
+    	int nameIndex = c.getColumnIndexOrThrow(R_ITEM_NAME);
+    	int priceIndex = c.getColumnIndexOrThrow(R_QUANT_ITEMS);
+    	
+    	System.out.println("agora vaaaii  " + itype.getValue());
+	    while(!c.isAfterLast()){
+	    	System.out.println(" poooxa " + c.getString(nameIndex) + " " + c.getInt(priceIndex));
+	    			if(c.getString(nameIndex).equals(itype.getValue())){
+	    				System.out.println("axou  " + c.getInt(priceIndex));
+	    				return c.getInt(priceIndex);
+	    			}
+	        c.moveToNext();
+	    }
+	    System.out.println("nao axo");
+	    c.close();
+		return 0;
+	}
+	
+	
+	
 	private List<RealStoreItemDescriptor> getAllRealStoreItems() {
 		ArrayList<RealStoreItemDescriptor> items = new ArrayList<RealStoreItemDescriptor>();
 		
@@ -197,6 +221,19 @@ public class GameDatabase {
 		
 		
 		return items;
+	}
+
+	public void useItem(ItemType it) {
+		
+	}
+	
+	public boolean buyItem(ItemType it) {
+//		ContentValues cv = new ContentValues();
+//		cv.put(R_QUANT_ITEMS,getQuantItems(it)+1);
+//		return db.update(TABLE_PLAYER_ITEMS, cv, R_ITEM_NAME + " = " + it.getValue(), null) > 0;
+		String strSQL = "UPDATE "+TABLE_PLAYER_ITEMS+ " SET " + R_QUANT_ITEMS+ " = " + (getQuantItems(it) +1) + " WHERE " + R_ITEM_NAME + " = "+ "\""+ it.getValue() + "\";";
+		db.execSQL(strSQL);
+		return true;
 	}
 	
 }
