@@ -11,10 +11,12 @@ import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.database.descriptors.DigitalStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemType;
+import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.Renderable;
@@ -155,7 +157,12 @@ public class ItemWidget implements Renderable, GameButtonListener {
 				int valor = it.getValue();	
 				if(AccountManager.get().getAccount1().getCoins() >= valor ){
 					AccountManager.get().getAccount1().setCoins(AccountManager.get().getAccount1().getCoins()-valor);
-					Toast.makeText(MainActivity.getContext(),"Item comprado!", Toast.LENGTH_SHORT).show();
+					ItemType type = ItemType.SUPER_STRENGHT;
+					if(it.getName().equals("Double Jump")) type = ItemType.DOUBLE_JUMP;
+					else if(it.getName().equals("Super Velocity")) type = ItemType.SUPER_VELOCITY;
+					else if(it.getName().equals("Super Jump")) type = ItemType.SUPER_JUMP;
+					AccountManager.get().getAccount1().buyItem(type);
+					Toast.makeText(MainActivity.getContext(),"Item comprado! Agora voce tem " + GameDatabase.getInstance().getQuantItems(type), Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(MainActivity.getContext(),"Sem sementes suficientes!", Toast.LENGTH_SHORT).show();
 				}

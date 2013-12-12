@@ -59,14 +59,14 @@ public class StoreInitializeHelper {
         db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
         values.clear();
         
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_Velocity.getValue());
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_VELOCITY.getValue());
 		values.put(GameDatabase.R_ITEM_DESCRIPTION, "More velocity");
 		values.put(GameDatabase.R_ITEM_PRICE, 10);
 		values.put(GameDatabase.R_ITEM_RES_NAME, "it_speed");
         db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
         values.clear();
         
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_Velocity.getValue());
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_VELOCITY.getValue());
 		values.put(GameDatabase.R_QUANT_ITEMS, 0);
         db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
         values.clear();

@@ -178,7 +178,6 @@ public class GameDatabase {
     	
     	int nameIndex = c.getColumnIndexOrThrow(R_ITEM_NAME);
     	int priceIndex = c.getColumnIndexOrThrow(R_QUANT_ITEMS);
-    	
 	    while(!c.isAfterLast()){
 	    			if(c.getString(nameIndex).equals(itype.getValue())){
 	    				return c.getInt(priceIndex);
@@ -186,6 +185,7 @@ public class GameDatabase {
 	        c.moveToNext();
 	    }
 	    c.close();
+	    
 		return 0;
 	}
 	
@@ -219,14 +219,17 @@ public class GameDatabase {
 		return items;
 	}
 
-	public void useItem(ItemType it) {
-		
+	public boolean useItem(ItemType it) {
+		if(getQuantItems(it) <= 0 ) return false;
+		ContentValues cv = new ContentValues();
+		cv.put(R_QUANT_ITEMS,getQuantItems(it)-1);
+		return db.update(TABLE_PLAYER_ITEMS, cv, R_ITEM_NAME + " = " + "\"" + it.getValue()+ "\"" , null) > 0;
 	}
 	
 	public boolean buyItem(ItemType it) {
 		ContentValues cv = new ContentValues();
 		cv.put(R_QUANT_ITEMS,getQuantItems(it)+1);
-		return db.update(TABLE_PLAYER_ITEMS, cv, R_ITEM_NAME + " = " + it.getValue(), null) > 0;
+		return db.update(TABLE_PLAYER_ITEMS, cv, R_ITEM_NAME + " = " + "\"" + it.getValue()+ "\"" , null) > 0;
 	}
 	
 }

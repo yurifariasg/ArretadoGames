@@ -11,11 +11,13 @@ import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.PlayableItem;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -37,7 +39,8 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	private final int playerImgSize[] = ImageLoader.checkBitmapSize(R.drawable.player1);
 	
 	private float imgPlayerWidth = GameSettings.TARGET_WIDTH / 2 - (playerImgSize[0]/2);
-	private float imgPlayerHeight = GameSettings.TARGET_HEIGHT / 2 - (playerImgSize[1]/2);;
+	private float imgPlayerHeight = GameSettings.TARGET_HEIGHT / 2 - (playerImgSize[1]/2);
+	private boolean[] possibleItems;
 
 	public CharacterSelectionScreen() {
 		isPlayerOne = true;
@@ -107,6 +110,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	
 	private void initializeItems(){
 		
+		
 		itemsButtons = new ToggleButton[8];
 		
 		itemsButtons[0] = new ToggleButton(0, 8, 58, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
@@ -136,6 +140,15 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		possibleItems = new boolean[8];
+		possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+		possibleItems[1] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
+		possibleItems[2] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
+		possibleItems[3] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
+		possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+		possibleItems[5] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
+		possibleItems[6] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
+		possibleItems[7] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
 		
 		canvas.drawBitmap(R.drawable.bg_select_chars, 0, 0);
 		canvas.drawBitmap(R.drawable.bg_platforms_chars, 0, 0);
@@ -144,9 +157,9 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 			spots[i].render(canvas, timeElapsed);
 		
 		for (int j = 0; j < itemsButtons.length; j++){
-			itemsButtons[j].render(canvas, timeElapsed);
+			if( possibleItems[j] ) itemsButtons[j].render(canvas, timeElapsed);
 			
-			canvas.drawBitmap(getItemIconById(j), itemsButtons[j].getX(), itemsButtons[j].getY());
+			if( possibleItems[j] ) canvas.drawBitmap(getItemIconById(j), itemsButtons[j].getX(), itemsButtons[j].getY());
 		}
 		
 		
@@ -328,14 +341,23 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 
 	@Override
 	public void onClick(int buttonId) {
+		possibleItems = new boolean[8];
+		possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+		possibleItems[1] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
+		possibleItems[2] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
+		possibleItems[3] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
+		possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+		possibleItems[5] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
+		possibleItems[6] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
+		possibleItems[7] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
 		if (buttonId < 4){
 			for(int i = 0; i < 4; i++){
-				if (i != buttonId)
+				if (possibleItems[i] && i != buttonId)
 					itemsButtons[i].setToggled(false);
 			}
 		}else {
 			for(int i = 4; i < 8; i++){
-				if (i != buttonId)
+				if (possibleItems[i] && i != buttonId)
 					itemsButtons[i].setToggled(false);
 			}
 		}

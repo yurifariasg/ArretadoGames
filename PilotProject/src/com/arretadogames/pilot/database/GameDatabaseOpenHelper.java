@@ -9,7 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
 	
-    private static final int DATABASE_VERSION = 52;
+    private static final int DATABASE_VERSION = 60;
+    
     private static final String DATABASE_NAME = "pilotproject_db";
     
     private static final String LEVEL_TABLE_CREATE = "CREATE TABLE " +

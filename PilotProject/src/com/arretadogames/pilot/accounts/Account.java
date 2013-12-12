@@ -104,8 +104,11 @@ public class Account implements OnStateLoadedListener {
 	}
 	
 	public boolean useItem(ItemType it){
-		GameDatabase.getInstance().useItem(it);
-		return true;
+		return GameDatabase.getInstance().useItem(it);
+	}
+	
+	public boolean buyItem(ItemType it){
+		return GameDatabase.getInstance().buyItem(it);
 	}
 	
 	private String toJSON() {
