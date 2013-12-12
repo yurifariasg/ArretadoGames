@@ -66,11 +66,23 @@ public class ItemWidget implements Renderable, GameButtonListener {
 	}
 	
 	public void setX(float x){
-		this.x = x;
+		if (this.x != x) {
+			itemRenderingRect = new RectF(x, y, x + itemRenderingRect.width(), y + itemRenderingRect.height());
+			this.x = x;
+			createItemInfoLabels();
+		} else {
+			this.x = x;
+		}
 	}
 	
 	public void setY(float y){
-		this.y = y;
+		if (this.y != y) {
+			itemRenderingRect = new RectF(x, y, x + itemRenderingRect.width(), y + itemRenderingRect.height());
+			this.y = y;
+			createItemInfoLabels();
+		} else {
+			this.y = y;
+		}
 	}	
 
 	@Override

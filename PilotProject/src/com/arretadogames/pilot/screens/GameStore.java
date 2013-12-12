@@ -23,6 +23,8 @@ import com.arretadogames.pilot.ui.Text;
 public class GameStore extends GameScreen implements GameButtonListener {
 	
 	private static final int BACK_BT = 2;
+	private static final int UP_BT = 3;
+	private static final int DOWN_BT = 4;
 	
 	private Text storeLabel;
 	private Text moneyLabel;
@@ -30,6 +32,8 @@ public class GameStore extends GameScreen implements GameButtonListener {
 
 	private ArrayList<ItemWidget> storeItems = new ArrayList<ItemWidget>();
 	private ImageButton buttonBack;
+	private ImageButton buttonUp;
+	private ImageButton buttonDown;
 	
 	public GameStore() {
 		
@@ -47,6 +51,16 @@ public class GameStore extends GameScreen implements GameButtonListener {
 				702, 388, this,
 				R.drawable.bt_back_selected,
 				R.drawable.bt_back_unselected);
+		
+		buttonUp = new ImageButton(UP_BT,
+				12, 288, this,
+				R.drawable.arrow_up_selected,
+				R.drawable.arrow_up);
+		
+		buttonDown = new ImageButton(DOWN_BT,
+				12, 388, this,
+				R.drawable.arrow_down_selected,
+				R.drawable.arrow_down);
 	}
 
 	@Override
@@ -54,9 +68,7 @@ public class GameStore extends GameScreen implements GameButtonListener {
 		
 		canvas.drawBitmap(R.drawable.store_background, 0, 0);
 		
-		for (ItemWidget widget : storeItems){
-			widget.render(canvas, timeElapsed);
-		}
+		renderWidgets(canvas, timeElapsed);
 		
 		canvas.drawBitmap(R.drawable.store_top, 100, 68);
 		
@@ -81,8 +93,10 @@ public class GameStore extends GameScreen implements GameButtonListener {
 		}
 		
 		buttonBack.render(canvas, timeElapsed);
+		buttonUp.render(canvas, timeElapsed);
+		buttonDown.render(canvas, timeElapsed);
 	}
-	
+
 	private void createUserInfoLabels() {
 		Account acc = AccountManager.get().getAccount1();
 		storeLabel = new Text(333, 100, "Store",
@@ -98,10 +112,17 @@ public class GameStore extends GameScreen implements GameButtonListener {
 
 	@Override
 	public void input(InputEventHandler event) {
-		for (ItemWidget widget : storeItems) {
-			widget.input(event);
+//		for (ItemWidget widget : storeItems) {
+//			widget.input(event);
+//		}
+		for (int i = (currentPage - 1) * PAGE_SIZE ; i < currentPage * PAGE_SIZE && i < storeItems.size() ; i++) {
+			storeItems.get(i).input(event);
+//			storeItems.get(i).render(canvas, timeElapsed);
+//			currentY += 150;
 		}
 		buttonBack.input(event);
+		buttonUp.input(event);
+		buttonDown.input(event);
 	}
 
 	@Override
@@ -115,9 +136,39 @@ public class GameStore extends GameScreen implements GameButtonListener {
 		case BACK_BT:
 			Game.getInstance().goTo(GameState.MAIN_MENU);
 			break;
+		case UP_BT:
+			scrollItems(true);
+			break;
+		case DOWN_BT:
+			scrollItems(false);
+			break;
 		}
 	}
 	
+	private static final int PAGE_SIZE = 2;
+	private int currentPage = 1;
+	
+	private void scrollItems(boolean isScrollUp) {
+		
+		if (isScrollUp && currentPage > 1)  {
+			currentPage--;
+		} else if (!isScrollUp && currentPage <= Math.ceil(storeItems.size() / PAGE_SIZE)) {
+			currentPage++;
+		}
+		
+	}
+	
+	private void renderWidgets(GLCanvas canvas, float timeElapsed) {
+		
+		int currentY = 135;
+		for (int i = (currentPage - 1) * PAGE_SIZE ; i < currentPage * PAGE_SIZE && i < storeItems.size() ; i++) {
+			storeItems.get(i).setY(currentY);
+			storeItems.get(i).render(canvas, timeElapsed);
+			currentY += 150;
+		}
+		
+	}
+
 	@Override
 	public void onBackPressed() {
 		Game.getInstance().goTo(GameState.MAIN_MENU);
