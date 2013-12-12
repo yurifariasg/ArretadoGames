@@ -8,6 +8,7 @@ import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
+import com.arretadogames.pilot.database.descriptors.DigitalStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemType;
@@ -89,7 +90,7 @@ public class ItemWidget implements Renderable, GameButtonListener {
 //		descriptionLabel2.render(canvas, timeElapsed);
 		
 		// TODO @yuri: avoid this calc every frame
-		canvas.drawBitmap(R.drawable.item_bg, x + 25, y + 22);
+		canvas.drawBitmap(R.drawable.item_bg2, x + 25, y + 22);
 		canvas.drawBitmap(itemDescriptor.getIconId(), x + 38, y + 35); // THE ITEM ICON
 		
 		if (itemDescriptor.getType() != StoreItemType.REAL)
@@ -117,8 +118,9 @@ public class ItemWidget implements Renderable, GameButtonListener {
 
 			priceLabel = new Text(x + 500, y + 100, getPrice(((RealStoreItemDescriptor)itemDescriptor).getPrice()),
 					FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.65f, true);
-			
-			
+		} else {
+			priceLabel = new Text(x + 500, y + 100, ""+((DigitalStoreItemDescriptor)itemDescriptor).getValue(),
+					FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.65f, true);
 		}
 	}
 	

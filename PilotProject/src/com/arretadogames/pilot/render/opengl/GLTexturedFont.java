@@ -77,8 +77,8 @@ public class GLTexturedFont {
 			charWidth = charWidths.get(charNumber);
 			if (src == null) {
 				// Defaults to unknown char
-				src = characterRects.get(text.charAt(charUnknown));
-				charWidth = charWidths.get(text.charAt(charUnknown));
+				src = characterRects.get(text.charAt(0));
+				charWidth = charWidths.get(text.charAt(0));
 			}
 			// add less space between letters
 			charWidth -= 5;
