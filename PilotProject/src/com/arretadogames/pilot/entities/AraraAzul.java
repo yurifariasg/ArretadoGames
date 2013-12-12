@@ -53,7 +53,6 @@ public class AraraAzul extends Player implements Steppable{
 	public AraraAzul(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		applyConstants();
-		addItem(new Velocity(5));
 		doubleJump = getMaxDoubleJumps();
 		//PolygonShape shape = new PolygonShape();
 		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size

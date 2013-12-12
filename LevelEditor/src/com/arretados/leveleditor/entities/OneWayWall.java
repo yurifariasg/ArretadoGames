@@ -74,11 +74,11 @@ public class OneWayWall extends Entity{
                 (int) (width * GameCanvas.METER_TO_PIXELS), // Bottom Right X
                 (int) ((height + 2) * GameCanvas.METER_TO_PIXELS), // Bottom Right Y
                 null);
-        g.setColor(Color.RED);
-        g.drawRect(x - ((int) (GameCanvas.METER_TO_PIXELS * this.width/2)),
-                y - ((int) (GameCanvas.METER_TO_PIXELS * this.height/2)),
-                (int) (this.width * GameCanvas.METER_TO_PIXELS),
-                (int) (this.height * GameCanvas.METER_TO_PIXELS));
+//        g.setColor(Color.RED);
+//        g.drawRect(x - ((int) (GameCanvas.METER_TO_PIXELS * this.width/2)),
+//                y - ((int) (GameCanvas.METER_TO_PIXELS * this.height/2)),
+//                (int) (this.width * GameCanvas.METER_TO_PIXELS),
+//                (int) (this.height * GameCanvas.METER_TO_PIXELS));
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.arretadogames.pilot.screens;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
@@ -10,6 +12,7 @@ import aurelienribon.tweenengine.TweenAccessor;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.PlayableCharacter;
+import com.arretadogames.pilot.entities.PlayableItem;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
@@ -290,14 +293,31 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	
 	private void initGame(){
 		HashMap<PlayerNumber, PlayableCharacter> selectedCharacters = new HashMap<PlayerNumber, PlayableCharacter>();
+		HashMap<PlayerNumber, List<PlayableItem>> selectedItems = new HashMap<PlayerNumber, List<PlayableItem>>();
 		
 		for (PlayerSelector selector : selectors) {
 			selectedCharacters.put(selector.player, selector.spot.character);
 		}
 		
+		List<PlayableItem> itemListp1 = new ArrayList<PlayableItem>();
+		List<PlayableItem> itemListp2 = new ArrayList<PlayableItem>();
+		
+		for (int i = 0; i < itemsButtons.length; i++) {
+			if (i < 4){
+				if (itemsButtons[i].isToggled()){
+					itemListp1.add(PlayableItem.forInt(i));
+					selectedItems.put(PlayerNumber.ONE, itemListp1);
+				}
+			}else{
+				if (itemsButtons[i].isToggled())
+					itemListp2.add(PlayableItem.forInt(i-4));
+					selectedItems.put(PlayerNumber.TWO, itemListp2);
+			}				
+		}		
+		
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
-//		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setItems(List<ItemEnum>, lista2);
-//		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
+		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedItems(selectedItems);
+		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
 	}
 	

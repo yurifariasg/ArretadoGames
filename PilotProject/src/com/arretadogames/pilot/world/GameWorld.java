@@ -27,6 +27,7 @@ import com.arretadogames.pilot.entities.LoboGuara;
 import com.arretadogames.pilot.entities.MacacoPrego;
 import com.arretadogames.pilot.entities.OneWayWall;
 import com.arretadogames.pilot.entities.PlayableCharacter;
+import com.arretadogames.pilot.entities.PlayableItem;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.entities.Pulley;
@@ -39,6 +40,10 @@ import com.arretadogames.pilot.entities.scenario.Shrub;
 import com.arretadogames.pilot.entities.scenario.Tree;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.items.DoubleJump;
+import com.arretadogames.pilot.items.SuperJump;
+import com.arretadogames.pilot.items.SuperStrength;
+import com.arretadogames.pilot.items.Velocity;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LianaDescriptor;
@@ -71,6 +76,7 @@ public class GameWorld extends GameScreen {
 	private Collection<Steppable> steppables;
 	private HashMap<PlayerNumber, Player> players;
 	private HashMap<PlayerNumber, PlayableCharacter> selectedCharacters;
+	private HashMap<PlayerNumber, List<PlayableItem>> selectedItems;
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
 	private float flagPos;
@@ -114,7 +120,7 @@ public class GameWorld extends GameScreen {
 	}
 	
 	public void initialize() {
-		if (isInitialized || selectedCharacters == null || level == null)
+		if (isInitialized || selectedCharacters == null || level == null || selectedItems == null)
 			return;
 		
 		load(level); 
@@ -261,6 +267,35 @@ public class GameWorld extends GameScreen {
 		}
 	}
 	
+	private void setItemToPlayer(Player p, PlayableItem item){
+		System.out.println("Setou ITEMMMMM");
+		if (item != null) {
+			
+			System.out.println("FUNFOU?!");
+			switch (item) {
+			case SUPER_JUMP:
+				p.addItem(new SuperJump(5));
+				System.out.println("FUNFOU222?!");
+				break;
+				
+			case SUPER_STRENGTH:
+				p.addItem(new SuperStrength(5));
+				break;
+				
+			case SUPER_SPEED:
+				p.addItem(new Velocity(5));
+				break;
+				
+			case DOUBLE_JUMP:
+				p.addItem(new DoubleJump());
+				break;
+	
+			default:
+				break;
+			}
+		}
+	}
+	
 	private Entity createPlayerCharacter(float x, float y,
 			PlayerNumber playerNumber) {
 		
@@ -269,17 +304,20 @@ public class GameWorld extends GameScreen {
 		switch (chosenCharacter) {
 		case LOBO_GUARA:
 			p = new LoboGuara(x, y, playerNumber);
-//			if (playerNumber == PlayerNumber.ONE) { << Botar isso numa funcao
-//				lista1.get(0).
-//			}
-//			p.addItem(new SuperStr)
+			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
 			return p;
 		case ARARA_AZUL:
-			return new AraraAzul(x, y, playerNumber);
+			p = new AraraAzul(x, y, playerNumber);
+			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
+			return p;
 		case MACACO_PREGO:
-			return new MacacoPrego(x, y, playerNumber);
+			p = new MacacoPrego(x, y, playerNumber);
+			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
+			return p;
 		case TATU_BOLA:
-			return new TatuBola(x, y, playerNumber);
+			p = new TatuBola(x, y, playerNumber);
+			setItemToPlayer(p, selectedItems.get(playerNumber).get(0));
+			return p;
 		default:
 			break;
 		}
@@ -404,6 +442,10 @@ public class GameWorld extends GameScreen {
 	
 	public void setSelectedCharacters(HashMap<PlayerNumber, PlayableCharacter> selectedCharacters) {
 		this.selectedCharacters = selectedCharacters;
+	}
+	
+	public void setSelectedItems(HashMap<PlayerNumber, List<PlayableItem>> selectedItems) {
+		this.selectedItems = selectedItems;
 	}
 
 	public void destroyResources() {
