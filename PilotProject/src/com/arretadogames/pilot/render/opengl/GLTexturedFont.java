@@ -42,14 +42,21 @@ public class GLTexturedFont {
 		createTexture(gl);
 	}
 	
+	private int getCharWidth(char c, float scale) {
+		int charWidth = charWidths.get((int) c);
+		charWidth -= 5;
+		if (c == ' ')
+			charWidth /= 2;
+		return (int) (charWidth * scale);
+	}
+	
 	public void drawText(GL10 gl, String text, int x, int y, float scale, boolean centered) {
 		scale /= 2;
 		// Get width of text
 		int textWidth = 0;
 		int charWidth;
 		for (int i = 0; i < text.length(); i++) {
-			charWidth = charWidths.get((int) text.charAt(i));
-			textWidth += charWidth * scale;
+			textWidth += getCharWidth(text.charAt(i), scale);
 		}
 		if (centered) {
 			// Adjust to centre text about x,y
@@ -57,7 +64,7 @@ public class GLTexturedFont {
 		}
 		
 //		Uncomment the following line to draw the baseline
-//		GLLine.draw(x, y, x + textWidth, y, 2, Color.YELLOW);
+//		GLLine.drawLineStrip(new Vec2[] { new Vec2(x, y), new Vec2(x + textWidth, y) }, 2, 2, Color.YELLOW, false, 1);
 		
 		y -= scale * fontHeight / 2;
 
@@ -67,7 +74,6 @@ public class GLTexturedFont {
 		Rect src;
 		Rect dst = new Rect();
 		int charNumber;
-//		GLES11.glColor4f(Color.red(argb) / 255f, Color.green(argb) / 255f, Color.blue(argb) / 255f, Color.alpha(argb) / 255f);
 		gl.glColor4f(1, 1, 1, 1);
 		gl.glPushMatrix();
 		for (int i = 0; i < text.length() ; i++) {
@@ -75,15 +81,13 @@ public class GLTexturedFont {
 			charNumber = (int) text.charAt(i);
 			src = characterRects.get(charNumber);
 			charWidth = charWidths.get(charNumber);
+			charWidth = getCharWidth(text.charAt(i), scale);
 			if (src == null) {
 				// Defaults to unknown char
 				src = characterRects.get(text.charAt(charUnknown));
 				charWidth = charWidths.get(text.charAt(charUnknown));
 			}
 			// add less space between letters
-			charWidth -= 5;
-			if (text.charAt(i) == ' ')
-				charWidth /= 2;
 			src = new Rect(src);
 			src.right -= 1; // Adjust
 
@@ -93,7 +97,7 @@ public class GLTexturedFont {
 			// Draw
 			GLTexturedRect.draw(gl, src, dst, spriteData);
 			// Move forward CHAR WIDTH (not cell width)
-			x += charWidth * scale;
+			x += charWidth;
 		}
 		gl.glPopMatrix();
 	}

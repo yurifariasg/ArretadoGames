@@ -95,16 +95,8 @@ public class OneWayWall extends Entity{
 	public void render(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY()); // TODO: move a little up ?
+		canvas.translatePhysics(getPosX(), getPosY() - 0.8f); // TODO: move a little up ?
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-//		RectF rect = new RectF(
-//				(- width/2 * GLCanvas.physicsRatio), // Top Left X
-//				((- height/2 - 0.3f) * GLCanvas.physicsRatio), // Top Left Y
-//				(width/2 * GLCanvas.physicsRatio), // Bottom Right X
-//				((height/2 + 2) * GLCanvas.physicsRatio)); // Bottom Right Y
-
-//		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.WHITE);
-//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
 		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 		canvas.restoreState();
 	}

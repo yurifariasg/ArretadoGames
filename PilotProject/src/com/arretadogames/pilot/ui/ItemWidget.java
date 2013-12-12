@@ -2,6 +2,8 @@ package com.arretadogames.pilot.ui;
 
 import java.text.NumberFormat;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.MainActivity;

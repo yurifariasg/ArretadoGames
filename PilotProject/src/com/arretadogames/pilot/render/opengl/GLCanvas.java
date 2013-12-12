@@ -148,8 +148,9 @@ public class GLCanvas {
 				loadImage(imageId);
 		}
 		saveState();
-			if (paint != null)
-				GLES11.glColor4f(255, 255, 255, paint.getAlpha() / 255f);
+			if (paint != null) {
+				GLES11.glColor4f(1f, 1f, 1f, paint.getAlpha() / 255f);
+			}
 			translate(x, y);
 	
 			GLTexture texture = textures.get(imageId);

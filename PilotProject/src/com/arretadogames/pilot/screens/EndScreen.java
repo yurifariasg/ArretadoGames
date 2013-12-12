@@ -27,7 +27,7 @@ public class EndScreen extends GameScreen {
 	private static final int PLAYER_INFO_Y = 130;
 	private static final int PLAYER_INFO_Y_SPACING = 50;
 	private static final int PLAYER_INFO_X_OFFSET = 0;
-	private static final int SECONDS_TO_WAIT = 5;
+	private static final int SECONDS_TO_WAIT = 8;
 //	private static final int TOTAL_OF_RECORDS = 3;
 	
 	private float totalTimeElapsed;
@@ -67,8 +67,8 @@ public class EndScreen extends GameScreen {
 		backgroundId = hasWon ? R.drawable.victory_bg : R.drawable.defeat_bg;
 		initializeInfo();
 		
-		playerInformation.add(new Text(GameSettings.DisplayWidth / 2,
-				GameSettings.DisplayHeight - 50,
+		playerInformation.add(new Text(GameSettings.TARGET_WIDTH / 2,
+				GameSettings.TARGET_HEIGHT - 50,
 				"PRESS TO CONTINUE",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 	}
@@ -87,8 +87,8 @@ public class EndScreen extends GameScreen {
 		setNewRecord(p1.getCoins(), acc1.getAccountId());
 		setNewRecord(p2.getCoins(), acc2.getAccountId());
 		
-		initializePlayerInfo(130, p1);
-		initializePlayerInfo(680, p2);
+		initializePlayerInfo(140, p1);
+		initializePlayerInfo(660, p2);
 	}
 	
 	private void setNewRecord(int coins, String accId){
@@ -128,7 +128,7 @@ public class EndScreen extends GameScreen {
 		int currentY = PLAYER_INFO_Y;
 		
 		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(),
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1.35f, true));
+				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1f, true));
 		currentY += PLAYER_INFO_Y_SPACING;
 
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
@@ -173,7 +173,7 @@ public class EndScreen extends GameScreen {
 
 	@Override
 	public void input(InputEventHandler event) {
-		if (event.getAction() == MotionEvent.ACTION_DOWN)
+		if (event.getAction() == MotionEvent.ACTION_UP)
 			callNextScreen();
 	}
 

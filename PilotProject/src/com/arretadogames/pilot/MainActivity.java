@@ -87,7 +87,6 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 	public void onBackPressed() {
 		// TODO Handles the Back Button input from a Physical Button
 		Game.getInstance().onBackPressed();
-		System.out.println("Back Pressed");
 	}
 	
 	/**
