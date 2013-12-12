@@ -10,6 +10,7 @@ import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
+import com.arretadogames.pilot.database.descriptors.DigitalStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemType;
@@ -81,10 +82,10 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		}
 		
 		// TODO @yuri: avoid this calc every frame
-		seedRenderingRect.right = x + 521 + seedRenderingRect.width();
-		seedRenderingRect.left = x + 521;
-		seedRenderingRect.bottom = y + 104 + seedRenderingRect.height();
-		seedRenderingRect.top = y + 104;
+		seedRenderingRect.right = x + 455 + seedRenderingRect.width();
+		seedRenderingRect.left = x + 455;
+		seedRenderingRect.bottom = y + 88 + seedRenderingRect.height();
+		seedRenderingRect.top = y + 88;
 		
 		titleLabel.render(canvas, timeElapsed);
 		descriptionLabel.render(canvas, timeElapsed);
@@ -116,11 +117,11 @@ public class ItemWidget implements Renderable, GameButtonListener {
 //				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.424f, false);	
 		
 		if (itemDescriptor.getType() == StoreItemType.REAL) {
-
 			priceLabel = new Text(x + 500, y + 100, getPrice(((RealStoreItemDescriptor)itemDescriptor).getPrice()),
 					FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.65f, true);
-			
-			
+		} else {
+			priceLabel = new Text(x + 485, y + 100, ""+((DigitalStoreItemDescriptor)itemDescriptor).getValue(),
+					FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.65f, false);
 		}
 	}
 	

@@ -84,8 +84,8 @@ public class GLTexturedFont {
 			charWidth = getCharWidth(text.charAt(i), scale);
 			if (src == null) {
 				// Defaults to unknown char
-				src = characterRects.get(text.charAt(charUnknown));
-				charWidth = charWidths.get(text.charAt(charUnknown));
+				src = characterRects.get(text.charAt(0));
+				charWidth = charWidths.get(text.charAt(0));
 			}
 			// add less space between letters
 			src = new Rect(src);
@@ -120,7 +120,7 @@ public class GLTexturedFont {
 		Paint.FontMetrics fm = paint.getFontMetrics();
 		fontHeight = (int) Math.ceil(Math.abs(fm.bottom) + Math.abs(fm.top));
 		if (hasStroke)
-			fontHeight += (int)Math.floor(mStrokePaint.getStrokeWidth()) * 2;
+			fontHeight += (int)Math.floor(mStrokePaint.getStrokeWidth()) * 2.3f;
 
 		// Store for char widths
 		charWidths = new SparseIntArray();
