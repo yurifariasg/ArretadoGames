@@ -16,13 +16,20 @@ import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.ui.GameButtonListener;
+import com.arretadogames.pilot.ui.ToggleButton;
 import com.arretadogames.pilot.world.GameWorld;
 
-public class CharacterSelectionScreen extends GameScreen{// implements GameButtonListener {
+public class CharacterSelectionScreen extends GameScreen implements GameButtonListener {
 	
-	private final RectF BASE_RECT = new RectF(0, 0, 220, 220);
+	private final RectF BASE_RECT = new RectF(0, 0, 170, 170);
+//	private final RectF BASE_ITEM_RECT = new RectF(0, 0, 80, 80);
+	
 	private PlayerSelector[] selectors;
 	private CharacterSpot[] spots;
+	
+	private ToggleButton[] itemsButtons;
+	
 	private boolean isPlayerOne;
 	private final int playerImgSize[] = ImageLoader.checkBitmapSize(R.drawable.player1);
 	
@@ -31,8 +38,10 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 
 	public CharacterSelectionScreen() {
 		isPlayerOne = true;
+		
 		initializeSelectors();
 		initializeSpots();
+		initializeItems();
 	}
 	
 	@Override
@@ -93,10 +102,50 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 		spots[3].rect.bottom = spots[3].rect.top + BASE_RECT.height();
 	}
 	
+	private void initializeItems(){
+		
+		itemsButtons = new ToggleButton[8];
+		
+		itemsButtons[0] = new ToggleButton(0, 8, 58, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[1] = new ToggleButton(1, 8, 148, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[2] = new ToggleButton(2, 8, 238, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[3] = new ToggleButton(3, 8, 328, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[4] = new ToggleButton(4, 712, 58, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[5] = new ToggleButton(5, 712, 148, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[6] = new ToggleButton(6, 712, 238, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+		itemsButtons[7] = new ToggleButton(7, 712, 328, this, R.drawable.it_bg_selected, R.drawable.it_bg_unselected);
+	}
+	
+	private int getItemIconById(int id){
+		
+		if (id == 0 || id == 4){
+			return R.drawable.it_superjump;
+		}else if (id == 1 || id == 5){
+			return R.drawable.it_strength;
+		}else if (id == 2 || id == 6){
+			return R.drawable.it_speed;
+		}else if (id == 3 || id == 7){
+			return R.drawable.it_double_jump;
+		}
+		
+		return -1;
+	}
+	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		
+		canvas.drawBitmap(R.drawable.bg_select_chars, 0, 0);
+		canvas.drawBitmap(R.drawable.bg_platforms_chars, 0, 0);
+		
 		for (int i = 0 ; i < spots.length ; i++)
 			spots[i].render(canvas, timeElapsed);
+		
+		for (int j = 0; j < itemsButtons.length; j++){
+			itemsButtons[j].render(canvas, timeElapsed);
+			
+			canvas.drawBitmap(getItemIconById(j), itemsButtons[j].getX(), itemsButtons[j].getY());
+		}
+		
 		
 		if (isPlayerOne){
 			selectors[0].render(canvas, timeElapsed);
@@ -114,6 +163,11 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 
 	@Override
 	public void input(InputEventHandler event) {
+		
+		for (int i = 0; i < itemsButtons.length; i++) {
+			itemsButtons[i].input(event);
+		}
+		
 		if (isPlayerOne){
 			if (event.getAction()== MotionEvent.ACTION_UP){
 				if (selectors[0].touch(event.getX(), event.getY()))
@@ -234,7 +288,6 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 		initializeSpots();
 	}
 	
-	
 	private void initGame(){
 		HashMap<PlayerNumber, PlayableCharacter> selectedCharacters = new HashMap<PlayerNumber, PlayableCharacter>();
 		
@@ -245,6 +298,21 @@ public class CharacterSelectionScreen extends GameScreen{// implements GameButto
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
 //		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
+	}
+
+	@Override
+	public void onClick(int buttonId) {
+		if (buttonId < 4){
+			for(int i = 0; i < 4; i++){
+				if (i != buttonId)
+					itemsButtons[i].setToggled(false);
+			}
+		}else {
+			for(int i = 4; i < 8; i++){
+				if (i != buttonId)
+					itemsButtons[i].setToggled(false);
+			}
+		}
 	}
 
 }

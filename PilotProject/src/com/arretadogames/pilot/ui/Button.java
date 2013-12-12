@@ -10,7 +10,7 @@ public abstract class Button {
 	protected int id;
 	protected float x, y;
 	protected float width, height;
-	private GameButtonListener listener;
+	protected GameButtonListener listener;
 	protected boolean isSelected;
 	
 	public Button(int id, float x, float y, float width, float height, GameButtonListener listener) {
@@ -62,7 +62,8 @@ public abstract class Button {
 			break;
 		case MotionEvent.ACTION_UP:
 			if (pressed(event.getX(), event.getY())) {
-				listener.onClick(id);
+				if (listener != null)
+					listener.onClick(id);
 				isSelected = false;
 				return true;
 			}
