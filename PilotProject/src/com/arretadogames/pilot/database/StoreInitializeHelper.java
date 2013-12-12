@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.database;
 
+import com.arretadogames.pilot.items.ItemType;
+
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -31,6 +33,54 @@ public class StoreInitializeHelper {
 		values.put(GameDatabase.R_ITEM_RES_NAME, "elephants_power");
 		values.put(GameDatabase.R_ITEM_SKU_CODE, "big_seed_pack");
         db.insert(GameDatabase.TABLE_REAL_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_JUMP.getValue());
+		values.put(GameDatabase.R_ITEM_DESCRIPTION, "Jump twice higher than before");
+		values.put(GameDatabase.R_ITEM_PRICE, 10);
+		values.put(GameDatabase.R_ITEM_RES_NAME, "it_superjump");
+        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_JUMP.getValue());
+		values.put(GameDatabase.R_QUANT_ITEMS, 0);
+        db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.DOUBLE_JUMP.getValue());
+		values.put(GameDatabase.R_ITEM_DESCRIPTION, "Extra jump in the air");
+		values.put(GameDatabase.R_ITEM_PRICE, 10);
+		values.put(GameDatabase.R_ITEM_RES_NAME, "it_double_jump");
+        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.DOUBLE_JUMP.getValue());
+		values.put(GameDatabase.R_QUANT_ITEMS, 0);
+        db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_Velocity.getValue());
+		values.put(GameDatabase.R_ITEM_DESCRIPTION, "More velocity");
+		values.put(GameDatabase.R_ITEM_PRICE, 10);
+		values.put(GameDatabase.R_ITEM_RES_NAME, "it_speed");
+        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_Velocity.getValue());
+		values.put(GameDatabase.R_QUANT_ITEMS, 0);
+        db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_STRENGHT.getValue());
+		values.put(GameDatabase.R_ITEM_DESCRIPTION, "More strength");
+		values.put(GameDatabase.R_ITEM_PRICE, 10);
+		values.put(GameDatabase.R_ITEM_RES_NAME, "it_strength");
+        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
+        values.clear();
+        
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_STRENGHT.getValue());
+		values.put(GameDatabase.R_QUANT_ITEMS, 0);
+        db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
         values.clear();
 	}
 
