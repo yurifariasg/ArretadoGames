@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.arretadogames.pilot.googlesync.SyncManager;
+import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.util.Logger;
 import com.google.android.gms.appstate.OnStateLoadedListener;
 
@@ -95,6 +96,10 @@ public class Account implements OnStateLoadedListener {
 	
 	public HashMap<String, Integer> getUnlockedMaps() {
 		return unlockedMaps;
+	}
+	
+	public HashMap<ItemType, Integer> getAccountItems() {
+		return new HashMap<ItemType, Integer>();
 	}
 	
 	private String toJSON() {
