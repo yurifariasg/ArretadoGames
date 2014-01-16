@@ -94,7 +94,7 @@ public class ResourcesManager {
 					R.drawable.seed1,
 					R.drawable.pause_menu_bg,
 					R.drawable.bt_pause_selected,
-					R.drawable.repeatable_background,
+					R.drawable.mountains_repeatable,
 					R.drawable.spike
 			};
 		} else if (state.equals(GameState.LEVEL_SELECTION)) {

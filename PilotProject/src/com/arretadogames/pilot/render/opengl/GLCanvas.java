@@ -148,9 +148,9 @@ public class GLCanvas {
 				loadImage(imageId);
 		}
 		saveState();
-			if (paint != null) {
-				GLES11.glColor4f(1f, 1f, 1f, paint.getAlpha() / 255f);
-			}
+//			if (paint != null) {
+//				GLES11.glColor4f(1f, 1f, 1f, paint.getAlpha() / 255f);
+//			}
 			translate(x, y);
 	
 			GLTexture texture = textures.get(imageId);
@@ -167,7 +167,7 @@ public class GLCanvas {
 		}
 		
 		GLTexture tex = textures.get(imageId);
-		GLES11.glColor4f(1, 1, 1, 1);
+//		GLES11.glColor4f(1, 1, 1, 1);
 		
 		auxiliaryRect.left = (int) dstRect.left;
 		auxiliaryRect.top = (int) dstRect.top;
@@ -208,7 +208,7 @@ public class GLCanvas {
 		}
 		
 		GLTexture tex = textures.get(imageId);
-		GLES11.glColor4f(1, 1, 1, 1);
+//		GLES11.glColor4f(1, 1, 1, 1);
 		
 		GLTexturedRect.draw(gl,
 				physicsRect.left * physicsRatio,
@@ -259,6 +259,8 @@ public class GLCanvas {
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
+		System.out.println("New Texture ID: " + texture_id);
+		
 		GLTexture texture = new GLTexture(texture_id);
 		
 		// Working with textureId
@@ -266,16 +268,16 @@ public class GLCanvas {
 
 		// SETTINGS
 		// Scale up if the texture is smaller.
-		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+		GLES11.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
 				GL10.GL_LINEAR);
 		// Scale down if the mesh is smaller.
-		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+		GLES11.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
 				GL10.GL_LINEAR);
 		// Clamp to edge behaviour at edge of texture (repeats last pixel)
-		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+		GLES11.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
 				GL10.GL_REPEAT);
 		
-		GLES11.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+		GLES11.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
 				GL10.GL_REPEAT);
 
 		// Attach bitmap to current texture

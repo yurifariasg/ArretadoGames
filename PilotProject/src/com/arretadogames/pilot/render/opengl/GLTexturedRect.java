@@ -26,6 +26,7 @@ public class GLTexturedRect extends GLRect {
 		
 		// Tell OpenGL where our texture is located.
 		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, image.getTextureID());
+		
 		// Telling OpenGL where our textureCoords are.
 		GLES11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
 		// Specifies the location and data format of the array of

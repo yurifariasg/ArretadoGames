@@ -140,15 +140,18 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		possibleItems = new boolean[8];
-		possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
-		possibleItems[1] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
-		possibleItems[2] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
-		possibleItems[3] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
-		possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
-		possibleItems[5] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
-		possibleItems[6] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
-		possibleItems[7] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
+		
+		if (possibleItems == null) {
+			possibleItems = new boolean[8];
+			possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+			possibleItems[1] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
+			possibleItems[2] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
+			possibleItems[3] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
+			possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+			possibleItems[5] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
+			possibleItems[6] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
+			possibleItems[7] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
+		}
 		
 		canvas.drawBitmap(R.drawable.bg_select_chars, 0, 0);
 		canvas.drawBitmap(R.drawable.bg_platforms_chars, 0, 0);

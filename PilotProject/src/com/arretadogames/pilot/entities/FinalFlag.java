@@ -15,8 +15,7 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class FinalFlag extends Entity {
 
-	private static final int[] STOPPED = {R.drawable.apple1,
-		     							  R.drawable.apple2};
+	private static final int[] STOPPED = {};
 	
 	private float width;
 	private float height;

@@ -107,6 +107,11 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		}
 		
 		frameEndedTime = frameCurrentTime;
+		
+		int error = GLES11.glGetError();
+		if (error != 0) {
+			System.out.println("OpenGL Error: " + GLU.gluErrorString(error));
+		}
 	}
 	
 	private int getAverageFPS() {

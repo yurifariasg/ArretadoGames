@@ -89,7 +89,7 @@ public class GameWorld extends GameScreen {
 	private Fire fire;
 	
 	public GameWorld() {
-		backgroundId = R.drawable.repeatable_background;
+		backgroundId = R.drawable.mountains_repeatable;
 		pWorld = PhysicalWorld.getInstance();
 		sm = new SpriteManager();
 		totalElapsedSeconds = 0;

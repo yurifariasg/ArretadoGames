@@ -130,7 +130,7 @@ public class Hole extends Entity implements Steppable{
 //				(HOLE_WIDTH * GLCanvas.physicsRatio)); // Bottom Right
 //		
 ////		
-		canvas.drawBitmap(R.drawable.hole, physRect);
+//		canvas.drawBitmap(R.drawable.hole, physRect);
 		canvas.restoreState();
 	}
 

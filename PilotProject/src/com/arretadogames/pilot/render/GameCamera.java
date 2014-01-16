@@ -370,33 +370,17 @@ public class GameCamera {
 			gameWorld.getFire().setCurrentVelocity(newVelocity);
 		}
 
-		// Draw Background
-		if (GameSettings.USE_OLD_BACKGROUND) {
-			gameCanvas.fillScreen(255, 255, 255, 255);
-			if (transitionTrigger == TransitionTrigger.PLAYER_NUM_CHANGED
-					|| transitionTrigger == TransitionTrigger.NONE) {
-				float pos = upperBound.x;
-				// float pos = lowerBound.x;// + (upperBound.x * (0.5f));
-				drawBackground(gameCanvas, pos);
-			} else {
-				float pos = targetUpperBound.x;
-				// float pos = targetLowerBound.x;// + (targetUpperBound.x *
-				// (0.5f));
-				drawBackground(gameCanvas, pos);
-			}
-		} else {
-			// Draw Sky
-			int topSky = Color.rgb(0, 134, 168);
-			int bottomSky = Color.rgb(277, 251, 145);
-	
-			gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT,
-					GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT,
-					GameSettings.TARGET_WIDTH, 0, topSky, bottomSky, bottomSky,
-					topSky);
-	
-			movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
-					center.y, initialX, flagX, translator);
-		}
+		// Draw Sky
+		int topSky = Color.rgb(0, 134, 168);
+		int bottomSky = Color.rgb(277, 251, 145);
+
+		gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT,
+				GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT,
+				GameSettings.TARGET_WIDTH, 0, topSky, bottomSky, bottomSky,
+				topSky);
+
+		movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
+				center.y, initialX, flagX, translator);
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw background");
 		Profiler.initTick(ProfileType.RENDER);
@@ -426,89 +410,6 @@ public class GameCamera {
 
 		gameCanvas.restoreState();
 	}
-
-	private void drawBackground(GLCanvas gameCanvas, float pos) {
-
-		repeatableBackgroundId = R.drawable.editing_background;
-		finalSliceBackgroundId = R.drawable.final_slice_background;
-
-		int backgroundImageWidth = ImageLoader
-				.checkBitmapSize(repeatableBackgroundId)[0];
-		int backgroundImageHeight = ImageLoader
-				.checkBitmapSize(repeatableBackgroundId)[1];
-
-		float reached = (pos / gameWorld.getFlagPos());
-		if (reached < 0) {
-			reached = 0;
-		} else if (reached > 1) {
-			reached = 1;
-		}
-
-		float factor = (float) Math
-				.ceil((GameSettings.TARGET_HEIGHT / backgroundImageHeight));
-		float backgroundWidth = backgroundImageWidth * factor;
-		float backgroundHeight = backgroundImageHeight * factor; // @yuri: This
-																	// wil
-																	// always be
-																	// equals to
-																	// TARGET_HEIGHT,
-																	// isnt it ?
-
-		// if (backgroundWidth < GameSettings.TARGET_WIDTH) {
-		// factor = (float) Math.ceil(GameSettings.TARGET_WIDTH /
-		// backgroundWidth);
-		// backgroundWidth *= factor;
-		// backgroundHeight *= factor;
-		// }
-
-		float actualEndPos = (backgroundWidth * (NUMBER_OF_REPETITIONS - 1))
-				+ END_POSITION;
-
-		int translate_x = (int) (reached * ((backgroundWidth * NUMBER_OF_REPETITIONS) - GameSettings.TARGET_WIDTH));
-		int translate_y = 0;
-
-		float endPosRelToScreen = 0;
-
-		if ((translate_x + (int) GameSettings.TARGET_WIDTH) < actualEndPos) {
-			endPosRelToScreen = 1;
-		} else if (translate_x > actualEndPos) {
-			endPosRelToScreen = 0;
-		} else {
-			endPosRelToScreen = (actualEndPos - translate_x)
-					/ GameSettings.TARGET_WIDTH;
-		}
-
-		RectF displayRectRepeatablePart = new RectF(0f, 0f,
-				GameSettings.TARGET_WIDTH * endPosRelToScreen, backgroundHeight);
-
-		RectF displayRectFinalPart = new RectF(
-				(GameSettings.TARGET_WIDTH * endPosRelToScreen), 0f,
-				GameSettings.TARGET_WIDTH, backgroundHeight);
-
-		Rect showRectRepeatablePart = new Rect(
-				translate_x,
-				translate_y,
-				(translate_x + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
-				(translate_y + (int) backgroundHeight));
-
-		Rect showRectFinalPart = new Rect(
-				((translate_x - (int) actualEndPos) + (int) (GameSettings.TARGET_WIDTH * endPosRelToScreen)),
-				translate_y, (translate_x - (int) actualEndPos)
-						+ (int) (GameSettings.TARGET_WIDTH), translate_y
-						+ (int) backgroundHeight);
-
-		Profiler.profileFromLastTick(ProfileType.RENDER, "Calculate background");
-		Profiler.initTick(ProfileType.RENDER);
-
-		gameCanvas.fillScreen(255, 255, 255, 255);
-
-		gameCanvas.drawBitmap(repeatableBackgroundId, showRectRepeatablePart,
-				displayRectRepeatablePart);
-
-		gameCanvas.drawBitmap(finalSliceBackgroundId, showRectFinalPart,
-				displayRectFinalPart);
-	}
-
 	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound,
 			Vec2 upperBound) {
 
