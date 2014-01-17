@@ -259,8 +259,6 @@ public class GLCanvas {
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
 		
-		System.out.println("New Texture ID: " + texture_id);
-		
 		GLTexture texture = new GLTexture(texture_id);
 		
 		// Working with textureId

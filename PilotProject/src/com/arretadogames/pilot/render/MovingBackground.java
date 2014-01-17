@@ -17,14 +17,19 @@ public class MovingBackground {
 	private float imageMeterRatio = -1;
 	private Rect srcRectF;
 	private RectF dstRectF;
+	private int originalWidth;
+	private int originalHeight;
 	
 	public MovingBackground(int imageId) {
 		this.imageId = imageId;
 		int[] imageSize = ImageLoader.checkBitmapSize(imageId);
-		this.width = imageSize[0];
-		this.height = imageSize[1];
+		this.originalWidth = imageSize[0];
+		this.originalHeight = imageSize[1];
 		this.srcRectF = new Rect();
 		this.dstRectF = new RectF(0, 0, GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT);
+		
+		this.width = this.originalWidth;
+		this.height = this.originalHeight;
 	}
 	
 	private void setSrcRect(float centerX, float centerY, float width, float height) {
@@ -32,6 +37,11 @@ public class MovingBackground {
 		srcRectF.top = (int) (centerY - height / 2);
 		srcRectF.right = (int) (centerX + width / 2);
 		srcRectF.bottom = (int) (centerY + height / 2);
+		
+		if (srcRectF.left > this.originalWidth) {
+			srcRectF.left %= originalWidth;
+			srcRectF.right = (int) (srcRectF.left + width);
+		}
 	}
 
 	public void render(GLCanvas canvas, float timeElapsed, float zoomRatio, float currentX, float currentY, float initialX, float finalX, Vec2 translator) {
@@ -39,7 +49,7 @@ public class MovingBackground {
 		if (imageMeterRatio == -1) {
 			initialX -= 30; // GAP
 			finalX += 30; // GAP
-			this.width *= (finalX - initialX) / 100f; // Adjust this.. will affect speed
+			this.width *= (finalX - initialX) / 100f; // (Default: 100) Adjust this.. will affect speed
 			imageMeterRatio = this.width / (finalX - initialX);
 		}
 		
