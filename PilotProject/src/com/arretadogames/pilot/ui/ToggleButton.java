@@ -5,17 +5,18 @@ import android.view.MotionEvent;
 import com.arretadogames.pilot.screens.InputEventHandler;
 
 public class ToggleButton extends ImageButton {
-	
-	public ToggleButton(int id, float x, float y,
+
+	public ToggleButton(int id, float x, float y, float width, float height,
 			int selectedImageId, int unselectedImageId) {
-		super(id, x, y, null, selectedImageId, unselectedImageId);
+		super(id, x, y, width, height, null, selectedImageId, unselectedImageId);
 	}
-	
-	public ToggleButton(int id, float x, float y, GameButtonListener listener,
+
+	public ToggleButton(int id, float x, float y, float width, float height,
+	        GameButtonListener listener,
 			int selectedImageId, int unselectedImageId) {
-		super(id, x, y, listener, selectedImageId, unselectedImageId);
+		super(id, x, y, width, height, listener, selectedImageId, unselectedImageId);
 	}
-	
+
 	@Override
 	public boolean input(InputEventHandler event) {
 		switch (event.getAction()) {
@@ -32,11 +33,11 @@ public class ToggleButton extends ImageButton {
 		}
 		return false;
 	}
-	
+
 	public boolean isToggled() {
 		return isSelected;
 	}
-	
+
 	public void setToggled(boolean isToggled) {
 		isSelected = isToggled;
 	}

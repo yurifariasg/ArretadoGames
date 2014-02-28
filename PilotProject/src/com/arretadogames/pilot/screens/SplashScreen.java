@@ -3,6 +3,7 @@ package com.arretadogames.pilot.screens;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -14,56 +15,62 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
 
 public class SplashScreen extends GameScreen implements TweenAccessor<SplashScreen> {
-	
+
 	private static final int TWEEN_ZOOM = 1;
 	private static final int TWEEN_ANGLE = 2;
 	private static final int TWEEN_LOGO_ALPHA = 3;
-	
+
 	private boolean animationStarted;
-	
+
 	private float currentZoom;
 	private float currentAngle;
 	private int currentBitmapAlpha;
 	private int logoId;
-	private int[] logoSize;
-	
+
 	private Paint paintBitmap;
 	private Timeline timeline;
-	
+
+	private float imageWidth;
+	private float imageHeight;
+
 	public SplashScreen() {
 		animationStarted = false;
 		logoId = R.drawable.logo;
-		logoSize = ImageLoader.checkBitmapSize(R.drawable.logo);
 		paintBitmap = new Paint();
 		paintBitmap.setAntiAlias(true);
+
+		imageWidth = getDimension(R.dimen.logo_width);
+		imageHeight = getDimension(R.dimen.logo_height);
 	}
-	
+
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.fillScreen(255, 0, 0, 0);
-		
+
 		canvas.saveState();
 		float centerX = GameSettings.TARGET_WIDTH / 2;
 		float centerY = GameSettings.TARGET_HEIGHT / 2;
 		canvas.translate(centerX, centerY);
 		canvas.rotate(currentAngle);
 		canvas.translate(-centerX, -centerY);
-		
+
 		canvas.saveState();
 		canvas.scale(2, currentZoom, 400, 180 + (300 - 180) / 2);
 		canvas.drawRect(0, 180, 800, 300, Color.WHITE);
 		canvas.restoreState();
-		
+
 		paintBitmap.setAlpha(currentBitmapAlpha);
-		canvas.drawBitmap(logoId, centerX - logoSize[0] / 2, centerY - logoSize[1] / 2, paintBitmap);
-		
+		canvas.drawBitmap(logoId,
+		        centerX - imageWidth / 2, centerY - imageHeight / 2,
+		        imageWidth, imageHeight,
+		        paintBitmap);
+
 		canvas.restoreState();
-		
+
 	}
 
 	@Override
@@ -72,7 +79,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 			startAnimation();
 		}
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -92,22 +99,22 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void startAnimation() {
-		
+
 		animationStarted = true;
-		
+
 		currentAngle = -45f;
 		currentZoom = 0.001f;
 		currentBitmapAlpha = 0;
-		
+
 		timeline = Timeline.createSequence()
 		.beginParallel()
 		.push(Tween.to(this, TWEEN_ANGLE, 1f)
 				.target(0f))
-				
+
 				.push(Tween.to(this, TWEEN_ZOOM, 1f)
 				.target(1.5f) // FIXME Zoom should be 1
 				.ease(Back.INOUT))
@@ -122,9 +129,9 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 				.push(Tween.to(this, TWEEN_ZOOM, 1f)
 				.target(0.001f).ease(Back.IN))
 				.end()
-				
+
 				.setCallback(new TweenCallback() {
-					
+
 					@Override
 					public void onEvent(int type, BaseTween<?> source) {
 						startMainMenu();
@@ -149,7 +156,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		default:
 			break;
 		}
-		
+
 		return 1;
 	}
 
@@ -170,9 +177,9 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		default:
 			break;
 		}
-		
+
 	}
-	
+
 	private void startMainMenu() {
 		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}

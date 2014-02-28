@@ -1,8 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.graphics.RectF;
 
 import com.arretadogames.pilot.R;
@@ -20,12 +17,15 @@ import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.ItemWidget;
 import com.arretadogames.pilot.ui.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameStore extends GameScreen implements GameButtonListener {
-	
+
 	private static final int BACK_BT = 2;
 	private static final int UP_BT = 3;
 	private static final int DOWN_BT = 4;
-	
+
 	private Text storeLabel;
 	private Text moneyLabel;
 	private RectF seedRenderingMoneyRect = new RectF(0, 0, 45, 45);
@@ -34,64 +34,72 @@ public class GameStore extends GameScreen implements GameButtonListener {
 	private ImageButton buttonBack;
 	private ImageButton buttonUp;
 	private ImageButton buttonDown;
-	
+
 	public GameStore() {
-		
+
 		List<StoreItemDescriptor> items = GameDatabase.getInstance().getStoreItems();
-		
+
 		int y = 135;
-		
+
 		for (StoreItemDescriptor item : items) {
 			ItemWidget widget = new ItemWidget(0, 110, y, 580, 150, item);
 			storeItems.add(widget);
 			y += 150;
 		}
-		
+
 		buttonBack = new ImageButton(BACK_BT,
-				702, 388, this,
+				702, 388,
+                getDimension(R.dimen.main_menu_button_size),
+                getDimension(R.dimen.main_menu_button_size), this,
 				R.drawable.bt_back_selected,
 				R.drawable.bt_back_unselected);
-		
+
 		buttonUp = new ImageButton(UP_BT,
-				12, 288, this,
+				12, 288,
+                getDimension(R.dimen.main_menu_button_size),
+                getDimension(R.dimen.main_menu_button_size), this,
 				R.drawable.arrow_up_selected,
 				R.drawable.arrow_up);
-		
+
 		buttonDown = new ImageButton(DOWN_BT,
-				12, 388, this,
+				12, 388,
+                getDimension(R.dimen.main_menu_button_size),
+                getDimension(R.dimen.main_menu_button_size), this,
 				R.drawable.arrow_down_selected,
 				R.drawable.arrow_down);
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		
-		canvas.drawBitmap(R.drawable.store_background, 0, 0);
-		
+
+		canvas.drawBitmap(R.drawable.store_background,
+		        0, 0, getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height),
+		        0, getDimension(R.dimen.store_bg_extra_height));
+
 		renderWidgets(canvas, timeElapsed);
-		
-		canvas.drawBitmap(R.drawable.store_top, 100, 68);
-		
+
+		canvas.drawBitmap(R.drawable.store_top, 100, 68, getDimension(R.dimen.store_header_width), getDimension(R.dimen.store_header_height));
+
 		if ( AccountManager.get().getAccount1() != null) { // SyncManager.get().isSignedIn() &&
 			if (storeLabel == null || moneyLabel == null ||
 					AccountManager.get().getAccount1().getCoins() > 0) {
 
-				
+
 				createUserInfoLabels();
 //				p1Coins = AccountManager.get().getAccount1().getCoins();
 //				labelsAreRelatedToAccountProvider = true;
 			}
-			
+
 			seedRenderingMoneyRect.right = 10 + seedRenderingMoneyRect.width();
 			seedRenderingMoneyRect.left = 10;
 			seedRenderingMoneyRect.bottom = 13 + seedRenderingMoneyRect.height();
 			seedRenderingMoneyRect.top = 13;
 			canvas.drawBitmap(R.drawable.seed1, seedRenderingMoneyRect);
-			
+
 			storeLabel.render(canvas, timeElapsed);
 			moneyLabel.render(canvas, timeElapsed);
 		}
-		
+
 		buttonBack.render(canvas, timeElapsed);
 		buttonUp.render(canvas, timeElapsed);
 		buttonDown.render(canvas, timeElapsed);
@@ -127,7 +135,7 @@ public class GameStore extends GameScreen implements GameButtonListener {
 
 	@Override
 	public void onPause() {
-		
+
 	}
 
 	@Override
@@ -144,29 +152,29 @@ public class GameStore extends GameScreen implements GameButtonListener {
 			break;
 		}
 	}
-	
+
 	private static final int PAGE_SIZE = 2;
 	private int currentPage = 1;
-	
+
 	private void scrollItems(boolean isScrollUp) {
-		
+
 		if (isScrollUp && currentPage > 1)  {
 			currentPage--;
 		} else if (!isScrollUp && currentPage <= Math.ceil(storeItems.size() / PAGE_SIZE)) {
 			currentPage++;
 		}
-		
+
 	}
-	
+
 	private void renderWidgets(GLCanvas canvas, float timeElapsed) {
-		
+
 		int currentY = 135;
 		for (int i = (currentPage - 1) * PAGE_SIZE ; i < currentPage * PAGE_SIZE && i < storeItems.size() ; i++) {
 			storeItems.get(i).setY(currentY);
 			storeItems.get(i).render(canvas, timeElapsed);
 			currentY += 150;
 		}
-		
+
 	}
 
 	@Override

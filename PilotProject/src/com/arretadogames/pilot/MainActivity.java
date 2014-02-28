@@ -23,20 +23,20 @@ import com.arretadogames.pilot.screens.InputEventHandler;
  * that it should be draw into
  */
 public class MainActivity extends BaseGameActivity implements OnTouchListener {
-	
+
 	private static Context context;
 	private static MainActivity mainActivity;
 	private GameGLSurfaceView renderingSurface;
-	
+
 	public MainActivity() {
 		super();
 		MainActivity.mainActivity = this;
 	}
-	
+
 	public static MainActivity getActivity() {
 		return mainActivity;
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,12 +48,12 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 		Game.getInstance(); // Create Game
 		KeyboardManager.setup(this);
 	}
-	
+
 //	@Override
 //	public boolean dispatchKeyEvent(KeyEvent event) {
 //		return KeyboardManager.dispatchKeyEvent(event);
 //	}
-	
+
 	@Override
 	protected void onPause() {
 		// TODO Handles the Paused Operation into Activity
@@ -62,33 +62,33 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 		((GLSurfaceView) renderingSurface).onPause();
 		Game.getInstance().onPause();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Handles the Resume Operation into Activity
 		// http://developer.android.com/reference/android/app/Activity.html
 		super.onResume();
-		
+
 		// Creates a new
 		renderingSurface = new GameGLSurfaceView(this);
 		renderingSurface.init();
 		Game.getInstance().onResume();
 		setContentView(renderingSurface);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		// TODO Handles the Destroyed Operation into Activity
 		// http://developer.android.com/reference/android/app/Activity.html
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		// TODO Handles the Back Button input from a Physical Button
 		Game.getInstance().onBackPressed();
 	}
-	
+
 	/**
 	 * Gets the context associated with this activity
 	 * @return Context
@@ -114,7 +114,7 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
             public void onClick(DialogInterface dialog, int which) {
 
                 //Stop the activity
-            	finish();
+            	System.exit(0);
             }
 
         })

@@ -1,12 +1,5 @@
 package com.arretadogames.pilot.render.opengl;
 
-import java.nio.IntBuffer;
-import java.util.HashMap;
-
-import javax.microedition.khronos.opengles.GL10;
-
-import org.jbox2d.common.Vec2;
-
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -27,58 +20,65 @@ import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
 import com.arretadogames.pilot.render.PhysicsRect;
 
+import org.jbox2d.common.Vec2;
+
+import java.nio.IntBuffer;
+import java.util.HashMap;
+
+import javax.microedition.khronos.opengles.GL10;
+
 public class GLCanvas {
-	
+
 	// OpenGLES1.0 Interface
 	private GL10 gl;
-	
+
 	// SparseArray = HashMap<int, GLImage> - DrawableID -> GLImage
 	private SparseArray<GLTexture> textures = new SparseArray<GLTexture>();
-	
+
 	// FontSpecification = Font Properties
 	private HashMap<FontSpecification, GLTexturedFont> fontTextures = new HashMap<FontSpecification, GLTexturedFont>();
-	
+
 	// Rect to be used to store drawing calculations
 	private Rect auxiliaryRect = new Rect();
-	
+
 	// Pixel/Meters Ratio
 	public static float physicsRatio = 25;
-	
+
 	public void setGLInterface(GL10 gl) {
 		this.gl = gl;
 	}
-	
+
 	public void setPhysicsRatio(float newRatio) {
 		physicsRatio = newRatio;
 	}
-	
+
 	public boolean initiate() {
-		
+
 		GLES11.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		// Replace the current matrix with the identity matrix
 		GLES11.glLoadIdentity();
 		// Rotate world by 180 around x axis so positive y is down (like canvas)
 		GLES11.glRotatef(-180, 1, 0, 0);
-		
+
 		// Fills the screen with black
 		fillScreen(255, 0, 0, 0);
 
 		return true;
 	}
 
-	
+
 	public void translate(float dx, float dy) {
 		GLES11.glTranslatef(dx, dy, 0);
 	}
 
-	
+
 	public void scale(float sx, float sy, float px, float py) {
 		GLES11.glTranslatef(px, py, 0);
 		GLES11.glScalef(sx, sy, 0);
 		GLES11.glTranslatef(-px, -py, 0);
 	}
 
-	
+
 	public void rotate(float degrees) {
 		GLES11.glRotatef(degrees, 0, 0, 1);
 	}
@@ -88,14 +88,14 @@ public class GLCanvas {
 		auxiliaryRect.top = y;
 		auxiliaryRect.right = x2;
 		auxiliaryRect.bottom = y2;
-		
+
 		GLRect.draw(gl, x, y, x2, y2, Color.RED);
 	}
-	
+
 	public void saveState() {
 		GLES11.glPushMatrix();
 	}
-	
+
 	public void restoreState() {
 		GLES11.glPopMatrix();
 	}
@@ -106,7 +106,7 @@ public class GLCanvas {
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadFont(fs);
 		}
-		
+
 		fontTextures.get(fs).drawText(gl, text, (int) x, (int) y, size, centered);
 	}
 
@@ -123,24 +123,33 @@ public class GLCanvas {
 	public void drawRect(float left, float top, float right, float bottom, int color) {
 		GLRect.draw(gl, left, top, right, bottom, color);
 	}
-	
+
 	public void drawLines(Vec2[] vecs, float width, int color, boolean connectStartAndEnd) {
 		GLLine.drawLineStrip(vecs, vecs.length, width, color, connectStartAndEnd, 1);
 	}
-	
+
 	public void drawPhysicsLines(Vec2[] vecs, int count, float width, int color, boolean connectStartAndEnd) {
 		GLLine.drawLineStrip(vecs, count, width, color, connectStartAndEnd, GLCanvas.physicsRatio);
 	}
-	
+
 	public void drawGroundLines(Vec2[] vecs, int count, float width, int color) {
 		GLLine.drawLineStrip(vecs, count, width, color, false, GLCanvas.physicsRatio, true);
 	}
 
-	public void drawBitmap(int imageId, float x, float y) {
-		drawBitmap(imageId, x, y, null);
+	public void drawBitmap(int imageId, float x, float y, float width, float height) {
+		drawBitmap(imageId, x, y, width, height, 0, 0, null);
 	}
-	
-	public void drawBitmap(int imageId, float x, float y, Paint paint) {
+
+    public void drawBitmap(int imageId, float x, float y, float width, float height, Paint paint) {
+        drawBitmap(imageId, x, y, width, height, 0, 0, paint);
+    }
+
+	public void drawBitmap(int imageId, float x, float y, float width, float height, float extraWidth, float extraHeight) {
+        drawBitmap(imageId, x, y, width, height, extraWidth, extraHeight, null);
+    }
+
+	public void drawBitmap(int imageId, float x, float y, float width, float height,
+	        float extraWidth, float extraHeight, Paint paint) {
 		if (textures.get(imageId) == null) {
 			Log.e("GLCanvas", "Texture not loaded: " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
@@ -148,16 +157,18 @@ public class GLCanvas {
 				loadImage(imageId);
 		}
 		saveState();
-//			if (paint != null) {
-//				GLES11.glColor4f(1f, 1f, 1f, paint.getAlpha() / 255f);
-//			}
+    		if (paint != null) {
+                GLES11.glColor4f(1f, 1f, 1f, paint.getAlpha() / 255f);
+            }
 			translate(x, y);
-	
+
 			GLTexture texture = textures.get(imageId);
-			GLTexturedRect.draw(gl, 0, 0, texture.getTextureWidth(), texture.getTextureHeight(), texture);
+			GLTexturedRect.draw(gl,
+			        0, 0, texture.getTextureWidth() - extraWidth, texture.getTextureHeight() - extraHeight,
+			        0, 0, width, height, texture);
 		restoreState();
 	}
-	
+
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect) {
 		if (textures.get(imageId) == null) {
 			Log.e("GLCanvas", "Texture not loaded " +
@@ -165,18 +176,18 @@ public class GLCanvas {
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadImage(imageId);
 		}
-		
+
 		GLTexture tex = textures.get(imageId);
 //		GLES11.glColor4f(1, 1, 1, 1);
-		
+
 		auxiliaryRect.left = (int) dstRect.left;
 		auxiliaryRect.top = (int) dstRect.top;
 		auxiliaryRect.right = (int) dstRect.right;
 		auxiliaryRect.bottom = (int) dstRect.bottom;
-		
+
 		GLTexturedRect.draw(gl, srcRect, auxiliaryRect, tex);
 	}
-	
+
 	public void drawBitmap(int imageId, RectF dstRect) {
 		if (textures.get(imageId) == null) {
 			Log.e("GLCanvas", "Texture not loaded " +
@@ -184,12 +195,14 @@ public class GLCanvas {
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadImage(imageId);
 		}
+		GLTexture img = textures.get(imageId);
 		GLTexturedRect.draw(gl,
+		        0, 0, img.getTextureWidth(), img.getTextureHeight(),
 				dstRect.left, dstRect.top,
 				dstRect.right, dstRect.bottom,
 				textures.get(imageId));
 	}
-	
+
 	public void drawColorRect(int color, PhysicsRect physicsRect) {
 		GLRect.draw(gl,
 				physicsRect.left * physicsRatio,
@@ -206,24 +219,25 @@ public class GLCanvas {
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadImage(imageId);
 		}
-		
+
 		GLTexture tex = textures.get(imageId);
 //		GLES11.glColor4f(1, 1, 1, 1);
-		
+
 		GLTexturedRect.draw(gl,
+		        0, 0, tex.getTextureWidth(), tex.getTextureHeight(),
 				physicsRect.left * physicsRatio,
 				physicsRect.top * physicsRatio,
 				physicsRect.right * physicsRatio,
 				physicsRect.bottom * physicsRatio,
 				tex);
 	}
-	
+
 	public int loadImage(int imageId) {
 		// Get bitmap
 		Bitmap bitmap = ImageLoader.loadImage(imageId);
 		return loadImage(imageId, bitmap);
 	}
-	
+
 	public void drawRect(
     		float x, float y,
     		float x2, float y2,
@@ -238,7 +252,7 @@ public class GLCanvas {
 				(x4), (y4),
 				colorV1, colorV2, colorV3, colorV4);
 	}
-	
+
 	public void drawRectFromPhysics(
     		float x, float y,
     		float x2, float y2,
@@ -253,14 +267,14 @@ public class GLCanvas {
 				(x4*physicsRatio), GameSettings.TARGET_HEIGHT - (y4*physicsRatio),
 				colorV1, colorV2, colorV3, colorV4);
 	}
-	
+
 	private int loadImage(int imageId, Bitmap bitmapToLoad) { /* We also load Bitmaps in FontTexture */
 		IntBuffer t = IntBuffer.allocate(1);
 		GLES11.glGenTextures(1, t);
 		int texture_id = t.get(0);
-		
+
 		GLTexture texture = new GLTexture(texture_id);
-		
+
 		// Working with textureId
 		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
 
@@ -274,7 +288,7 @@ public class GLCanvas {
 		// Clamp to edge behaviour at edge of texture (repeats last pixel)
 		GLES11.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
 				GL10.GL_REPEAT);
-		
+
 		GLES11.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
 				GL10.GL_REPEAT);
 
@@ -286,20 +300,20 @@ public class GLCanvas {
 		textures.append(imageId, texture);
 		return texture_id;
 	}
-	
+
 	public void recycleImage(int imageId) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	public void translatePhysics(float posX, float posY) {
 		GLES11.glTranslatef(posX * physicsRatio, GameSettings.TARGET_HEIGHT - posY * physicsRatio, 0);
 	}
 
 	public void removeTextures(LoadableGLObject[] objects) {
-		
+
 		int[] glIds = new int[objects.length];
 		for (int i = 0 ; i < objects.length ; i++) {
-			
+
 			if (objects[i].getType().equals(LoadableType.TEXTURE)){
 				if (textures.get(objects[i].getId()) == null)
 					continue;
@@ -308,21 +322,21 @@ public class GLCanvas {
 			} else if (objects[i].getType().equals(LoadableType.FONT)) {
 //				fontTextures.get(key)
 			}
-			
+
 		}
-		
+
 		GLES11.glDeleteTextures(glIds.length, glIds, 0);
 	}
-	
+
 	public void loadObject(LoadableGLObject object) {
-		
+
 		if (object.getType().equals(LoadableType.TEXTURE)) {
 			object.setGLId(loadImage(object.getId()));
 		} else if (object.getType().equals(LoadableType.FONT)) {
 			object.setGLId(loadFont(FontLoader.getInstance().getFont(FontTypeFace.values()[object.getId()])));
 		}
 	}
-	
+
 	private Vec2[] auxVec = new Vec2[] { new Vec2(), new Vec2() };
 	public void drawLine(float f, float g, float h, float i, float width, int color) {
 		auxVec[0].x = f;
@@ -331,5 +345,5 @@ public class GLCanvas {
 		auxVec[1].y = i;
 		drawLines(auxVec, width, color, false);
 	}
-	
+
 }

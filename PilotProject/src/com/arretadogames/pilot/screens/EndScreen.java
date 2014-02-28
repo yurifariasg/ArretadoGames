@@ -1,9 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.graphics.Paint;
 import android.view.MotionEvent;
 
@@ -22,28 +18,32 @@ import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.Text;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class EndScreen extends GameScreen {
-	
+
 	private static final int PLAYER_INFO_Y = 130;
 	private static final int PLAYER_INFO_Y_SPACING = 50;
 	private static final int PLAYER_INFO_X_OFFSET = 0;
 	private static final int SECONDS_TO_WAIT = 8;
 //	private static final int TOTAL_OF_RECORDS = 3;
-	
+
 	private float totalTimeElapsed;
 	private boolean hasWon;
 	private HashMap<PlayerNumber, Player> players;
 	private Paint textPaint;
 	private int backgroundId;
 	private LevelDescriptor ld;
-	
+
 	private List<Text> playerInformation;
-	
+
 	public EndScreen() {
 		textPaint = new Paint();
 		textPaint.setTextSize(1f);
 	}
-	
+
 	private void reset() {
 		if (playerInformation != null) {
 			playerInformation.clear();
@@ -55,18 +55,18 @@ public class EndScreen extends GameScreen {
 		backgroundId = -1;
 		hasWon = false;
 	}
-	
+
 	public void initialize(HashMap<PlayerNumber, Player> players, LevelDescriptor ld) {
 		reset();
-		
+
 		this.ld = ld;
 		for (Player p : players.values())
 			hasWon |= p.isAlive(); // At least one alive
-		
+
 		this.players = players;
 		backgroundId = hasWon ? R.drawable.victory_bg : R.drawable.defeat_bg;
 		initializeInfo();
-		
+
 		playerInformation.add(new Text(GameSettings.TARGET_WIDTH / 2,
 				GameSettings.TARGET_HEIGHT - 50,
 				"PRESS TO CONTINUE",
@@ -77,25 +77,25 @@ public class EndScreen extends GameScreen {
 		playerInformation = new ArrayList<Text>();
 		Player p1 = players.get(PlayerNumber.ONE);
 		Player p2 = players.get(PlayerNumber.TWO);
-		
+
 		Account acc1 = AccountManager.get().getAccount1();
 		acc1.setCoins(acc1.getCoins() + p1.getCoins());
 		Account acc2 = AccountManager.get().getAccount2();
 		acc2.setCoins(acc2.getCoins() + p2.getCoins());
 		AccountManager.get().saveState();
-				
+
 		setNewRecord(p1.getCoins(), acc1.getAccountId());
 		setNewRecord(p2.getCoins(), acc2.getAccountId());
-		
+
 		initializePlayerInfo(140, p1);
 		initializePlayerInfo(660, p2);
 	}
-	
+
 	private void setNewRecord(int coins, String accId){
 		int[] recs = ld.getRecords();
-		
+
 		if (recs != null){
-					
+
 			for(int i = 0; i < recs.length; i++){
 				if(recs[i] <= coins){
 					if (i == 0){
@@ -116,7 +116,7 @@ public class EndScreen extends GameScreen {
 					}
 				}
 			}
-			
+
 		}else{
 			ld.setNewRecord(coins, 0); //The first record save goes here
 			GameDatabase.getInstance().setNewRecord(ld.getId(), accId, coins, 0, 0);
@@ -124,9 +124,9 @@ public class EndScreen extends GameScreen {
 	}
 
 	private void initializePlayerInfo(int x, Player player) {
-		
+
 		int currentY = PLAYER_INFO_Y;
-		
+
 		playerInformation.add(new Text(x, currentY, "Player " + player.getNumber().toString(),
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1f, true));
 		currentY += PLAYER_INFO_Y_SPACING;
@@ -135,19 +135,19 @@ public class EndScreen extends GameScreen {
 				currentY, "Seeds: " + player.getCoins(),
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 		currentY += PLAYER_INFO_Y_SPACING;
-		
+
 		playerInformation.add(new Text(x + PLAYER_INFO_X_OFFSET,
 				currentY, "Time: " + player.getTimeFinished() + "s",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true));
 		currentY += PLAYER_INFO_Y_SPACING;
-		
+
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		// Background
-		canvas.drawBitmap(backgroundId, 0, 0);
-		
+		canvas.drawBitmap(backgroundId, 0, 0, getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height));
+
 		// Draw Information
 		for (int i = 0 ; i < playerInformation.size() ; i++)
 			playerInformation.get(i).render(canvas, timeElapsed);
@@ -159,13 +159,13 @@ public class EndScreen extends GameScreen {
 		if (totalTimeElapsed >= SECONDS_TO_WAIT)
 			callNextScreen();
 	}
-	
+
 	private boolean nextScreenCalled;
 
 	private void callNextScreen() {
 		if (!nextScreenCalled) {
 			nextScreenCalled = true;
-			
+
 			// Go To Main Menu
 			Game.getInstance().goTo(GameState.MAIN_MENU);
 		}

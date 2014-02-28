@@ -1,10 +1,9 @@
 package com.arretadogames.pilot.game;
 
-import java.util.HashMap;
-
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -25,27 +24,29 @@ import com.arretadogames.pilot.screens.SplashScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
 
+import java.util.HashMap;
+
 /**
  * Game class represents our Game.
  * This entity should hold all information related to <b>Game Logic</b>
  */
 public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBack {
-	
+
 	private static final int LEFT = 1;
 	private static final int RIGHT = 2;
-	
+
 	private static Game game;
 
 	private GameState currentState;
-	
+
 	private HashMap<GameState, GameScreen> gameScreens;
-	
+
 	// Transition
 	private boolean transitionStateOn;
 	private Rect transitionRect;
 	private LoadManager loadManager;
 	private GameState nextState;
-	
+
 	/**
 	 * Creates a Game
 	 */
@@ -64,7 +65,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		loadManager.prepareLoad(new GameState[] { nextState });
 		currentState = GameState.LOADING;
 	}
-	
+
 	/**
 	 * Gets the GameScreen related to the given GameState
 	 * @param state
@@ -77,16 +78,16 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 
 	/**
 	 * Renders the current state of the game
-	 * 
+	 *
 	 * @param canvas
 	 *            GameCanvas to draw
 	 * @param timeElapsed
 	 *            Time Elapsed since last frame
 	 */
 	public void render(GLCanvas canvas, float timeElapsed) {
-		
+
 		AnimationManager.getInstance().update(timeElapsed);
-		
+
 		if (currentState.equals(GameState.LOADING)) {
 			loadManager.swapTextures(game, canvas);
 			return;
@@ -94,17 +95,17 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			if (gameScreens.containsKey(currentState))
 				getScreen(currentState).render(canvas, timeElapsed);
 		}
-		
+
 		if (transitionStateOn) {
 			canvas.drawRect(transitionRect.left, transitionRect.top,
 					transitionRect.right, transitionRect.bottom,
 					Color.rgb(0, 0, 0));
 		}
 	}
-	
+
 	/**
 	 * Performs a step in the current game state's logic
-	 * 
+	 *
 	 * @param timeElapsed
 	 *            Time Elapsed since last frame
 	 */
@@ -113,14 +114,14 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			goTo(GameState.RUNNING_GAME);
 			return;
 		}
-		
+
 		if (gameScreens.containsKey(currentState))
 			gameScreens.get(currentState).step(timeElapsed);
 	}
 
 	/**
 	 * Handles the input in the current game state
-	 * 
+	 *
 	 * @param event
 	 *            Input Event to be handled
 	 */
@@ -133,7 +134,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 
 	/**
 	 * (Asynchronous method) Switch the current game state
-	 * 
+	 *
 	 * @param state
 	 *            new game's current state
 	 */
@@ -146,8 +147,8 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		loadManager.prepareLoad(new GameState[] { state });
 		startTransitionAnimation();
 	}
-	
-	
+
+
 	/*
 	 * (Asynchronous method) Changes the current state of the Game
 	 */
@@ -161,10 +162,10 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 
 			if (getScreen(currentState) != null) // Loads if there is a screen
 				getScreen(currentState).onLoading();
-			
+
 		}
 	}
-	
+
 	/**
 	 * Gets the only and single instance of Game
 	 * @return Game
@@ -174,7 +175,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			game = new Game();
 		return game;
 	}
-	
+
 	@Override
 	public int getValues(Game game, int type, float[] returnValues) {
 		switch (type) {
@@ -199,24 +200,24 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			break;
 		}
 	}
-	
+
 	/*
 	 * (Synchronous method) Starts the transition to the next state
 	 */
 	private void startTransitionAnimation() {
 		transitionStateOn = true;
-		
+
 		// Stop All tweens associated with game
 		AnimationManager.getInstance().killTarget(this);
-		
+
 		transitionRect = new Rect(
 				(int) GameSettings.TARGET_WIDTH, 0,
 				(int) GameSettings.TARGET_WIDTH, (int) GameSettings.TARGET_HEIGHT);
-		
+
 		Timeline.createSequence()
 				.push(Tween.to(this, LEFT, 0.4f).target(0f))
 				.push(Tween.call(new TweenCallback() {
-					
+
 					@Override
 					public void onEvent(int arg0, BaseTween<?> arg1) {
 						changeState(GameState.LOADING);
@@ -233,7 +234,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			((GameWorld)getScreen(GameState.RUNNING_GAME)).onPause();
 		}
 	}
-	
+
 	/**
 	 * (Asynchronous method) Causes the Game to resume
 	 */
@@ -242,29 +243,29 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 
 	@Override
 	public void onLoadFinished(boolean error) { // TODO @yuri: Handle error
-		
+
 		if (nextState.equals(GameState.SPLASH)) {
 			//Don't perform animation on splash screen
 			changeState(nextState);
 			nextState = null;
 			transitionStateOn = false;
 			return;
-		} 
-		
+		}
+
 		Timeline.createSequence()
 			.push(Tween.call(new TweenCallback() {
-			
+
 			@Override
 			public void onEvent(int arg0, BaseTween<?> arg1) {
 				changeState(nextState);
 				nextState = null;
-				
+
 				transitionRect.left = 0;
 			}
 		}))
 		.push(Tween.to(game, RIGHT, 0.5f).target(0f))
 		.push(Tween.call(new TweenCallback() {
-			
+
 			@Override
 			public void onEvent(int arg0, BaseTween<?> arg1) {
 				transitionStateOn = false;

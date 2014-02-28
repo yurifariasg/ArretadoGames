@@ -6,7 +6,6 @@ import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
-import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.googlesync.SyncManager;
@@ -19,55 +18,64 @@ import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.ui.ZoomImageButton;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener, TweenAccessor<MainMenuScreen> {
-	
+
 	private final static int ZOOM_PROPERTY = 1;
 	private final static int BLACK_ALPHA_PROPERTY = 2;
-	
+
 	private static final int PLAY_BUTTON = 1;
 	private static final int SETTINGS_BUTTON = 2;
 	private static final int G_SIGN_IN_BUTTON = 3;
 	private static final int STORE_BUTTON = 4;
-	
+
 	private ImageButton playBt;
 //	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
 	private ImageButton storeBt;
 	private Text inputLabel;
 	private long p1Coins; // Variable to detect if the account coins have changed since last time
-	
+
 	// Main Menu Screens
 	private SettingsScreen settingsScreen;
-	
+
 	private float currentBlackAlpha;
 	private float currentZoom;
 	private State currentState;
-	
+
 	public MainMenuScreen() {
-		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210, this,
+		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210,
+                getDimension(R.dimen.main_menu_play_button_size),
+                getDimension(R.dimen.main_menu_play_button_size),
+                this,
 				R.drawable.bt_play_selected,
 				R.drawable.bt_play_unselected);
-		
+
 //		settingsBt = new ImageButton(SETTINGS_BUTTON,
 //				700, 390, this,
 //				R.drawable.bt_settings_selected,
 //				R.drawable.bt_settings_unselected);
-		
+
 		gPlusBt = new ImageButton(G_SIGN_IN_BUTTON,
-				700, 20, this,
+				700, 20,
+                getDimension(R.dimen.main_menu_button_size),
+                getDimension(R.dimen.main_menu_button_size),
+                this,
 				R.drawable.bt_gplus_selected,
 				R.drawable.bt_gplus_unselected);
-		
+
 		storeBt = new ImageButton(STORE_BUTTON,
-				700, 380, this,
+				700, 380,
+                getDimension(R.dimen.main_menu_button_size),
+                getDimension(R.dimen.main_menu_button_size),
+                this,
 				R.drawable.bt_store_selected,
 				R.drawable.bt_store_unselected);
-		
+
 		inputLabel = new Text(400, 50, "",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
-		
+
 		currentBlackAlpha = 0;
 		currentZoom = 1f;
-		
+
 		currentState = State.MAIN;
 		settingsScreen = new SettingsScreen(this);
 	}
@@ -75,38 +83,40 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
-		
+
 		canvas.fillScreen(255, 0, 0, 0);
-		
-		canvas.scale(currentZoom, currentZoom, GameSettings.TARGET_WIDTH / 2, GameSettings.TARGET_HEIGHT / 2);
-		
-		canvas.drawBitmap(R.drawable.menu_background, 0, 0);
-		
+
+//		canvas.scale(currentZoom, currentZoom, GameSettings.TARGET_WIDTH / 2, GameSettings.TARGET_HEIGHT / 2);
+
+		canvas.drawBitmap(R.drawable.menu_background, 0, 0,
+		        getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height),
+		        0, getDimension(R.dimen.main_menu_bg_extra_height));
+
 		if (currentState == State.MAIN) {
 //			settingsBt.render(canvas, timeElapsed);
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			storeBt.render(canvas, timeElapsed);
-			
+
 			if (KeyboardManager.isShowing()) {
 				inputLabel.render(canvas, timeElapsed);
 			}
-			
+
 		} else if (currentState == State.SETTINGS) {
 			settingsScreen.render(canvas, timeElapsed);
 		}
-		
+
 		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
 		canvas.restoreState();
 	}
 
 	@Override
 	public void step(float timeElapsed) {
-		
+
 		if (KeyboardManager.isShowing()) {
 			inputLabel.setText(KeyboardManager.getText());
 		}
-		
+
 	}
 
 	@Override
@@ -147,19 +157,19 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			startStore();
 			break;
 		}
-			
+
 	}
-	
+
 	private void startGame() {
 		Game.getInstance().goTo(GameState.LEVEL_SELECTION);
 		currentBlackAlpha = 0;
 		currentZoom = 1;
 	}
-	
+
 	private void startStore() {
 		Game.getInstance().goTo(GameState.GAME_STORE);
 	}
-	
+
 
 	@Override
 	public int getValues(MainMenuScreen target, int tweenType, float[] returnValues) {
@@ -179,15 +189,15 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			target.currentBlackAlpha = newValues[0];
 		}
 	}
-	
+
 	public void setState(State newState) {
 		currentState = newState;
 	}
-	
+
 	public enum State {
 		MAIN, SETTINGS;
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		MainActivity.getActivity().showExitDialog();

@@ -16,10 +16,10 @@ public class TextImageButton extends ImageButton {
 	private String text = "";
 	private FontSpecification fontSpecification;
 	private float textSize;
-	
+
 	/**
 	 * Creates a TextImageButton based on the given position and Images
-	 * 
+	 *
 	 * @param id
 	 * Button Id
 	 * @param x
@@ -35,20 +35,20 @@ public class TextImageButton extends ImageButton {
 	 * @param text
 	 *            Text to be rendered
 	 */
-	public TextImageButton(int id, float x, float y, GameButtonListener listener,
+	public TextImageButton(int id, float x, float y, float width, float height, GameButtonListener listener,
 			int selectedImageId, int unselectedImageId, String text, FontSpecification fs, float textSize) {
-		super(id, x, y, listener, selectedImageId, unselectedImageId);
+		super(id, x, y, width, height, listener, selectedImageId, unselectedImageId);
 		this.text = text;
 		this.textSize = textSize;
 		this.fontSpecification = fs;
 	}
-	
+
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		super.render(canvas, timeElapsed);
 		canvas.drawText(text, x + width / 2, y + height / 2f, fontSpecification, textSize, true);
 	}
-	
+
 	public static Point centerTextOnCanvas(Paint paint, float x, float y, float width, float height, String text) {
 	    Rect bounds = new Rect();
 	    paint.getTextBounds(text, 0, text.length(), bounds);

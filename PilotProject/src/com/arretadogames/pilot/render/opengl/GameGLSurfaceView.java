@@ -1,8 +1,5 @@
 package com.arretadogames.pilot.render.opengl;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.app.Activity;
 import android.opengl.GLES11;
 import android.opengl.GLSurfaceView;
@@ -20,15 +17,18 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 /**
  * GameGLSurfaceView class represents a GLSurfaceView specific for our Game,
  * which has operations to draw and perform the logic on the Game set into this
  * class
  */
 public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer {
-	
+
 	private GLCanvas gameCanvas;
-	
+
 	// FPS Settings
 	private float[] fpsBuffer;
 	private int fpsCounter;
@@ -37,7 +37,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 
 	/**
 	 * Creates a GameGLSurfaceView using the given context
-	 * 
+	 *
 	 * @param context
 	 *            Context to be used
 	 */
@@ -54,14 +54,14 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 			GameSettings.WidthRatio = GameSettings.DisplayWidth / GameSettings.TARGET_WIDTH;
 			GameSettings.HeightRatio = GameSettings.DisplayHeight / GameSettings.TARGET_HEIGHT;
 		}
-		
+
 		if (Game.getInstance() != null) {
 			run(gl);
 		}
 
 	}
 	private long frameEndedTime;
-	
+
 	public void run(GL10 gl) {
 		/*
 		 * This method runs the Game Loop and manage the time between each frame
@@ -71,23 +71,23 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 
 		long frameCurrentTime = getCurrentTime();
 		float elapsedTime = (frameCurrentTime - frameEndedTime) / 1000f;
-		
+
 		Profiler.initTick(ProfileType.BASIC);
-		
+
 		// Game Loop
 		Game.getInstance().step(elapsedTime);
-		
+
 		Profiler.profileFromLastTick(ProfileType.BASIC, "Game Step Speed");
 		Profiler.initTick(ProfileType.BASIC);
 
 		gameCanvas.setGLInterface(gl);
 		gameCanvas.initiate();
 		Game.getInstance().render(gameCanvas, elapsedTime);
-		
+
 		Profiler.profileFromLastTick(ProfileType.BASIC, "Game Render Speed");
-		
+
 		// End Game Loop
-		
+
 		// Wait to complete 1/60 of a second
 		long millisToWait = getTargetMilli(frameCurrentTime) - getCurrentTime();
 		if (millisToWait > 0) {
@@ -99,21 +99,21 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 				e.printStackTrace();
 			}
 		}
-		
+
 		if (GameSettings.SHOW_FPS) {
 			fpsBuffer[fpsCounter] = (1000f/(getCurrentTime() - frameCurrentTime));
 			fpsCounter = ++fpsCounter % fpsBuffer.length;
 			gameCanvas.drawText("FPS: " + getAverageFPS(), 10, 20, fpsFont, 0.8f, false);
 		}
-		
+
 		frameEndedTime = frameCurrentTime;
-		
+
 		int error = GLES11.glGetError();
 		if (error != 0) {
 			System.out.println("OpenGL Error: " + GLU.gluErrorString(error));
 		}
 	}
-	
+
 	private int getAverageFPS() {
 		float sum = 0;
 		for (int i = 0 ; i < fpsBuffer.length ; i++) {
@@ -121,11 +121,11 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		}
 		return (int) (sum / fpsBuffer.length);
 	}
-	
+
 	private long getCurrentTime() {
 		return System.nanoTime()/1000000;
 	}
-	
+
 	private long getTargetMilli(long timeBefore) {
 		return (long) (1000.0 / GameSettings.TARGET_FPS) + timeBefore;
 	}
@@ -160,12 +160,12 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 		GLES11.glEnable(GL10.GL_CULL_FACE);
 		// What faces to remove with the face culling.
 		GLES11.glCullFace(GL10.GL_BACK);
-		
+
 		// Enable Transparency
 		GLES11.glEnable(GL10.GL_BLEND);
 		GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
-	
+
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 	}
@@ -185,18 +185,18 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 
 		// Set OnTouchListener
 		setOnTouchListener((MainActivity)activity);
-		
+
 		gameCanvas = new GLCanvas();
-		
+
 		getHolder().setFixedSize((int) GameSettings.TARGET_WIDTH, (int) GameSettings.TARGET_HEIGHT);
-		
+
 		if (GameSettings.SHOW_FPS) {
 			fpsBuffer = new float[GameSettings.FPS_AVG_BUFFER_SIZE];
 			for (int i = 0 ; i < fpsBuffer.length ; i++) {
 				fpsBuffer[i] = 0; // initialize all 0
 			}
 			fpsCounter = 0;
-			
+
 			fpsFont = FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS);
 		}
 	}

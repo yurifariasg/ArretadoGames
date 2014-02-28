@@ -1,12 +1,9 @@
 package com.arretadogames.pilot.screens;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
 import android.view.MotionEvent;
+
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
@@ -18,61 +15,64 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.items.ItemType;
-import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ToggleButton;
 import com.arretadogames.pilot.world.GameWorld;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class CharacterSelectionScreen extends GameScreen implements GameButtonListener {
-	
+
 	private final RectF BASE_RECT = new RectF(0, 0, 170, 170);
 //	private final RectF BASE_ITEM_RECT = new RectF(0, 0, 80, 80);
-	
+
 	private PlayerSelector[] selectors;
 	private CharacterSpot[] spots;
-	
+
 	private ToggleButton[] itemsButtons;
-	
+
 	private boolean isPlayerOne;
-	private final int playerImgSize[] = ImageLoader.checkBitmapSize(R.drawable.player1);
-	
-	private float imgPlayerWidth = GameSettings.TARGET_WIDTH / 2 - (playerImgSize[0]/2);
-	private float imgPlayerHeight = GameSettings.TARGET_HEIGHT / 2 - (playerImgSize[1]/2);
+//	private final int playerImgSize[] = ImageLoader.checkBitmapSize(R.drawable.player1);
+//
+//	private float imgPlayerWidth = GameSettings.TARGET_WIDTH / 2 - (playerImgSize[0]/2);
+//	private float imgPlayerHeight = GameSettings.TARGET_HEIGHT / 2 - (playerImgSize[1]/2);
 	private boolean[] possibleItems;
 
 	public CharacterSelectionScreen() {
 		isPlayerOne = true;
-		
+
 		initializeSelectors();
 		initializeSpots();
 		initializeItems();
 	}
-	
+
 	@Override
 		public void onUnloading() {
 			resetSelections();
 		}
-	
+
 	private void initializeSelectors() {
 		selectors = new PlayerSelector[2];
-		
+
 		selectors[0] = new PlayerSelector();
 		selectors[0].player = PlayerNumber.ONE;
 
 		selectors[1] = new PlayerSelector();
 		selectors[1].player = PlayerNumber.TWO;
 	}
-	
+
 	@SuppressLint("NewApi")
 	private void initializeSpots() {
-		
+
 		final float CENTER_X = GameSettings.TARGET_WIDTH / 2;
 		final float CENTER_Y = GameSettings.TARGET_HEIGHT / 2;
-		
+
 		spots = new CharacterSpot[4];
-		
+
 		spots[0] = new CharacterSpot();
 		spots[0].character = PlayableCharacter.LOBO_GUARA;
 		spots[0].rect = new RectF(BASE_RECT);
@@ -81,7 +81,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[0].rect.top = CENTER_Y - BASE_RECT.height() - 20;
 		spots[0].rect.bottom = spots[0].rect.top + BASE_RECT.height();
 		selectors[0].selectorRect = new RectF();
-		
+
 		spots[1] = new CharacterSpot();
 		spots[1].character = PlayableCharacter.ARARA_AZUL;
 		spots[1].rect = new RectF(BASE_RECT);
@@ -90,7 +90,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[1].rect.top = CENTER_Y - BASE_RECT.height() - 20;
 		spots[1].rect.bottom = spots[1].rect.top + BASE_RECT.height();
 		selectors[1].selectorRect = new RectF();
-		
+
 		spots[2] = new CharacterSpot();
 		spots[2].character = PlayableCharacter.TATU_BOLA;
 		spots[2].rect = new RectF(BASE_RECT);
@@ -98,7 +98,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[2].rect.right = spots[2].rect.left + BASE_RECT.width();
 		spots[2].rect.top = CENTER_Y + 20;
 		spots[2].rect.bottom = spots[2].rect.top + BASE_RECT.height();
-		
+
 		spots[3] = new CharacterSpot();
 		spots[3].character = PlayableCharacter.MACACO_PREGO;
 		spots[3].rect = new RectF(BASE_RECT);
@@ -107,24 +107,48 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[3].rect.top = CENTER_Y + 20;
 		spots[3].rect.bottom = spots[3].rect.top + BASE_RECT.height();
 	}
-	
+
 	private void initializeItems(){
-		
-		
+
+
 		itemsButtons = new ToggleButton[8];
-		
-		itemsButtons[0] = new ToggleButton(0, 8, 58, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
-		itemsButtons[1] = new ToggleButton(1, 8, 148, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
-		itemsButtons[2] = new ToggleButton(2, 8, 238, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
-		itemsButtons[3] = new ToggleButton(3, 8, 328, this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
-		itemsButtons[4] = new ToggleButton(4, 712, 58, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
-		itemsButtons[5] = new ToggleButton(5, 712, 148, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
-		itemsButtons[6] = new ToggleButton(6, 712, 238, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
-		itemsButtons[7] = new ToggleButton(7, 712, 328, this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
+
+		itemsButtons[0] = new ToggleButton(0, 8, 58,
+		        getDimension(R.dimen.item_selection_icon_size),
+		        getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[1] = new ToggleButton(1, 8, 148,
+                getDimension(R.dimen.item_selection_icon_size),
+                getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[2] = new ToggleButton(2, 8, 238,
+                getDimension(R.dimen.item_selection_icon_size),
+                getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[3] = new ToggleButton(3, 8, 328,
+                getDimension(R.dimen.item_selection_icon_size),
+                getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.blue_selector_selected, R.drawable.blue_selector_unselected);
+		itemsButtons[4] = new ToggleButton(4, 712, 58,
+                getDimension(R.dimen.item_selection_icon_size),
+                getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
+		itemsButtons[5] = new ToggleButton(5, 712, 148,
+                getDimension(R.dimen.item_selection_icon_size),
+                getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
+		itemsButtons[6] = new ToggleButton(6, 712, 238,
+                getDimension(R.dimen.item_selection_icon_size),
+                getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
+		itemsButtons[7] = new ToggleButton(7, 712, 328,
+                getDimension(R.dimen.item_selection_icon_size),
+                getDimension(R.dimen.item_selection_icon_size),
+                this, R.drawable.red_selector_selected, R.drawable.red_selector_unselected);
 	}
-	
+
 	private int getItemIconById(int id){
-		
+
 		if (id == 0 || id == 4){
 			return R.drawable.it_superjump;
 		}else if (id == 1 || id == 5){
@@ -134,45 +158,54 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		}else if (id == 3 || id == 7){
 			return R.drawable.it_double_jump;
 		}
-		
+
 		return -1;
 	}
-	
+
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		
+
 		if (possibleItems == null) {
 			possibleItems = new boolean[8];
-			possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+			possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0;
 			possibleItems[1] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
 			possibleItems[2] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
 			possibleItems[3] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
-			possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+			possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0;
 			possibleItems[5] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
 			possibleItems[6] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
 			possibleItems[7] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
 		}
-		
-		canvas.drawBitmap(R.drawable.bg_select_chars, 0, 0);
-		canvas.drawBitmap(R.drawable.bg_platforms_chars, 0, 0);
-		
+
+		canvas.drawBitmap(R.drawable.bg_select_chars, 0, 0, getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height),
+		        0, getDimension(R.dimen.selection_screen_bg_extra_height));
+		canvas.drawBitmap(R.drawable.bg_platforms_chars, 0, 0, getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height),
+		        0, getDimension(R.dimen.selection_screen_item_platform_extra_height));
+
 		for (int i = 0 ; i < spots.length ; i++)
 			spots[i].render(canvas, timeElapsed);
-		
+
 		for (int j = 0; j < itemsButtons.length; j++){
 			if( possibleItems[j] ) itemsButtons[j].render(canvas, timeElapsed);
-			
-			if( possibleItems[j] ) canvas.drawBitmap(getItemIconById(j), itemsButtons[j].getX(), itemsButtons[j].getY());
+
+			if( possibleItems[j] ) canvas.drawBitmap(getItemIconById(j), itemsButtons[j].getX(), itemsButtons[j].getY(),
+			        getDimension(R.dimen.button_item_size), getDimension(R.dimen.button_item_size));
 		}
-		
-		
-		if (isPlayerOne){
+
+
+		if (isPlayerOne){ // TODO: Check these two
 			selectors[0].render(canvas, timeElapsed);
-			canvas.drawBitmap(R.drawable.player1, imgPlayerWidth, imgPlayerHeight);
+			canvas.drawBitmap(R.drawable.player1,
+			        getDimension(R.dimen.screen_width) / 2 - getDimension(R.dimen.player_selector_size) / 2,
+			        getDimension(R.dimen.screen_height) / 2 - getDimension(R.dimen.player_selector_size) / 2,
+			        getDimension(R.dimen.player_selector_size), getDimension(R.dimen.player_selector_size));
 		}else{
 			selectors[0].render(canvas, timeElapsed);
 			selectors[1].render(canvas, timeElapsed);
-			canvas.drawBitmap(R.drawable.player2, imgPlayerWidth, imgPlayerHeight);
+			canvas.drawBitmap(R.drawable.player2,
+                    getDimension(R.dimen.screen_width) / 2 - getDimension(R.dimen.player_selector_size) / 2,
+                    getDimension(R.dimen.screen_height) / 2 - getDimension(R.dimen.player_selector_size) / 2,
+                    getDimension(R.dimen.player_selector_size), getDimension(R.dimen.player_selector_size));
 		}
 	}
 
@@ -182,17 +215,17 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 
 	@Override
 	public void input(InputEventHandler event) {
-		
+
 		for (int i = 0; i < itemsButtons.length; i++) {
 			itemsButtons[i].input(event);
 		}
-		
+
 		if (isPlayerOne){
 			if (event.getAction()== MotionEvent.ACTION_UP){
 				if (selectors[0].touch(event.getX(), event.getY()))
 					isPlayerOne = false;
 			}
-			
+
 		}else{
 			if (event.getAction()== MotionEvent.ACTION_UP){
 				if (selectors[1].touch(event.getX(), event.getY()))
@@ -203,10 +236,10 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 
 	@Override
 	public void onPause() {
-	}	
-	
+	}
+
 	private class PlayerSelector implements Renderable, TweenAccessor<PlayerSelector> {
-		
+
 		PlayerNumber player;
 		CharacterSpot spot;
 		RectF selectorRect;
@@ -228,7 +261,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 				canvas.drawBitmap(imageId, selectorRect);
 			canvas.restoreState();
 		}
-		
+
 		public boolean touch(float x, float y) {
 			CharacterSpot newSpot = getSpotAt(x, y);
 			if (newSpot != null){
@@ -266,17 +299,17 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 			newValues[1] + oldR.height() / 2);
 		}
 	}
-	
+
 	private class CharacterSpot implements Renderable {
-		
+
 		RectF rect;
 		PlayerSelector selector = null;
 		PlayableCharacter character;
-		
+
 		public boolean isAvailable() {
 			return (selector == null);
 		}
-		
+
 		@Override
 		public void render(GLCanvas canvas, float timeElapsed) {
 			int imageId = -1;
@@ -296,28 +329,28 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 			default:
 				System.out.println("No ImageId ERROR!");
 			}
-			
+
 			canvas.drawBitmap(imageId, rect);
 		}
 	}
-	
+
 	public void resetSelections(){
 		isPlayerOne = true;
 		initializeSelectors();
 		initializeSpots();
 	}
-	
+
 	private void initGame(){
 		HashMap<PlayerNumber, PlayableCharacter> selectedCharacters = new HashMap<PlayerNumber, PlayableCharacter>();
 		HashMap<PlayerNumber, List<PlayableItem>> selectedItems = new HashMap<PlayerNumber, List<PlayableItem>>();
-		
+
 		for (PlayerSelector selector : selectors) {
 			selectedCharacters.put(selector.player, selector.spot.character);
 		}
-		
+
 		List<PlayableItem> itemListp1 = new ArrayList<PlayableItem>();
 		List<PlayableItem> itemListp2 = new ArrayList<PlayableItem>();
-		
+
 		for (int i = 0; i < itemsButtons.length; i++) {
 			if (i < 4){
 				if (itemsButtons[i].isToggled()){
@@ -328,15 +361,15 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 				if (itemsButtons[i].isToggled())
 					itemListp2.add(PlayableItem.forInt(i-4));
 					selectedItems.put(PlayerNumber.TWO, itemListp2);
-			}				
-		}		
-		
+			}
+		}
+
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedCharacters(selectedCharacters);
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setSelectedItems(selectedItems);
 		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).initialize();
 		Game.getInstance().goTo(GameState.RUNNING_GAME);
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		Game.getInstance().goTo(GameState.LEVEL_SELECTION);
@@ -345,11 +378,11 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	@Override
 	public void onClick(int buttonId) {
 		possibleItems = new boolean[8];
-		possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+		possibleItems[0] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0;
 		possibleItems[1] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
 		possibleItems[2] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
 		possibleItems[3] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;
-		possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0; 
+		possibleItems[4] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_JUMP) > 0;
 		possibleItems[5] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_STRENGHT) > 0;
 		possibleItems[6] = GameDatabase.getInstance().getQuantItems(ItemType.SUPER_VELOCITY) > 0;
 		possibleItems[7] = GameDatabase.getInstance().getQuantItems(ItemType.DOUBLE_JUMP) > 0;

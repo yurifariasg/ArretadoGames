@@ -2,6 +2,7 @@ package com.arretadogames.pilot.screens;
 
 import android.graphics.Color;
 import android.view.MotionEvent;
+
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.equations.Quart;
@@ -19,45 +20,54 @@ import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.TextImageButton;
 
 public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen>, GameButtonListener {
-	
+
 	private static final int CONTINUE_BT = 1;
 	private static final int RESTART_BT = 2;
 	private static final int QUIT_BT = 3;
-	
+
 	private static final float PAUSE_MENU_SIZE = 277;
-	
+
 	private boolean isHidden;
-	
+
 	private final float ARROW_WIDTH;
-	
+
 	private int backgroundId;
 	private float currentBlackAlpha;
 	private float currentWidth;
-	
+
 	private TextImageButton continueBt;
 	private TextImageButton restartBt;
 	private TextImageButton quitBt;
-	
+
 	public PauseScreen() {
 		isHidden = true;
 		backgroundId = R.drawable.pause_menu_bg;
 		ARROW_WIDTH = ImageLoader.checkBitmapSize(R.drawable.pause_menu_bg)[0] - PAUSE_MENU_SIZE;
 		currentWidth = ARROW_WIDTH;
 		currentBlackAlpha = 0;
-		
-		continueBt = new TextImageButton(CONTINUE_BT, 0, 91, this,
+
+		continueBt = new TextImageButton(CONTINUE_BT, 0, 91,
+		        getDimension(R.dimen.button_pause_menu_width),
+		        getDimension(R.dimen.button_pause_menu_height),
+		        this,
 				R.drawable.bt_pause_selected,
 				0,
 				"continue",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
-		
-		restartBt = new TextImageButton(RESTART_BT, 0, 146, this,
+
+		restartBt = new TextImageButton(RESTART_BT, 0, 146,
+                getDimension(R.dimen.button_pause_menu_width),
+                getDimension(R.dimen.button_pause_menu_height),
+		        this,
 				R.drawable.bt_pause_selected,
 				0,
 				"restart",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1);
-		
-		quitBt = new TextImageButton(QUIT_BT, 0, 201, this,
+
+		quitBt = new TextImageButton(QUIT_BT, 0, 201,
+                getDimension(R.dimen.button_pause_menu_width),
+                getDimension(R.dimen.button_pause_menu_height),
+		        this,
 				R.drawable.bt_pause_selected,
 				0,
 				"quit",
@@ -68,9 +78,10 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 	public void render(GLCanvas canvas, float timeElapsed) {
 
 		canvas.drawRect(0, 0, 800, 480, Color.argb((int)currentBlackAlpha, 0, 0, 0));
-		
-		canvas.drawBitmap(backgroundId, (800 - currentWidth), 1);
-		
+
+		canvas.drawBitmap(backgroundId, (800 - currentWidth), 1,
+		        getDimension(R.dimen.pause_bg_width), getDimension(R.dimen.pause_bg_height));
+
 		if (!isHidden) {
 			float buttonX = 800 - currentWidth + ARROW_WIDTH + 2;
 			continueBt.setX(buttonX);
@@ -79,9 +90,9 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			restartBt.render(canvas, timeElapsed);
 			quitBt.setX(buttonX);
 			quitBt.render(canvas, timeElapsed);
-			
+
 		}
-		
+
 	}
 
 	@Override
@@ -91,7 +102,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 
 	@Override
 	public void input(InputEventHandler event) {
-		
+
 		if (isHidden && event.getAction() == MotionEvent.ACTION_UP) {
 			if (event.getY() <= 77 && event.getX() > 800 - ARROW_WIDTH) {
 				show();
@@ -102,18 +113,18 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			quitBt.input(event);
 			if (event.getX() < GameSettings.TARGET_WIDTH - PAUSE_MENU_SIZE + ARROW_WIDTH)
 				hide();
-			
+
 		}
-		
+
 	}
-	
+
 	public void show() {
 		isHidden = false;
 		Tween.to(this, 1, 0.5f).target(PAUSE_MENU_SIZE + ARROW_WIDTH).ease(Quart.OUT).start(AnimationManager.getInstance());
 		Tween.to(this, 2, 0.5f).target(80f).start(AnimationManager.getInstance());
-		
+
 	}
-	
+
 	public void hide() {
 		isHidden = true;
 		Tween.to(this, 1, 0.5f).target(ARROW_WIDTH).ease(Quart.OUT).start(AnimationManager.getInstance());
@@ -161,6 +172,6 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 		default:
 			break;
 		}
-		
+
 	}
 }
