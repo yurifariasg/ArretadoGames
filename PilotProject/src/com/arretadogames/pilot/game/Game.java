@@ -128,8 +128,11 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	public void input(InputEventHandler event) {
 		if (transitionStateOn)
 			return; // Input Disabled when Transition
-
-		gameScreens.get(currentState).input(event);
+		
+		// Safe-check
+		if (gameScreens.get(currentState) != null) {
+		    gameScreens.get(currentState).input(event);
+		}
 	}
 
 	/**

@@ -68,7 +68,9 @@ public class GameWorldUI extends GameScreen {
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 
-		canvas.drawBitmap(R.drawable.ui_buttons, 0, 340, getDimension(R.dimen.screen_width), getDimension(R.dimen.ui_buttons_height));
+		canvas.drawBitmap(R.drawable.ui_buttons, 0, 
+		        getDimension(R.dimen.screen_height) - getDimension(R.dimen.ui_buttons_height),
+		        getDimension(R.dimen.screen_width), getDimension(R.dimen.ui_buttons_height));
 
 		seedRenderingRect.right = 90 + seedRenderingRect.width();
 		seedRenderingRect.left = 90;
@@ -180,9 +182,6 @@ public class GameWorldUI extends GameScreen {
 		coin1Text.setText(String.valueOf(coins));
 		coins = gWorld.getPlayers().get(PlayerNumber.TWO).getCoins();
 		coin2Text.setText(String.valueOf(coins));
-
-//		int percentageCompleted = calculateMapCompletion();
-//		completionText.setText(String.valueOf(percentageCompleted) + "% completed");
 
 	}
 

@@ -146,7 +146,8 @@ public class EndScreen extends GameScreen {
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		// Background
-		canvas.drawBitmap(backgroundId, 0, 0, getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height));
+		canvas.drawBitmap(backgroundId, 0, 0, getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height),
+		        0, getDimension(R.dimen.main_menu_bg_extra_height));
 
 		// Draw Information
 		for (int i = 0 ; i < playerInformation.size() ; i++)
