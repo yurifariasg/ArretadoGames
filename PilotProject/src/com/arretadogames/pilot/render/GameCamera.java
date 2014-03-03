@@ -1,5 +1,24 @@
 package com.arretadogames.pilot.render;
 
+import android.graphics.Color;
+
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.entities.Entity;
+import com.arretadogames.pilot.entities.LayerEntity.Layer;
+import com.arretadogames.pilot.entities.Player;
+import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Profiler;
+import com.arretadogames.pilot.util.Profiler.ProfileType;
+import com.arretadogames.pilot.world.GameWorld;
+
+import org.jbox2d.callbacks.QueryCallback;
+import org.jbox2d.collision.AABB;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Fixture;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,33 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jbox2d.callbacks.QueryCallback;
-import org.jbox2d.collision.AABB;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Fixture;
-
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.RectF;
-
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.LayerEntity.Layer;
-import com.arretadogames.pilot.entities.Player;
-import com.arretadogames.pilot.entities.PlayerNumber;
-import com.arretadogames.pilot.loading.ImageLoader;
-import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.util.Profiler;
-import com.arretadogames.pilot.util.Profiler.ProfileType;
-import com.arretadogames.pilot.world.GameWorld;
-
 public class GameCamera {
 
 	private static GameWorld gameWorld = null;
-	private int repeatableBackgroundId;
-	private int finalSliceBackgroundId;
 
 	private boolean calculateWidthFirst;
 	private int currentNumberOfPlayers;
@@ -63,19 +58,11 @@ public class GameCamera {
 	private Vec2 targetTranslator;
 	private float targetPhysicsRatio;
 
-	// FOR NOW THESE ARE CONSTANTS
-	private static final float NUMBER_OF_REPETITIONS = 2;
-	private static final int END_POSITION = 1600;
-
 	private float initialX = -1; // Initial X position from players
 	private float flagX = -1;
 
-	public GameCamera(GameWorld world, int backgroundId) {
+	public GameCamera(GameWorld world) {
 		this(world, 1000f);// Default is 1000 milliseconds
-		this.repeatableBackgroundId = backgroundId;
-
-		movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
-		entitiesToDraw = new ArrayList<Entity>();
 	}
 
 	public GameCamera(GameWorld world, float setTransitionDuration) {
@@ -95,6 +82,9 @@ public class GameCamera {
 		targetTranslator = null;
 		targetPhysicsRatio = 0;
 		startTime = 0;
+
+        movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
+        entitiesToDraw = new ArrayList<Entity>();
 	}
 
 	private int getNumberOfAlivePlayers(Collection<Player> players) {
@@ -114,19 +104,18 @@ public class GameCamera {
 		HashMap<PlayerNumber, Player> players = gameWorld.getPlayers();
 
 		int numberOfPlayers = getNumberOfAlivePlayers(players.values());
-		if (currentNumberOfPlayers == -1) {
+		if (currentNumberOfPlayers == -1) { // First pass
 			currentNumberOfPlayers = numberOfPlayers;
 		}
-		if (numberOfPlayers != currentNumberOfPlayers) {
+		if (numberOfPlayers != currentNumberOfPlayers) { // If someone died..
 			transitioning = true;
 			startTime = getCurrentTime();
 			targetLowerBound = null;
 			targetUpperBound = null;
 			targetTranslator = null;
 			transitionTrigger = TransitionTrigger.PLAYER_NUM_CHANGED;
-			// System.out.println("TRANSITION IS STARTED");
+	        currentNumberOfPlayers = numberOfPlayers;
 		}
-		currentNumberOfPlayers = numberOfPlayers;
 
 		float viewportWidth, viewportHeight, physicsRatio;
 		Vec2 lowerBound, upperBound, translator;
@@ -180,6 +169,10 @@ public class GameCamera {
 		}
 		
 		float fireDistance = minX - gameWorld.getFire().getPosX();
+		maxXDistance += fireDistance;
+		
+		center.addLocal(gameWorld.getFire().getPosX(), 0);
+		
 
 		// This function says:
 		// If the distance is negative (fire is in front of players), the firePositionWeight is 1 (maximum)
@@ -194,47 +187,7 @@ public class GameCamera {
 //			k = 1 - (fireDistance - 1f) / 4f;
 			
 		// Add fire
-		center.mulLocal(1f / numberOfPlayers);
-		
-//		center.addLocal(gameWorld.getFire().getPosX() / (2 + fireDistance), 0);
-//		center.addLocal(gameWorld.getFire().getPosX() * k, 0);
-//		if (k > 0) {
-//			k = 2f * k;
-//			if (k <= 1)
-//				k = 1;
-//			center.mulLocal(1f / (2f *k));
-//		}
-		
-		float floorX = center.x + (maxXDistance / 2);
-
-		iiterator = players.keySet().iterator();
-		while (iiterator.hasNext()) {
-
-			PlayerNumber i = iiterator.next();
-			if (!players.get(i).isAlive())
-				continue;
-
-			float x = players.get(i).getPosX();
-			float y = players.get(i).getPosY();
-
-			float x2 = floorX;
-			float y2 = 0;
-
-			float currentXDistance = Math.abs(x - x2);
-			float currentYDistance = Math.abs(y - y2);
-
-			if (maxXDistance == 0) {
-				maxXDistance = currentXDistance;
-			} else if (maxXDistance < currentXDistance) {
-				maxXDistance = currentXDistance;
-			}
-			if (maxYDistance == 0) {
-				maxYDistance = currentYDistance;
-			} else if (maxYDistance < currentYDistance) {
-				maxYDistance = currentYDistance;
-			}
-
-		}
+		center.mulLocal(1f / (numberOfPlayers + 1));
 
 		center.addLocal(new Vec2(2, 0));
 
@@ -244,7 +197,7 @@ public class GameCamera {
 			// Measured in meters.
 
 			viewportWidth = maxXDistance + 10;// + 15;//+ 30;
-			physicsRatio = GameSettings.TARGET_WIDTH / viewportWidth;
+			physicsRatio = GameSettings.TARGET_WIDTH / viewportWidth; // This indicates the ZOOM
 			viewportHeight = GameSettings.TARGET_HEIGHT / physicsRatio;
 
 			if (!transitioning) {
@@ -269,7 +222,6 @@ public class GameCamera {
 					transitioning = true;
 					startTime = getCurrentTime();
 					transitionTrigger = TransitionTrigger.VIEWPORT_SIDE_PRIORITY_CHANGED;
-					// System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = false;
 			}
@@ -281,7 +233,7 @@ public class GameCamera {
 				+ viewportHeight / 2);
 		translator = new Vec2(-physicsRatio * (center.x - viewportWidth / 2),
 				physicsRatio * (center.y - viewportHeight / 2));
-
+		
 		if (!transitioning) {
 			currentLowerBound = lowerBound;
 			currentUpperBound = upperBound;
@@ -307,7 +259,6 @@ public class GameCamera {
 		}
 
 		if (transitioning) {
-
 			float currentTime = getCurrentTime();
 			float elapsedTime = currentTime - startTime;
 			float reachedPercentage = elapsedTime / transitionDuration;
@@ -336,21 +287,21 @@ public class GameCamera {
 				targetPhysicsRatio = 0;
 			} else {
 
-				lowerBound = new Vec2(currentLowerBound);
-				lowerBound.addLocal(targetLowerBound.sub(currentLowerBound)
-						.mul(reachedPercentage));
-
-				upperBound = new Vec2(currentUpperBound);
-				upperBound.addLocal(targetUpperBound.sub(currentUpperBound)
-						.mul(reachedPercentage));
-
-				translator = new Vec2(currentTranslator);
-				translator.addLocal(targetTranslator.sub(currentTranslator)
-						.mul(reachedPercentage));
-
-				physicsRatio = currentPhysicsRatio;
-				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio)
-						* reachedPercentage;
+//				lowerBound = new Vec2(currentLowerBound);
+//				lowerBound.addLocal(targetLowerBound.sub(currentLowerBound)
+//						.mul(reachedPercentage));
+//
+//				upperBound = new Vec2(currentUpperBound);
+//				upperBound.addLocal(targetUpperBound.sub(currentUpperBound)
+//						.mul(reachedPercentage));
+//
+//				translator = new Vec2(currentTranslator);
+//				translator.addLocal(targetTranslator.sub(currentTranslator)
+//						.mul(reachedPercentage));
+//
+//				physicsRatio = currentPhysicsRatio;
+//				physicsRatio += (targetPhysicsRatio - currentPhysicsRatio)
+//						* reachedPercentage;
 			}
 		}
 

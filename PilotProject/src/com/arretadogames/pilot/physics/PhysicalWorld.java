@@ -208,6 +208,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			canvas.rotate((float) (180 *  body.getAngle() / Math.PI));
 			
 			while (fixture != null) {
+			    
 				
 				switch (fixture.getShape().getType()) {
 				

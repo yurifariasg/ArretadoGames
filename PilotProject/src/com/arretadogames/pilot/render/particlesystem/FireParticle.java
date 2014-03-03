@@ -1,9 +1,5 @@
 package com.arretadogames.pilot.render.particlesystem;
 
-import javax.microedition.khronos.opengles.GL10;
-
-import org.jbox2d.common.Vec2;
-
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.opengl.GLES11;
@@ -12,17 +8,21 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.util.Util;
 
-public class FireParticle extends Particle{
+import org.jbox2d.common.Vec2;
+
+import javax.microedition.khronos.opengles.GL10;
+
+public class FireParticle extends Particle {
 
 	private Vec2 location;
 	private float lifespan;
 	private float initialLifespan;
 	
-	private Vec2 acceleration;
 	private Vec2 velocity;
 	private int currentColor;
 	
-	private static final float START_BECOME_GRAY = 1.3f;
+	private static final float BECOME_GREY_AFTER = 0.3f; // 0.6f; // in percentage
+	private static final float BECOME_YELLOW_AFTER = 0.1f; // 0.2f // in percentage
 	
 	private RectF dstRect = new RectF();
 	
@@ -30,15 +30,14 @@ public class FireParticle extends Particle{
 	private final float MAX_SIZE = 50;
 	private float currentSize;
 
-	public FireParticle(Vec2 location, float lifespan){
+	public FireParticle(Vec2 location, Vec2 velocity, float lifespan){
 		super(location, lifespan);		
 		this.location = location;
 		this.lifespan = lifespan;
 		this.initialLifespan = lifespan;
 		
 		// Setting the Particle Configurations
-		this.acceleration = new Vec2( 0f, -0.000075f ); // Acceleration makes particles go down
-		this.velocity = new Vec2( 0.00001f, (float) Math.random()*1f ); // Initial Direction
+		this.velocity = velocity; //new Vec2( 0.00001f, (float) Math.random()*1f ); // Initial Direction
 		this.velocity.normalize();
 		this.velocity.mulLocal(1f / 20f); // Velocity
 		this.currentColor = Color.RED;
@@ -47,7 +46,7 @@ public class FireParticle extends Particle{
 	@Override
 	public void step(float timeElapsed) {
 		if (!isDead()) {
-			velocity.addLocal(acceleration);
+//			velocity.addLocal(acceleration);
 			if (velocity.y < 0)
 				velocity.y = 0;
 			location.addLocal(velocity);
@@ -56,6 +55,8 @@ public class FireParticle extends Particle{
 		    currentSize = PARTICLE_RADIUS + (MAX_SIZE - PARTICLE_RADIUS) * (1 - (lifespan / initialLifespan));
 		    if (currentSize < PARTICLE_RADIUS)
 		    	currentSize = PARTICLE_RADIUS;
+		    
+		    // Convert to pixels
 		    currentSize *= GLCanvas.physicsRatio;
 			setColor();
 		}
@@ -93,20 +94,23 @@ public class FireParticle extends Particle{
     }
 	
 	public void setColor(){
-		float percentage = lifespan / initialLifespan;
-		if (percentage <= 0)
-			percentage = 0;
-		
-		if (lifespan < START_BECOME_GRAY) {
-			currentColor = Util.interpolateColor(
-					Color.argb(100, 20, 20, 20), // Grey
-					Color.argb(255, 243, 229, 0), // Yellow ( Initial )
-					lifespan / START_BECOME_GRAY);
+	    // Lifespan starts high, and goes until it reaches 0 (the particle dies)
+	    
+	    float elapsedTime = initialLifespan - lifespan;
+	    float percantage = (elapsedTime) / initialLifespan;
+	    
+	    if (percantage > BECOME_GREY_AFTER) {
+			currentColor = Color.argb(100, 20, 20, 20);
+		} else if (percantage > BECOME_YELLOW_AFTER) {
+            currentColor = Util.interpolateColor(
+                    Color.argb(255, 243, 229, 0), // Yellow ( Initial )
+                    Color.argb(100, 20, 20, 20), // Grey ( Final )
+                    elapsedTime / BECOME_GREY_AFTER);
 		} else {
-			currentColor = Util.interpolateColor(
-					Color.argb(255, 243, 229, 0), // Yellow ( Final )
-					Color.argb(255, 243, 69, 0), // Orange ( Initial )
-					(lifespan - START_BECOME_GRAY) / (initialLifespan - START_BECOME_GRAY));
+            currentColor = Util.interpolateColor(
+                    Color.argb(255, 243, 69, 0), // Orange ( Initial )
+                    Color.argb(255, 243, 229, 0), // Yellow ( Final )
+                    (elapsedTime) / (BECOME_YELLOW_AFTER));
 		}
 	}
 	
@@ -121,20 +125,6 @@ public class FireParticle extends Particle{
 	public void setLifespan(float newLifespan){
 		this.lifespan = newLifespan;
 		this.initialLifespan = newLifespan;
-	}
-	
-	private float generateNum(float num){
-		if (isOdd(num))
-			num *= -1;
-		return num;
-	}
-	
-	private boolean isOdd(float numb){
-		numb *= 10;
-		int num = (int) numb;
-		if (num%2 == 0)
-			return false;
-		return true;
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class Emissor implements Renderable, Steppable{
 		case FIRE_PARTICLE:
 			particles = new FireParticle[NUMBER_OF_PARTICLES];
 			for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
-				particles[i] = new FireParticle( this.eLocation.clone(), 0.5f + (float)Math.random() * 2f );
+				particles[i] = new FireParticle( this.eLocation.clone(), new Vec2( 0.00001f, (float) Math.random()*1f ), 0.5f + (float)Math.random() * 2f );
 			}
 			break;
 		case WATER_PARTICLE:
@@ -74,7 +74,7 @@ public class Emissor implements Renderable, Steppable{
 		for (int i = 0; i < NUMBER_OF_PARTICLES; i++){
 			if (particles[i].isDead()){
 				if (particles[i].getType() == ParticleType.FIRE_PARTICLE)
-					particles[i] = new FireParticle(this.eLocation.clone(), 3f + (float)Math.random() * 1f);
+	                particles[i] = new FireParticle( this.eLocation.clone(), new Vec2( 0.00001f, (float) Math.random()*1f ), 0.5f + (float)Math.random() * 2f );
 				
 				else if (particles[i].getType() == ParticleType.WATER_PARTICLE)
 					particles[i] = new WaterParticle(this.eLocation.clone(), (float)Math.random() * 2f);

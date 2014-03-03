@@ -1,17 +1,17 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.render.particlesystem.Flame;
+
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
-
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.render.particlesystem.FireParticle;
 
 public class Fire extends Entity implements Steppable {
 
@@ -22,18 +22,22 @@ public class Fire extends Entity implements Steppable {
 	private static final float HEIGHT = 20;
 	private static final float SMALL_FIXTURE_WIDTH = 0.5f;
 	
-	// Rendering
-	private static final int MAX_PARTICLES = 200;
-	private static final float PARTICLES_PER_SECOND = 30;
-	
-	private float currentParticlesToCreate;
-	private FireParticle[] particles = new FireParticle[MAX_PARTICLES];
-	
 	private Fixture fireFixture;
-	private Vec2 velVector = new Vec2(velocity ,0);
+	private Vec2 velVector = new Vec2(velocity, 0);
+	
+	private static final Vec2 FLAME_VELOCITY = new Vec2( - 0.1f, 0.7f + (float) Math.random()*0.3f);
+	private static final int FLAMES_QUANTITY = 4;
+	
+	private Flame[] flames;
+	private static final float DISTANCE_TO_SPAWN_FLAME = 0.5f;
 	
 	public Fire(float x, float y) {
 		super(x, 0); // Fire will always be on Y = 0
+		
+		flames = new Flame[FLAMES_QUANTITY];
+		for (int i = FLAMES_QUANTITY - 1 ; i >= 0 ; i--) {
+		    flames[i] = new Flame(body.getPosition(), i * DISTANCE_TO_SPAWN_FLAME, (FLAMES_QUANTITY - i + 1) * 0.7f);
+		}
 		
 		// This fixture will be only used to create an area where the Fire will appears on the camera
 		// (It will collide and be shown on screen)
@@ -48,40 +52,23 @@ public class Fire extends Entity implements Steppable {
 		
 		// Create the destroyer-fixture
 		shape = new PolygonShape();
-		shape.setAsBox(SMALL_FIXTURE_WIDTH / 2, HEIGHT / 2, new Vec2(0, 0), 0); // 45
+		shape.setAsBox(SMALL_FIXTURE_WIDTH / 2, HEIGHT / 2, new Vec2(0, 0), 60);
 		fireFixture = body.createFixture(shape, 1f);
 		fireFixture.setSensor(true);
 		
 		body.setType(BodyType.KINEMATIC);
-		// Create Particles
-		for (int i = 0 ; i < MAX_PARTICLES ; i++) {
-			particles[i] = new FireParticle(new Vec2(), 0);
-		}
-	}
-	
-	private FireParticle recycleParticle(FireParticle aux) {
-		
-		aux.setLifespan((float) (1.5 + 0.5 * Math.random()));
-		aux.getLocation().x = getPosX() + SMALL_FIXTURE_WIDTH;
-		aux.getLocation().y = 0;
-		
-		return aux;
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		FireParticle aux;
-		for (int i = 0 ; i < MAX_PARTICLES ; i++) {
-			aux = particles[i];
-			if (!aux.isDead()) {
-				aux.render(canvas, timeElapsed);
-			}
-		}
+	    for (int i = 0 ; i < flames.length ; i++) {
+	        flames[i].render(canvas, timeElapsed);
+	    }
 	}
 
 	@Override
 	public int getLayerPosition() {
-		return -100;
+		return -50;
 	}
 	
 	@Override
@@ -94,22 +81,11 @@ public class Fire extends Entity implements Steppable {
 
 	@Override
 	public void step(float timeElapsed) {
-		velVector.x = velocity;
-		body.setLinearVelocity(velVector);
-	
-		currentParticlesToCreate += (PARTICLES_PER_SECOND * timeElapsed);
-		FireParticle aux;
-		for (int i = 0 ; i < MAX_PARTICLES ; i++) {
-			aux = particles[i];
-			if (aux.isDead() && currentParticlesToCreate > 0) {
-				// Recycle
-				particles[i] = recycleParticle(aux);
-				currentParticlesToCreate--;
-			}
-			
-			if (!aux.isDead())
-				aux.step(timeElapsed);
-		}
+        velVector.x = velocity;
+        body.setLinearVelocity(velVector);
+        for (int i = 0 ; i < flames.length ; i++) {
+            flames[i].step(timeElapsed);
+        }
 	}
 
 	@Override

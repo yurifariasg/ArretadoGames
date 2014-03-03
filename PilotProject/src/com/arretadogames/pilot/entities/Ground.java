@@ -86,7 +86,7 @@ public class Ground extends Entity {
 
 	@Override
 	public int getLayerPosition() {
-		return -10;
+		return -100;
 	}
 
 	@Override
