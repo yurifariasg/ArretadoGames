@@ -20,9 +20,9 @@ public class FireParticle extends Particle {
 	
 	private Vec2 velocity;
 	private int currentColor;
-	
-	private static final float BECOME_GREY_AFTER = 0.3f; // 0.6f; // in percentage
-	private static final float BECOME_YELLOW_AFTER = 0.1f; // 0.2f // in percentage
+
+	private static final float BECOME_GREY_AFTER = 0.3f; // in percentage
+	private static final float BECOME_YELLOW_AFTER = 0.1f; // in percentage
 	
 	private RectF dstRect = new RectF();
 	

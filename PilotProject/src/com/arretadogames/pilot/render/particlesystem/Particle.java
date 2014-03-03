@@ -11,12 +11,9 @@ import com.arretadogames.pilot.render.opengl.GLCircle;
 
 public abstract class Particle implements Renderable, Steppable{
 	private Vec2 location;
-	private Vec2 velocity;
-	private Vec2 acceleration;
 	private float lifespan;
 	private int currentColor;
 	private GLCircle circle;
-	private ParticleType pType;
 
 	public Particle(Vec2 location, float lifespan){
 		this.location = location;

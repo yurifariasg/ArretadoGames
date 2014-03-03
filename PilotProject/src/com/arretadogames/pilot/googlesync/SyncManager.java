@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.arretadogames.pilot.BaseGameActivity;
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.game.Game;
 import com.google.android.gms.appstate.AppStateClient;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;

@@ -76,7 +76,7 @@ public class LoboGuara extends Player {
 		footFixture.setFilterData(filter);
 		bodiesContact = new HashSet<Body>();
 		
-		physRect = new PhysicsRect(1.4f, 1.6f);
+		physRect = new PhysicsRect(1.6f, 1.8f); // 1.4, 1.6
 	}
 	
 	private void applyConstants() {

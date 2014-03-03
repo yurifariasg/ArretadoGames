@@ -22,7 +22,7 @@ public class SpriteManager {
 			Box box = (Box) en;
 			setBoxSprites(sprite, box);
 		}else if(en.getType() == EntityType.COIN){
-			Coin coin = (Coin) en;
+//			Coin coin = (Coin) en;
 			setCoinSprites(sprite);
 		}else if(en.getType() == EntityType.BREAKABLE){
 			Breakable breakable = (Breakable) en;

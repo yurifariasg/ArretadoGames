@@ -77,7 +77,7 @@ public class TatuBola extends Player implements Steppable{
 		footFixture.setSensor(true);
 		bodiesContact = new HashSet<Body>();
 		
-		physRect = new PhysicsRect(rad + 0.2f, rad + 0.2f);
+		physRect = new PhysicsRect(rad + 0.5f, rad + 0.5f);
 	}
 	private void applyConstants() {
 		setMaxJumpVelocity(GameSettings.TATU_MAX_JUMP_VELOCITY);

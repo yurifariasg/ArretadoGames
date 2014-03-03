@@ -168,28 +168,47 @@ public class GameCamera {
 			}
 		}
 		
-		float fireDistance = minX - gameWorld.getFire().getPosX();
-		maxXDistance += fireDistance;
-		
-		center.addLocal(gameWorld.getFire().getPosX(), 0);
-		
+		float fireXPosition = gameWorld.getFire().getPosX() + 1; // Adds an offset to the front of fire
+		float fireDistance = minX - fireXPosition;
 
 		// This function says:
 		// If the distance is negative (fire is in front of players), the firePositionWeight is 1 (maximum)
-		// If the distance is higher than 5, the firePositionWeight is 0 (insignificant)
-		// If it is between 0 and 5, it gets between 0 and 1, higher if it gets closer to 0
-//		float k;
-//		if (fireDistance < 0)
-//			k = 1;
-//		else if (fireDistance > 5)
-//			k = 0;
-//		else
-//			k = 1 - (fireDistance - 1f) / 4f;
-			
+		// If the distance is higher than DISTANCE_TO_START_INTERPOLATION, the firePositionWeight is 0 (insignificant)
+		// If it is between 0 and DISTANCE_TO_START_INTERPOLATION, it gets between 0 and 1, higher if it gets closer to 0
+		
+		final int DISTANCE_TO_START_INTERPOLATION = 10;
+		
+		float k;
+		
+		if (GameSettings.ALWAYS_SHOW_FIRE) {
+		    k = 1;
+		} else {
+    		if (fireDistance < 0)
+    			k = 1;
+    		else if (fireDistance > DISTANCE_TO_START_INTERPOLATION)
+    			k = 0;
+    		else
+    			k = 1 - (fireDistance - 1f) / DISTANCE_TO_START_INTERPOLATION;
+    		
+    		
+    		k = k > 1 ? 1 : k; // Makes sure k doesnt go higher than 1
+    		k = k < 0.05 ? 0.05f : k; // Makes sure the minimum is 0.05
+		}
+		
+		Vec2 playersCenter = center.mul(1f / numberOfPlayers);
+
+        float x = fireXPosition + (playersCenter.x - fireXPosition) * (1 - k);
+		// Interpolation Equation
+		float y = playersCenter.y * ((x - fireXPosition) / (playersCenter.x - fireXPosition));
+		
+		center.addLocal(x, y);
+		
+		maxXDistance += minX - x;
+		        
 		// Add fire
 		center.mulLocal(1f / (numberOfPlayers + 1));
 
-		center.addLocal(new Vec2(2, 0));
+		center.addLocal(2, 0);
 
 		if (maxYDistance <= maxXDistance * 0.5f) { // Threshold indicating when
 			// it is good to start

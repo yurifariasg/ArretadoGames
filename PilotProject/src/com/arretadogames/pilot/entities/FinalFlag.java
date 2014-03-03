@@ -32,7 +32,7 @@ public class FinalFlag extends Entity {
 		body.setType(BodyType.KINEMATIC);
 		body.setFixedRotation(false);
 		
-		physRect = new PhysicsRect(width, height);
+		physRect = new PhysicsRect(1, 2);
 	}
 	
 	@Override
@@ -46,17 +46,19 @@ public class FinalFlag extends Entity {
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY());
-		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		RectF rect = new RectF(
-				(- width * GLCanvas.physicsRatio), // Top Left
-				(- height * GLCanvas.physicsRatio), // Top Left
-				(width * GLCanvas.physicsRatio), // Bottom Right
-				(height * GLCanvas.physicsRatio)); // Bottom Right
-		
-		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.RED);
+		canvas.translatePhysics(getPosX(), getPosY() - 1); // Offset distance to make flag hit the ground (adjust according to sprite)
+//		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
+//		RectF rect = new RectF(
+//				(- width * GLCanvas.physicsRatio), // Top Left
+//				(- height * GLCanvas.physicsRatio), // Top Left
+//				(width * GLCanvas.physicsRatio), // Bottom Right
+//				(height * GLCanvas.physicsRatio)); // Bottom Right
+//		
+//		canvas.drawRect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom, Color.RED);
 //		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
 //		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		
+		canvas.drawBitmap(R.drawable.flag, physRect);
 		canvas.restoreState();
 	}
 

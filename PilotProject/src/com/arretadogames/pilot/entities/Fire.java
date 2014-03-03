@@ -25,7 +25,6 @@ public class Fire extends Entity implements Steppable {
 	private Fixture fireFixture;
 	private Vec2 velVector = new Vec2(velocity, 0);
 	
-	private static final Vec2 FLAME_VELOCITY = new Vec2( - 0.1f, 0.7f + (float) Math.random()*0.3f);
 	private static final int FLAMES_QUANTITY = 4;
 	
 	private Flame[] flames;
@@ -52,7 +51,7 @@ public class Fire extends Entity implements Steppable {
 		
 		// Create the destroyer-fixture
 		shape = new PolygonShape();
-		shape.setAsBox(SMALL_FIXTURE_WIDTH / 2, HEIGHT / 2, new Vec2(0, 0), 60);
+		shape.setAsBox(SMALL_FIXTURE_WIDTH / 2, HEIGHT / 2, new Vec2(-0.5f, 0), 60); // Rotates it 60 degrees and pushes it back a bit
 		fireFixture = body.createFixture(shape, 1f);
 		fireFixture.setSensor(true);
 		

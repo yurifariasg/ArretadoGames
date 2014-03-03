@@ -72,12 +72,10 @@ public class Breakable extends Entity implements Steppable{
 		for (int i = 0; i < count; ++i) {
 			maxImpulse = MathUtils.max(maxImpulse, impulse.normalImpulses[i]);
 		}
-		System.out.println("dano: " + maxImpulse);
 //		if (maxImpulse > 6.0f) {
 //			m_break = true;
 //		}
 		life -= (int)((maxImpulse)/2);
-		System.out.println("life: " + life);
 	}
 
 	@Override

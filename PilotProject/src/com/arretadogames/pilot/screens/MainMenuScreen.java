@@ -32,7 +32,6 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private ImageButton gPlusBt;
 	private ImageButton storeBt;
 	private Text inputLabel;
-	private long p1Coins; // Variable to detect if the account coins have changed since last time
 
 	// Main Menu Screens
 	private SettingsScreen settingsScreen;
