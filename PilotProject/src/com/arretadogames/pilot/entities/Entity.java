@@ -12,7 +12,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Renderable;
-import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 
 
 public abstract class Entity implements Renderable, LayerEntity {
@@ -69,14 +69,13 @@ public abstract class Entity implements Renderable, LayerEntity {
 	
 	public abstract EntityType getType();
 	
-	public abstract void setSprite(Sprite sprite);
+	public abstract void setSprite(AnimationSwitcher sprite);
 
 	public void destroyBody() {
 		world.destroyBody(body);
 	}
 
 	public void preSolve(Contact contact, Manifold oldManifold) {
-		
 	}
 
 	public void postSolve(Contact contact, ContactImpulse impulse) {

@@ -2,7 +2,7 @@ package com.arretadogames.pilot.entities.scenario;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.EntityType;
-import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Grass extends ScenarioEntity {
@@ -39,7 +39,7 @@ public class Grass extends ScenarioEntity {
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(AnimationSwitcher sprite) {
 		// TODO Remove this when sprites are refactored
 	}
 	

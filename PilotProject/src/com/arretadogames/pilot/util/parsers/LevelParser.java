@@ -38,11 +38,11 @@ public class LevelParser {
 							(float) jsonEntity.getDouble("y"),
 							EntityType.BOX, (float) jsonEntity.getDouble("size"));
 					
-				} else if (EntityType.COIN.toString().equals(entityType)) { // COIN
+				} else if (EntityType.SEED.toString().equals(entityType)) { // COIN
 					
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
-							EntityType.COIN);
+							EntityType.SEED);
 					
 				} else if (EntityType.PLAYER.toString().equals(entityType)) { // PLAYER
 					PlayerNumber pNumber;

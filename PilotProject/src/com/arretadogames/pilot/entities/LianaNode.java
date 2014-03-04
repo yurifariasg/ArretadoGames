@@ -10,7 +10,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 import android.graphics.Color;
 import android.graphics.RectF;
 
-import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class LianaNode extends Entity implements Steppable{
@@ -58,7 +58,7 @@ public class LianaNode extends Entity implements Steppable{
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(AnimationSwitcher sprite) {
 		// TODO Auto-generated method stub
 
 	}

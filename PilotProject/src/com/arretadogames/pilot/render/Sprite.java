@@ -1,56 +1,39 @@
+
 package com.arretadogames.pilot.render;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import android.graphics.Rect;
 
-import com.arretadogames.pilot.loading.LoadableGLObject;
-import com.arretadogames.pilot.loading.LoadableType;
-
+/**
+ * Sprite Class<br>
+ * A single frame inside a sprite sheet (this means a unique image) Sprite has
+ * properties indicating where the sprite is located (x, y, width and height)
+ * And also the time it should take inside a animation
+ */
 public class Sprite {
-	
-	private HashMap<String, SpriteState> spriteStates;
-	private String currentState;
-	
-	public Sprite() {
-		spriteStates = new HashMap<String, SpriteState>();
-		currentState = "default";
-	}
 
-	public void addState(SpriteState spriteAnimation) {
-		spriteStates.put(spriteAnimation.getName(), spriteAnimation);
-	}
-	
-	public int getCurrentFrame(float timeElapsed) {
-		return spriteStates.get(currentState).getCurrentFrame(timeElapsed);
-	}
-	
-	public void setAnimationState(String state) {
-		this.currentState = state;
-		if (spriteStates.get(currentState) != null)
-			spriteStates.get(currentState).resetIfInfinite();
-	}
-	
-	public void release() {
-		for (String state : spriteStates.keySet()) {
-			spriteStates.get(state).release();
-		}
-		spriteStates.clear();
-	}
+    private int sourceSheet;
+    private Rect frameRect;
+    private float time;
 
-	public List<LoadableGLObject> getAllFrames() {
-		List<LoadableGLObject> loadableObject = new ArrayList<LoadableGLObject>();
-		for (SpriteState state : spriteStates.values()) {
-			if (state != null) {
-				int[] frameIds = state.getFrames();
-				if (frameIds != null) {
-					for (int frameId : state.getFrames()) {
-						loadableObject.add(new LoadableGLObject(frameId, LoadableType.TEXTURE));
-					}
-				}
-			}
-		}
-		return loadableObject;
-	}
+    public Sprite(int sourceSheetRes, int x, int y, int width, int height, float time) {
+        this.sourceSheet = sourceSheetRes;
+        this.frameRect = new Rect(x, y, x + width, y + height);
+        this.time = time;
+    }
 
+    public final Rect getFrameRect() {
+        return frameRect;
+    }
+
+    public float getTime() {
+        return time;
+    }
+
+    public void setTime(float time) {
+        this.time = time;
+    }
+
+    public int getSourceSheet() {
+        return sourceSheet;
+    }
 }

@@ -17,7 +17,7 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Pair;
 
-import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Liana extends Entity implements Steppable{
@@ -178,7 +178,7 @@ public class Liana extends Entity implements Steppable{
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(AnimationSwitcher sprite) {
 		// TODO Auto-generated method stub
 
 	}

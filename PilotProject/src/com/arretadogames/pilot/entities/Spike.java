@@ -1,20 +1,20 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.contacts.Contact;
-
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class Spike extends Entity{
 	
 	private float width;
 	private float height;
-	private Sprite sprite;
+	private AnimationSwitcher sprite;
 	private static final int[] STOPPED = {R.drawable.spike};
 
 	public Spike(float x, float y) {
@@ -54,7 +54,7 @@ public class Spike extends Entity{
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(AnimationSwitcher sprite) {
 		this.sprite = sprite;
 	}
 	

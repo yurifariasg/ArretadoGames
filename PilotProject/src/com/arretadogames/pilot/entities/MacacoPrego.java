@@ -2,8 +2,11 @@ package com.arretadogames.pilot.entities;
 
 
 
-import java.util.Collection;
-import java.util.HashSet;
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -17,17 +20,12 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.items.SuperJump;
-import com.arretadogames.pilot.items.SuperStrength;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class MacacoPrego extends Player implements Steppable{
 
-	private Sprite sprite;
+	private AnimationSwitcher sprite;
 	private int contJump;
 	private int contAct;
 	private Fixture footFixture;
@@ -36,14 +34,6 @@ public class MacacoPrego extends Player implements Steppable{
 	private boolean isonliana;
 	private Body b;
 	private int doubleJump;
-	
-	private static final int[] WALKING = {R.drawable.monkey_walk_right_1, R.drawable.monkey_walk_right_2};
-	private static final int[] JUMP = {R.drawable.monkey_jump_right, R.drawable.monkey_jump_right_1, R.drawable.monkey_jump_right_2, R.drawable.monkey_jump_right_3};
-	
-	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
-				 R.drawable.lobo_guara_act2,
-				 R.drawable.lobo_guara_act3,
-				 };*/
 	
 	public MacacoPrego(float x, float y, PlayerNumber number) {
 		super(x, y, number);
@@ -214,7 +204,7 @@ public class MacacoPrego extends Player implements Steppable{
 	public void beginContact(Entity e, Contact contact) {
 		if( (contact.m_fixtureA.equals(footFixture) &&(!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID))|| (contact.m_fixtureB.equals(footFixture) &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
 			bodiesContact.add(e.body);
-			sprite.setAnimationState("walking");
+			sprite.setAnimationState("default");
 		}
 	}
 
@@ -230,41 +220,20 @@ public class MacacoPrego extends Player implements Steppable{
 			sprite.setAnimationState("jump");
 		}
 	}
-
-	@Override
-	public int[] getWalkFrames() {
-		return WALKING;
-	}
 	
-	public float[] getWalkFramesDuration(){
-		return new float[] {0.5f, 0.5f};
-	}
-
-	@Override
-	public int[] getJumpFrames() {
-		return JUMP;
-	}
+//	public float[] getWalkFramesDuration(){
+//		return new float[] {0.5f, 0.5f};
+//	}
+//
+//	public float[] getJumpFramesDuration(){
+//		return new float[] {1f, 1f, 0f};
+//	}
+//	
+//	public float[] getActFramesDuration(){
+//		return new float[] {0.15f, 0.15f};
+//	}
 	
-	public float[] getJumpFramesDuration(){
-		return new float[] {1f, 1f, 0f};
-	}
-
-	@Override
-	public int[] getActFrames() {
-		return null;
-		//TODO
-/*		Bitmap[] frames = new Bitmap[ACT.length];
-		for (int i = 0; i < ACT.length; i++) {
-			frames[i] = ImageLoader.loadImage(ACT[i]);
-		}
-		return frames;*/
-	}
-	
-	public float[] getActFramesDuration(){
-		return new float[] {0.15f, 0.15f};
-	}
-	
-	public void setSprite(Sprite sprite){
+	public void setSprite(AnimationSwitcher sprite){
 		this.sprite = sprite;
 	}
 	
@@ -274,7 +243,7 @@ public class MacacoPrego extends Player implements Steppable{
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
+        sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
 		
 	}

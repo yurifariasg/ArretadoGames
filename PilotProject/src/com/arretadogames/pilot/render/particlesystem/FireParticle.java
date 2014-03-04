@@ -65,7 +65,6 @@ public class FireParticle extends Particle {
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		if (!isDead()) {
-			GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			
 			GLES11.glColor4f(
 					Color.red(currentColor) / 255f,
@@ -83,8 +82,6 @@ public class FireParticle extends Particle {
 			canvas.drawBitmap(R.drawable.white_particle, dstRect);
 			canvas.restoreState();
 	
-			GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-			
 			GLES11.glColor4f(1, 1, 1, 1);
 		}
 	}

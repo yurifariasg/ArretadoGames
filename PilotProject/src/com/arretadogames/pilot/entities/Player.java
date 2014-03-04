@@ -1,17 +1,15 @@
 package com.arretadogames.pilot.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jbox2d.common.Vec2;
-
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.items.Item;
 import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.world.GameWorld;
 
+import org.jbox2d.common.Vec2;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Player extends Watchable implements Steppable{
 
@@ -180,17 +178,17 @@ public abstract class Player extends Watchable implements Steppable{
 	}
 	public abstract int getStatusImg();
 	
-	public abstract int[] getWalkFrames();
-	
-	public abstract int[] getJumpFrames();
-	
-	public abstract int[] getActFrames();
-
-	public abstract float[] getWalkFramesDuration();
-	
-	public abstract float[] getJumpFramesDuration();
-	
-	public abstract float[] getActFramesDuration();
+//	public abstract int[] getWalkFrames();
+//	
+//	public abstract int[] getJumpFrames();
+//	
+//	public abstract int[] getActFrames();
+//
+//	public abstract float[] getWalkFramesDuration();
+//	
+//	public abstract float[] getJumpFramesDuration();
+//	
+//	public abstract float[] getActFramesDuration();
 
 	public int getMaxDoubleJumps() {
 		return maxDoubleJumps;

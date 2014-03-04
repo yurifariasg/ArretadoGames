@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Spritesheets>
+	<Sheet resId="bird" >
+	     <AnimationSwitcher name="AraraAzul" >
+	         <Animation name="default"> 
+	             <Frame x="2" y="2" w="256" h="256" t="0.5" />
+	             <Frame x="260" y="2" w="256" h="256" t="0.5" />
+	             <Frame x="518" y="2" w="256" h="256" t="0.5" />
+	             <Frame x="2" y="260" w="256" h="256" t="0.5" />
+	             <Frame x="260" y="260" w="256" h="256" t="0.5" />
+	             <Frame x="518" y="260" w="256" h="256" t="0.5" />
+	          </Animation>
+	     </AnimationSwitcher>
+	</Sheet>
+	<Sheet resId="wolf" >
+	     <AnimationSwitcher name="LoboGuara">
+             <Animation name="default">
+                 <Frame x="518" y="260" w="256" h="256" t="0.5" />
+                 <Frame x="2" y="518" w="256" h="256" t="0.5" />
+                 <Frame x="260" y="518" w="256" h="256" t="0.5" />
+                 <Frame x="518" y="518" w="256" h="256" t="0.5" />
+                 <Frame x="2" y="776" w="256" h="256" t="0.5" />
+                 <Frame x="260" y="776" w="256" h="256" t="0.5" />
+             </Animation>
+	         <Animation name="jump">
+	             <Frame x="2" y="2" w="256" h="256" t="0.1" />
+	             <Frame x="260" y="2" w="256" h="256" t="0.1" />
+	             <Frame x="518" y="2" w="256" h="256" t="0.1" />
+	             <Frame x="2" y="260" w="256" h="256" t="0.0" />
+	             <Frame x="260" y="260" w="256" h="256" t="0.0" />
+	         </Animation>
+	     </AnimationSwitcher>
+	</Sheet>
+	<Sheet resId="monkey">
+	    <AnimationSwitcher name="MacacoPrego">
+	        <Animation name="jump">
+	            <Frame x="2" y="2" w="256" h="256" t="0.5" />
+			    <Frame x="260" y="2" w="256" h="256" t="0.5" />
+			    <Frame x="518" y="2" w="256" h="256" t="0.5" />
+			    <Frame x="2" y="260" w="256" h="256" t="0.5" />
+			    <Frame x="260" y="260" w="256" h="256" t="0.5" />
+			</Animation>
+            <Animation name="default">
+			    <Frame x="260" y="518" w="256" h="256" t="0.5" />
+			    <Frame x="518" y="518" w="256" h="256" t="0.5" />
+	        </Animation>
+	    </AnimationSwitcher>
+	</Sheet>
+    <Sheet resId="armadillo">
+        <AnimationSwitcher name="TatuBola">
+            <Animation name="default">
+                <Frame x="2" y="2" w="256" h="256" t="0.5" />
+                <Frame x="260" y="2" w="256" h="256" t="0.5" />
+                <Frame x="518" y="2" w="256" h="256" t="0.5" />
+                <Frame x="2" y="260" w="256" h="256" t="0.5" />
+            </Animation>
+            <Animation name="rowling">
+                <Frame x="260" y="260" w="256" h="256" t="0.5" />
+                <Frame x="518" y="260" w="256" h="256" t="0.5" />
+                <Frame x="2" y="518" w="256" h="256" t="0.5" />
+                <Frame x="260" y="518" w="256" h="256" t="0.5" />
+                <Frame x="518" y="518" w="256" h="256" t="0.5" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="seed">
+        <AnimationSwitcher name="Seed">
+            <Animation name="default">
+                <Frame x="2" y="2" w="128" h="128" t="0.5" />
+			    <Frame x="2" y="132" w="128" h="128" t="0.5" />
+			    <Frame x="2" y="262" w="128" h="128" t="0.5" />
+                <Frame x="2" y="132" w="128" h="128" t="0.5" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="magic_shield">
+        <AnimationSwitcher name="Water">
+            <Animation name="default">
+                
+                <!-- <Frame x="22" y="22" w="160" h="160" t="1.0" />
+			    <Frame x="226" y="22" w="160" h="160" t="1.0" />
+			    <Frame x="452" y="22" w="160" h="160" t="1.0" />
+                <Frame x="678" y="22" w="160" h="160" t="1.0" />
+                <Frame x="902" y="22" w="160" h="160" t="1.0" />
+                <Frame x="22" y="22" w="160" h="160" t="1.0" />
+			    <Frame x="226" y="226" w="160" h="160" t="1.0" />
+			    <Frame x="452" y="226" w="160" h="160" t="1.0" />
+                <Frame x="678" y="226" w="160" h="160" t="1.0" />
+                <Frame x="902" y="226" w="160" h="160" t="1.0" />
+                <Frame x="22" y="452" w="160" h="160" t="1.0" />
+			    <Frame x="226" y="452" w="160" h="160" t="1.0" />
+			    <Frame x="452" y="452" w="160" h="160" t="1.0" />
+                <Frame x="678" y="452" w="160" h="160" t="1.0" />
+                <Frame x="902" y="452" w="160" h="160" t="1.0" />
+                <Frame x="22" y="678" w="160" h="160" t="1.0" />
+			    <Frame x="226" y="678" w="160" h="160" t="1.0" />
+			    <Frame x="452" y="678" w="160" h="160" t="1.0" />
+                <Frame x="678" y="678" w="160" h="160" t="1.0" />
+                <Frame x="902" y="678" w="160" h="160" t="1.0" /> -->
+                
+                <Frame x="2" y="2" w="205" h="198" t="1.0" />
+			    <Frame x="209" y="2" w="205" h="198" t="1.0" />
+			    <Frame x="416" y="2" w="204" h="198" t="1.0" />
+			    <Frame x="622" y="2" w="205" h="198" t="1.0" />
+			    <Frame x="2" y="202" w="205" h="198" t="1.0" />
+			    <Frame x="209" y="202" w="205" h="198" t="1.0" />
+			    <Frame x="416" y="202" w="205" h="198" t="1.0" />
+			    <Frame x="623" y="202" w="204" h="198" t="1.0" />
+			    <Frame x="2" y="402" w="205" h="198" t="1.0" />
+			    <Frame x="209" y="402" w="205" h="198" t="1.0" />
+			    <Frame x="416" y="402" w="205" h="198" t="1.0" />
+			    <Frame x="623" y="402" w="205" h="198" t="1.0" />
+			    <Frame x="2" y="602" w="204" h="198" t="1.0" />
+			    <Frame x="208" y="602" w="205" h="198" t="1.0" />
+			    <Frame x="415" y="602" w="205" h="198" t="1.0" />
+			    <Frame x="622" y="602" w="205" h="198" t="1.0" />
+			    <Frame x="2" y="802" w="205" h="198" t="1.0" />
+			    <Frame x="209" y="802" w="204" h="198" t="1.0" />
+			    <Frame x="415" y="802" w="205" h="198" t="1.0" />
+			    <Frame x="622" y="802" w="205" h="198" t="1.0" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="fire">
+        <AnimationSwitcher name="Fire">
+            <Animation name="default">
+                <Frame x="2" y="2" w="200" h="200" t="0.2" />
+			    <Frame x="204" y="2" w="200" h="200" t="0.2" />
+			    <Frame x="406" y="2" w="200" h="200" t="0.2" />
+			    <Frame x="608" y="2" w="200" h="200" t="0.2" />
+			    <Frame x="810" y="2" w="200" h="200" t="0.2" />
+			    <Frame x="2" y="204" w="200" h="200" t="0.2" />
+			    <Frame x="204" y="204" w="200" h="200" t="0.2" />
+			    <Frame x="406" y="204" w="200" h="200" t="0.2" />
+			    <Frame x="608" y="204" w="200" h="200" t="0.2" />
+			    <Frame x="810" y="204" w="200" h="200" t="0.2" />
+			    <Frame x="2" y="406" w="200" h="200" t="0.2" />
+			    <Frame x="204" y="406" w="200" h="200" t="0.2" />
+			    <Frame x="406" y="406" w="200" h="200" t="0.2" />
+			    <Frame x="608" y="406" w="200" h="200" t="0.2" />
+			    <Frame x="810" y="406" w="200" h="200" t="0.2" />
+			    <Frame x="2" y="608" w="200" h="200" t="0.2" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+</Spritesheets>

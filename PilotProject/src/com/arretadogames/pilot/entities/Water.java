@@ -1,21 +1,20 @@
 package com.arretadogames.pilot.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import android.graphics.Color;
+
+import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import android.graphics.Color;
-
-import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class Water extends Entity implements Steppable{
 	
@@ -362,7 +361,7 @@ public class Water extends Entity implements Steppable{
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(AnimationSwitcher sprite) {
 		// No Sprite
 	}
 

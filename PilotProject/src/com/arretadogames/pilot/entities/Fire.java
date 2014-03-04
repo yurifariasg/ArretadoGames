@@ -2,7 +2,7 @@ package com.arretadogames.pilot.entities;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.render.particlesystem.Flame;
 
@@ -93,7 +93,7 @@ public class Fire extends Entity implements Steppable {
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(AnimationSwitcher sprite) {
 		// TODO Auto-generated method stub
 		
 	}

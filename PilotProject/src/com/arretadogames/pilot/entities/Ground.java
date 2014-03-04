@@ -1,17 +1,16 @@
 package com.arretadogames.pilot.entities;
 
-import org.jbox2d.collision.shapes.ChainShape;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Filter;
-import org.jbox2d.dynamics.Fixture;
-
 import android.graphics.Color;
 
 import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.util.Util;
+
+import org.jbox2d.collision.shapes.ChainShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
 
 public class Ground extends Entity {
 	
@@ -95,7 +94,7 @@ public class Ground extends Entity {
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
+	public void setSprite(AnimationSwitcher sprite) {
 		// Doesnt use one
 	}
 

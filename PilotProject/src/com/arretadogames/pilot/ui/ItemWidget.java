@@ -175,7 +175,6 @@ public class ItemWidget implements Renderable, GameButtonListener {
 					Toast.makeText(MainActivity.getContext(),"Sem sementes suficientes!", Toast.LENGTH_SHORT).show();
 				}
 			}
-
 			break;
 		}
 

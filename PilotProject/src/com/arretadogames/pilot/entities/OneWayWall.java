@@ -13,7 +13,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class OneWayWall extends Entity{
@@ -23,7 +23,6 @@ public class OneWayWall extends Entity{
 	private float height;
 	final private WorldManifold worldManifold = new WorldManifold();
 	private HashSet<Contact> contactSet;
-	private Sprite sprite;
 	
 	public OneWayWall(float x, float y) {
 		super(x, y);
@@ -97,7 +96,8 @@ public class OneWayWall extends Entity{
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY() - 0.8f); // TODO: move a little up ?
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
+//        sprite.render(canvas, physRect, timeElapsed);
+		canvas.drawBitmap(R.drawable.forest_platform, physRect);
 		canvas.restoreState();
 	}
 
@@ -107,15 +107,6 @@ public class OneWayWall extends Entity{
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
-	}
-
-	public int[] getStoppedFrames() {
-		return new int[] {R.drawable.forest_platform};
-	}
-
-	public float[] getStoppedFramesDuration() {
-		return new float[] {-1f};
+	public void setSprite(AnimationSwitcher sprite) {
 	}
 }

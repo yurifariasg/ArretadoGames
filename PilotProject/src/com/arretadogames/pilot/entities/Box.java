@@ -1,17 +1,14 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
-
 public class Box extends Entity {
-	
-	private static final int[] STOPPED = {R.drawable.box_stopped};
-	private Sprite sprite;
 	
 	public Box(float x, float y, float size) {
 		super(x, y);
@@ -29,25 +26,18 @@ public class Box extends Entity {
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
+//        sprite.render(canvas, physRect, timeElapsed);
+		canvas.drawBitmap(R.drawable.box_stopped, physRect);
 		canvas.restoreState();
 	}
-
 
 	@Override
 	public EntityType getType() {
 		return EntityType.BOX;
 	}
-	
-	public int[] getStoppedFrames() {
-		return STOPPED;
-	}
-	
-	public float[] getStoppedFramesDuration(){
-		return new float[] {0.3f};
-	}
 
-	public void setSprite(Sprite sprite){
-		this.sprite = sprite;
-	}
+    @Override
+    public void setSprite(AnimationSwitcher sprite) {
+    }
+	
 }

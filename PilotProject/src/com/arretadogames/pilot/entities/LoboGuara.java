@@ -1,8 +1,10 @@
 package com.arretadogames.pilot.entities;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -13,17 +15,13 @@ import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.items.DoubleJump;
-import com.arretadogames.pilot.items.SuperJump;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 
 public class LoboGuara extends Player {
 
-	private Sprite sprite;
+	private AnimationSwitcher sprite;
 	private int contJump;
 	private int contAct;
 	private Fixture footFixture;
@@ -32,22 +30,6 @@ public class LoboGuara extends Player {
 	private float size;
 	private float timeForNextAct = 0f;
 	private int doubleJump;
-	
-	private static final int[] WALKING = {R.drawable.lobo_g_walking1,
-								  		     R.drawable.lobo_g_walking2,
-								  		     R.drawable.lobo_g_walking3,
-								  		     R.drawable.lobo_g_walking4,
-								  		     R.drawable.lobo_g_walking5,
-								  		     R.drawable.lobo_g_walking6};
-
-	private static final int[] JUMP = {R.drawable.lobo_g_jump1,
-  		  						  		R.drawable.lobo_g_jump2,
-  		  						  		R.drawable.lobo_g_jump4};
-	
-	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
-				 R.drawable.lobo_guara_act2,
-				 R.drawable.lobo_guara_act3,
-				 };*/
 	
 	public LoboGuara(float x, float y, PlayerNumber number) {
 		super(x, y, number);
@@ -209,7 +191,7 @@ public class LoboGuara extends Player {
 	public void beginContact(Entity e, Contact contact) {
 		if( (contact.m_fixtureA.equals(footFixture) &&(!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID))|| (contact.m_fixtureB.equals(footFixture) &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
 			bodiesContact.add(e.body);
-			sprite.setAnimationState("walking");
+			sprite.setAnimationState("default");
 		}
 	}
 
@@ -226,40 +208,19 @@ public class LoboGuara extends Player {
 		}
 	}
 
-	@Override
-	public int[] getWalkFrames() {
-		return WALKING;
-	}
-	
-	public float[] getWalkFramesDuration(){
-		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
-	}
+//	public float[] getWalkFramesDuration(){
+//		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
+//	}
 
-	@Override
-	public int[] getJumpFrames() {
-		return JUMP;
-	}
+//	public float[] getJumpFramesDuration(){
+//		return new float[] {0.3f, 0.3f, 0f};
+//	}
+//	
+//	public float[] getActFramesDuration(){
+//		return new float[] {0.15f, 0.15f};
+//	}
 	
-	public float[] getJumpFramesDuration(){
-		return new float[] {0.3f, 0.3f, 0f};
-	}
-
-	@Override
-	public int[] getActFrames() {
-		return null;
-		//TODO
-/*		Bitmap[] frames = new Bitmap[ACT.length];
-		for (int i = 0; i < ACT.length; i++) {
-			frames[i] = ImageLoader.loadImage(ACT[i]);
-		}
-		return frames;*/
-	}
-	
-	public float[] getActFramesDuration(){
-		return new float[] {0.15f, 0.15f};
-	}
-	
-	public void setSprite(Sprite sprite){
+	public void setSprite(AnimationSwitcher sprite){
 		this.sprite = sprite;
 	}
 	
@@ -268,7 +229,7 @@ public class LoboGuara extends Player {
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY() + 0.3f);
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
+        sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
 	}
 	

@@ -30,7 +30,6 @@ import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.PlayableItem;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
-import com.arretadogames.pilot.entities.Pulley;
 import com.arretadogames.pilot.entities.Spike;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.TatuBola;
@@ -49,11 +48,10 @@ import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.levels.WaterDescriptor;
-import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.AnimationManager;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.GameCamera;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.SpriteManager;
 import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.EndScreen;
@@ -80,7 +78,6 @@ public class GameWorld extends GameScreen {
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
 	private float flagPos;
-	private SpriteManager sm;
 	private float totalElapsedSeconds;
 	
 	private boolean isInitialized;
@@ -91,7 +88,6 @@ public class GameWorld extends GameScreen {
 	public GameWorld() {
 		backgroundId = R.drawable.mountains_repeatable;
 		pWorld = PhysicalWorld.getInstance();
-		sm = new SpriteManager();
 		totalElapsedSeconds = 0;
 		isInitialized = false;
 	}
@@ -123,6 +119,7 @@ public class GameWorld extends GameScreen {
 		if (isInitialized || selectedCharacters == null || level == null || selectedItems == null)
 			return;
 		
+		AnimationManager.getInstance().loadXml();
 		load(level); 
 		isInitialized = true;
 		setPlayersAsCurrentEntitiesToWatch();
@@ -158,7 +155,7 @@ public class GameWorld extends GameScreen {
 					entity = new Box(entityDescriptor.getX(), entityDescriptor.getY(),
 							entityDescriptor.getSize());
 					break;
-				case COIN:
+				case SEED:
 					entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
 					break;
 				case HOLE:
@@ -175,20 +172,8 @@ public class GameWorld extends GameScreen {
 				case SPIKE:
 					entity = new Spike(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
-				case PULLEY:
-					Entity a = new Box(entityDescriptor.getX()-1,entityDescriptor.getY()-0.7f, 0.7f);
-					a.setSprite(sm.getSprite(a));
-					Entity b = new Box(entityDescriptor.getX()+1,entityDescriptor.getY(), 1.5f);
-					b.setSprite(sm.getSprite(b));
-					worldEntities.add(a);
-					worldEntities.add(b);
-					
-					entity = new Pulley(
-							a, new Vec2(entityDescriptor.getX()-1, entityDescriptor.getY() + 2),
-							b, new Vec2(entityDescriptor.getX()+1, entityDescriptor.getY() + 2),
-							new Vec2(entityDescriptor.getX()-0.4f, 2),
-							new Vec2(entityDescriptor.getX()+1, 2.5f), 5);
-					break;
+//				case PULLEY:
+//					break;
 				case BREAKABLE:
 					entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,1.5f,0,false);
 					break;
@@ -218,20 +203,36 @@ public class GameWorld extends GameScreen {
 				default:
 					break;
 				}
-				
+
 				if (entity != null) {
-					Sprite sprite = sm.getSprite(entity);
+				    AnimationSwitcher sprite = null;
+				    if (entityDescriptor.getType().equals(EntityType.PLAYER)) {
+				        if (entity instanceof LoboGuara) {
+				            sprite = AnimationManager.getInstance().getSprite("LoboGuara");
+				        } else if (entity instanceof AraraAzul) {
+				            sprite = AnimationManager.getInstance().getSprite("AraraAzul");
+				        } else if (entity instanceof TatuBola) {
+				            sprite = AnimationManager.getInstance().getSprite("TatuBola");
+				        } else if (entity instanceof MacacoPrego) {
+				            sprite = AnimationManager.getInstance().getSprite("MacacoPrego");
+				        }
+				        
+				    } else {
+				        sprite = AnimationManager.getInstance().getSprite(entityDescriptor.getType().toString());
+				    }
+				    
 					entity.setSprite(sprite);
-					LoadManager.getInstance().addExtraObjects(sprite.getAllFrames());
+//					LoadManager.getInstance().addExtraObjects(sprite.getAllFrames());
 					worldEntities.add(entity);
-					if (entity.getType() == EntityType.PLAYER)
+					if (entity.getType() == EntityType.PLAYER) {
 						players.put(((Player)entity).getNumber(), (Player) entity);
+					}
 				}
 			}
 		}
-		
+
 		// Add Ground
-		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities, flagPos);//new Vec2[ld.getGroundDescriptor().getPoints().size()];
+		Vec2[] groundPoints = PhysicalWorld.getInstance().createGroundLines(waterEntities, flagPos);
 		int amountOfPoints = groundPoints.length;
 		
 		Vec2[] vecs = new Vec2[amountOfPoints > GameSettings.GROUND_ENTITY_THRESHOLD ? GameSettings.GROUND_ENTITY_THRESHOLD : amountOfPoints];

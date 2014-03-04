@@ -8,17 +8,17 @@ public interface LayerEntity {
 	
 	public class Layer {
 		
-		private static Comparator<Entity> comparator;
+		private static Comparator<LayerEntity> comparator;
 		
-		public static Comparator<Entity> getComparator() {
+		public static Comparator<LayerEntity> getComparator() {
 			if (comparator == null)
 				comparator = createComparator();
 			return comparator;
 		}
 
-		private static Comparator<Entity> createComparator() {
-			Comparator<Entity> comparator = new Comparator<Entity>() {
-			    public int compare(Entity c1, Entity c2) {
+		private static Comparator<LayerEntity> createComparator() {
+			Comparator<LayerEntity> comparator = new Comparator<LayerEntity>() {
+			    public int compare(LayerEntity c1, LayerEntity c2) {
 			        return c2.getLayerPosition() - c1.getLayerPosition();
 			    }
 			};

@@ -1,5 +1,11 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.MathUtils;
@@ -7,20 +13,10 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
-
 public class Breakable extends Entity implements Steppable{
 	
-	private static final int[] STOPPED = {R.drawable.breakable};
-
 	private boolean m_broke;
 	private boolean m_break;
-
-	private Sprite sprite;
 
 	private int life = 5;
 
@@ -96,15 +92,6 @@ public class Breakable extends Entity implements Steppable{
 	}
 
 	@Override
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
-	}
-	
-	public int[] getStoppedFrames() {
-		return STOPPED;
-	}
-	
-	public float[] getStoppedFramesDuration(){
-		return new float[] {-1};
+	public void setSprite(AnimationSwitcher sprite) {
 	}
 }

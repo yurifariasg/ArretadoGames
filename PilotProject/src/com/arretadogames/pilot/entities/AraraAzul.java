@@ -1,7 +1,10 @@
 package com.arretadogames.pilot.entities;
 
-import java.util.Collection;
-import java.util.HashSet;
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -12,38 +15,18 @@ import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.items.Velocity;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class AraraAzul extends Player implements Steppable{
 
-	private Sprite sprite;
+	private AnimationSwitcher sprite;
 	private int contJump;
 	private Fixture footFixture;
 	Collection<Body> bodiesContact;
 	private float k = 3f;
 	private int doubleJump;
 	private float radius;
-	
-	private static final int[] WALKING = {R.drawable.bird_1,
-											R.drawable.bird_2,
-											R.drawable.bird_3,
-											R.drawable.bird_2,
-											R.drawable.bird_1,
-											R.drawable.bird_4,
-											R.drawable.bird_5,
-											R.drawable.bird_6,
-											R.drawable.bird_5,
-											R.drawable.bird_4};
-
-	private static final int[] JUMP = {R.drawable.bird_6,
-  		  						  		R.drawable.bird_4,
-  		  						  		R.drawable.bird_3,
-  		  						  		R.drawable.bird_4};
 	
 	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
 				 R.drawable.lobo_guara_act2,
@@ -125,7 +108,7 @@ public class AraraAzul extends Player implements Steppable{
 		} else {
 			doubleJump = getMaxDoubleJumps();
 		}
-		sprite.setAnimationState("jump");
+		sprite.setAnimationState("default"); // jump
 //		Math.max(Math.min(,(MAX_JUMP_VELOCITY - body.getLinearVelocity().y)
 		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
 		Vec2 direction = new Vec2(0,6);
@@ -195,7 +178,7 @@ public class AraraAzul extends Player implements Steppable{
 		}
 		if(actActive){
 			act();
-			sprite.setAnimationState("act");
+			sprite.setAnimationState("default"); // act
 		}
 		if(contJump > 0) contJump--;
 		run();
@@ -203,7 +186,7 @@ public class AraraAzul extends Player implements Steppable{
 	
 	public void beginContact(Entity e, Contact contact) {
 		if( (contact.m_fixtureA.equals(footFixture) &&(!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID))|| (contact.m_fixtureB.equals(footFixture) &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
-			sprite.setAnimationState("walking");
+			sprite.setAnimationState("default");
 			bodiesContact.add(e.body);
 		}
 	}
@@ -217,44 +200,23 @@ public class AraraAzul extends Player implements Steppable{
 			
 		}
 		if(bodiesContact.size()==0){
-			sprite.setAnimationState("jump");
+			sprite.setAnimationState("default"); // jump
 		}
 	}
 
-	@Override
-	public int[] getWalkFrames() {
-		return WALKING;
-	}
+//	public float[] getWalkFramesDuration(){
+//		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f, 0.15f, 0.15f, 0.15f ,0.15f}; // 10
+//	}
+//	
+//	public float[] getJumpFramesDuration(){ // 4
+//		return new float[] {0.3f, 0.3f, 0.3f, 0f};
+//	}
+//	
+//	public float[] getActFramesDuration(){
+//		return new float[] {0.3f, 0.3f, 0.3f, 0f};
+//	}
 	
-	public float[] getWalkFramesDuration(){
-		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f, 0.15f, 0.15f, 0.15f ,0.15f}; // 10
-	}
-
-	@Override
-	public int[] getJumpFrames() {
-		return JUMP;
-	}
-	
-	public float[] getJumpFramesDuration(){ // 4
-		return new float[] {0.3f, 0.3f, 0.3f, 0f};
-	}
-
-	@Override
-	public int[] getActFrames() {
-		return JUMP;
-		//TODO
-/*		Bitmap[] frames = new Bitmap[ACT.length];
-		for (int i = 0; i < ACT.length; i++) {
-			frames[i] = ImageLoader.loadImage(ACT[i]);
-		}
-		return frames;*/
-	}
-	
-	public float[] getActFramesDuration(){
-		return new float[] {0.3f, 0.3f, 0.3f, 0f};
-	}
-	
-	public void setSprite(Sprite sprite){
+	public void setSprite(AnimationSwitcher sprite){
 		this.sprite = sprite;
 	}
 	
@@ -264,7 +226,7 @@ public class AraraAzul extends Player implements Steppable{
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
+		sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
 		
 	}

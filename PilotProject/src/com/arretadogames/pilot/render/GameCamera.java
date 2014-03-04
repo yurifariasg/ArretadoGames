@@ -1,5 +1,17 @@
 package com.arretadogames.pilot.render;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.jbox2d.callbacks.QueryCallback;
+import org.jbox2d.collision.AABB;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Fixture;
+
 import android.graphics.Color;
 
 import com.arretadogames.pilot.R;
@@ -8,25 +20,13 @@ import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.LayerEntity.Layer;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.entities.effects.Effect;
+import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.world.GameWorld;
-
-import org.jbox2d.callbacks.QueryCallback;
-import org.jbox2d.collision.AABB;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Fixture;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 public class GameCamera {
 
@@ -45,7 +45,6 @@ public class GameCamera {
 	private long startTime;
 
 	private MovingBackground movingBackground;
-	private List<Entity> entitiesToDraw;
 
 	private enum TransitionTrigger {
 		NONE, PLAYER_NUM_CHANGED, VIEWPORT_SIDE_PRIORITY_CHANGED;
@@ -84,7 +83,6 @@ public class GameCamera {
 		startTime = 0;
 
         movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
-        entitiesToDraw = new ArrayList<Entity>();
 	}
 
 	private int getNumberOfAlivePlayers(Collection<Player> players) {
@@ -359,18 +357,34 @@ public class GameCamera {
 
 		gameCanvas.translate(translator.x, translator.y);
 
-		Collection<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound,
+		List<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound,
 				upperBound);
-		entitiesToDraw.addAll(entities);
+		List<Effect> effects = EffectManager.getInstance().getEffects();
 
 		// Sort based on layer
-		Collections.sort(entitiesToDraw, Layer.getComparator());
-
-		for (Entity entity : entitiesToDraw) {
-			entity.render(gameCanvas, timeElapsed);
+		Collections.sort(entities, Layer.getComparator());
+		Collections.sort(effects, Layer.getComparator());
+		
+		// "Merge" both lists using algorithm based on MergeSort
+		int i = 0, j = 0;
+		while (i < entities.size() || j < effects.size()) {
+			if (i == entities.size()) {
+				effects.get(j).render(gameCanvas, timeElapsed);
+				j++;
+			} else if (j == effects.size()) {
+				entities.get(i).render(gameCanvas, timeElapsed);
+				i++;
+			} else {
+				
+				if (Layer.getComparator().compare(entities.get(i), effects.get(j)) > 0) {
+					effects.get(j).render(gameCanvas, timeElapsed);
+					j++;
+				} else {
+					entities.get(i).render(gameCanvas, timeElapsed);
+					i++;
+				}
+			}
 		}
-
-		entitiesToDraw.clear();
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
 		Profiler.initTick(ProfileType.RENDER);
@@ -380,10 +394,10 @@ public class GameCamera {
 
 		gameCanvas.restoreState();
 	}
-	private Collection<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound,
+	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound,
 			Vec2 upperBound) {
 
-		final Set<Entity> entities = new HashSet<Entity>();
+		final List<Entity> entities = new ArrayList<Entity>();
 
 		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() { // TODO:
 																				// create

@@ -2,9 +2,11 @@ package com.arretadogames.pilot.entities;
 
 
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -15,16 +17,13 @@ import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.items.SuperJump;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Sprite;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 
 public class TatuBola extends Player implements Steppable{
 
-	private Sprite sprite;
+	private AnimationSwitcher sprite;
 	private int contJump;
 	private int contAct;
 	protected Fixture footFixture;
@@ -33,23 +32,6 @@ public class TatuBola extends Player implements Steppable{
 	Date lastAct;
 	private final float TIME_WAITING_FOR_ACT = 6f;
 	private float timeForNextAct = 0f;
-	
-	private static final int[] WALKING = {R.drawable.tatu1,
-										  R.drawable.tatu2,
-										  R.drawable.tatu3,
-										  R.drawable.tatu0};
-
-	private static final int[] JUMP = {R.drawable.tatu_rowling1,
-									  R.drawable.tatu_rowling2,
-									  R.drawable.tatu_rowling3,
-									  R.drawable.tatu_rowling4,
-									  R.drawable.tatu_rowling5};
-	
-	private static final int[] ACT = {R.drawable.tatu_rowling1,
-									  R.drawable.tatu_rowling2,
-									  R.drawable.tatu_rowling3,
-									  R.drawable.tatu_rowling4,
-									  R.drawable.tatu_rowling5};
 	
 	private final float rad = 0.3f;
 	protected Fixture bodyFixture;
@@ -126,7 +108,7 @@ public class TatuBola extends Player implements Steppable{
 			doubleJump = getMaxDoubleJumps();
 		}
 		
-		sprite.setAnimationState("jump");
+		sprite.setAnimationState("rowling");
 		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
 		Vec2 direction = new Vec2(0,6);
 		direction.normalize();
@@ -170,7 +152,7 @@ public class TatuBola extends Player implements Steppable{
 		if( bodiesContact.size() > 0 && contAct == 0){
 			if( timeForNextAct < 0.00000001 ){
 			timeForNextAct = TIME_WAITING_FOR_ACT;	
-			sprite.setAnimationState("act");
+			sprite.setAnimationState("rowling");
 			float impulse = (3) * body.getMass();
 			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
@@ -203,7 +185,7 @@ public class TatuBola extends Player implements Steppable{
 		
 		Date t = new Date();
 		if( bodiesContact.size() > 0 && !actActive && (lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  )){
-			sprite.setAnimationState("walking");
+			sprite.setAnimationState("default");
 		}
 		
 		if(contJump > 0) contJump--;
@@ -214,7 +196,7 @@ public class TatuBola extends Player implements Steppable{
 	public void beginContact(Entity e, Contact contact) {
 		if( (contact.m_fixtureA.equals(footFixture) &&(!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID))|| (contact.m_fixtureB.equals(footFixture) &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
 			bodiesContact.add(e.body);
-			sprite.setAnimationState("walking");
+			sprite.setAnimationState("default");
 		}
 	}
 
@@ -227,38 +209,23 @@ public class TatuBola extends Player implements Steppable{
 			
 		}
 		if(bodiesContact.size()==0){
-			sprite.setAnimationState("jump");
+			sprite.setAnimationState("rowling");
 		}
 	}
-
-	@Override
-	public int[] getWalkFrames() {
-		return WALKING;
-	}
 	
-	public float[] getWalkFramesDuration(){
-		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
-	}
-
-	@Override
-	public int[] getJumpFrames() {
-		return JUMP;
-	}
+//	public float[] getWalkFramesDuration(){
+//		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f};
+//	}
+//	
+//	public float[] getJumpFramesDuration(){
+//		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f};
+//	}
+//	
+//	public float[] getActFramesDuration(){
+//		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f};
+//	}
 	
-	public float[] getJumpFramesDuration(){
-		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f};
-	}
-
-	@Override
-	public int[] getActFrames() {
-		return ACT;
-	}
-	
-	public float[] getActFramesDuration(){
-		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f};
-	}
-	
-	public void setSprite(Sprite sprite){
+	public void setSprite(AnimationSwitcher sprite){
 		this.sprite = sprite;
 	}
 	
@@ -276,7 +243,7 @@ public class TatuBola extends Player implements Steppable{
 //		
 //		
 //		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
-		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), physRect);
+        sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
 		
 	}
