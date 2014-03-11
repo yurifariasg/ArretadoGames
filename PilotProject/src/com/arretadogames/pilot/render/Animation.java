@@ -18,7 +18,8 @@ public class Animation {
     private String name;
     private Sprite[] sprites;
     private boolean repeat;
-
+    
+    private float animationRate = 1;
     private int currentKeyFrameIndex = -1;
     private float currentFrameTimeLeft = 0;
 
@@ -55,7 +56,7 @@ public class Animation {
     public void render(GLCanvas canvas, RectF rect, float timeElapsed) {
         // Figure out which frame is currently selected
         if (sprites[currentKeyFrameIndex].getTime() > 0) {
-            float currentTimeElapsed = timeElapsed;
+            float currentTimeElapsed = timeElapsed * animationRate;
             while (currentTimeElapsed > 0) {
                 float timeElapsedBefore = currentTimeElapsed;
                 currentTimeElapsed -= currentFrameTimeLeft;
@@ -94,6 +95,10 @@ public class Animation {
         } else {
             currentFrameTimeLeft = sprites[currentKeyFrameIndex].getTime();
         }
+    }
+
+    public void setAnimationRate(float multiplier) {
+        animationRate = multiplier;
     }
 
 }

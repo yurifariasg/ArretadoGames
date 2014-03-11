@@ -252,6 +252,15 @@ public class GLCanvas {
 				(x4), (y4),
 				colorV1, colorV2, colorV3, colorV4);
 	}
+	
+	public void setColor(int color) {
+        GLES11.glColor4f(Color.red(color) / 255f, Color.green(color) / 255f,
+                Color.blue(color) / 255f, Color.alpha(color) / 255f);
+	}
+	
+	public void resetColor() {
+	    setColor(Color.WHITE);
+	}
 
 	public void drawRectFromPhysics(
     		float x, float y,

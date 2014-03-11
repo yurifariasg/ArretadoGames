@@ -143,4 +143,20 @@
             </Animation>
         </AnimationSwitcher>
     </Sheet>
+    <Sheet resId="arrow">
+        <AnimationSwitcher name="Arrow">
+            <Animation name="default">
+                <Frame x="2" y="2" w="161" h="273" t="0.20" />
+			    <Frame x="165" y="2" w="161" h="273" t="0.20" />
+			    <Frame x="328" y="2" w="161" h="273" t="0.20" />
+			    <Frame x="2" y="277" w="161" h="273" t="0.20" />
+			    <Frame x="165" y="277" w="161" h="273" t="0.20" />
+			    <Frame x="328" y="277" w="161" h="273" t="0.20" /> <!-- Last, from now on, we just repeat -->
+                <Frame x="165" y="277" w="161" h="273" t="0.20" />
+                <Frame x="2" y="277" w="161" h="273" t="0.20" />
+                <Frame x="328" y="2" w="161" h="273" t="0.20" />
+                <Frame x="165" y="2" w="161" h="273" t="0.20" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
 </Spritesheets>

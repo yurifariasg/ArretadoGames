@@ -6,12 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.jbox2d.common.Vec2;
-
-import com.arretadogames.pilot.render.AnimationManager;
-import com.arretadogames.pilot.render.AnimationSwitcher;
-import com.arretadogames.pilot.render.PhysicsRect;
-
 /**
  * EffectManager class is a manager to Effects inside the GameWorld
  */
@@ -48,7 +42,7 @@ public class EffectManager {
 		return instance;
 	}
 	
-	public void addEffect(String type, Vec2 position, PhysicsRect phRect, float xOffset, float yOffset) {
+	public void addEffect(final EffectDescriptor effectDescriptor) {
 		
 		Effect effect;
 		if (!inactiveEffects.isEmpty()) {
@@ -58,17 +52,8 @@ public class EffectManager {
 			// Adds a new one
 			effect = new Effect();
 		}
-
-		effect.setPhysicsRect(phRect);
-		effect.setPosition(position);
-		effect.setOffsets(xOffset, yOffset);
-		effect.setAnimation(getAnimationForType(type));
 		
+		effect.setDescriptor(effectDescriptor);
 		activeEffects.add(effect);
 	}
-	
-	private AnimationSwitcher getAnimationForType(String type) {
-		return AnimationManager.getInstance().getSprite(type);
-	}
-
 }

@@ -1,13 +1,6 @@
 package com.arretadogames.pilot.world;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.jbox2d.common.Vec2;
-
+import android.graphics.Color;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
@@ -34,6 +27,8 @@ import com.arretadogames.pilot.entities.Spike;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.TatuBola;
 import com.arretadogames.pilot.entities.Water;
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.entities.scenario.Grass;
 import com.arretadogames.pilot.entities.scenario.Shrub;
 import com.arretadogames.pilot.entities.scenario.Tree;
@@ -52,6 +47,7 @@ import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.GameCamera;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.EndScreen;
@@ -61,6 +57,14 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
+
+import org.jbox2d.common.Vec2;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * GameWorld class represents the World in our Game
@@ -266,6 +270,26 @@ public class GameWorld extends GameScreen {
 				steppables.add((Steppable) e);
 			}
 		}
+		
+		// Add Arrows
+		PhysicsRect phrect = new PhysicsRect(0.4f, 0.8f);
+		Player p1 = players.get(PlayerNumber.ONE);
+        Player p2 = players.get(PlayerNumber.TWO);
+        EffectDescriptor descriptor = new EffectDescriptor();
+        descriptor.type = "Arrow";
+        descriptor.position = p1.body.getPosition();
+        descriptor.pRect = phrect;
+        descriptor.yOffset = 1;
+        descriptor.duration = 5;
+        descriptor.color = Color.BLUE;
+        
+        EffectManager.getInstance().addEffect(descriptor);
+        
+        descriptor = descriptor.clone();
+        descriptor.position = p2.body.getPosition();
+        descriptor.color = Color.RED;
+        
+        EffectManager.getInstance().addEffect(descriptor);
 	}
 	
 	private void setItemToPlayer(Player p, List<PlayableItem> list){

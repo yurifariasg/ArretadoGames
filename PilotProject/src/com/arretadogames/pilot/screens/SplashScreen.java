@@ -2,6 +2,7 @@ package com.arretadogames.pilot.screens;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.opengl.GLES11;
 import android.view.MotionEvent;
 
 import aurelienribon.tweenengine.BaseTween;
@@ -17,6 +18,8 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
+
+import javax.microedition.khronos.opengles.GL10;
 
 public class SplashScreen extends GameScreen implements TweenAccessor<SplashScreen> {
 
@@ -62,12 +65,17 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		canvas.scale(2, currentZoom, 400, 180 + (300 - 180) / 2);
 		canvas.drawRect(0, 180, 800, 300, Color.WHITE);
 		canvas.restoreState();
-
+		
+		// TODO: Remove these two GL-Specific methods, insert it inside Canvas to have same functionality
+		GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
 		paintBitmap.setAlpha(currentBitmapAlpha);
 		canvas.drawBitmap(logoId,
 		        centerX - imageWidth / 2, centerY - imageHeight / 2,
 		        imageWidth, imageHeight,
 		        paintBitmap);
+
+        GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		canvas.restoreState();
 
@@ -124,7 +132,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 				.end()
 				.pushPause(1)
 				.beginParallel()
-				.push(Tween.to(this, TWEEN_LOGO_ALPHA, 0.8f)
+				.push(Tween.to(this, TWEEN_LOGO_ALPHA, 0.6f)
 						.target(0))
 				.push(Tween.to(this, TWEEN_ZOOM, 1f)
 				.target(0.001f).ease(Back.IN))

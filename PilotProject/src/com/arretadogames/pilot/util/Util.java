@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.util;
 
+import android.graphics.Color;
+
 
 /**
  * Helper class to perform usual operations
@@ -28,6 +30,17 @@ public class Util {
 		if (proportion > 1)
 			proportion = 1;
 		return (Integer) evaluate(proportion, a, b);
+	}
+	
+	/**
+	 * Adjusts the alpha of a Java color
+	 */
+	public static int adjustColorAlpha(int color, float factor) {
+	    int alpha = Math.round(Color.alpha(color) * factor);
+	    int red = Color.red(color);
+	    int green = Color.green(color);
+	    int blue = Color.blue(color);
+	    return Color.argb(alpha, red, green, blue);
 	}
 	
 	/**

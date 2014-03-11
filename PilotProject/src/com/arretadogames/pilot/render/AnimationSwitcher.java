@@ -45,6 +45,18 @@ public class AnimationSwitcher {
 		if (spriteStates.get(currentState) != null)
 			spriteStates.get(currentState).resetIfInfinite();
 	}
+	
+	public void setRepeatableForAnimations(boolean repeat) {
+	    for (Animation a : spriteStates.values()) {
+	        a.setRepeat(repeat);
+	    }
+    }
+	
+	public void setAnimationRateMultiplier(float multiplier) {
+	    for (Animation a : spriteStates.values()) {
+            a.setAnimationRate(multiplier);
+        }
+	}
 
 //	public List<LoadableGLObject> getAllFrames() {
 //		List<LoadableGLObject> loadableObject = new ArrayList<LoadableGLObject>();
