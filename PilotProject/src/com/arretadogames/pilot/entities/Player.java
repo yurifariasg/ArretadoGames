@@ -1,17 +1,20 @@
 package com.arretadogames.pilot.entities;
 
-import com.arretadogames.pilot.game.Game;
-import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.items.Item;
-import com.arretadogames.pilot.render.Watchable;
-import com.arretadogames.pilot.world.GameWorld;
-
-import org.jbox2d.common.Vec2;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player extends Watchable implements Steppable{
+import org.jbox2d.common.Vec2;
+
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.items.Item;
+import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.world.GameWorld;
+
+public abstract class Player extends Entity implements Steppable{
+	
+	private static float TIME_BEFORE_DIE = 3f; // This will actually depend on the animation
+	private float timeToDie;
 
 	private float maxJumpVelocity = 5;
 	private float maxRunVelocity = 3;
@@ -27,7 +30,6 @@ public abstract class Player extends Watchable implements Steppable{
 	protected boolean actActive;
 	
 	private int acquiredCoins;
-	private int deathCount;
 	private int timeFinished;
 
 	private List<Item> items;
@@ -39,6 +41,7 @@ public abstract class Player extends Watchable implements Steppable{
 		jumpActive = false;
 		actActive = false;
 		items = new ArrayList<Item>();
+		timeToDie = 0;
 	}
 	
 	public boolean addItem(Item i){
@@ -55,9 +58,20 @@ public abstract class Player extends Watchable implements Steppable{
 	
 	@Override
 	public void step(float timeElapsed){
+		if (state == State.DYING) {
+			System.out.println( "Time to die: " + timeToDie + " - TimeElapsed: " + timeElapsed);
+			timeToDie -= timeElapsed;
+			if (timeToDie <= 0) {
+				state = State.DEAD;
+				System.out.println("DEAD");
+				PhysicalWorld.getInstance().addDeadEntity(this);
+			}
+		}
+		
 		for(Item i : items){
 			i.applyEffect(this);
 		}
+		
 	}
 	
 	public PlayerNumber getNumber() {
@@ -90,16 +104,11 @@ public abstract class Player extends Watchable implements Steppable{
 	}
 	
 	@Override
-	public void setDead(boolean isDead) {
-		if (isAlive() && isDead) // Was alive, now is dead
-			deathCount++;
-		
-		super.setDead(isDead);
-		disableThis();
-	}
-	
-	public int getDeathCount() {
-		return deathCount;
+	public void kill() {
+		if (isAlive()) {
+			state = State.DYING;
+			timeToDie = TIME_BEFORE_DIE;
+		}
 	}
 	
 	public int getTimeFinished() {

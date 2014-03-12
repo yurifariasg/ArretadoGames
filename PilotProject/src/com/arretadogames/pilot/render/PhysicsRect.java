@@ -22,5 +22,17 @@ public class PhysicsRect extends RectF {
 	public float getAngle() {
 		return angle;
 	}
+	
+	@Override
+	public void offset(float dx, float dy) {
+		super.offset(dx, dy);
+	}
+	
+	@Override
+	public PhysicsRect clone() {
+		PhysicsRect newR = new PhysicsRect(0, 0);
+		newR.set(this);
+		return newR;
+	}
 
 }

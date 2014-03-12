@@ -88,7 +88,7 @@ public class GameCamera {
 	private int getNumberOfAlivePlayers(Collection<Player> players) {
 		int alive = 0;
 		for (Player p : players)
-			if (p.isAlive())
+			if (!p.isDead())
 				alive++;
 		return alive;
 	}
@@ -127,7 +127,7 @@ public class GameCamera {
 		while (iiterator.hasNext()) {
 
 			PlayerNumber i = iiterator.next();
-			if (!players.get(i).isAlive())
+			if (players.get(i).isDead())
 				continue;
 
 			float x = players.get(i).getPosX();
@@ -143,7 +143,7 @@ public class GameCamera {
 
 				PlayerNumber j = jiterator.next();
 
-				if (i.equals(j) || !players.get(j).isAlive()) {
+				if (i.equals(j) || players.get(j).isDead()) {
 					continue;
 				}
 

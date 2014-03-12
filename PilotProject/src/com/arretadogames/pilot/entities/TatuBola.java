@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-public class TatuBola extends Player implements Steppable{
+public class TatuBola extends Player {
 
 	private AnimationSwitcher sprite;
 	private int contJump;
@@ -36,6 +36,7 @@ public class TatuBola extends Player implements Steppable{
 	private final float rad = 0.3f;
 	protected Fixture bodyFixture;
 	private int doubleJump;
+	
 	public TatuBola(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		applyConstants();
@@ -170,7 +171,7 @@ public class TatuBola extends Player implements Steppable{
 		applyConstants();
 		super.step(timeElapsed);
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
-		if (hasFinished() || !isAlive()) {
+		if (hasFinished() || isDead()) {
 			if (hasFinished())
 				stopAction();
 			return;
@@ -231,21 +232,19 @@ public class TatuBola extends Player implements Steppable{
 	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		System.out.println("Rendering Tatu at " + body.getPosition().toString() );
 		
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
-		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
-//		RectF rect = new RectF(
-//				(- (rad + 0.25f)* GLCanvas.physicsRatio), // Top Left
-//				(- (rad + 0.25f) * GLCanvas.physicsRatio), // Top Top Left
-//				((rad + 0.0f) * GLCanvas.physicsRatio), // Bottom Right
-//				((rad + 0.0f) * GLCanvas.physicsRatio)); // Bottom Right
-//		
-//		
-//		canvas.drawBitmap(sprite.getCurrentFrame(timeElapsed), rect, false);
+		canvas.rotate((float) (180 * - getAngle() / Math.PI));
         sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
 		
+	}
+	
+	@Override
+	public int getLayerPosition() {
+		return -50;
 	}
 
 	@Override

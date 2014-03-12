@@ -1,5 +1,13 @@
 package com.arretadogames.pilot.world;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.jbox2d.common.Vec2;
+
 import android.graphics.Color;
 import android.util.SparseArray;
 
@@ -48,7 +56,6 @@ import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.Watchable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
@@ -57,14 +64,6 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
-
-import org.jbox2d.common.Vec2;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * GameWorld class represents the World in our Game
@@ -389,7 +388,7 @@ public class GameWorld extends GameScreen {
 		
 		boolean hasFinished = true;
 		for (Player p : players.values()) {
-			hasFinished &= (p.hasFinished() || !p.isAlive()); // if all have finished or dead
+			hasFinished &= (p.hasFinished() || p.isDead()); // if all have finished or dead
 		}
 		
 		if (hasFinished)
@@ -405,8 +404,7 @@ public class GameWorld extends GameScreen {
 			if(e instanceof Steppable) steppables.remove((Steppable)e);
 			for ( PlayerNumber p : players.keySet() ){
 				if ( players.get(p).equals(e) ){
-					players.get(p).setDead(true);
-					//players.remove(p); @yuri: NEVER remove a player! Just check if he's alive
+					players.get(p).kill();
 					break;
 				}
 			}
@@ -434,7 +432,7 @@ public class GameWorld extends GameScreen {
 	public void setPlayersAsCurrentEntitiesToWatch(){
 		
 		HashMap<PlayerNumber, Player> players = getPlayers();
-		SparseArray<Watchable> toWatch = new SparseArray<Watchable>();
+		SparseArray<Player> toWatch = new SparseArray<Player>();
 		
 		for (PlayerNumber n : players.keySet() ){
 			toWatch.put(n.getValue(), players.get(n));

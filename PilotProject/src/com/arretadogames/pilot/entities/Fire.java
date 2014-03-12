@@ -1,17 +1,18 @@
 package com.arretadogames.pilot.entities;
 
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.AnimationSwitcher;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.render.particlesystem.Flame;
-
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
+
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.render.particlesystem.Flame;
 
 public class Fire extends Entity implements Steppable {
 
@@ -29,6 +30,8 @@ public class Fire extends Entity implements Steppable {
 	
 	private Flame[] flames;
 	private static final float DISTANCE_TO_SPAWN_FLAME = 0.5f;
+	
+	private EffectDescriptor killEntityEffect;
 	
 	public Fire(float x, float y) {
 		super(x, 0); // Fire will always be on Y = 0
@@ -56,6 +59,13 @@ public class Fire extends Entity implements Steppable {
 		fireFixture.setSensor(true);
 		
 		body.setType(BodyType.KINEMATIC);
+		
+		// Effect to kill entities
+		killEntityEffect = new EffectDescriptor();
+		killEntityEffect.repeat = true;
+		killEntityEffect.type = "Fire";
+		killEntityEffect.layerPosition = getLayerPosition() + 1;
+		killEntityEffect.duration = 10;
 	}
 
 	@Override
@@ -72,10 +82,20 @@ public class Fire extends Entity implements Steppable {
 	
 	@Override
 	public void beginContact(Entity e, Contact contact) {
-		super.endContact(e, contact);
+		super.beginContact(e, contact);
 		if (contact.getFixtureA().equals(fireFixture) ||
-				contact.getFixtureB().equals(fireFixture))
-			PhysicalWorld.getInstance().addDeadEntity(e);
+				contact.getFixtureB().equals(fireFixture)) {
+			if (e.isAlive()) {
+				e.kill();
+				EffectDescriptor killEffect = killEntityEffect.clone();
+				killEffect.position = e.body.getPosition();
+				killEffect.pRect = e.physRect.clone();
+				killEffect.pRect.inset(-0.5f, -0.5f);
+				EffectManager.getInstance().addEffect(killEffect);
+				
+			}
+//			PhysicalWorld.getInstance().addDeadEntity(e);
+		}
 	}
 
 	@Override

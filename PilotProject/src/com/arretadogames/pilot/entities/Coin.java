@@ -65,7 +65,7 @@ public class Coin extends Entity {
 		if (e.getType() == EntityType.PLAYER && isAlive()) {
 			Player p = (Player) e;
 			p.addCoins(value);
-			setDead(true);
+			kill();
 			PhysicalWorld.getInstance().addDeadEntity(this);
 		}
 	}

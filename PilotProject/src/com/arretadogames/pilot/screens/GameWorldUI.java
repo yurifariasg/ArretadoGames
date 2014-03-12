@@ -105,7 +105,7 @@ public class GameWorldUI extends GameScreen {
 			        getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
 		}
 
-		if (p1.isAlive()){
+		if (!p1.isDead()){
 			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390,
 			        getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
 			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, 5, p1.getPercentageLeftToNextAct());
@@ -122,7 +122,7 @@ public class GameWorldUI extends GameScreen {
                     getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
 		}
 
-		if (p2.isAlive()){
+		if (!p2.isDead()){
 			int cooldownX = COOLDOWN2_X;
 			if (!p2.getItems().isEmpty())
 				cooldownX -= 80;

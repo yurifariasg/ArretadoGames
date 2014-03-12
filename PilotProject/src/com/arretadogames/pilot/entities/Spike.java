@@ -43,7 +43,7 @@ public class Spike extends Entity{
 		super.beginContact(e, contact);
 		if (e.getType() == EntityType.PLAYER && isAlive()) {
 			Player p = (Player) e;
-			p.setDead(true);
+			p.kill();
 			PhysicalWorld.getInstance().addDeadEntity(p);
 		}
 	}

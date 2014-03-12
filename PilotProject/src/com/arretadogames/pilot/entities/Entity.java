@@ -9,18 +9,24 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
+import android.util.Log;
+
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Renderable;
-import com.arretadogames.pilot.render.AnimationSwitcher;
 
 
 public abstract class Entity implements Renderable, LayerEntity {
 	
+	public enum State {
+		ALIVE, DYING, DEAD;
+	}
+	
 	public Body body;
 	protected World world;
-	private boolean isDead;
 	protected PhysicsRect physRect;
+	protected State state;
 
 	public Entity(float x, float y) {
 		world = PhysicalWorld.getInstance().getWorld();
@@ -31,7 +37,7 @@ public abstract class Entity implements Renderable, LayerEntity {
 		body.setUserData(this);
 		body.setSleepingAllowed(true);
 		body.setAwake(false);
-		isDead = false;
+		state = State.ALIVE;
 	}
 	
 	@Override
@@ -39,14 +45,25 @@ public abstract class Entity implements Renderable, LayerEntity {
 		return 0;
 	}
 	
-	public boolean isAlive() {
-		return !isDead;
+	public final boolean isAlive() {
+		return state == State.ALIVE;
 	}
 	
-	public void setDead(boolean isDead) {
-		this.isDead = isDead;
+	public final boolean isDead() {
+		return state == State.DEAD;
 	}
 	
+	/**
+	 * Subclasses may override this to capture the kill event
+	 */
+	public void kill() {
+		if (!isAlive()) {
+			Log.i("Entity", "Trying to kill a entity that is not alive");
+		} else {
+			state = State.DEAD;
+		}
+	}
+
 	public void addFixture(FixtureDef fd){
 		body.createFixture(fd);
 	}
