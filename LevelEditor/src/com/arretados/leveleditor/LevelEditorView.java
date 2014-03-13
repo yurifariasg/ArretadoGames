@@ -422,7 +422,9 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         JSONGenerator json = new JSONGenerator(
                 gameCanvas1.getEntitiesPos(),
                 gameCanvas1.getGroundHeight(),
-                gameCanvas1.getHeight(), gameCanvas1.getFlag());
+                gameCanvas1.getHeight(),
+                gameCanvas1.getWidth(),
+                gameCanvas1.getFlag());
         
         String jsonString = json.generateJson().toJSONString();
         
@@ -455,6 +457,16 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
     }//GEN-LAST:event_clearScrBtnActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        updateCanvasDimensions();
+    }//GEN-LAST:event_jButton2ActionPerformed
+    
+    public void setCanvasDimensions(long width, long height) {
+        jTextWidthValue.setText(String.valueOf(width));
+        jTextHeigthValue.setText(String.valueOf(height));
+        updateCanvasDimensions();
+    }
+    
+    private void updateCanvasDimensions() {
         String wValue = jTextWidthValue.getText();
         String hValue = jTextHeigthValue.getText();
         
@@ -477,9 +489,9 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
             jScrollPane1.revalidate();
             gameCanvas1.revalidate();
             gameCanvas1.repaint();
-        }catch(Exception e){ }        
-    }//GEN-LAST:event_jButton2ActionPerformed
-
+        }catch(Exception e){ }   
+    }
+    
 private void itemComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_itemComboBoxPropertyChange
 }//GEN-LAST:event_itemComboBoxPropertyChange
 
@@ -559,7 +571,6 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
         
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
-            System.out.println("Opening: " + file.getName() + "." + "/n");
         } else {
             System.out.println("Open command cancelled by user." + "/n");
         }
@@ -576,8 +587,6 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
             }
         }
         
-        System.out.println("=====================================================\n"+content);
-        
         JSONParser jsonParse = new JSONParser();
         JSONObject json = null;
         try {
@@ -586,7 +595,7 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
             Logger.getLogger(LevelEditorView.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        LevelLoader lvl = new LevelLoader(json, gameCanvas1);
+        LevelLoader lvl = new LevelLoader(json, gameCanvas1, this);
         lvl.parseJson();
         
         gameCanvas1.repaint();

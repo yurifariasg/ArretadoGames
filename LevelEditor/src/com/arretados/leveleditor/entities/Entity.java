@@ -45,6 +45,10 @@ public abstract class Entity {
     public boolean collides(int x, int y) {
         return false; // TODO: create collides
     }
+
+    public DrawMode getType() {
+        return type;
+    }
     
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();

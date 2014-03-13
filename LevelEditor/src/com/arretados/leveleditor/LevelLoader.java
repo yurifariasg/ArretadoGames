@@ -28,109 +28,97 @@ public class LevelLoader {
     
     private JSONObject jsonLevel;
     private GameCanvas gc;
-    
-    public LevelLoader(JSONObject level, GameCanvas gc){
-        this.jsonLevel = level;
-        this.gc = gc;
+    private LevelEditorView editorView;
+
+    LevelLoader(JSONObject json, GameCanvas level, LevelEditorView levelEditor) {
+        this.jsonLevel = json;
+        this.gc = level;
+        this.editorView = levelEditor;
     }
     
     public void parseJson(){
+        gc.clearObjectsList();
+        int groundHeight = gc.getGroundHeight();
+        
+        long jsonTotalHeight = (Long) jsonLevel.get("height");
+        long jsonTotalWidth = (Long) jsonLevel.get("width");
+        editorView.setCanvasDimensions(jsonTotalWidth, jsonTotalHeight);
+        float yOffset = Utils.convertPixelToMeter(jsonTotalHeight - groundHeight);
         
         JSONArray jArray = (JSONArray) jsonLevel.get("entities");
         JSONObject jObj;
         for (int i = 0; i < jArray.size(); i++){
             jObj = (JSONObject) jArray.get(i);
+            
+            jObj.put("y", yOffset - (Double)jObj.get("y"));
+            
             if ( String.valueOf(jObj.get("type")).equals(DrawMode.BOX.toString()) ){
                 
                 //BOX
-                System.out.println("BOX_in");
                 gc.addEntities(new Box(jObj));
-                System.out.println("BOX_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.BREAKABLE.toString())){
                 
                 //BREAKABLE
-                System.out.println("BREAKABLE_in");
                 gc.addEntities(new Breakable(jObj));
-                System.out.println("BREAKABLE_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.COIN.toString())){
                 
                 //COIN
-                System.out.println("COIN_in");
                 gc.addEntities(new Coin(jObj));
-                System.out.println("COIN_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.FLAG.toString())){
                 
                 //FLAG
-                System.out.println("FLAG_in");
-                gc.addEntities(new Flag(jObj));
-                System.out.println("FLAG_out");
+                gc.setFlag(new Flag(jObj));
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.FLUID.toString())){
                 
                 //FLUID
-                System.out.println("FLUID_in");
                 gc.addEntities(new Fluid(jObj));
-                System.out.println("FLUID_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.LIANA.toString())){
                 
                 //LIANA
-                System.out.println("LIANA_in");
                 gc.addEntities(new Liana(jObj));
-                System.out.println("LIANA_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.ONEWAY_WALL.toString())){
                 
                 //ONEWAY_WALL
-                System.out.println("ONEWAY_in");
                 gc.addEntities(new OneWayWall(jObj));
-                System.out.println("ONEWAY_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.PLAYER.toString())){
                 
                 //PLAYER
-                System.out.println("PLAYER_in");
                 gc.addEntities(new Player(jObj));
-                System.out.println("PLAYER_out");
                 
             }else if (String.valueOf(jObj.get("type")).equals(DrawMode.PULLEY.toString())){
                 
                 //PULLEY
-                System.out.println("PULLEY_in");
                 gc.addEntities(new Pulley(jObj));
-                System.out.println("PULLEY_out");
                 
-            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.GRASS)){
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.GRASS.toString())){
                 
                 //GRASS
-                System.out.println("GRASS_in");
                 gc.addEntities(new Grass(jObj));
-                System.out.println("GRASS_out");
                 
-            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.SHRUB)){
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.SHRUB.toString())){
                 
                 //SHRUB
-                System.out.println("SHRUB_in");
                 gc.addEntities(new Shrub(jObj));
-                System.out.println("SHRUB_out");
                 
-            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.SPIKE)){
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.SPIKE.toString())){
                 
                 //SHRUB
-                System.out.println("SPIKE_in");
                 gc.addEntities(new Spike(jObj));
-                System.out.println("SPIKE_out");
                 
-            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.TREE)){
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.TREE.toString())){
 
                 //TREE
-                System.out.println("PULLEY_in");
                 gc.addEntities(new Tree(jObj));
-                System.out.println("PULLEY_out");
                 
+            } else {
+                System.out.println("Not Found: " + jObj.get("type"));
             }
             
         }

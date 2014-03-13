@@ -16,6 +16,12 @@ public class Utils {
         return calc;
     }
     
+    public static float convertMeterToPixel(float meters) {
+        float calc;
+        calc = meters * GameCanvas.METER_TO_PIXELS;
+        return calc;
+    }
+    
     public static float parseValue(Object floatValue) {
         return (float) Float.valueOf((String.valueOf(floatValue)).replace(",", ".") + "f");
     }

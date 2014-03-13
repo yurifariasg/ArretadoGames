@@ -26,7 +26,7 @@ public class Fire extends Entity implements Steppable {
 	private Fixture fireFixture;
 	private Vec2 velVector = new Vec2(velocity, 0);
 	
-	private static final int FLAMES_QUANTITY = 4;
+	private static final int FLAMES_QUANTITY = 1;
 	
 	private Flame[] flames;
 	private static final float DISTANCE_TO_SPAWN_FLAME = 0.5f;

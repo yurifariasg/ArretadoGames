@@ -34,7 +34,7 @@ public class AnimationManager {
     }
     
     public AnimationSwitcher getSprite(String name) {
-        return spriteEntities.get(name);
+        return spriteEntities.get(name.toLowerCase());
     }
     
     public void loadXml() {
@@ -71,13 +71,13 @@ public class AnimationManager {
                         
                     } else if (parser.getName().equalsIgnoreCase(ANIMATION_SWITCHER_TAG)) {
                         
-                        String name = parser.getAttributeValue(null, "name");
+                        String name = parser.getAttributeValue(null, "name").toLowerCase();
                         currentSpriteEntity = new AnimationSwitcher(name);
                         
                     } else if (parser.getName().equalsIgnoreCase(ANIMATION_TAG)) {
                         
                         frames.clear();
-                        currentAnimationName = parser.getAttributeValue(null, "name");
+                        currentAnimationName = parser.getAttributeValue(null, "name").toLowerCase();
                         
                     } else if (parser.getName().equalsIgnoreCase(FRAME_TAG)) {
                         

@@ -232,8 +232,6 @@ public class TatuBola extends Player {
 	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		System.out.println("Rendering Tatu at " + body.getPosition().toString() );
-		
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI));
@@ -242,11 +240,6 @@ public class TatuBola extends Player {
 		
 	}
 	
-	@Override
-	public int getLayerPosition() {
-		return -50;
-	}
-
 	@Override
 	public int getStatusImg() {
 		return R.drawable.tatu_status;

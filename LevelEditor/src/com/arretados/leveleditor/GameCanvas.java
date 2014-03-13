@@ -59,6 +59,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         addMouseMotionListener(this);
     }
     
+    public void setFlag(Flag f) {
+        this.flag = f;
+    }
+    
     public void setMainView(LevelEditorView mainView) {
         this.mainView = mainView;
     }
@@ -83,14 +87,24 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
         
         if (selectedEntity != null)
             drawSelection(selectedEntity);
+        
+        List<Fluid> fluids = new ArrayList<Fluid>();
 
         for (int i = 0; i < entities.size(); i++)
-            entities.get(i).drawMyself(g);
+            if (!entities.get(i).getType().equals(DrawMode.FLUID)) {
+                entities.get(i).drawMyself(g);
+            } else {
+                fluids.add((Fluid)entities.get(i));
+            }
         
         if (flag != null)
             flag.drawMyself(g);
         
         drawGround(g);
+        
+        for (Fluid f : fluids) {
+            f.drawMyself(g);
+        }
     }
     
     public void drawGroundLine(int x,int y){
@@ -110,7 +124,8 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
     
     private void drawFlag(int x, int y) {
-        flag = new Flag(x,y,10);
+        if (flag != null)
+            flag = new Flag(x,y,10);
         repaint();
     }
     
@@ -133,6 +148,11 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
     }
     
     private Entity checkClickOn(int x, int y) {
+        
+        if (flag.collides(x, y)) {
+            return flag;
+        }
+        
         for (int i = 0; i < entities.size() ; i++) {
             if (entities.get(i).collides(x, y))
                 return entities.get(i);
