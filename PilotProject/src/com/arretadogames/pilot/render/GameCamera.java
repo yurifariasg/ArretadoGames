@@ -342,10 +342,10 @@ public class GameCamera {
 		int topSky = Color.rgb(0, 134, 168);
 		int bottomSky = Color.rgb(277, 251, 145);
 
-		gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT,
-				GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT,
-				GameSettings.TARGET_WIDTH, 0, topSky, bottomSky, bottomSky,
-				topSky);
+//		gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT,
+//				GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT,
+//				GameSettings.TARGET_WIDTH, 0, topSky, bottomSky, bottomSky,
+//				topSky);
 
 		movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
 				center.y, initialX, flagX, translator);

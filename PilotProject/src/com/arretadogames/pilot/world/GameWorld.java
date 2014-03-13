@@ -13,6 +13,7 @@ import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.database.StoreInitializeHelper;
 import com.arretadogames.pilot.entities.AraraAzul;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Breakable;
@@ -64,6 +65,8 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
+import com.arretadogames.pilot.weathers.Storm;
+import com.arretadogames.pilot.weathers.Weather;
 
 /**
  * GameWorld class represents the World in our Game
@@ -87,11 +90,14 @@ public class GameWorld extends GameScreen {
 	private LevelDescriptor level;
 	
 	private Fire fire;
+
+	private Weather weather;
 	
 	public GameWorld() {
 		backgroundId = R.drawable.mountains_repeatable;
 		pWorld = PhysicalWorld.getInstance();
 		totalElapsedSeconds = 0;
+		weather = new Storm();
 		isInitialized = false;
 	}
 	
@@ -349,11 +355,14 @@ public class GameWorld extends GameScreen {
 	public void render(GLCanvas canvas, float timeElapsed) {
 		Profiler.initTick(ProfileType.RENDER);
 
+		weather.drawBackground(canvas);
 		if (!pauseScreen.isHidden()) {
 			gameCamera.render(canvas, 0); // Draw a fixed frame - Dont move anything
 		} else {
 			gameCamera.render(canvas, timeElapsed);
 		}
+		
+		weather.render(canvas, timeElapsed);
 		
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Camera Render Time");
 		Profiler.initTick(ProfileType.RENDER);
