@@ -52,7 +52,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		canvas.fillScreen(255, 0, 0, 0);
+		canvas.setClearColor(255, 0, 0, 0);
 
 		canvas.saveState();
 		float centerX = GameSettings.TARGET_WIDTH / 2;

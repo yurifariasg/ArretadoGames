@@ -1,14 +1,20 @@
 package com.arretadogames.pilot.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.contacts.Contact;
 
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.items.Item;
 import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.world.GameWorld;
 
 public abstract class Player extends Entity implements Steppable{
@@ -34,6 +40,12 @@ public abstract class Player extends Entity implements Steppable{
 
 	private List<Item> items;
 	
+	protected AnimationSwitcher sprite;
+	protected int contJump;
+	protected int contAct;
+	protected Fixture footFixture;
+	protected Collection<Body> bodiesContact;
+	
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
 		this.playerNumber = playerNumber;
@@ -42,6 +54,7 @@ public abstract class Player extends Entity implements Steppable{
 		actActive = false;
 		items = new ArrayList<Item>();
 		timeToDie = 0;
+        bodiesContact = new HashSet<Body>();
 	}
 	
 	public boolean addItem(Item i){
@@ -59,11 +72,9 @@ public abstract class Player extends Entity implements Steppable{
 	@Override
 	public void step(float timeElapsed){
 		if (state == State.DYING) {
-			System.out.println( "Time to die: " + timeToDie + " - TimeElapsed: " + timeElapsed);
 			timeToDie -= timeElapsed;
 			if (timeToDie <= 0) {
 				state = State.DEAD;
-				System.out.println("DEAD");
 				PhysicalWorld.getInstance().addDeadEntity(this);
 			}
 		}
@@ -186,18 +197,6 @@ public abstract class Player extends Entity implements Steppable{
 		return 100;
 	}
 	public abstract int getStatusImg();
-	
-//	public abstract int[] getWalkFrames();
-//	
-//	public abstract int[] getJumpFrames();
-//	
-//	public abstract int[] getActFrames();
-//
-//	public abstract float[] getWalkFramesDuration();
-//	
-//	public abstract float[] getJumpFramesDuration();
-//	
-//	public abstract float[] getActFramesDuration();
 
 	public int getMaxDoubleJumps() {
 		return maxDoubleJumps;
@@ -206,5 +205,55 @@ public abstract class Player extends Entity implements Steppable{
 	public void setMaxDoubleJumps(int maxDoubleJumps) {
 		this.maxDoubleJumps = maxDoubleJumps;
 	}
+	
+    public void beginContact(Entity e, Contact contact) {
+        if( (contact.m_fixtureA.equals(footFixture)
+                && (!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID)) ||
+                        (contact.m_fixtureB.equals(footFixture)
+                                &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
+            bodiesContact.add(e.body);
+            sprite.setAnimationState("default");
+        }
+    }
+
+    public void endContact(Entity e , Contact contact) {
+        if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
+            if(bodiesContact.contains(e.body)){
+                bodiesContact.remove(e.body);
+                
+                if(bodiesContact.size()==0){
+                    sprite.setAnimationState("jump");
+                }
+            }
+            
+        }
+    }
+    
+    public void setSprite(AnimationSwitcher sprite){
+        this.sprite = sprite;
+    }
+    
+    protected double getAngle(){
+        //return body.getAngle();
+        double angle = 0;
+        if(body.getLinearVelocity().length() > 1){
+            double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
+            cos = Math.abs(cos);
+            angle = Math.acos(cos);
+            if( body.getLinearVelocity().y < 0 ) angle = angle * -1;
+            angle = Math.min(Math.PI/6,angle);
+            angle = Math.max(-Math.PI/6,angle);
+        }
+        return angle;
+    }
+    
+    protected void applyReturn(Vec2 impulse){
+        int quant = bodiesContact.size() * 3;
+        for(Body b : bodiesContact){
+            b.applyLinearImpulse(impulse.mul(-1/quant), b.getWorldCenter());
+            b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(-0.5f,-0.6f)));
+            b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(0.5f,-0.6f)));
+        }
+    }
 	
 }

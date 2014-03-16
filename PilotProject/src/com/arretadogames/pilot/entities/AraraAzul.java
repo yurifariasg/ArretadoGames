@@ -3,42 +3,25 @@ package com.arretadogames.pilot.entities;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Filter;
-import org.jbox2d.dynamics.Fixture;
-import org.jbox2d.dynamics.contacts.Contact;
 
-import java.util.Collection;
-import java.util.HashSet;
+public class AraraAzul extends Player implements Steppable {
 
-public class AraraAzul extends Player implements Steppable{
-
-	private AnimationSwitcher sprite;
-	private int contJump;
-	private Fixture footFixture;
-	Collection<Body> bodiesContact;
 	private float k = 3f;
 	private int doubleJump;
 	private float radius;
-	
-	/*private static final int[] ACT = {R.drawable.lobo_guara_act1,
-				 R.drawable.lobo_guara_act2,
-				 R.drawable.lobo_guara_act3,
-				 };*/
 	
 	public AraraAzul(float x, float y, PlayerNumber number) {
 		super(x, y, number);
 		applyConstants();
 		doubleJump = getMaxDoubleJumps();
-		//PolygonShape shape = new PolygonShape();
-		//shape.setAsBox(0.5f, 0.5f); // FIXME Check this size
+
 		CircleShape shape = new CircleShape();
 		radius = 0.3f;
 		shape.setRadius(radius);
@@ -51,7 +34,6 @@ public class AraraAzul extends Player implements Steppable{
 		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
 		footFixture.setFilterData(filter);
 		
-		contJump = 0;
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(0.3f, 0.1f, new Vec2(0f,-0.4f), 0f);
@@ -59,8 +41,6 @@ public class AraraAzul extends Player implements Steppable{
 		footFixture.setSensor(true);
 		
 		footFixture.setFilterData(filter);
-		
-		bodiesContact = new HashSet<Body>();
 		
 		// Drawing Rect
 		physRect = new PhysicsRect(1, 1);
@@ -74,31 +54,7 @@ public class AraraAzul extends Player implements Steppable{
 		setTimeWaitingForAct(GameSettings.ARARA_TIME_WAITING_FOR_ACT);
 		setMaxDoubleJumps(1);
 	}
-
-	@Override
-	public PolygonShape getWaterContactShape() {
-		PolygonShape a = new PolygonShape();
-		a.setAsBox(radius,radius);
-		return a;
-	}
 	
-	double getAngle(){
-		//return body.getAngle();
-		double angle = 0;
-		if(body.getLinearVelocity().length() > 1){
-			double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
-			cos = Math.abs(cos);
-			angle = Math.acos(cos);
-			//System.out.println(cos + " - " + angle);
-			if( body.getLinearVelocity().y < 0 ) angle = angle * -1;
-			angle = Math.min(Math.PI/6,angle);
-			angle = Math.max(-Math.PI/6,angle);
-		}
-		return angle;
-	}
-	
-	
-
 	public void jump() {
 		
 		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
@@ -118,16 +74,6 @@ public class AraraAzul extends Player implements Steppable{
 		contJump = 5;
 		applyReturn(direction);
 	}
-	
-	private void applyReturn(Vec2 impulse){
-		int quant = bodiesContact.size() * 3;
-		for(Body b : bodiesContact){
-			b.applyLinearImpulse(impulse.mul(-1/quant), b.getWorldCenter());
-			b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(-0.5f,-0.6f)));
-			b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(0.5f,-0.6f)));
-		}
-	}
-	
 	
 	public void run(){
 		if(body.getLinearVelocity().x < 0.5){ 
@@ -184,48 +130,12 @@ public class AraraAzul extends Player implements Steppable{
 		run();
 	}
 	
-	public void beginContact(Entity e, Contact contact) {
-		if( (contact.m_fixtureA.equals(footFixture) &&(!contact.m_fixtureB.isSensor() || e.getType() == EntityType.FLUID))|| (contact.m_fixtureB.equals(footFixture) &&(!contact.m_fixtureA.isSensor() || e.getType() == EntityType.FLUID)) ){
-			sprite.setAnimationState("default");
-			bodiesContact.add(e.body);
-		}
-	}
-
-	public void endContact(Entity e , Contact contact) {
-		if(contact.m_fixtureA.equals(footFixture) || contact.m_fixtureB.equals(footFixture)){
-			if(bodiesContact.contains(e.body)){
-				bodiesContact.remove(e.body);
-				
-			}
-			
-		}
-		if(bodiesContact.size()==0){
-			sprite.setAnimationState("default"); // jump
-		}
-	}
-
-//	public float[] getWalkFramesDuration(){
-//		return new float[] {0.15f, 0.15f, 0.15f, 0.15f, 0.15f ,0.15f, 0.15f, 0.15f, 0.15f ,0.15f}; // 10
-//	}
-//	
-//	public float[] getJumpFramesDuration(){ // 4
-//		return new float[] {0.3f, 0.3f, 0.3f, 0f};
-//	}
-//	
-//	public float[] getActFramesDuration(){
-//		return new float[] {0.3f, 0.3f, 0.3f, 0f};
-//	}
-	
-	public void setSprite(AnimationSwitcher sprite){
-		this.sprite = sprite;
-	}
-	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
-		canvas.rotate((float) (180 * - getAngle() / Math.PI)); // getAngle() ou body.getAngle() ?
+		canvas.rotate((float) (180 * - getAngle() / Math.PI));
 		sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
 		

@@ -11,9 +11,9 @@ import android.graphics.Rect;
  */
 public class Sprite {
 
-    private int sourceSheet;
-    private Rect frameRect;
-    private float time;
+    private final int sourceSheet;
+    private final Rect frameRect;
+    private final float time;
 
     public Sprite(int sourceSheetRes, int x, int y, int width, int height, float time) {
         this.sourceSheet = sourceSheetRes;
@@ -27,10 +27,6 @@ public class Sprite {
 
     public float getTime() {
         return time;
-    }
-
-    public void setTime(float time) {
-        this.time = time;
     }
 
     public int getSourceSheet() {

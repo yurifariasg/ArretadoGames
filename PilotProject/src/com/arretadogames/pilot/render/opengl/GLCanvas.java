@@ -61,23 +61,20 @@ public class GLCanvas {
 		GLES11.glRotatef(-180, 1, 0, 0);
 
 		// Fills the screen with black
-		fillScreen(255, 0, 0, 0);
+		setClearColor(255, 0, 0, 0);
 
 		return true;
 	}
 
-
 	public void translate(float dx, float dy) {
 		GLES11.glTranslatef(dx, dy, 0);
 	}
-
 
 	public void scale(float sx, float sy, float px, float py) {
 		GLES11.glTranslatef(px, py, 0);
 		GLES11.glScalef(sx, sy, 0);
 		GLES11.glTranslatef(-px, -py, 0);
 	}
-
 
 	public void rotate(float degrees) {
 		GLES11.glRotatef(degrees, 0, 0, 1);
@@ -102,7 +99,7 @@ public class GLCanvas {
 
 	public void drawText(String text, float x, float y, FontSpecification fs, float size, boolean centered) {
 		if (fontTextures.get(fs) == null) {
-			Log.e("GLCanvas", "Font not loaded when drawing (\"" + text + "\")");
+			Log.w("GLCanvas", "Font not loaded when drawing (\"" + text + "\")");
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadFont(fs);
 		}
@@ -116,7 +113,7 @@ public class GLCanvas {
 		return fontTexture.getGLId();
 	}
 
-	public void fillScreen(float a, float r, float g, float b) {
+	public void setClearColor(float a, float r, float g, float b) {
 		GLES11.glClearColor(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
 
@@ -151,7 +148,7 @@ public class GLCanvas {
 	public void drawBitmap(int imageId, float x, float y, float width, float height,
 	        float extraWidth, float extraHeight, Paint paint) {
 		if (textures.get(imageId) == null) {
-			Log.e("GLCanvas", "Texture not loaded: " +
+			Log.w("GLCanvas", "Texture not loaded: " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadImage(imageId);
@@ -171,7 +168,7 @@ public class GLCanvas {
 
 	public void drawBitmap(int imageId, Rect srcRect, RectF dstRect) {
 		if (textures.get(imageId) == null) {
-			Log.e("GLCanvas", "Texture not loaded " +
+			Log.w("GLCanvas", "Texture not loaded " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadImage(imageId);
@@ -190,7 +187,7 @@ public class GLCanvas {
 
 	public void drawBitmap(int imageId, RectF dstRect) {
 		if (textures.get(imageId) == null) {
-			Log.e("GLCanvas", "Texture not loaded " +
+			Log.w("GLCanvas", "Texture not loaded " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadImage(imageId);

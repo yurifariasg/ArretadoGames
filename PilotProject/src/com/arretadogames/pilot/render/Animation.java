@@ -100,5 +100,20 @@ public class Animation {
     public void setAnimationRate(float multiplier) {
         animationRate = multiplier;
     }
+    
+    @Override
+    protected Animation clone() {
+        Animation an = new Animation(name, sprites);
+        setRepeat(repeat);
+        return an;
+    }
+    
+    public float getTotalDuration() {
+        float totalDuration = 0;
+        for (Sprite s : sprites) {
+            totalDuration += s.getTime();
+        }
+        return totalDuration;
+    }
 
 }

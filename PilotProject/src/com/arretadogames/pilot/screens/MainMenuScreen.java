@@ -83,7 +83,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
 
-		canvas.fillScreen(255, 0, 0, 0);
+		canvas.setClearColor(255, 0, 0, 0);
 
 //		canvas.scale(currentZoom, currentZoom, GameSettings.TARGET_WIDTH / 2, GameSettings.TARGET_HEIGHT / 2);
 
@@ -105,7 +105,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			settingsScreen.render(canvas, timeElapsed);
 		}
 
-		canvas.fillScreen(currentBlackAlpha, 0, 0, 0);
+		canvas.setClearColor(currentBlackAlpha, 0, 0, 0);
 		canvas.restoreState();
 	}
 

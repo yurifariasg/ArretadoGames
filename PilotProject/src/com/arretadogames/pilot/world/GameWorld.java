@@ -1,19 +1,10 @@
 package com.arretadogames.pilot.world;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.jbox2d.common.Vec2;
-
 import android.graphics.Color;
 import android.util.SparseArray;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
-import com.arretadogames.pilot.database.StoreInitializeHelper;
 import com.arretadogames.pilot.entities.AraraAzul;
 import com.arretadogames.pilot.entities.Box;
 import com.arretadogames.pilot.entities.Breakable;
@@ -67,6 +58,14 @@ import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
 import com.arretadogames.pilot.weathers.Weather;
+
+import org.jbox2d.common.Vec2;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * GameWorld class represents the World in our Game
@@ -165,6 +164,7 @@ public class GameWorld extends GameScreen {
 							entityDescriptor.getSize());
 					break;
 				case SEED:
+				    System.out.println(" Creating Seed ");
 					entity = new Coin(entityDescriptor.getX(), entityDescriptor.getY(), 10);
 					break;
 				case HOLE:
@@ -362,7 +362,7 @@ public class GameWorld extends GameScreen {
 			gameCamera.render(canvas, timeElapsed);
 		}
 		
-		weather.render(canvas, timeElapsed);
+//		weather.render(canvas, timeElapsed);
 		
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Camera Render Time");
 		Profiler.initTick(ProfileType.RENDER);

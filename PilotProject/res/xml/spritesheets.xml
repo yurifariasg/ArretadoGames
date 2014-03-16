@@ -10,6 +10,14 @@
 	             <Frame x="260" y="260" w="256" h="256" t="0.5" />
 	             <Frame x="518" y="260" w="256" h="256" t="0.5" />
 	          </Animation>
+             <Animation name="jump"> 
+                 <Frame x="2" y="2" w="256" h="256" t="0.5" />
+                 <Frame x="260" y="2" w="256" h="256" t="0.5" />
+                 <Frame x="518" y="2" w="256" h="256" t="0.5" />
+                 <Frame x="2" y="260" w="256" h="256" t="0.5" />
+                 <Frame x="260" y="260" w="256" h="256" t="0.5" />
+                 <Frame x="518" y="260" w="256" h="256" t="0.5" />
+              </Animation>
 	     </AnimationSwitcher>
 	</Sheet>
 	<Sheet resId="wolf" >
@@ -54,7 +62,7 @@
                 <Frame x="518" y="2" w="256" h="256" t="0.5" />
                 <Frame x="2" y="260" w="256" h="256" t="0.5" />
             </Animation>
-            <Animation name="rowling">
+            <Animation name="jump">
                 <Frame x="260" y="260" w="256" h="256" t="0.5" />
                 <Frame x="518" y="260" w="256" h="256" t="0.5" />
                 <Frame x="2" y="518" w="256" h="256" t="0.5" />
@@ -156,6 +164,58 @@
                 <Frame x="2" y="277" w="161" h="273" t="0.20" />
                 <Frame x="328" y="2" w="161" h="273" t="0.20" />
                 <Frame x="165" y="2" w="161" h="273" t="0.20" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="seed_fade">
+        <AnimationSwitcher name="SeedFade">
+            <Animation name="default">
+                <!-- <Frame x="0" y="0" w="205" h="205" t="0.05" />
+                <Frame x="205" y="0" w="205" h="205" t="0.05" />
+                <Frame x="410" y="0" w="205" h="205" t="0.05" />
+                <Frame x="615" y="0" w="205" h="205" t="0.05" />
+                <Frame x="820" y="0" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="205" w="205" h="205" t="0.05" />
+                <Frame x="205" y="205" w="205" h="205" t="0.05" />
+                <Frame x="410" y="205" w="205" h="205" t="0.05" />
+                <Frame x="615" y="205" w="205" h="205" t="0.05" /> -->
+                <Frame x="820" y="205" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="410" w="205" h="205" t="0.05" />
+                <Frame x="205" y="410" w="205" h="205" t="0.05" />
+                <Frame x="410" y="410" w="205" h="205" t="0.05" />
+                <Frame x="615" y="410" w="205" h="205" t="0.05" />
+                <Frame x="820" y="410" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="615" w="205" h="205" t="0.05" />
+                <Frame x="205" y="615" w="205" h="205" t="0.05" />
+                <Frame x="410" y="615" w="205" h="205" t="0.05" />
+                <Frame x="615" y="615" w="205" h="205" t="0.05" />
+                <Frame x="820" y="615" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="820" w="205" h="205" t="0.05" />
+                <Frame x="205" y="820" w="205" h="205" t="0.05" />
+                <Frame x="410" y="820" w="205" h="205" t="0.05" />
+                <Frame x="615" y="820" w="205" h="205" t="0.05" />
+                <Frame x="820" y="820" w="205" h="205" t="0.05" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="splash">
+        <AnimationSwitcher name="Splash">
+            <Animation name="default">
+                <Frame x="0" y="0" w="205" h="205" t="0.05" />
+                <Frame x="205" y="0" w="205" h="205" t="0.05" />
+                <Frame x="410" y="0" w="205" h="205" t="0.05" />
+                <Frame x="615" y="0" w="205" h="205" t="0.05" />
+                <Frame x="820" y="0" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="205" w="205" h="205" t="0.05" />
+                <Frame x="205" y="205" w="205" h="205" t="0.05" />
+                <Frame x="410" y="205" w="205" h="205" t="0.05" />
+                <Frame x="615" y="205" w="205" h="205" t="0.05" />
+                <Frame x="820" y="205" w="205" h="205" t="0.05" />
             </Animation>
         </AnimationSwitcher>
     </Sheet>

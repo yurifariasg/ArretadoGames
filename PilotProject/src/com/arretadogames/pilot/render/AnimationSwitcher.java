@@ -6,7 +6,7 @@ import android.graphics.RectF;
 
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class AnimationSwitcher {
+public class AnimationSwitcher implements Cloneable {
 	
     private String name;
 	private HashMap<String, Animation> spriteStates;
@@ -42,8 +42,9 @@ public class AnimationSwitcher {
 	
 	public void setAnimationState(String state) {
 		this.currentState = state;
-		if (spriteStates.get(currentState) != null)
+		if (spriteStates.get(currentState) != null) {
 			spriteStates.get(currentState).resetIfInfinite();
+		}
 	}
 	
 	public void setRepeatableForAnimations(boolean repeat) {
@@ -57,6 +58,28 @@ public class AnimationSwitcher {
             a.setAnimationRate(multiplier);
         }
 	}
+	
+	@Override
+	public AnimationSwitcher clone() {
+	    AnimationSwitcher as = new AnimationSwitcher(name);
+	    for (String state : spriteStates.keySet()) {
+	        as.addState(spriteStates.get(state).clone());
+	    }
+	    return as;
+	}
+
+    /**
+     * Gets the duration of the current animation
+     * @return
+     */
+    public float getDuration() {
+        return spriteStates.get(currentState).getTotalDuration();
+    }
+	
+//	@Override
+//	protected AnimationSwitcher clone()  {
+//	    return null;
+//	}
 
 //	public List<LoadableGLObject> getAllFrames() {
 //		List<LoadableGLObject> loadableObject = new ArrayList<LoadableGLObject>();

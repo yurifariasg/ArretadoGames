@@ -87,7 +87,7 @@ public class Fire extends Entity implements Steppable {
 				contact.getFixtureB().equals(fireFixture)) {
 			if (e.isAlive()) {
 				e.kill();
-				EffectDescriptor killEffect = killEntityEffect.clone();
+				EffectDescriptor killEffect = killEntityEffect;//.clone();
 				killEffect.position = e.body.getPosition();
 				killEffect.pRect = e.physRect.clone();
 				killEffect.pRect.inset(-0.5f, -0.5f);

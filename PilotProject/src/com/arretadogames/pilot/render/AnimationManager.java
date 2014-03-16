@@ -34,7 +34,12 @@ public class AnimationManager {
     }
     
     public AnimationSwitcher getSprite(String name) {
-        return spriteEntities.get(name.toLowerCase());
+        if (spriteEntities.containsKey(name.toLowerCase())) {
+            return spriteEntities.get(name.toLowerCase()).clone();
+        } else {
+            Log.e("AnimationManager", "AnimationSwitcher not found: " + name);
+            return null;
+        }
     }
     
     public void loadXml() {

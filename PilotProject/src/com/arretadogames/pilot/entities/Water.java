@@ -3,6 +3,8 @@ package com.arretadogames.pilot.entities;
 import android.graphics.Color;
 
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -16,7 +18,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Water extends Entity implements Steppable{
+public class Water extends Entity implements Steppable {
+    
+    private static final int WATER_LAYER_POS = -1;
+    private static EffectDescriptor splashEffect;
+    
+    public static EffectDescriptor getSplashEffect() {
+        if (splashEffect == null) {
+            splashEffect = new EffectDescriptor();
+            splashEffect.type = "Splash";
+            splashEffect.repeat = false;
+            splashEffect.layerPosition = WATER_LAYER_POS + 1;
+        }
+        
+        return splashEffect;
+    }
 	
 	private class Spring {
 		public float springHeight;
@@ -43,12 +59,12 @@ public class Water extends Entity implements Steppable{
 	private static final float SPRING_SWIFTNESS = 0.01f;
 	// This makes the waves spread more or less..
 	private static final float WAVES_SPREADNESS = 0.006f;
-	// Maximum distance between springs, smaller value causes more sprinsg to be created
+	// Maximum distance between springs, smaller value causes more springs to be created
 	private static final float WATER_SPRINGS_MAX_DISTANCE = 0.6f; // Meters
 	// Factor which makes the springs stop (higher value makes them stop faster)
 	private static final float SPRING_DAMPENING = 0.0005f; //0.025f;
 	// Maximum speed that a spring can go.. This avoids then to go a lot higher or lower
-	private static final float SPRING_MAXIMUM_SPEED = 0.05f; // 0.04
+	private static final float SPRING_MAXIMUM_SPEED = 0.035f; // 0.05 - 0.04
 	// Padding top for the water drawing
 	private static final float WATER_TOP_PADDING = 0.25f; // Meters
 	
@@ -91,10 +107,10 @@ public class Water extends Entity implements Steppable{
 		int waterDivisions = (int) Math.floor(waterWidth / WATER_SPRINGS_MAX_DISTANCE);
 		float divisionlength = waterWidth / waterDivisions;
 		
-		springs = new Spring[waterDivisions];
-		float currentX = divisionlength;
+		springs = new Spring[waterDivisions + 1];
+		float currentX = 0;
 		
-		for (int i = 0 ; i < waterDivisions ; i++) {
+		for (int i = 0 ; i < waterDivisions + 1 ; i++) {
 			springs[i] = new Spring();
 			
 			springs[i].springRelativeX = currentX;
@@ -108,12 +124,27 @@ public class Water extends Entity implements Steppable{
 	
 	/**
 	 * Causes the water to create waves and a splash effect in the given x position
-	 * @param x
+	 * @param e
 	 */
-	public void splash(float x, float yVel) {
+	public void splash(Entity e, Contact contact) {
+	    
+	    float x = e.getPosX();
+	    float yVel = e.body.m_linearVelocity.y / ENTITY_VELOCITY_REDUCTION_FACTOR;
+	    
 		if (x <= getPosX() - waterWidth / 2 || x >= getPosX() + waterWidth / 2) {
 			return; // Out of range
 		}
+		
+		if (yVel < 0) { // Splash Threshold (usually -0.1 or less, closer to 0 )
+		    
+		    EffectDescriptor splashEffect = getSplashEffect();
+            splashEffect.pRect = e.physRect;
+		    splashEffect.position = new Vec2(e.getPosX() + 0.2f, // Splash a little in front of the player
+		            getPosY() + waterHeight / 2
+		            + e.physRect.height() * 0.5f); // There is a little offset up based on the image (so the base of the water fits the top of the water)
+		    EffectManager.getInstance().addEffect(splashEffect);
+		}
+		
 		float waterRelativePosition = x - (getPosX() - waterWidth / 2);
 		int selectedDivision = (int) Math.floor(waterRelativePosition / WATER_SPRINGS_MAX_DISTANCE);
 		
@@ -121,12 +152,11 @@ public class Water extends Entity implements Steppable{
 			selectedDivision = springs.length - 1;
 		
 		springs[selectedDivision].speed = yVel; // speed it up!
-		
 	}
 
 	@Override
 	public int getLayerPosition() {
-		return -1;
+		return WATER_LAYER_POS;
 	}
 	
 	public static List<Vec2> transformToVec2(List<List<Float>> l){
@@ -220,14 +250,6 @@ public class Water extends Entity implements Steppable{
 		float bottomY = getPosY() - waterHeight / 2;
 		float initialX = getPosX() - waterWidth / 2;
 		
-		canvas.drawRectFromPhysics(
-				initialX, bottomY + waterHeight + WATER_TOP_PADDING,
-				initialX, bottomY,
-				initialX + springs[0].springRelativeX, bottomY,
-				initialX + springs[0].springRelativeX, bottomY + springs[0].springHeight + WATER_TOP_PADDING,
-				WATER_SURFACE_COLOR, WATER_BOTTOM_COLOR,
-				WATER_BOTTOM_COLOR, WATER_SURFACE_COLOR);
-		
 		for (int i = 1 ; i < springs.length ; i++) {
 			
 			canvas.drawRectFromPhysics(
@@ -240,11 +262,6 @@ public class Water extends Entity implements Steppable{
 		}
 		
 		// Draw Surface Lines
-		canvas.drawLine(
-				initialX*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + waterHeight + WATER_TOP_PADDING)*GLCanvas.physicsRatio, 
-				(initialX + springs[0].springRelativeX)*GLCanvas.physicsRatio, GameSettings.TARGET_HEIGHT - (bottomY + springs[0].springHeight + WATER_TOP_PADDING)*GLCanvas.physicsRatio,
-				WATER_SURFACE_LINE_WIDTH, WATER_BOTTOM_COLOR);
-		
 		for (int i = 1 ; i < springs.length ; i++) {
 			canvas.drawLine(
 					GLCanvas.physicsRatio * (initialX + springs[i-1].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i-1].springHeight + WATER_TOP_PADDING), 
@@ -369,7 +386,7 @@ public class Water extends Entity implements Steppable{
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
 		entitiesContact.add(e);
-		splash(e.getPosX(), e.body.m_linearVelocity.y / ENTITY_VELOCITY_REDUCTION_FACTOR);
+		splash(e, contact);
 	}
 	
 	@Override

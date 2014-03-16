@@ -1,5 +1,7 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.AnimationSwitcher;
@@ -12,16 +14,22 @@ import org.jbox2d.dynamics.contacts.Contact;
 public class Coin extends Entity {
 	
 	private static final int DEFAULT_VALUE = 10;
-	
-//	public final static int[] FRAMES = {
-//		R.drawable.seed0,R.drawable.seed1,R.drawable.seed2,R.drawable.seed1};
-	
-//	public final static float[] DURATION = {
-//		0.08f, 0.08f, 0.08f, 0.08f
-//	};
-	
+
+	private final static PhysicsRect SEED_RECT = new PhysicsRect(0.4f, 0.4f);
+    private final static PhysicsRect SEED_EFFECT_RECT = new PhysicsRect(0.8f, 0.8f);
+	private static EffectDescriptor dieAnimation;
 	private AnimationSwitcher sprite;
 	private int value;
+	
+	private static EffectDescriptor getDieEffect() {
+	    if (dieAnimation == null) {
+	        dieAnimation = new EffectDescriptor();
+	        dieAnimation.type = "SeedFade";
+	        dieAnimation.pRect = SEED_EFFECT_RECT;
+	        dieAnimation.repeat = false;
+	    }
+	    return dieAnimation;
+	}
 	
 	public Coin(float x, float y, int value) {
 		super(x, y);
@@ -35,8 +43,8 @@ public class Coin extends Entity {
 		shape.setRadius(0.5f);
 		body.createFixture(shape, 0f).setSensor(true);
 		body.setType(BodyType.KINEMATIC);
+		physRect = SEED_RECT;
 		
-		physRect = new PhysicsRect(0.4f, 0.4f);
 	}
 
 	@Override
@@ -68,6 +76,15 @@ public class Coin extends Entity {
 			kill();
 			PhysicalWorld.getInstance().addDeadEntity(this);
 		}
+	}
+	
+	@Override
+	public void kill() {
+	    EffectDescriptor effect = getDieEffect();
+	    effect.position = body.getPosition();
+	    EffectManager.getInstance().addEffect(effect);
+	    
+	    super.kill();
 	}
 
 }
