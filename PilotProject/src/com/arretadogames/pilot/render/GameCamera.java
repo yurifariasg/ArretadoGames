@@ -1,6 +1,16 @@
 package com.arretadogames.pilot.render;
 
-import android.graphics.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.jbox2d.callbacks.QueryCallback;
+import org.jbox2d.collision.AABB;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Fixture;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
@@ -15,18 +25,6 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.world.GameWorld;
-
-import org.jbox2d.callbacks.QueryCallback;
-import org.jbox2d.collision.AABB;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Fixture;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 public class GameCamera {
 
@@ -166,47 +164,11 @@ public class GameCamera {
 			}
 		}
 		
-		float fireXPosition = gameWorld.getFire().getPosX() + 1; // Adds an offset to the front of fire
-		float fireDistance = minX - fireXPosition;
-
-		// This function says:
-		// If the distance is negative (fire is in front of players), the firePositionWeight is 1 (maximum)
-		// If the distance is higher than DISTANCE_TO_START_INTERPOLATION, the firePositionWeight is 0 (insignificant)
-		// If it is between 0 and DISTANCE_TO_START_INTERPOLATION, it gets between 0 and 1, higher if it gets closer to 0
-		
-		final int DISTANCE_TO_START_INTERPOLATION = 10;
-		
-		float k;
-		
-		if (GameSettings.ALWAYS_SHOW_FIRE) {
-		    k = 1;
-		} else {
-    		if (fireDistance < 0)
-    			k = 1;
-    		else if (fireDistance > DISTANCE_TO_START_INTERPOLATION)
-    			k = 0;
-    		else
-    			k = 1 - (fireDistance - 1f) / DISTANCE_TO_START_INTERPOLATION;
-    		
-    		
-    		k = k > 1 ? 1 : k; // Makes sure k doesnt go higher than 1
-    		k = k < 0.05 ? 0.05f : k; // Makes sure the minimum is 0.05
-		}
-		
-		Vec2 playersCenter = center.mul(1f / numberOfPlayers);
-
-        float x = fireXPosition + (playersCenter.x - fireXPosition) * (1 - k);
-		// Interpolation Equation
-		float y = playersCenter.y * ((x - fireXPosition) / (playersCenter.x - fireXPosition));
-		
-		center.addLocal(x, y);
-		
-		maxXDistance += minX - x;
-		        
 		// Add fire
-		center.mulLocal(1f / (numberOfPlayers + 1));
-
-		center.addLocal(2, 0);
+		center.mulLocal(1f / numberOfPlayers);
+		
+		// Makes the camera go a little further
+		center.addLocal(3, 0);
 
 		if (maxYDistance <= maxXDistance * 0.5f) { // Threshold indicating when
 			// it is good to start
@@ -283,7 +245,6 @@ public class GameCamera {
 			if (reachedPercentage >= 1) {
 
 				transitionTrigger = TransitionTrigger.NONE;
-				// System.out.println("TRANSITION IS OVER");
 				transitioning = false;
 
 				currentLowerBound = new Vec2(targetLowerBound);
@@ -326,26 +287,6 @@ public class GameCamera {
 		Profiler.initTick(ProfileType.RENDER);
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
-
-		if (GameSettings.ACTIVATE_FIRE) {
-			float cameraWidth = upperBound.x - lowerBound.x;
-			float velocityIncrease = 0;
-			if (cameraWidth >= 11) {
-				velocityIncrease = (cameraWidth - 11) / 20.0f;
-			}
-			float newVelocity = gameWorld.getFire().getBaseVelocity()
-					* (1 + velocityIncrease);
-			gameWorld.getFire().setCurrentVelocity(newVelocity);
-		}
-
-		// Draw Sky
-		int topSky = Color.rgb(0, 134, 168);
-		int bottomSky = Color.rgb(277, 251, 145);
-
-//		gameCanvas.drawRect(0, 0, 0, GameSettings.TARGET_HEIGHT,
-//				GameSettings.TARGET_WIDTH, GameSettings.TARGET_HEIGHT,
-//				GameSettings.TARGET_WIDTH, 0, topSky, bottomSky, bottomSky,
-//				topSky);
 
 		movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
 				center.y, initialX, flagX, translator);

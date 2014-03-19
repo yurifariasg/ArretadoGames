@@ -14,6 +14,8 @@ import com.arretados.leveleditor.entities.EntityPanel;
 import com.arretados.leveleditor.entities.EntityPanel.ItemPropertyChangedListener;
 import com.arretados.leveleditor.entities.Fluid;
 import com.arretados.leveleditor.entities.FluidPanel;
+import com.arretados.leveleditor.entities.Hole;
+import com.arretados.leveleditor.entities.HolePanel;
 import com.arretados.leveleditor.entities.Liana;
 import com.arretados.leveleditor.entities.LianaPanel;
 import com.arretados.leveleditor.entities.OneWayWall;
@@ -98,6 +100,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         Grass.grass_panel = new GrassPanel(this);
         Shrub.shrub_panel = new ShrubPanel(this);
         Spike.spike_panel = new SpikePanel(this);
+        Hole.panel = new HolePanel(this);
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -217,7 +220,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jScrollInternalPanel.setName("jScrollInternalPanel"); // NOI18N
         jScrollInternalPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        gameCanvas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        gameCanvas1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(-16777216,true)));
         gameCanvas1.setName("gameCanvas1"); // NOI18N
         gameCanvas1.setPreferredSize(new java.awt.Dimension(3000, 600));
 
@@ -265,7 +268,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
         jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
 
-        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB, DrawMode.SPIKE}));
+        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB, DrawMode.SPIKE, DrawMode.HOLE}));
         itemComboBox.setName("itemComboBox"); // NOI18N
         itemComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -305,40 +308,40 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(jTextHeigthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jTextWidthValue, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                     .addComponent(jLabel1)
-                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 338, Short.MAX_VALUE)
+                    .addComponent(itemComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 336, Short.MAX_VALUE)
                     .addComponent(jLabel3)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(clearScrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_LoadLevel, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
+                        .addComponent(jButton_LoadLevel, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1091, Short.MAX_VALUE)
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(itemComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton_LoadLevel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(clearScrBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextWidthValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -558,6 +561,9 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
         break;
         case PULLEY:
             itemPanel.add(Pulley.pulley_panel);
+        break;
+        case HOLE:
+            itemPanel.add(Hole.panel);
         break;
     }
     itemPanel.validate();
