@@ -5,9 +5,6 @@ import android.opengl.GLES11;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.entities.Entity;
-import com.arretadogames.pilot.entities.EntityType;
-import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.render.AnimationManager;
@@ -54,7 +51,6 @@ public class GameWorldUI extends GameScreen {
 
 	private Player p1;
 	private Player p2;
-	private Fire fire;
 	private GameWorld gWorld;
 	
 	private AnimationSwitcher itemActiveAnim;
@@ -70,11 +66,6 @@ public class GameWorldUI extends GameScreen {
 
 		p1 = gWorld.getPlayers().get(PlayerNumber.ONE);
 		p2 = gWorld.getPlayers().get(PlayerNumber.TWO);
-
-		for (Entity e : gWorld.getEntities()){
-			if (e.getType() == EntityType.FIRE)
-				fire = (Fire) e;
-		}
 
 		itemActiveAnim = AnimationManager.getInstance().getSprite("Spinner");
 		itemActiveAnim2 = AnimationManager.getInstance().getSprite("Spinner");
@@ -114,7 +105,6 @@ public class GameWorldUI extends GameScreen {
 		if (!p2.isDead()){
 			canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2.body.getPosition().x), 440,
                     getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
-			
 			if (p2.getItem() != null) {
                 canvas.drawRect(PLAYER_2_ITEM_SIZE, p2.getItem().getColor());
     	        canvas.drawBitmap(p2.getItem().getImageDrawable(), PLAYER_2_ITEM_SIZE);

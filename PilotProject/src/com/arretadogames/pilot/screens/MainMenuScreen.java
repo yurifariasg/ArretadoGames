@@ -1,6 +1,5 @@
 package com.arretadogames.pilot.screens;
 
-import android.widget.Toast;
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.MainActivity;
@@ -17,7 +16,6 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
-import com.arretadogames.pilot.ui.ZoomImageButton;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener, TweenAccessor<MainMenuScreen> {
 
@@ -30,8 +28,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private static final int STORE_BUTTON = 4;
 	private static final int TOURNAMENT_BUTTON = 5;
 
-//	private ImageButton settingsBt;
 	private ImageButton playBt;
+	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
 	private ImageButton tournamentBt;
 	private ImageButton storeBt;
@@ -45,17 +43,19 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private State currentState;
 
 	public MainMenuScreen() {
-		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 210,
-                getDimension(R.dimen.main_menu_play_button_size),
-                getDimension(R.dimen.main_menu_play_button_size),
+		playBt = new ImageButton(PLAY_BUTTON, 340, 240,
+                getDimension(R.dimen.main_menu_play_button_size)+30,
+                getDimension(R.dimen.main_menu_play_button_size)+30,
                 this,
-				R.drawable.bt_play_selected,
-				R.drawable.bt_play_unselected);
+				R.drawable.quickrace_button_selected,
+				R.drawable.quickrace_button_unselected);
 
-//		settingsBt = new ImageButton(SETTINGS_BUTTON,
-//				700, 390, this,
-//				R.drawable.bt_settings_selected,
-//				R.drawable.bt_settings_unselected);
+		settingsBt = new ImageButton(SETTINGS_BUTTON, 20, 20,
+				getDimension(R.dimen.main_menu_button_size),
+                getDimension(R.dimen.main_menu_button_size),
+				this,
+				R.drawable.bt_settings_selected,
+				R.drawable.bt_settings_unselected);
 
 		gPlusBt = new ImageButton(G_SIGN_IN_BUTTON,
 				700, 20,
@@ -73,12 +73,20 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				R.drawable.bt_tournament_unselected);
 
 		storeBt = new ImageButton(STORE_BUTTON,
-				700, 380,
-                getDimension(R.dimen.main_menu_button_size),
-                getDimension(R.dimen.main_menu_button_size),
+				550, 240,
+                getDimension(R.dimen.main_menu_play_button_size)+30,
+                getDimension(R.dimen.main_menu_play_button_size)+30,
                 this,
-				R.drawable.bt_store_selected,
-				R.drawable.bt_store_unselected);
+				R.drawable.store_button_selected,
+				R.drawable.store_button_unselected);
+		
+		tournamentBt = new ImageButton(TOURNAMENT_BUTTON,
+				130, 240,
+                getDimension(R.dimen.main_menu_play_button_size)+30,
+                getDimension(R.dimen.main_menu_play_button_size)+30,
+                this,
+				R.drawable.tournament_button_selected,
+				R.drawable.tournament_button_unselected);
 
 		inputLabel = new Text(400, 50, "",
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, true);
@@ -103,7 +111,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		        0, getDimension(R.dimen.main_menu_bg_extra_height));
 
 		if (currentState == State.MAIN) {
-//			settingsBt.render(canvas, timeElapsed);
+			settingsBt.render(canvas, timeElapsed);
 			playBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			storeBt.render(canvas, timeElapsed);
@@ -134,7 +142,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void input(InputEventHandler event) {
 		if (currentState == State.MAIN) {
 			playBt.input(event);
-//			settingsBt.input(event);
+			settingsBt.input(event);
 			gPlusBt.input(event);
 			storeBt.input(event);
 			tournamentBt.input(event);
@@ -172,6 +180,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		case TOURNAMENT_BUTTON:
 			startTournamentSelection();
 			Game.getInstance().setGameMode(GameMode.TOURNAMENT);
+			break;
 		}
 	}
 

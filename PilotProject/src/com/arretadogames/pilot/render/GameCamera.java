@@ -184,8 +184,7 @@ public class GameCamera implements Renderable, Steppable {
 				}
 			}
 		}
-		
-		// Add fire
+
 		center.mulLocal(1f / numberOfPlayers);
 		
 		// Makes the camera go a little further
@@ -206,7 +205,6 @@ public class GameCamera implements Renderable, Steppable {
 					transitioning = true;
 					startTime = getCurrentTime();
 					transitionTrigger = TransitionTrigger.VIEWPORT_SIDE_PRIORITY_CHANGED;
-					// System.out.println("TRANSITION IS STARTED");
 				}
 				calculateWidthFirst = true;
 			}

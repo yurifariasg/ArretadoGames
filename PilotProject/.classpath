@@ -6,8 +6,9 @@
 	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry exported="true" kind="lib" path="libs/box2d.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry exported="true" kind="lib" path="libs/box2d.jar"/>
+	<classpathentry kind="lib" path="libs/box2d.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

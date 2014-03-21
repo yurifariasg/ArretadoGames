@@ -7,7 +7,6 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityBuilder;
 import com.arretadogames.pilot.entities.EntityType;
-import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.PlayableItem;
 import com.arretadogames.pilot.entities.Player;
@@ -59,8 +58,6 @@ public class GameWorld extends GameScreen {
 	
 	private boolean isInitialized;
 	private LevelDescriptor level;
-	
-	private Fire fire;
 
 	private Weather weather;
 	
@@ -84,7 +81,6 @@ public class GameWorld extends GameScreen {
 		totalElapsedSeconds = 0;
 		isInitialized = false;
 		pWorld.removeAll();
-		fire = null;
 		flagPos = 0;
 		players.clear();
 		steppables.clear();
@@ -114,7 +110,6 @@ public class GameWorld extends GameScreen {
 	}
 	
 	private void createEntities(LevelDescriptor ld) {
-		
 		EntityBuilder builder = new EntityBuilder(ld);
 		builder.buildEntities();
 		
