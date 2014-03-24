@@ -27,7 +27,7 @@ import java.util.List;
 
 public class CharacterSelectionScreen extends GameScreen implements GameButtonListener {
 
-	private final RectF BASE_RECT = new RectF(0, 0, 170, 170);
+	private final RectF BASE_RECT = new RectF(0, 0, 280, 240);
 //	private final RectF BASE_ITEM_RECT = new RectF(0, 0, 80, 80);
 
 	private PlayerSelector[] selectors;
@@ -76,35 +76,35 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		spots[0] = new CharacterSpot();
 		spots[0].character = PlayableCharacter.LOBO_GUARA;
 		spots[0].rect = new RectF(BASE_RECT);
-		spots[0].rect.left = CENTER_X - BASE_RECT.width() - 20;
+		spots[0].rect.left = CENTER_X - BASE_RECT.width();
 		spots[0].rect.right = spots[0].rect.left + BASE_RECT.width();
-		spots[0].rect.top = CENTER_Y - BASE_RECT.height() - 20;
+		spots[0].rect.top = CENTER_Y - BASE_RECT.height();
 		spots[0].rect.bottom = spots[0].rect.top + BASE_RECT.height();
 		selectors[0].selectorRect = new RectF();
 
 		spots[1] = new CharacterSpot();
 		spots[1].character = PlayableCharacter.ARARA_AZUL;
 		spots[1].rect = new RectF(BASE_RECT);
-		spots[1].rect.left = CENTER_X + 20;
+		spots[1].rect.left = CENTER_X;
 		spots[1].rect.right = spots[1].rect.left + BASE_RECT.width();
-		spots[1].rect.top = CENTER_Y - BASE_RECT.height() - 20;
+		spots[1].rect.top = CENTER_Y - BASE_RECT.height();
 		spots[1].rect.bottom = spots[1].rect.top + BASE_RECT.height();
 		selectors[1].selectorRect = new RectF();
 
 		spots[2] = new CharacterSpot();
 		spots[2].character = PlayableCharacter.TATU_BOLA;
 		spots[2].rect = new RectF(BASE_RECT);
-		spots[2].rect.left = CENTER_X - BASE_RECT.width() - 20;
+		spots[2].rect.left = CENTER_X - BASE_RECT.width();
 		spots[2].rect.right = spots[2].rect.left + BASE_RECT.width();
-		spots[2].rect.top = CENTER_Y + 20;
+		spots[2].rect.top = CENTER_Y;
 		spots[2].rect.bottom = spots[2].rect.top + BASE_RECT.height();
 
 		spots[3] = new CharacterSpot();
 		spots[3].character = PlayableCharacter.MACACO_PREGO;
 		spots[3].rect = new RectF(BASE_RECT);
-		spots[3].rect.left = CENTER_X + 20;
+		spots[3].rect.left = CENTER_X;
 		spots[3].rect.right = spots[3].rect.left + BASE_RECT.width();
-		spots[3].rect.top = CENTER_Y + 20;
+		spots[3].rect.top = CENTER_Y;
 		spots[3].rect.bottom = spots[3].rect.top + BASE_RECT.height();
 	}
 
@@ -265,6 +265,12 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		public boolean touch(float x, float y) {
 			CharacterSpot newSpot = getSpotAt(x, y);
 			if (newSpot != null){
+				if (! isPlayerOne) {
+					if (selectors[0].spot == newSpot) {
+						resetSelections();
+						return false;
+					}
+				}
 				selectorRect.set(newSpot.rect);
 				spot = newSpot;
 				spot.selector = this;
@@ -275,7 +281,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 
 		private CharacterSpot getSpotAt(float x, float y){
 			for (int i = 0; i < spots.length ; i++) {
-				if (spots[i].rect.contains(x, y) && spots[i].isAvailable()){
+				if (spots[i].rect.contains(x, y)){// && spots[i].isAvailable()){TODO my alteration
 					return spots[i];
 				}
 			}
