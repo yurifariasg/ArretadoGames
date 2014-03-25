@@ -27,9 +27,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	private static final int GO_BUTTON = 1;
 	private PlayerSelector[] selectors;
 	private CharacterSpot[] spots;
-	
 	private ImageButton btCharsSelected;
-
 	private boolean isPlayerOne;
 	private boolean selectionDone;
 
