@@ -74,7 +74,6 @@ public class GLTexturedFont {
 		Rect src;
 		Rect dst = new Rect();
 		int charNumber;
-		gl.glColor4f(1, 1, 1, 1);
 		gl.glPushMatrix();
 		for (int i = 0; i < text.length() ; i++) {
 			// Source rect

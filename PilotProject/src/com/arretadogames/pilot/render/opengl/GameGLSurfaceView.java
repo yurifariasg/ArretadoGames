@@ -163,7 +163,7 @@ public class GameGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Re
 
 		// Enable Transparency
 		GLES11.glEnable(GL10.GL_BLEND);
-		GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA); // There is a change on SplashScreen and StageSelection
 	}
 
 	@Override

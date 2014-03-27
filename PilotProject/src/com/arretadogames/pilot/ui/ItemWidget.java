@@ -180,8 +180,8 @@ public class ItemWidget implements Renderable, GameButtonListener {
 
 	}
 
-	public void input(InputEventHandler event) {
-		buttonBuy.input(event);
+	public boolean input(InputEventHandler event) {
+		return buttonBuy.input(event);
 	}
 
 }

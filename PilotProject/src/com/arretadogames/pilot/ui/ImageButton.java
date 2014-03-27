@@ -33,11 +33,13 @@ public class ImageButton extends Button {
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		if (isSelected && selectedImageId != 0) {
-			canvas.drawBitmap(selectedImageId, x, y, width, height);
-		} else if (unselectedImageId != 0) {
-			canvas.drawBitmap(unselectedImageId, x, y, width, height);
-		}
+	    if (isVisible()) {
+    		if (isSelected && selectedImageId != 0) {
+    			canvas.drawBitmap(selectedImageId, x, y, width, height);
+    		} else if (unselectedImageId != 0) {
+    			canvas.drawBitmap(unselectedImageId, x, y, width, height);
+    		}
+	    }
 	}
 
 	public void setSelectedImage(int selectedImageId) {
@@ -46,6 +48,10 @@ public class ImageButton extends Button {
 
 	public void setUnselectedImage(int unselectedImageId) {
 		this.unselectedImageId = unselectedImageId;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 }

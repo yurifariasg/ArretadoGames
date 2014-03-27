@@ -1,8 +1,14 @@
 package com.arretadogames.pilot.render.opengl;
 
+import java.nio.IntBuffer;
+import java.util.HashMap;
+
+import javax.microedition.khronos.opengles.GL10;
+
+import org.jbox2d.common.Vec2;
+
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.opengl.GLES11;
@@ -19,13 +25,6 @@ import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
 import com.arretadogames.pilot.render.PhysicsRect;
-
-import org.jbox2d.common.Vec2;
-
-import java.nio.IntBuffer;
-import java.util.HashMap;
-
-import javax.microedition.khronos.opengles.GL10;
 
 public class GLCanvas {
 
@@ -106,6 +105,21 @@ public class GLCanvas {
 
 		fontTextures.get(fs).drawText(gl, text, (int) x, (int) y, size, centered);
 	}
+	
+	public void drawText(String text, float x, float y, FontSpecification fs, float size,
+			boolean centered, float alpha) {
+		
+		if (alpha >= 0 && alpha <= 255) {
+            GLES11.glColor4f(1f, 1f, 1f, alpha / 255f);
+        }
+		
+		drawText(text, x, y, fs, size, centered);
+		
+		if (alpha >= 0 && alpha <= 255) {
+            GLES11.glColor4f(1f, 1f, 1f, 1f);
+        }
+		
+	}
 
 	private int loadFont(FontSpecification fs) {
 		GLTexturedFont fontTexture = new GLTexturedFont(fs, gl);
@@ -134,19 +148,19 @@ public class GLCanvas {
 	}
 
 	public void drawBitmap(int imageId, float x, float y, float width, float height) {
-		drawBitmap(imageId, x, y, width, height, 0, 0, null);
+		drawBitmap(imageId, x, y, width, height, 0, 0, -1);
 	}
 
-    public void drawBitmap(int imageId, float x, float y, float width, float height, Paint paint) {
-        drawBitmap(imageId, x, y, width, height, 0, 0, paint);
+    public void drawBitmap(int imageId, float x, float y, float width, float height, float alpha) {
+        drawBitmap(imageId, x, y, width, height, 0, 0, alpha);
     }
 
 	public void drawBitmap(int imageId, float x, float y, float width, float height, float extraWidth, float extraHeight) {
-        drawBitmap(imageId, x, y, width, height, extraWidth, extraHeight, null);
+        drawBitmap(imageId, x, y, width, height, extraWidth, extraHeight, -1);
     }
 
 	public void drawBitmap(int imageId, float x, float y, float width, float height,
-	        float extraWidth, float extraHeight, Paint paint) {
+	        float extraWidth, float extraHeight, float alpha) {
 		if (textures.get(imageId) == null) {
 			Log.w("GLCanvas", "Texture not loaded: " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
@@ -154,8 +168,8 @@ public class GLCanvas {
 				loadImage(imageId);
 		}
 		saveState();
-    		if (paint != null) {
-                GLES11.glColor4f(1f, 1f, 1f, paint.getAlpha() / 255f);
+    		if (alpha >= 0 && alpha <= 255) {
+                GLES11.glColor4f(1f, 1f, 1f, alpha / 255f);
             }
 			translate(x, y);
 
@@ -163,6 +177,10 @@ public class GLCanvas {
 			GLTexturedRect.draw(gl,
 			        0, 0, texture.getTextureWidth() - extraWidth, texture.getTextureHeight() - extraHeight,
 			        0, 0, width, height, texture);
+			
+    		if (alpha >= 0 && alpha <= 255) {
+    			GLES11.glColor4f(1f, 1f, 1f, 1f);
+    		}
 		restoreState();
 	}
 
@@ -351,5 +369,4 @@ public class GLCanvas {
 		auxVec[1].y = i;
 		drawLines(auxVec, width, color, false);
 	}
-
 }

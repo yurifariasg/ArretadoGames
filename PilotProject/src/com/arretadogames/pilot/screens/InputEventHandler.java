@@ -7,17 +7,22 @@ import android.view.MotionEvent;
 public class InputEventHandler {
 	
 	private MotionEvent motionEvent;
+	private int offsetX, offsetY;
 
 	public InputEventHandler(MotionEvent event) {
 		this.motionEvent = event;
 	}
 	
+	public void setMotionEvent(MotionEvent event) {
+		this.motionEvent = event;
+	}
+	
 	public float getX() {
-		return motionEvent.getX(getIndex()) / GameSettings.WidthRatio;
+		return (motionEvent.getX(getIndex()) / GameSettings.WidthRatio) + getOffsetX();
 	}
 	
 	public float getY() {
-		return motionEvent.getY(getIndex()) / GameSettings.HeightRatio;
+		return (motionEvent.getY(getIndex()) / GameSettings.HeightRatio) + getOffsetY();
 	}
 
 	public int getAction() {
@@ -29,11 +34,11 @@ public class InputEventHandler {
 	}
 	
 	public float getX(int pointerIndex) {
-		return motionEvent.getX(pointerIndex) / GameSettings.WidthRatio;
+		return (motionEvent.getX(pointerIndex) / GameSettings.WidthRatio) + getOffsetX();
 	}
 	
 	public float getY(int pointerIndex) {
-		return motionEvent.getY(pointerIndex) / GameSettings.HeightRatio;
+		return (motionEvent.getY(pointerIndex) / GameSettings.HeightRatio) + getOffsetY();
 	}
 	
 	private int getIndex() {
@@ -41,4 +46,20 @@ public class InputEventHandler {
 		  return idx;
 	}
 
+	public int getOffsetX() {
+		return offsetX;
+	}
+
+	public void setOffsetX(int offsetX) {
+		this.offsetX = offsetX;
+	}
+
+	public int getOffsetY() {
+		return offsetY;
+	}
+
+	public void setOffsetY(int offsetY) {
+		this.offsetY = offsetY;
+	}
+	
 }

@@ -108,12 +108,50 @@ public class FontLoader {
 			mStoreStrokePaint.setTextAlign(Paint.Align.LEFT);
 			
 			return new FontSpecification(transmetalStorePaint, mStoreStrokePaint);
+		case ARIAN:
+			Typeface tfArianExtended = Typeface.create(Typeface.createFromAsset(
+					context.getAssets(), "SFArianExtended.ttf"),
+					Typeface.NORMAL);
+
+			// Set-up Paint object for drawing letters to bitmap
+			Paint arianExtendedPaint = new Paint(); // Create Android Paint Instance
+			arianExtendedPaint.setAntiAlias(true); // Enable Anti Alias
+			arianExtendedPaint.setTypeface(tfArianExtended); // Set Typeface
+			arianExtendedPaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE * 1.5f); // Set Text Size
+			arianExtendedPaint.setColor(Color.WHITE); // Set ARGB (White, Opaque)
+			arianExtendedPaint.setTextAlign(Paint.Align.LEFT);
+			
+			Paint arianExtendedPaintStroke = new Paint();
+			arianExtendedPaintStroke.setTypeface(tfArianExtended);
+			arianExtendedPaintStroke.setStyle(Style.STROKE);
+			arianExtendedPaintStroke.setStrokeWidth(5);
+			arianExtendedPaintStroke.setColor(Color.rgb(62, 35, 0));
+			arianExtendedPaintStroke.setTextSize(GameSettings.DEFAULT_FONT_SIZE * 1.5f);
+			arianExtendedPaintStroke.setAntiAlias(true);
+			arianExtendedPaintStroke.setTextAlign(Paint.Align.LEFT);
+			
+			return new FontSpecification(arianExtendedPaint, arianExtendedPaintStroke);
+			
+		case ARIAN_BLACK:
+			Typeface tfArianBlackExtended = Typeface.create(Typeface.createFromAsset(
+					context.getAssets(), "SFArianExtended.ttf"),
+					Typeface.NORMAL);
+
+			// Set-up Paint object for drawing letters to bitmap
+			Paint arianBlackPaint = new Paint(); // Create Android Paint Instance
+			arianBlackPaint.setAntiAlias(true); // Enable Anti Alias
+			arianBlackPaint.setTypeface(tfArianBlackExtended); // Set Typeface
+			arianBlackPaint.setTextSize(GameSettings.DEFAULT_FONT_SIZE * 1.5f); // Set Text Size
+			arianBlackPaint.setColor(Color.BLACK); // Set ARGB (White, Opaque)
+			arianBlackPaint.setTextAlign(Paint.Align.LEFT);
+			
+			return new FontSpecification(arianBlackPaint, null);
 		}
 		
 		return null;
 	}
 	
 	public enum FontTypeFace {
-		TRANSMETALS_STROKED, TRANSMETALS, TRANSMETALS_STORE;
+		TRANSMETALS_STROKED, TRANSMETALS, TRANSMETALS_STORE, ARIAN, ARIAN_BLACK;
 	}
 }

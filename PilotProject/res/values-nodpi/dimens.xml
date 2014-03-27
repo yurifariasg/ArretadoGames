@@ -33,6 +33,7 @@
     <dimen name="main_menu_button_size">70px</dimen>
     <dimen name="main_menu_play_button_size">120px</dimen>
     <dimen name="item_selection_icon_size">60px</dimen>
+    <dimen name="padlock_size">320px</dimen>
     
     <!-- These are values related to image adjustment and power of 2 values -->
     <dimen name="main_menu_bg_extra_height">414px</dimen>
@@ -41,5 +42,6 @@
     <dimen name="selection_screen_item_platform_extra_height">419px</dimen>
     <dimen name="selection_screen_bg_extra_height">419px</dimen>
     <dimen name="pause_bg_extra_width">62px</dimen>
+    <dimen name="tournament_bg_extra_height">409px</dimen>
 
 </resources>

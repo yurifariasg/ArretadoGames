@@ -12,6 +12,7 @@ public abstract class Button {
 	protected float width, height;
 	protected GameButtonListener listener;
 	protected boolean isSelected;
+	private boolean isVisible;
 	
 	public Button(int id, float x, float y, float width, float height, GameButtonListener listener) {
 		this.id = id;
@@ -21,6 +22,7 @@ public abstract class Button {
 		this.height = height;
 		this.listener = listener;
 		isSelected = false;
+		isVisible = true;
 	}
 	
 	public void setWidth(float width) {
@@ -101,5 +103,17 @@ public abstract class Button {
 	public void setY(float y) {
 		this.y = y;
 	}
+	
+	public void forceUnselect() {
+	    this.isSelected = false;
+	}
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+    }
 	
 }

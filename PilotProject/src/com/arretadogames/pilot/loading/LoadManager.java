@@ -1,14 +1,14 @@
 package com.arretadogames.pilot.loading;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import android.util.Log;
 
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class LoadManager {
 	

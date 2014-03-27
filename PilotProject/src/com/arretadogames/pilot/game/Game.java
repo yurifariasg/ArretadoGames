@@ -1,9 +1,10 @@
 package com.arretadogames.pilot.game;
 
+import java.util.HashMap;
+
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
-
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -18,13 +19,11 @@ import com.arretadogames.pilot.screens.EndScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameStore;
 import com.arretadogames.pilot.screens.InputEventHandler;
-import com.arretadogames.pilot.screens.LevelSelectionScreen;
 import com.arretadogames.pilot.screens.MainMenuScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
+import com.arretadogames.pilot.screens.StageSelectionScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
-
-import java.util.HashMap;
 
 /**
  * Game class represents our Game.
@@ -59,7 +58,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		gameScreens.put(GameState.SPLASH, new SplashScreen());
 		gameScreens.put(GameState.GAME_OVER, new EndScreen());
 		gameScreens.put(GameState.CHARACTER_SELECTION, new CharacterSelectionScreen());
-		gameScreens.put(GameState.LEVEL_SELECTION, new LevelSelectionScreen());
+		gameScreens.put(GameState.LEVEL_SELECTION, new StageSelectionScreen());
 		gameScreens.put(GameState.GAME_STORE, new GameStore());
 		transitionStateOn = false;
 		loadManager.prepareLoad(new GameState[] { nextState });
@@ -147,7 +146,11 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 			return;
 		}
 		nextState = state;
-		loadManager.prepareLoad(new GameState[] { state });
+
+        if (getScreen(nextState) != null) // Loads if there is a screen
+            getScreen(nextState).onLoading();
+		    
+		loadManager.prepareLoad(new GameState[] { nextState });
 		startTransitionAnimation();
 	}
 
@@ -162,10 +165,6 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 				getScreen(currentState).onUnloading();
 
 			currentState = state;
-
-			if (getScreen(currentState) != null) // Loads if there is a screen
-				getScreen(currentState).onLoading();
-
 		}
 	}
 

@@ -1,7 +1,6 @@
 package com.arretadogames.pilot.screens;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.opengl.GLES11;
 import android.view.MotionEvent;
 
@@ -34,7 +33,6 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	private int currentBitmapAlpha;
 	private int logoId;
 
-	private Paint paintBitmap;
 	private Timeline timeline;
 
 	private float imageWidth;
@@ -43,8 +41,6 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	public SplashScreen() {
 		animationStarted = false;
 		logoId = R.drawable.logo;
-		paintBitmap = new Paint();
-		paintBitmap.setAntiAlias(true);
 
 		imageWidth = getDimension(R.dimen.logo_width);
 		imageHeight = getDimension(R.dimen.logo_height);
@@ -69,13 +65,13 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 		// TODO: Remove these two GL-Specific methods, insert it inside Canvas to have same functionality
 		GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
-		paintBitmap.setAlpha(currentBitmapAlpha);
 		canvas.drawBitmap(logoId,
 		        centerX - imageWidth / 2, centerY - imageHeight / 2,
 		        imageWidth, imageHeight,
-		        paintBitmap);
+		        currentBitmapAlpha);
 
         GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
 
 		canvas.restoreState();
 
