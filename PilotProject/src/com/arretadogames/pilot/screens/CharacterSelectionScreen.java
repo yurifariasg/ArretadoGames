@@ -28,12 +28,12 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	private PlayerSelector[] selectors;
 	private CharacterSpot[] spots;
 	private ImageButton btCharsSelected;
-	private boolean isPlayerOne;
-	private boolean selectionDone;
+	private boolean playerOne;
+	private boolean playerTwo;
 
 	public CharacterSelectionScreen() {
-		isPlayerOne = true;
-		selectionDone = false;
+		playerOne = false;
+		playerTwo = false;
 		
 		initializeSelectors();
 		initializeSpots();
@@ -114,23 +114,18 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		for (int i = 0 ; i < spots.length ; i++)
 			spots[i].render(canvas, timeElapsed);
 
-		if (isPlayerOne){
-			selectors[0].render(canvas, timeElapsed);
-			canvas.drawBitmap(R.drawable.player1,
+		selectors[0].render(canvas, timeElapsed);
+		selectors[1].render(canvas, timeElapsed);
+		
+		if (playerOne && playerTwo)
+			btCharsSelected.render(canvas, timeElapsed);
+		else {
+			canvas.drawBitmap(R.drawable.bt_chars_not_selected,
 			        getDimension(R.dimen.screen_width) / 2 - getDimension(R.dimen.player_selector_size) / 2,
 			        getDimension(R.dimen.screen_height) / 2 - getDimension(R.dimen.player_selector_size) / 2,
 			        getDimension(R.dimen.player_selector_size), getDimension(R.dimen.player_selector_size));
-		}else{
-			selectors[0].render(canvas, timeElapsed);
-			selectors[1].render(canvas, timeElapsed);
-			canvas.drawBitmap(R.drawable.player2,
-                    getDimension(R.dimen.screen_width) / 2 - getDimension(R.dimen.player_selector_size) / 2,
-                    getDimension(R.dimen.screen_height) / 2 - getDimension(R.dimen.player_selector_size) / 2,
-                    getDimension(R.dimen.player_selector_size), getDimension(R.dimen.player_selector_size));
 		}
-		
-		if (selectionDone)
-			btCharsSelected.render(canvas, timeElapsed);
+			
 	}
 
 	@Override
@@ -142,12 +137,12 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 
 		if (!btCharsSelected.input(event)){
 			if (event.getAction()== MotionEvent.ACTION_UP){
-				if (isPlayerOne){
+				if (!playerOne){
 					if (selectors[0].touch(event.getX(), event.getY()))
-						isPlayerOne = false;
+						playerOne = true;
 				}else{
 					if (selectors[1].touch(event.getX(), event.getY())) {
-						selectionDone = true;
+						playerTwo = true;
 					}
 				}
 			}
@@ -185,16 +180,27 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		public boolean touch(float x, float y) {
 			CharacterSpot newSpot = getSpotAt(x, y);
 			if (newSpot != null){
-				if (! isPlayerOne) {
-					if (selectors[0].spot == newSpot) {
-						resetSelections();
-						return false;
-					}
+				if (playerOne && selectors[0].spot == newSpot) { //Deselection of player1
+					playerOne = false;
+					selectors[0] = new PlayerSelector();
+					selectors[0].player = PlayerNumber.ONE;
+					selectors[0].selectorRect = new RectF();
+					return false;
 				}
-				selectorRect.set(newSpot.rect);
-				spot = newSpot;
-				spot.selector = this;
-				return true;
+				if (playerTwo && selectors[1].spot == newSpot) { //Deselection of player2
+					playerTwo = false;
+					selectors[1] = new PlayerSelector();
+					selectors[1].player = PlayerNumber.TWO;
+					selectors[1].selectorRect = new RectF();
+					return false;
+				}
+				
+				if (! (playerOne && playerTwo)) {
+					selectorRect.set(newSpot.rect);
+					spot = newSpot;
+					spot.selector = this;
+					return true;
+				}
 			}
 			return false;
 		}
@@ -257,8 +263,8 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	}
 
 	public void resetSelections(){
-		selectionDone = false;
-		isPlayerOne = true;
+		playerOne = false;
+		playerTwo = false;
 		initializeSelectors();
 		initializeSpots();
 	}
@@ -286,7 +292,7 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 	public void onClick(int buttonId) {
 		switch (buttonId) {
 		case GO_BUTTON:
-			if (selectionDone && !isPlayerOne)
+			if (playerOne && playerTwo)
 				initGame();
 			break;
 
