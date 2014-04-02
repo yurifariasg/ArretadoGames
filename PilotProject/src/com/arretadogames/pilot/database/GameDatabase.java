@@ -14,6 +14,8 @@ import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
 import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.levels.LevelDescriptor;
+import com.arretadogames.pilot.levels.Tournament;
+import com.arretadogames.pilot.levels.TournamentType;
 
 public class GameDatabase {
 	
@@ -43,15 +45,22 @@ public class GameDatabase {
     public static final String R_ITEM_SKU_CODE = "item_sku_code";
 	public static final String R_ITEM_RES_NAME = "item_res_id";
 	
+	public static final String TABLE_PLAYER_TOURNAMENTS = "PLAYER_TOURNAMENTS";
+	public static final String TOURNAMENT_ID = "tournament_id";
+	public static final String T_ENABLED = "t_enabled";
+	public static final String T_TYPE_NAME = "t_type_name";
+	
+	public static final String TABLE_TOURNAMENT_LEVELS = "TOURNAMENT_LEVELS";
+	
+	public static final String PLAYER_TOURNAMENT_LEVELS_CREATE = "TORUNAMENT_LEVELS";
+	
 	public static final String TABLE_DIGITAL_ITEMS = "DIGITAL_ITEMS";
 	
-	public static final String TABLE_PLAYER_ITEMS = "PLAYER_ITEMS";
+	public static final String TABLE_PLAYER_ITEMS = "PLAYER_ITEMS";	
 	public static final String R_QUANT_ITEMS = "item_quant";
     
     public static final String TABLE_NEXT_LEVEL = "NEXT_LEVEL";
-//    public static final String LEVEL_ID = "level_id";
-    public static final String ID_NEXT = "next_level";
-    
+    public static final String ID_NEXT = "next_level";    
    
     private static GameDatabase gameDatabase;
    
@@ -94,6 +103,42 @@ public class GameDatabase {
     	
     	return a;
 	}
+    
+    public ArrayList<Tournament> getAllTournaments(){
+    	ArrayList<Tournament> allTournaments = new ArrayList<Tournament>();
+    	String typeName = "";
+    	TournamentType type = TournamentType.JUNGLE;
+//    	int tournamentId = 0;
+//    	int levelId = 0;
+//    	
+//    	Cursor c = db.query(TABLE_TOURNAMENT_LEVELS, null, null, null, null, null, null);
+//    	c.moveToFirst();
+//    	while(!c.isAfterLast()){
+//	    	tournamentId = c.getInt(c.getColumnIndexOrThrow(TOURNAMENT_ID));
+//	    	levelId = c.getInt(c.getColumnIndexOrThrow(LEVEL_ID));
+//    	}
+    	
+    	Cursor c = db.query(TABLE_PLAYER_TOURNAMENTS, null, null, null, null, null, null);
+    	c.moveToFirst();
+    	
+    	while(!c.isAfterLast()){
+    		typeName = c.getString( c.getColumnIndexOrThrow(T_TYPE_NAME));
+    		if (typeName.equals("desert")){
+				type = TournamentType.DESERT;
+    		}else if (typeName.equals("swamp")) {
+				type = TournamentType.SWAMP;
+    		} else if (typeName.equals("jungle")) {
+				type = TournamentType.JUNGLE;
+			}
+    		Tournament curTournament = new Tournament(c.getInt( c.getColumnIndexOrThrow(TOURNAMENT_ID)), type);
+    		curTournament.setEnable(c.getInt( c.getColumnIndexOrThrow(T_ENABLED))==1);
+    		
+    		
+    		allTournaments.add(curTournament);
+    	}
+    	
+    	return allTournaments;
+    }
     
     public ArrayList<LevelDescriptor> getAllLevels(){
     	ArrayList<LevelDescriptor> allLevels = new ArrayList<LevelDescriptor>();
