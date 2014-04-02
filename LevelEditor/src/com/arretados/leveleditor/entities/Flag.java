@@ -30,12 +30,7 @@ public class Flag extends Entity{
               DrawMode.FLAG);        
     }
 
-    public void drawMyself(Graphics g) {
-        //g.setColor(Color.black);
-        //g.fillRect((int) (x-(SIZE/2)), (int) (y-(SIZE/2)), (int) SIZE, 100);
-        //g.setColor(Color.red);
-        //g.fillRect((int) (x-(SIZE/2)), y, 60, (int) (SIZE*2));
-        
+    public void drawMyself(Graphics g) {        
         g.drawImage(ResourceManager.getImageFor(Resource.FLAG),
                 x - ((int) (GameCanvas.METER_TO_PIXELS * SIZE/2)),
                 y - ((int) (GameCanvas.METER_TO_PIXELS * SIZE/2)),

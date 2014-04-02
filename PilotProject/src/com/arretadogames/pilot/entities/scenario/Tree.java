@@ -48,5 +48,4 @@ public class Tree extends ScenarioEntity {
 	public int getLayerPosition() {
 		return 10;
 	}
-
 }

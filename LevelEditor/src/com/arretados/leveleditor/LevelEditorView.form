@@ -13,23 +13,23 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="itemPanel" pref="326" max="32767" attributes="0"/>
-                      <Component id="jButton1" alignment="0" pref="326" max="32767" attributes="1"/>
-                      <Component id="jButton2" alignment="0" pref="326" max="32767" attributes="0"/>
-                      <Component id="jTextHeigthValue" alignment="0" pref="326" max="32767" attributes="0"/>
+                      <Component id="itemPanel" pref="336" max="32767" attributes="0"/>
+                      <Component id="jButton1" alignment="0" pref="336" max="32767" attributes="1"/>
+                      <Component id="jButton2" alignment="0" pref="336" max="32767" attributes="0"/>
+                      <Component id="jTextHeigthValue" alignment="0" pref="336" max="32767" attributes="0"/>
                       <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jTextWidthValue" alignment="0" pref="326" max="32767" attributes="1"/>
+                      <Component id="jTextWidthValue" alignment="0" pref="336" max="32767" attributes="1"/>
                       <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="itemComboBox" alignment="1" pref="326" max="32767" attributes="0"/>
+                      <Component id="itemComboBox" alignment="1" pref="336" max="32767" attributes="0"/>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="clearScrBtn" min="-2" pref="137" max="-2" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton_LoadLevel" pref="183" max="32767" attributes="0"/>
+                          <Component id="jButton_LoadLevel" pref="192" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="1082" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="1091" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -38,7 +38,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="655" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="662" max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
@@ -46,13 +46,13 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="itemComboBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="itemPanel" pref="363" max="32767" attributes="0"/>
+                  <Component id="itemPanel" pref="370" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jButton_LoadLevel" max="32767" attributes="1"/>
                       <Component id="clearScrBtn" alignment="0" pref="34" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="15" max="32767" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jTextWidthValue" min="-2" max="-2" attributes="0"/>
@@ -186,7 +186,7 @@
         <Component class="javax.swing.JComboBox" name="itemComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB, DrawMode.SPIKE})" type="code"/>
+              <Connection code="new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB, DrawMode.SPIKE, DrawMode.HOLE})" type="code"/>
             </Property>
             <Property name="name" type="java.lang.String" value="itemComboBox" noResource="true"/>
           </Properties>

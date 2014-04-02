@@ -13,6 +13,7 @@ import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.GroundDescriptor;
+import com.arretadogames.pilot.levels.HoleDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
@@ -121,9 +122,8 @@ public class LevelParser {
 							(float) jsonEntity.getDouble("y"),
 							EntityType.WATER, (float) jsonEntity.getDouble("width"), (float) jsonEntity.getDouble("height"),  (float) jsonEntity.getDouble("density"));
 				}else if(EntityType.HOLE.toString().equals(entityType)){
-					entity = new EntityDescriptor((float) jsonEntity.getDouble("x1"),
-							(float) jsonEntity.getDouble("x2"),
-							EntityType.HOLE);
+					entity = new HoleDescriptor(
+							(float) jsonEntity.getDouble("x"), (float) jsonEntity.getDouble("distance"));
 				} else {		// Entity not defined
 					Log.e("LevelDescriptor.jsonParse()", "Entity " + entityType + " not defined");
 					continue;
@@ -136,6 +136,10 @@ public class LevelParser {
 
 			// Set Level Data
 			level.setData(entities, groundDescriptor);
+			
+			float levelLength = (float) master.getDouble("width");
+			level.setLevelLength(levelLength);
+			
 			return true;
 		} catch (JSONException ex) {
 			ex.printStackTrace();

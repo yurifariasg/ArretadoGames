@@ -9,6 +9,7 @@ import com.arretados.leveleditor.entities.Breakable;
 import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
 import com.arretados.leveleditor.entities.Fluid;
+import com.arretados.leveleditor.entities.Hole;
 import com.arretados.leveleditor.entities.Liana;
 import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
@@ -116,6 +117,11 @@ public class LevelLoader {
 
                 //TREE
                 gc.addEntities(new Tree(jObj));
+                
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.HOLE.toString())) {
+                
+                // HOLE
+                gc.addEntities(new Hole(jObj));
                 
             } else {
                 System.out.println("Not Found: " + jObj.get("type"));

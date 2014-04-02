@@ -10,7 +10,7 @@ public class ResourceManager {
     
     public enum Resource {
         COIN, ONEWAY_WALL, BOX, BREAKABLE, P1, P2, TREE1,
-        SHRUB, GRASS, SPIKE, FLAG
+        SHRUB, GRASS, SPIKE, FLAG, HOLE
     }
     
     
@@ -40,6 +40,7 @@ public class ResourceManager {
             images.put(Resource.GRASS, ImageIO.read(new File("imgs/grass.png")));
             images.put(Resource.SPIKE, ImageIO.read(new File("imgs/spike.png")));
             images.put(Resource.FLAG, ImageIO.read(new File("imgs/flag.png")));
+            images.put(Resource.HOLE, ImageIO.read(new File("imgs/hole.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

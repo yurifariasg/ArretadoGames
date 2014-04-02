@@ -5,7 +5,6 @@ import android.graphics.RectF;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Fire;
@@ -144,12 +143,6 @@ public class GameWorldUI extends GameScreen {
 					centerImage(R.drawable.power, 2, COOLDOWN_Y),
                     getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
 		}
-
-		if (GameSettings.ACTIVATE_FIRE)
-			canvas.drawBitmap(fire.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(fire.getPosX()), 415,
-                    getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
-
-//		System.out.println("Position Player2: "+p2.body.getPosition().x);
 	}
 
 	private float centerImage(int imgId, int cooldown, float cooldownValue){

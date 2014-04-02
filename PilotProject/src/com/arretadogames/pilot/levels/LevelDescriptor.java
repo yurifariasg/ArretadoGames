@@ -12,6 +12,7 @@ public class LevelDescriptor {
 	private int secondBest;
 	private int thirdBest;
 	private boolean isEnabled;
+	private float levelLength;
 	
 	public int[] getRecords() {
 //		if (theBest == 0 && secondBest == 0 && thirdBest == 0)
@@ -79,6 +80,14 @@ public class LevelDescriptor {
 	
 	public void load() {
 		LevelManager.loadLevel(this);
+	}
+
+	public float getLevelLength() {
+		return levelLength;
+	}
+
+	public void setLevelLength(float levelLength) {
+		this.levelLength = levelLength;
 	}
 	
 }

@@ -13,6 +13,7 @@ import org.jbox2d.dynamics.BodyType;
 
 public class Ground extends Entity {
 	
+	public static final int GROUND_LAYER_POSITION = -50;
 	private int GROUND_SURFACE_COLOR = Color.argb(255, 137, 71, 38);
 	private int GROUND_BOTTOM_COLOR = Color.argb(255, 0, 0, 0);
 	
@@ -83,7 +84,7 @@ public class Ground extends Entity {
 
 	@Override
 	public int getLayerPosition() {
-		return -100;
+		return GROUND_LAYER_POSITION;
 	}
 
 	@Override

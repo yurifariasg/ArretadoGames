@@ -101,8 +101,7 @@ public class GameDatabase {
     	Cursor c = db.query(TABLE_LEVEL, null, null, null, null, null, null);
     	c.moveToFirst();
     	
-	    while(!c.isAfterLast()){
-	    	System.out.println("Level:--");
+	    while (!c.isAfterLast()) {
 	    	LevelDescriptor curLevel = new LevelDescriptor(c.getInt(c.getColumnIndexOrThrow(LEVEL_ID))); 
 
 	        curLevel.setRecords( new int[] {c.getInt( c.getColumnIndexOrThrow(RECORD_VALUE_FIRST)),
@@ -111,7 +110,6 @@ public class GameDatabase {
 	        curLevel.setEnabled (c.getInt( c.getColumnIndexOrThrow(LEVEL_ENABLED))==1 );
 	        allLevels.add(curLevel);
 	        c.moveToNext();
-	        System.out.println("next");
 	    }
 	    c.close();
     	
