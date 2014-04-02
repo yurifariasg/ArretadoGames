@@ -3,4 +3,4 @@ gen/
 project.properties
 res/drawable-hdpi/Thumbs.db
 res/drawable-nodpi/Thumbs.db
-PilotProject/.classpath
+.classpath

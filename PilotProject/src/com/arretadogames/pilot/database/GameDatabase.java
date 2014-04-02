@@ -106,44 +106,47 @@ public class GameDatabase {
 
     public ArrayList<Tournament> getAllTournaments(){
     	ArrayList<Tournament> allTournaments = new ArrayList<Tournament>();
-    	TournamentType type = TournamentType.JUNGLE;
-    	String typeName = "";
     	int[] levels = new int[6];
-    	int levelId = 0;
+    	TournamentType type;
+    	String typeName;
+    	int levelId;
+    	int levelCount;
+    	Cursor c;
+    	Cursor cLevels;
 
-    	Cursor c = null;
-    	for (int i = 0; i < 3; i++){ // WHERE 3 IS THE NUMBER OF TOURNAMENTS AT THE GAME
-        	c = db.query(TABLE_TOURNAMENT_LEVELS, null, TOURNAMENT_ID + " = " + i, null, null, null, null);
-        	c.moveToFirst();
-           	while(!c.isAfterLast()){
-           	    levelId = c.getInt(c.getColumnIndexOrThrow(LEVEL_ID));
-           	    levels[c.getPosition()] = levelId;
-           	    c.moveToNext();
-        	}
+        c = db.query(TABLE_PLAYER_TOURNAMENTS, null, null, null, null, null, null);
+        c.moveToFirst();
 
-            c = db.query(TABLE_PLAYER_TOURNAMENTS, null, null, null, null, null, null);
-            c.moveToFirst();
+        while(!c.isAfterLast()){
+            typeName = c.getString(c.getColumnIndexOrThrow(T_TYPE_NAME));
+            type = getTournamentType(typeName);
+            Tournament curTournament = new Tournament(c.getInt( c.getColumnIndexOrThrow(TOURNAMENT_ID)), type);
+            curTournament.setEnable(c.getInt( c.getColumnIndexOrThrow(T_ENABLED))==1);
 
-            while(!c.isAfterLast()){
-                typeName = c.getString(c.getColumnIndexOrThrow(T_TYPE_NAME));
-                type = getTournamentType(typeName);
-                Tournament curTournament = new Tournament(c.getInt( c.getColumnIndexOrThrow(TOURNAMENT_ID)), type);
-                curTournament.setEnable(c.getInt( c.getColumnIndexOrThrow(T_ENABLED))==1);
-                curTournament.setIdsLevels(levels);
-                allTournaments.add(curTournament);
-                c.moveToNext();
+            cLevels = db.query(TABLE_TOURNAMENT_LEVELS, null, TOURNAMENT_ID + " = " +
+                                                curTournament.getId(), null, null, null, null);
+            cLevels.moveToFirst();
+            levelCount = 0;
+            while(!cLevels.isAfterLast()){
+                levelId = cLevels.getInt(cLevels.getColumnIndexOrThrow(LEVEL_ID));
+                levels[levelCount] = levelId;
+                cLevels.moveToNext();
+                levelCount++;
             }
-    	}
 
+            curTournament.setIdsLevels(levels);
+            allTournaments.add(curTournament);
+            c.moveToNext();
+        }
     	return allTournaments;
     }
 
     private TournamentType getTournamentType(String typeName){
-        if (typeName.equals("desert")){
+        if (typeName.equalsIgnoreCase("desert")){
             return TournamentType.DESERT;
-        }else if (typeName.equals("swamp")) {
+        }else if (typeName.equalsIgnoreCase("swamp")) {
             return TournamentType.SWAMP;
-        } else if (typeName.equals("jungle")) {
+        } else if (typeName.equalsIgnoreCase("jungle")) {
             return TournamentType.JUNGLE;
         } else {
             return null;
@@ -157,7 +160,6 @@ public class GameDatabase {
     	c.moveToFirst();
 
 	    while(!c.isAfterLast()){
-	    	System.out.println("Level:--");
 	    	LevelDescriptor curLevel = new LevelDescriptor(c.getInt(c.getColumnIndexOrThrow(LEVEL_ID)));
 
 	        curLevel.setRecords( new int[] {c.getInt( c.getColumnIndexOrThrow(RECORD_VALUE_FIRST)),
@@ -166,7 +168,6 @@ public class GameDatabase {
 	        curLevel.setEnabled (c.getInt( c.getColumnIndexOrThrow(LEVEL_ENABLED))==1 );
 	        allLevels.add(curLevel);
 	        c.moveToNext();
-	        System.out.println("next");
 	    }
 	    c.close();
 
