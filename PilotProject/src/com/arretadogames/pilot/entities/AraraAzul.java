@@ -25,14 +25,14 @@ public class AraraAzul extends Player implements Steppable {
 		CircleShape shape = new CircleShape();
 		radius = 0.3f;
 		shape.setRadius(radius);
-		footFixture = body.createFixture(shape,  k);
-		footFixture.setFriction(0f);
+		bodyFixture = body.createFixture(shape,  k);
+		bodyFixture.setFriction(0f);
 		body.setType(BodyType.DYNAMIC);
 		
 		Filter filter = new Filter();
 		filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
 		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
-		footFixture.setFilterData(filter);
+		bodyFixture.setFilterData(filter);
 		
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
@@ -113,11 +113,10 @@ public class AraraAzul extends Player implements Steppable {
 	public void step(float timeElapsed) {
 		applyConstants();
 		super.step(timeElapsed);
-		if (hasFinished() || !isAlive()) {
-			if (hasFinished())
-				stopAction();
-			return;
-		}
+        if (shouldStop()) {
+            stopAction();
+            return;
+        }
 		if (jumpActive) {
 			jump();
 			jumpActive = false;

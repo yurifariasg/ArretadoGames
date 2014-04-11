@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
@@ -43,8 +44,12 @@ public abstract class Player extends Entity implements Steppable{
 	protected AnimationSwitcher sprite;
 	protected int contJump;
 	protected int contAct;
+    protected Fixture bodyFixture;
 	protected Fixture footFixture;
 	protected Collection<Body> bodiesContact;
+	
+	private boolean ghostModeActive;
+	private boolean toucanTarget;
 	
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
@@ -55,6 +60,37 @@ public abstract class Player extends Entity implements Steppable{
 		items = new ArrayList<Item>();
 		timeToDie = 0;
         bodiesContact = new HashSet<Body>();
+        ghostModeActive = false;
+        toucanTarget = false;
+	}
+	
+	public void setGhostMode(boolean ghostModeActive) {
+	    
+	    if (this.ghostModeActive != ghostModeActive) {
+
+            Filter filter = new Filter();
+	        if (ghostModeActive) {
+	            filter.categoryBits = CollisionFlag.GROUP_3.getValue() ;
+	            filter.maskBits = CollisionFlag.GROUP_3.getValue() ;
+	            body.setGravityScale(0);
+	        } else {
+                filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
+                filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
+                body.setGravityScale(1);
+	        }
+	        
+            bodyFixture.setFilterData(filter);
+	        
+	        this.ghostModeActive = ghostModeActive;
+	    }
+    }
+	
+	public boolean shouldStop() {
+	    return isToucanTarget() || isDead() || hasFinished();
+	}
+	
+	public void setToucanTarget(boolean isToucanTarget) {
+	    this.toucanTarget = isToucanTarget;
 	}
 	
 	public boolean addItem(Item i){
@@ -82,7 +118,6 @@ public abstract class Player extends Entity implements Steppable{
 		for(Item i : items){
 			i.applyEffect(this);
 		}
-		
 	}
 	
 	public PlayerNumber getNumber() {
@@ -112,6 +147,14 @@ public abstract class Player extends Entity implements Steppable{
 //	public abstract void act();
 	public void setAct(boolean isAct) {
 		this.actActive = isAct;
+	}
+	
+	public boolean isGhostMode() {
+        return ghostModeActive;
+    }
+	
+	public boolean isToucanTarget() {
+	    return toucanTarget;
 	}
 	
 	@Override

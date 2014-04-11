@@ -28,13 +28,13 @@ public class LoboGuara extends Player {
 		CircleShape shape = new CircleShape();
 		size = 0.5f;
 		shape.setRadius(size);
-		footFixture = body.createFixture(shape,  3f);
-		footFixture.setFriction(0f);
+		bodyFixture = body.createFixture(shape,  3f);
+		bodyFixture.setFriction(0f);
 		
 		Filter filter = new Filter();
 		filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
 		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
-		footFixture.setFilterData(filter);
+		bodyFixture.setFilterData(filter);
 		
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
@@ -121,11 +121,10 @@ public class LoboGuara extends Player {
 		applyConstants();
 		super.step(timeElapsed);
 		setTimeForNextAct(Math.max(0.0f,getTimeForNextAct()-timeElapsed));
-		if (hasFinished() || !isAlive()) {
-			if (hasFinished())
-				stopAction();
-			return;
-		}
+        if (shouldStop()) {
+            stopAction();
+            return;
+        }
 		if (jumpActive) {
 			jump();
 			jumpActive = false;

@@ -1,11 +1,5 @@
 package com.arretadogames.pilot.world;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import android.graphics.Color;
 import android.util.SparseArray;
 
@@ -38,6 +32,12 @@ import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
 import com.arretadogames.pilot.weathers.Weather;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * GameWorld class represents the World in our Game
@@ -202,6 +202,7 @@ public class GameWorld extends GameScreen {
 		if (pauseScreen.isHidden()) {
 			for (Steppable p : steppables)
 				p.step(timeElapsed);
+			gameCamera.step(timeElapsed);
 			ui.step(timeElapsed);
 			pWorld.step(timeElapsed);
 		}

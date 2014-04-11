@@ -1,23 +1,13 @@
 package com.arretadogames.pilot.render;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.jbox2d.callbacks.QueryCallback;
-import org.jbox2d.collision.AABB;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Fixture;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.LayerEntity.Layer;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
+import com.arretadogames.pilot.entities.Steppable;
+import com.arretadogames.pilot.entities.Toucan;
 import com.arretadogames.pilot.entities.effects.Effect;
 import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
@@ -26,7 +16,19 @@ import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.world.GameWorld;
 
-public class GameCamera {
+import org.jbox2d.callbacks.QueryCallback;
+import org.jbox2d.collision.AABB;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Fixture;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+public class GameCamera implements Renderable, Steppable {
 
 	private static GameWorld gameWorld = null;
 
@@ -57,6 +59,8 @@ public class GameCamera {
 
 	private float initialX = -1; // Initial X position from players
 	private float flagX = -1;
+	
+	private Toucan toucan;
 
 	public GameCamera(GameWorld world) {
 		this(world, 1000f);// Default is 1000 milliseconds
@@ -79,7 +83,8 @@ public class GameCamera {
 		targetTranslator = null;
 		targetPhysicsRatio = 0;
 		startTime = 0;
-
+		
+		toucan = new Toucan();
         movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
 	}
 
@@ -120,6 +125,9 @@ public class GameCamera {
 		float maxYDistance = 0;
 		float minX = Float.MAX_VALUE;
 		Vec2 center = new Vec2();
+		
+        Player furthestPlayer = null; // Player with the MOST lowest X
+        Player secondFurthestPlayer = null; // Player second with the lowest X
 
 		Iterator<PlayerNumber> iiterator = players.keySet().iterator();
 		while (iiterator.hasNext()) {
@@ -127,6 +135,17 @@ public class GameCamera {
 			PlayerNumber i = iiterator.next();
 			if (players.get(i).isDead())
 				continue;
+			
+			if (furthestPlayer == null) {
+			    furthestPlayer = players.get(i);
+			} else {
+			    if (furthestPlayer.getPosX() > players.get(i).getPosX()) {
+			        secondFurthestPlayer = furthestPlayer;
+			        furthestPlayer = players.get(i);
+			    } else if (secondFurthestPlayer == null || secondFurthestPlayer.getPosX() > players.get(i).getPosX()) {
+			        secondFurthestPlayer = players.get(i);
+			    }
+			}
 
 			float x = players.get(i).getPosX();
 			float y = players.get(i).getPosY();
@@ -282,6 +301,11 @@ public class GameCamera {
 //						* reachedPercentage;
 			}
 		}
+		
+		// Start Toucan if needed
+        if (maxXDistance > 10) {
+            toucan.activate(lowerBound.x, upperBound.y, furthestPlayer, secondFurthestPlayer);
+        }
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Calculate Viewport");
 		Profiler.initTick(ProfileType.RENDER);
@@ -326,6 +350,8 @@ public class GameCamera {
 				}
 			}
 		}
+		
+		toucan.render(gameCanvas, timeElapsed);
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
 		Profiler.initTick(ProfileType.RENDER);
@@ -370,6 +396,10 @@ public class GameCamera {
 		}
 
 		determineViewport(canvas, timeElapsed);
+	}
+	
+	public void step(float timeElapsed) {
+	    toucan.step(timeElapsed);
 	}
 
 	private long getCurrentTime() {

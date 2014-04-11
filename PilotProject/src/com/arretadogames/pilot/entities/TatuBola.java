@@ -13,7 +13,6 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Filter;
-import org.jbox2d.dynamics.Fixture;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -25,7 +24,6 @@ public class TatuBola extends Player {
 	private float timeForNextAct = 0f;
 	
 	private final float rad = 0.3f;
-	protected Fixture bodyFixture;
 	private int doubleJump;
 	
 	public TatuBola(float x, float y, PlayerNumber number) {
@@ -74,7 +72,7 @@ public class TatuBola extends Player {
 	}
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
+		if (isGhostMode() || hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
 			return;
 		if(bodiesContact.size() <= 0 && doubleJump > 0){
 			doubleJump--;
@@ -133,9 +131,8 @@ public class TatuBola extends Player {
 		applyConstants();
 		super.step(timeElapsed);
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
-		if (hasFinished() || isDead()) {
-			if (hasFinished())
-				stopAction();
+		if (shouldStop()) {
+			stopAction();
 			return;
 		}
 		if (jumpActive) {

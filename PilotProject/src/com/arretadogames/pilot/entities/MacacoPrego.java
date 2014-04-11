@@ -29,13 +29,13 @@ public class MacacoPrego extends Player implements Steppable{
 
 		CircleShape shape = new CircleShape();
 		shape.setRadius(radius );
-		footFixture = body.createFixture(shape,  3f);
-		footFixture.setFriction(0f);
+		bodyFixture = body.createFixture(shape,  3f);
+		bodyFixture.setFriction(0f);
 		
 		Filter filter = new Filter();
 		filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
 		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
-		footFixture.setFilterData(filter);
+		bodyFixture.setFilterData(filter);
 		
 		body.setType(BodyType.DYNAMIC);
 		body.setFixedRotation(true);
@@ -138,11 +138,10 @@ public class MacacoPrego extends Player implements Steppable{
 	public void step(float timeElapsed) {
 		applyConstants();
 		super.step(timeElapsed);
-		if (hasFinished() || !isAlive()) {
-			if (hasFinished())
-				stopAction();
-			return;
-		}
+        if (shouldStop()) {
+            stopAction();
+            return;
+        }
 		if (jumpActive) {
 			jump();
 			jumpActive = false;
