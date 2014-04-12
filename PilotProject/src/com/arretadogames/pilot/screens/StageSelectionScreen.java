@@ -51,9 +51,9 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 	
 	private ImageButton leftArrow;
 	private ImageButton rightArrow;
+	private InputEventHandler event;
 	private FontSpecification titleFont;
 	private GestureDetectorCompat mDetector;
-	private InputEventHandler event;
 	
 	private Timeline currentAnimation;
 	
