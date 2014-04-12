@@ -34,52 +34,40 @@ public class StoreInitializeHelper {
 		values.put(GameDatabase.R_ITEM_SKU_CODE, "big_seed_pack");
         db.insert(GameDatabase.TABLE_REAL_ITEMS, null, values);
         values.clear();
+
+        // Uncomment when the item is added to the game
+//        values.put(GameDatabase.R_ITEM_NAME, ItemType.Coconut.getName());
+//		values.put(GameDatabase.R_ITEM_DESCRIPTION, "A coconut to throw at your enemies! HAAAA");
+//		values.put(GameDatabase.R_ITEM_PRICE, 10);
+//		values.put(GameDatabase.R_ITEM_RES_NAME, "it_superjump");
+//        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
+//        values.clear();
         
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_JUMP.getValue());
-		values.put(GameDatabase.R_ITEM_DESCRIPTION, "Jump twice higher than before");
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.WaterWalk.getName());
+		values.put(GameDatabase.R_ITEM_DESCRIPTION, "Be just like Jesus!");
 		values.put(GameDatabase.R_ITEM_PRICE, 10);
-		values.put(GameDatabase.R_ITEM_RES_NAME, "it_superjump");
+		values.put(GameDatabase.R_ITEM_RES_NAME, "waterwalk_item");
         db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
         values.clear();
         
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_JUMP.getValue());
-		values.put(GameDatabase.R_QUANT_ITEMS, 0);
+        // Uncomment when the item is added to the game
+//        values.put(GameDatabase.R_ITEM_NAME, ItemType.Mine.getName());
+//		values.put(GameDatabase.R_ITEM_DESCRIPTION, "I would not step on that...");
+//		values.put(GameDatabase.R_ITEM_PRICE, 10);
+//		values.put(GameDatabase.R_ITEM_RES_NAME, "it_speed");
+//        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
+//        values.clear();
+        
+        // These are the INITIAL Box Items
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.Mine.getName());
         db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
         values.clear();
         
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.DOUBLE_JUMP.getValue());
-		values.put(GameDatabase.R_ITEM_DESCRIPTION, "Extra jump in the air");
-		values.put(GameDatabase.R_ITEM_PRICE, 10);
-		values.put(GameDatabase.R_ITEM_RES_NAME, "it_double_jump");
-        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
-        values.clear();
-        
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.DOUBLE_JUMP.getValue());
-		values.put(GameDatabase.R_QUANT_ITEMS, 0);
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.Coconut.getName());
         db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
         values.clear();
         
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_VELOCITY.getValue());
-		values.put(GameDatabase.R_ITEM_DESCRIPTION, "More velocity");
-		values.put(GameDatabase.R_ITEM_PRICE, 10);
-		values.put(GameDatabase.R_ITEM_RES_NAME, "it_speed");
-        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
-        values.clear();
-        
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_VELOCITY.getValue());
-		values.put(GameDatabase.R_QUANT_ITEMS, 0);
-        db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
-        values.clear();
-        
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_STRENGHT.getValue());
-		values.put(GameDatabase.R_ITEM_DESCRIPTION, "More strength");
-		values.put(GameDatabase.R_ITEM_PRICE, 10);
-		values.put(GameDatabase.R_ITEM_RES_NAME, "it_strength");
-        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
-        values.clear();
-        
-        values.put(GameDatabase.R_ITEM_NAME, ItemType.SUPER_STRENGHT.getValue());
-		values.put(GameDatabase.R_QUANT_ITEMS, 0);
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.WaterWalk.getName());
         db.insert(GameDatabase.TABLE_PLAYER_ITEMS, null, values);
         values.clear();
 	}

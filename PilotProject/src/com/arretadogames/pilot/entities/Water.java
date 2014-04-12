@@ -5,9 +5,11 @@ import android.graphics.Color;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.effects.EffectDescriptor;
 import com.arretadogames.pilot.entities.effects.EffectManager;
+import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
@@ -97,9 +99,24 @@ public class Water extends Entity implements Steppable {
 		body.setType(BodyType.STATIC);
 		entitiesContact = new ArrayList<Entity>();
 		
-		fixture.setSensor(true);
+		fixture.setSensor(false);
 		
 		initializeWaterSprings();
+	}
+	
+	@Override
+	public void preSolve(Entity e, Contact contact, Manifold oldManifold) {
+        contact.setEnabled(false);
+	    
+	    // Walk above water
+	    if (e.getType() == EntityType.PLAYER) {
+	        Player p = (Player) e;
+	        if (p.getItem() != null &&
+	                p.getItem().getType() == ItemType.WaterWalk &&
+	                p.getItem().isActive()) {
+	            contact.setEnabled(true);
+	        }
+	    }
 	}
 	
 	private void initializeWaterSprings() {
@@ -386,12 +403,14 @@ public class Water extends Entity implements Steppable {
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
 		entitiesContact.add(e);
+		e.setOnWater(true);
 		splash(e, contact);
 	}
 	
 	@Override
 	public void endContact(Entity e, Contact contact) {
 		super.endContact(e, contact);
+        e.setOnWater(false);
 		entitiesContact.remove(e);
 	}
 

@@ -14,6 +14,7 @@ import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.scenario.Grass;
 import com.arretadogames.pilot.entities.scenario.Shrub;
 import com.arretadogames.pilot.entities.scenario.Tree;
+import com.arretadogames.pilot.items.BoxItem;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.HoleDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
@@ -108,7 +109,12 @@ public class EntityBuilder {
 					entity = new Grass(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 					
+				case BOX_ITEM:
+				    entity = new BoxItem(entityDescriptor.getX(), entityDescriptor.getY());
+				    break;
+					
 				default:
+				    System.out.println("Entity Builder failed to assign item: " + entityDescriptor.getType().toString());
 					break;
 				}
 				setEntitySprite(entity);

@@ -57,7 +57,6 @@ public class GameDatabase {
 	public static final String TABLE_DIGITAL_ITEMS = "DIGITAL_ITEMS";
 
 	public static final String TABLE_PLAYER_ITEMS = "PLAYER_ITEMS";
-	public static final String R_QUANT_ITEMS = "item_quant";
 
     public static final String TABLE_NEXT_LEVEL = "NEXT_LEVEL";
     public static final String ID_NEXT = "next_level";
@@ -213,11 +212,14 @@ public class GameDatabase {
     	int resIdIndex = c.getColumnIndexOrThrow(R_ITEM_RES_NAME);
 
 	    while(!c.isAfterLast()){
+	        boolean playerHasItem = playerHasItem(ItemType.parse(c.getString(nameIndex)));
+	        
 	    	DigitalStoreItemDescriptor item;
 	    	item = new DigitalStoreItemDescriptor(
 	    			c.getString(nameIndex), c.getString(descIndex),
 	    			c.getString(resIdIndex),
-	    			c.getInt(priceIndex));
+	    			c.getInt(priceIndex),
+	    			playerHasItem);
 	    	items.add(item);
 	        c.moveToNext();
 	    }
@@ -227,25 +229,6 @@ public class GameDatabase {
 
 		return items;
 	}
-
-	public int getQuantItems(ItemType itype) {
-		Cursor c = db.query(TABLE_PLAYER_ITEMS, null, null, null, null, null, null);
-    	c.moveToFirst();
-
-    	int nameIndex = c.getColumnIndexOrThrow(R_ITEM_NAME);
-    	int priceIndex = c.getColumnIndexOrThrow(R_QUANT_ITEMS);
-	    while(!c.isAfterLast()){
-	    			if(c.getString(nameIndex).equals(itype.getValue())){
-	    				return c.getInt(priceIndex);
-	    			}
-	        c.moveToNext();
-	    }
-	    c.close();
-
-		return 0;
-	}
-
-
 
 	private List<RealStoreItemDescriptor> getAllRealStoreItems() {
 		ArrayList<RealStoreItemDescriptor> items = new ArrayList<RealStoreItemDescriptor>();
@@ -274,18 +257,24 @@ public class GameDatabase {
 
 		return items;
 	}
-
-	public boolean useItem(ItemType it) {
-		if(getQuantItems(it) <= 0 ) return false;
-		ContentValues cv = new ContentValues();
-		cv.put(R_QUANT_ITEMS,getQuantItems(it)-1);
-		return db.update(TABLE_PLAYER_ITEMS, cv, R_ITEM_NAME + " = " + "\"" + it.getValue()+ "\"" , null) > 0;
+	
+	public boolean playerHasItem(ItemType it) {
+	    Cursor c = db.query(TABLE_PLAYER_ITEMS, null,
+                R_ITEM_NAME + " = '" + it.getName() + "'",
+                null, null, null, null);
+	    boolean hasItem = c.getCount() > 0;
+	    c.close();
+	    return hasItem;
 	}
 
 	public boolean buyItem(ItemType it) {
+	    if (playerHasItem(it))
+	        return false;
+	    
 		ContentValues cv = new ContentValues();
-		cv.put(R_QUANT_ITEMS,getQuantItems(it)+1);
-		return db.update(TABLE_PLAYER_ITEMS, cv, R_ITEM_NAME + " = " + "\"" + it.getValue()+ "\"" , null) > 0;
+		cv.put(R_ITEM_NAME, it.getName());
+		db.insert(TABLE_PLAYER_ITEMS, null, cv);
+		return true;
 	}
 
 }

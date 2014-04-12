@@ -1,9 +1,11 @@
 package com.arretadogames.pilot.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameState;
+import com.arretadogames.pilot.items.Item;
+import com.arretadogames.pilot.physics.PhysicalWorld;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.world.GameWorld;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -11,12 +13,8 @@ import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import com.arretadogames.pilot.game.Game;
-import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.items.Item;
-import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.AnimationSwitcher;
-import com.arretadogames.pilot.world.GameWorld;
+import java.util.Collection;
+import java.util.HashSet;
 
 public abstract class Player extends Entity implements Steppable{
 	
@@ -39,8 +37,6 @@ public abstract class Player extends Entity implements Steppable{
 	private int acquiredCoins;
 	private int timeFinished;
 
-	private List<Item> items;
-	
 	protected AnimationSwitcher sprite;
 	protected int contJump;
 	protected int contAct;
@@ -50,6 +46,9 @@ public abstract class Player extends Entity implements Steppable{
 	
 	private boolean ghostModeActive;
 	private boolean toucanTarget;
+    
+    private Vec2 stopImpulse = new Vec2(-1f, 0);
+    private Item item;
 	
 	public Player(float x, float y, PlayerNumber playerNumber) {
 		super(x, y);
@@ -57,7 +56,6 @@ public abstract class Player extends Entity implements Steppable{
 		hasFinished = false;
 		jumpActive = false;
 		actActive = false;
-		items = new ArrayList<Item>();
 		timeToDie = 0;
         bodiesContact = new HashSet<Body>();
         ghostModeActive = false;
@@ -93,18 +91,6 @@ public abstract class Player extends Entity implements Steppable{
 	    this.toucanTarget = isToucanTarget;
 	}
 	
-	public boolean addItem(Item i){
-		return items.add(i);
-	}
-	
-	public boolean remove(Item i){
-		return items.remove(i);
-	}
-	
-	public List<Item> getItems() {
-		return items;
-	}
-	
 	@Override
 	public void step(float timeElapsed){
 		if (state == State.DYING) {
@@ -115,8 +101,8 @@ public abstract class Player extends Entity implements Steppable{
 			}
 		}
 		
-		for(Item i : items){
-			i.applyEffect(this);
+		if (getItem() != null) {
+		    getItem().step(timeElapsed);
 		}
 	}
 	
@@ -182,8 +168,6 @@ public abstract class Player extends Entity implements Steppable{
 	public int getCoins() {
 		return acquiredCoins;
 	}
-	
-	private Vec2 stopImpulse = new Vec2(-1f, 0);
 	
 	protected void stopAction() {
 		if (body.getLinearVelocity().x != 0) {
@@ -297,6 +281,17 @@ public abstract class Player extends Entity implements Steppable{
             b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(-0.5f,-0.6f)));
             b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(0.5f,-0.6f)));
         }
+    }
+
+    public void setItem(Item item) {
+        if (item != null && this.item != null) {
+            return;
+        }
+        this.item = item;
+    }
+    
+    public Item getItem() {
+        return this.item;
     }
 	
 }

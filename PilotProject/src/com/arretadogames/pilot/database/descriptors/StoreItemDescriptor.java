@@ -8,14 +8,20 @@ public abstract class StoreItemDescriptor {
 	private String description;
 	private StoreItemType type;
 	private int iconId;
+	private boolean playerHasItem;
 
-	public StoreItemDescriptor(String name, String description, String res_id, StoreItemType type) {
+	public StoreItemDescriptor(String name, String description, String res_id, StoreItemType type, boolean playerHasItem) {
 		this.name = name;
 		this.description = description;
 		this.type = type;
+		this.playerHasItem = playerHasItem;
 		
 		MainActivity act = MainActivity.getActivity();
 		this.iconId = act.getResources().getIdentifier(res_id, "drawable", act.getPackageName());
+	}
+	
+	public boolean doesPlayerHasItem() {
+	    return playerHasItem;
 	}
 	
 	public int getIconId() {

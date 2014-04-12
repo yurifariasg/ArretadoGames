@@ -4,8 +4,8 @@ public class DigitalStoreItemDescriptor extends StoreItemDescriptor {
 	
 	private int value;
 
-	public DigitalStoreItemDescriptor(String name, String description, String resId, int value) {
-		super(name, description, resId, StoreItemType.DIGITAL);
+	public DigitalStoreItemDescriptor(String name, String description, String resId, int value, boolean playerHasItem) {
+		super(name, description, resId, StoreItemType.DIGITAL, playerHasItem);
 		this.value = value;
 	}
 	
