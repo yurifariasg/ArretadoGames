@@ -120,6 +120,7 @@ public class GameDatabase {
             typeName = c.getString(c.getColumnIndexOrThrow(T_TYPE_NAME));
             type = getTournamentType(typeName);
             Tournament curTournament = new Tournament(c.getInt( c.getColumnIndexOrThrow(TOURNAMENT_ID)), type);
+            System.out.println(curTournament.getTournamentType().toString());
             curTournament.setEnable(c.getInt( c.getColumnIndexOrThrow(T_ENABLED))==1);
 
             cLevels = db.query(TABLE_TOURNAMENT_LEVELS, null, TOURNAMENT_ID + " = " +
@@ -141,11 +142,11 @@ public class GameDatabase {
     }
 
     private TournamentType getTournamentType(String typeName){
-        if (typeName.equalsIgnoreCase("desert")){
+        if (typeName.equalsIgnoreCase(TournamentType.DESERT.toString())){
             return TournamentType.DESERT;
-        }else if (typeName.equalsIgnoreCase("swamp")) {
+        }else if (typeName.equalsIgnoreCase(TournamentType.SWAMP.toString())) {
             return TournamentType.SWAMP;
-        } else if (typeName.equalsIgnoreCase("jungle")) {
+        } else if (typeName.equalsIgnoreCase(TournamentType.JUNGLE.toString())) {
             return TournamentType.JUNGLE;
         } else {
             return null;

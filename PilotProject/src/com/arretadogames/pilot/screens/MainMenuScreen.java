@@ -152,6 +152,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	public void onClick(int buttonId) {
 		switch (buttonId) {
 		case PLAY_BUTTON:
+			Game.getInstance().setGameMode(GameMode.QUICKRACE);
 			startGame();
 			break;
 		case SETTINGS_BUTTON:
