@@ -1,112 +1,235 @@
 package com.arretadogames.pilot.screens;
 
-import android.graphics.RectF;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.microedition.khronos.opengles.GL10;
+
+import android.graphics.Color;
+import android.opengl.GLES11;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
-
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenEquations;
 
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.entities.Steppable;
+import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
-import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.levels.LevelManager;
+import com.arretadogames.pilot.levels.LevelTable;
+import com.arretadogames.pilot.levels.Tournament;
+import com.arretadogames.pilot.levels.TournamentType;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.loading.FontSpecification;
-import com.arretadogames.pilot.render.Renderable;
+import com.arretadogames.pilot.loading.LoadManager;
+import com.arretadogames.pilot.loading.LoadableGLObject;
+import com.arretadogames.pilot.loading.LoadableType;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
+import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.world.GameWorld;
 
-import java.util.List;
-
-public class TournamentSelectionScreen extends GameScreen implements GameButtonListener, OnGestureListener {
-
-	private static final int NEXT_BUTTON = 0;
-	private static final int PREVIOUS_BUTTON = 1;
-	private static final int MAX_SPOTS = 5;
-
-	private List<LevelDescriptor> levels;
-	private int currentIndex; // Current Index will always point to the Level at the Center
-
-	// Rendering attributes
-	private LevelSpot[] spots = new LevelSpot[MAX_SPOTS];
-
+public class TournamentSelectionScreen extends GameScreen implements GameButtonListener, OnGestureListener, TweenAccessor<TournamentSelectionScreen> {
+	
+    private static final int LOCK_SCREEN_MAX_ALPHA = 100;
+    private static final int MAX_ALPHA = 255;
+	private static final float TRANSITION_ANIM_DURATION = 0.25f;
+	
+	private final float SCREEN_WIDTH = getDimension(R.dimen.screen_width);
+	private final float SCREEN_HEIGHT = getDimension(R.dimen.screen_height);
+	
+	private ImageButton leftArrow;
+	private ImageButton rightArrow;
+	private InputEventHandler event;
+	private FontSpecification titleFont;
 	private GestureDetectorCompat mDetector;
-
-	private void setSpotLocation(int index, boolean animate) {
-		if (spots[index] == null)
-			return ;
-
-		final float Y_ALIGNMENT = 240f;
-		final float X_ALINGMENT_LEFT_SPOT = 100f;
-		final float X_ALINGMENT_MIDDLE_SPOT = 400f;
-		final float X_ALINGMENT_RIGHT_SPOT = 700f;
-
-		float x = 0, y = Y_ALIGNMENT;
-		boolean doZooming = false;
-
-		if (index == 0) {
-			// Outside Left
-			x = X_ALINGMENT_LEFT_SPOT - 200;
-		} else if (index == 1) {
-			// Left
-			x = X_ALINGMENT_LEFT_SPOT;
-		} else if (index == 2) {
-			// Middle
-			x = X_ALINGMENT_MIDDLE_SPOT;
-			doZooming = true;
-		} else if (index == 3) {
-			// Right
-			x = X_ALINGMENT_RIGHT_SPOT;
-		} else if (index == 4) {
-			// Outside Right
-			x = X_ALINGMENT_RIGHT_SPOT + 200;
+	
+	private Timeline currentAnimation;
+	
+	private class TournamentData {
+		public String tournamentName;
+		private int tournamentBg;
+		private boolean isLocked;
+		public ImageButton button;
+		public TournamentType type;
+		
+		public void renderTrophy(GLCanvas canvas, float timeElapsed) {
+			button.render(canvas, timeElapsed);
 		}
-
-		if (animate) {
-			spots[index].startAnimationTo(x, y, doZooming);
-		} else {
-			spots[index].setCenter(x, y);
-		}
-
 	}
-
-
+	
+	private float xOffset;
+	private TournamentData[] tournamentsInfo;
+	private List<Tournament> tournaments;
+	private boolean isScrolling; /* Needed to handle stop scroll event */
+    private float auxOffset; // Use this Aux variable will be used to avoid flickering later on...
+	
+	private int getCurrentTournamentIndex() {
+	    int currentIndex = (int) Math.floor((xOffset+1) / SCREEN_WIDTH) + (xOffset % SCREEN_WIDTH > SCREEN_WIDTH / 2 ? 1 : 0);
+	    if (currentIndex < 0)
+	        return 0;
+	    else if (currentIndex >= tournamentsInfo.length)
+	        return tournamentsInfo.length - 1;
+		return currentIndex;
+	}
+	
 	public TournamentSelectionScreen() {
-		levels = LevelManager.getLevels();
-		currentIndex = 0;
-
-		final int INITIAL = 2;
-		int maxSpots = levels.size() + INITIAL < MAX_SPOTS ? levels.size() + INITIAL : MAX_SPOTS;
-		for (int i = INITIAL ; i < maxSpots ; i++) {
-			LevelSpot spot = new LevelSpot();
-			spot.index = i - INITIAL;
-			spots[i] = spot;
-			setSpotLocation(i, false);
+		
+		tournaments = GameDatabase.getInstance().getAllTournaments();
+		
+		tournamentsInfo = new TournamentData[tournaments.size()]; // Mock Info
+		for (int i = 0 ; i < tournaments.size() ; i++) {
+			tournamentsInfo[i] = createTournamentInfo(i, tournaments.get(i));
 		}
-		setSpotLocation(2, true);
-
+		
+		// Create First Tournament Info
+		leftArrow = new ImageButton(-1, 17, 242, 60, 60,
+		        this, R.drawable.level_arrow_left_selected, R.drawable.level_arrow_left_unselected);
+		rightArrow = new ImageButton(-2, 723, 242, 60, 60,
+		        this, R.drawable.level_arrow_right_selected, R.drawable.level_arrow_right_unselected);
+		
+		titleFont = FontLoader.getInstance().getFont(FontTypeFace.ARIAN);
+		
 		mDetector = new GestureDetectorCompat(MainActivity.getContext(), this);
+		event = new InputEventHandler(null); // MotionEvent will be set later
+		
+        leftArrow.setVisible(false);
+        if (tournamentsInfo.length <= 1) {
+            rightArrow.setVisible(false);
+        }
+	}
+	
+	@Override
+	public void onLoading() {
+	    // Load a few objects
+	    List<LoadableGLObject> objs = new ArrayList<LoadableGLObject>();
+	    objs.add(new LoadableGLObject(R.drawable.swamp_tournament_bg, LoadableType.TEXTURE));
+        objs.add(new LoadableGLObject(R.drawable.desert_tournament_bg, LoadableType.TEXTURE));
+        objs.add(new LoadableGLObject(R.drawable.jungle_tournament_bg, LoadableType.TEXTURE));
+        objs.add(new LoadableGLObject(R.drawable.lockpad, LoadableType.TEXTURE));
+	    LoadManager.getInstance().addExtraObjects(objs);
+	}
+	
+	private TournamentData createTournamentInfo(int index, Tournament tournament) {
+		TournamentData ti = new TournamentData();
+		int imgPressed = 0;
+		int imgUnpressed = 0;
+		
+		ti.tournamentName = tournament.getTournamentType().toString();
+		
+		ti.tournamentBg = LevelTable.TOURNAMENT_BACKGROUNDS.get(tournament.getTournamentType());
+		
+		ti.isLocked = !tournament.getEnable();
+		
+		ti.type = tournament.getTournamentType();
+		
+		switch (tournament.getTournamentType()) {
+			case JUNGLE://cacau
+				if (ti.isLocked){
+					imgPressed = R.drawable.trophy_cacau_blocked;
+					imgUnpressed = R.drawable.trophy_cacau_blocked;
+				} else {
+					imgPressed = R.drawable.trophy_cacau_selected;
+					imgUnpressed = R.drawable.trophy_cacau_unselected;
+				}
+				break;
+			case DESERT://mirage
+				if (ti.isLocked){
+					imgPressed = R.drawable.trophy_mirage_blocked;
+					imgUnpressed = R.drawable.trophy_mirage_blocked;
+				} else {
+					imgPressed = R.drawable.trophy_mirage_selected;
+					imgUnpressed = R.drawable.trophy_mirage_unselected;
+				}			
+				break;
+			case SWAMP://victoria
+				if (ti.isLocked){
+					imgPressed = R.drawable.trophy_victoria_blocked;
+					imgUnpressed = R.drawable.trophy_victoria_blocked;
+				} else {
+					imgPressed = R.drawable.trophy_victoria_selected;
+					imgUnpressed = R.drawable.trophy_victoria_unselected;
+				}	
+				break;
+			default:
+				break;
+		}
+		
+		ti.button = createButton(index, getDimension(R.dimen.screen_width)/2 - 82 + index * 800,// 82 is half of the button
+									getDimension(R.dimen.screen_height)/2 - 82,// 82 is half of the button
+									imgPressed, imgUnpressed);
+		
+		return ti;
+	}
+	
+	private ImageButton createButton(int id, float x, float y, int imgPressed, int imgUnpressed) {
+		return new ImageButton(id, x, y, 165, 165, this, imgPressed, imgUnpressed);
 	}
 
+	private boolean collidesWithScreen(int tournamentIndex) {
+		return diffFromCenterScreen(tournamentIndex) < 1f;
+	}
+
+	/* This Function is parametized with SCREEN_WIDTH */
+	private float diffFromCenterScreen(int tournamentIndex) {
+		return Math.abs(SCREEN_WIDTH / 2 + tournamentIndex * SCREEN_WIDTH - (xOffset + SCREEN_WIDTH / 2)) / SCREEN_WIDTH;
+	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-
-        canvas.drawBitmap(R.drawable.menu_background, 0, 0,
-                getDimension(R.dimen.screen_width), getDimension(R.dimen.screen_height),
-                0, getDimension(R.dimen.main_menu_bg_extra_height));
-
-		for (int i = 0 ; i < spots.length ; i++)
-			if (spots[i] != null)
-				spots[i].render(canvas, timeElapsed);
+		
+		GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
+		canvas.saveState();
+		auxOffset = xOffset; // Use this Aux variable to store the offset and avoid flickering (xOffset may be modified while the render is executing)
+		canvas.translate(-auxOffset, 0);
+		
+		for (int i = 0 ; i < tournamentsInfo.length ; i++) {
+			if (collidesWithScreen(i)) {
+				
+				float diff = diffFromCenterScreen(i);
+				
+				canvas.drawBitmap(tournamentsInfo[i].tournamentBg,
+				        auxOffset, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
+						0, getDimension(R.dimen.tournament_bg_extra_height),
+						MAX_ALPHA - diff * MAX_ALPHA);
+				
+				canvas.drawText(tournamentsInfo[i].type.name(),
+				        auxOffset + SCREEN_WIDTH / 2f, 45,
+						titleFont, 1.2f, true, MAX_ALPHA - diff * MAX_ALPHA);
+				
+				tournamentsInfo[i].renderTrophy(canvas, timeElapsed);
+				
+				if (tournamentsInfo[i].isLocked) {
+				    int alpha = (int) (LOCK_SCREEN_MAX_ALPHA - LOCK_SCREEN_MAX_ALPHA * diff);
+				    canvas.drawRect(auxOffset, 0, auxOffset + SCREEN_WIDTH, SCREEN_HEIGHT, Color.argb(alpha, 0, 0, 0));
+	                
+	                canvas.drawText("Tournament Locked",
+	                        auxOffset + SCREEN_WIDTH / 2f, 435,
+	                        titleFont, 1.2f, true, MAX_ALPHA - diff * MAX_ALPHA);
+				} else {
+					canvas.drawText(tournamentsInfo[i].tournamentName + " trophy",
+	                        auxOffset + SCREEN_WIDTH / 2f, 435,
+	                        titleFont, 1.2f, true, MAX_ALPHA - diff * MAX_ALPHA);
+				}
+			}
+		}
+		
+		canvas.restoreState();
+		
+		leftArrow.render(canvas, timeElapsed);
+		rightArrow.render(canvas, timeElapsed);
+		
+        GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
 	}
 
 	@Override
@@ -116,225 +239,145 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 	@Override
 	public void input(InputEventHandler event) {
 		mDetector.onTouchEvent(event.getEvent());
+		
+		if (event.getAction() == MotionEvent.ACTION_UP
+		        && isScrolling) {
+		    isScrolling = false;
+		    if (xOffset % SCREEN_WIDTH != 0) {
+		        startAnimationTo(getCurrentTournamentIndex());
+		    }
+		}
 	}
 
 	@Override
 	public void onPause() {
-		// TODO Autogenerated method stub
 	}
-
-	private void start() {
-		((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setLevel(levels.get(currentIndex));
-		// Start Loading ?
-		Game.getInstance().goTo(GameState.CHARACTER_SELECTION);
+	
+	@Override
+	public void onBackPressed() {
+		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}
-
-
-	private class LevelSpot implements Renderable, Steppable, TweenAccessor<LevelSpot> {
-
-		protected int index;
-		protected RectF drawRect;
-		private float zoom;
-		private FontSpecification textSpecification;
-
-		public LevelSpot() {
-			drawRect = new RectF(0, 0, 100, 100);
-			textSpecification = FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS);
-			zoom = 1;
-		}
-
-		public boolean contains(float x, float y) {
-			return drawRect.contains(x, y);
-		}
-
-		public void startAnimationTo(float x, float y, boolean zoomed) {
-			Tween.to(this, 0, 0.5f).target(x, y, zoomed ? 2 : 1f).start(AnimationManager.getInstance());
-		}
-
-		private void setCenter(float x, float y) {
-			drawRect.set(
-					x - drawRect.width() / 2,
-					y - drawRect.height() / 2,
-					x + drawRect.width() / 2,
-					y + drawRect.height() / 2);
-		}
-
-		@Override
-		public int getValues(LevelSpot spot, int type, float[] returnValues) {
-
-			returnValues[0] = spot.drawRect.centerX();
-			returnValues[1] = spot.drawRect.centerY();
-			returnValues[2] = spot.zoom;
-
-			return 3;
-		}
-
-		@Override
-		public void setValues(LevelSpot spot, int type, float[] newValues) {
-			spot.setCenter(newValues[0], newValues[1]);
-			spot.zoom = newValues[2];
-		}
-
-		@Override
-		public void step(float timeElapsed) {
-			// TODO Autogenerated method stub
-
-		}
-
-		@Override
-		public void render(GLCanvas canvas, float timeElapsed) {
-			canvas.saveState();
-			canvas.scale(zoom, zoom, drawRect.centerX(), drawRect.centerY());
-			canvas.drawBitmap(R.drawable.bt_level_selector, drawRect);
-			canvas.drawText(String.valueOf(index+1), drawRect.centerX(),
-					drawRect.centerY(), textSpecification, 1, true);
-			canvas.restoreState();
-
-			if (zoom == 2) {
-				int stRecord = levels.get(currentIndex).getRecords()[0];
-				canvas.drawText(
-						"1st Seeds: " + (stRecord == 1 ? "?" : String.valueOf(stRecord)),
-						drawRect.centerX(),	drawRect.centerY() + 130, textSpecification, 1, true);
-
-				int ndRecord = levels.get(currentIndex).getRecords()[1];
-				canvas.drawText(
-						"2nd Seeds: " + (ndRecord == 1 ? "?" : String.valueOf(ndRecord)),
-						drawRect.centerX(),	drawRect.centerY() + 160, textSpecification, 1, true);
-
-				int rdRecord = levels.get(currentIndex).getRecords()[2];
-				canvas.drawText(
-						"3rd Seeds: " + (rdRecord == 1 ? "?" : String.valueOf(rdRecord)),
-						drawRect.centerX(),	drawRect.centerY() + 190, textSpecification, 1, true);
-
-
-			}
-		}
-	}
-
-	private void next() {
-		if (currentIndex + 1 < levels.size()) {
-			currentIndex++;
-
-			// Move Spots
-			spots[0] = spots[1];
-			setSpotLocation(0, true);
-			spots[1] = spots[2];
-			setSpotLocation(1, true);
-			spots[2] = spots[3];
-			setSpotLocation(2, true);
-			spots[3] = spots[4];
-			setSpotLocation(3, true);
-
-			// Create new one, if needed
-			if (currentIndex + 2 < levels.size()) {
-				spots[4] = new LevelSpot();
-				spots[4].index = currentIndex + 2;
-				setSpotLocation(4, false);
-			} else
-				spots[4] = null;
-		}
-	}
-
-	private void previous() {
-		if (currentIndex - 1 >= 0) {
-			--currentIndex;
-
-			// Move Spots
-			spots[4] = spots[3];
-			setSpotLocation(4, true);
-			spots[3] = spots[2];
-			setSpotLocation(3, true);
-			spots[2] = spots[1];
-			setSpotLocation(2, true);
-			spots[1] = spots[0];
-			setSpotLocation(1, true);
-
-			// Create new one if needed
-			if (currentIndex - 2 >= 0) {
-				spots[0] = new LevelSpot();
-				spots[0].index = currentIndex - 2;
-				setSpotLocation(0, false);
-			} else
-				spots[0] = null;
-		}
-	}
-
 
 	@Override
-	public void onClick(int buttonId) {
-		switch (buttonId) {
-		case NEXT_BUTTON:
-			next();
-			break;
-		case PREVIOUS_BUTTON:
-			previous();
-			break;
-		default:
-			break;
+	public void onClick(int stageId) {
+		System.out.println("OWOWOWOWO "+stageId);
+		
+		int currentIndex = getCurrentTournamentIndex();
+		if (stageId == -1 && currentIndex > 0) {
+		    startAnimationTo(getCurrentTournamentIndex() - 1);
+		} else if (stageId == -2 && currentIndex < tournamentsInfo.length - 1) {
+            startAnimationTo(getCurrentTournamentIndex() + 1);
+		} else if (stageId > -1) {
+			int stageTableId = tournaments.get(getCurrentTournamentIndex()).getIdsLevels()[stageId];
+			// Sets the level
+			((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setLevel(LevelManager.getLevels().get(stageTableId));
+			// Start Loading ?
+			Game.getInstance().goTo(GameState.CHARACTER_SELECTION);
 		}
 	}
-
 
 	@Override
 	public boolean onDown(MotionEvent e) {
-		// TODO Autogenerated method stub
-		return true;
+	    return sendMotionEvent(e);
 	}
-
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
-		if( velocityX < 1) {
-			onClick(NEXT_BUTTON);
-			return true;
+		
+		int targetIndex;
+		if (velocityX < 0) {
+			targetIndex = getCurrentTournamentIndex() + 1;
+		} else {
+			targetIndex = getCurrentTournamentIndex() - 1;
 		}
-		if( velocityX > 1) {
-			onClick(PREVIOUS_BUTTON);
-			return true;
-
+		
+		if (targetIndex < 0 || targetIndex >= tournamentsInfo.length) {
+			return false;
 		}
-		return false;
+	
+		isScrolling = false;
+		
+		startAnimationTo(targetIndex);
+		
+		return true;
 	}
-
+	
+	private void startAnimationTo(int tournamentIndex) {
+		if (currentAnimation != null && currentAnimation.isFinished()) {
+		    return;
+		}
+		
+		if (tournamentIndex <= 0) {
+		    tournamentIndex = 0;
+		    leftArrow.setVisible(false);
+        } else {
+            leftArrow.setVisible(true);
+        }
+		
+		if (tournamentIndex >= tournamentsInfo.length - 1) {
+            tournamentIndex = tournamentsInfo.length - 1;
+            rightArrow.setVisible(false);
+		} else {
+            rightArrow.setVisible(true);
+		}
+		    
+	    float targetX = SCREEN_WIDTH * tournamentIndex;
+		
+		currentAnimation = Timeline.createSequence()
+			.push(Tween.to(this, 0, TRANSITION_ANIM_DURATION).target(targetX).ease(TweenEquations.easeOutBack))
+			.start(AnimationManager.getInstance());
+	}
+	
 	@Override
 	public void onLongPress(MotionEvent e) {
-		// TODO Autogenerated method stub
 	}
-
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
 
-		return false;
+		xOffset += distanceX / GameSettings.WidthRatio;
+		isScrolling = true;
+		
+		return true;
 	}
-
 
 	@Override
 	public void onShowPress(MotionEvent e) {
-		// TODO Autogenerated method stub
 	}
 
-	int cont = 0;
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
-		InputEventHandler event = new InputEventHandler(e);
-		if (spots[2] != null && spots[2].contains(event.getX(), event.getY()))
-			start();
-
-		// Click on right spot
-		if (spots[3] != null && spots[3].contains(event.getX(), event.getY()))
-			next();
-
-		// Click on left spot
-		if (spots[1] != null && spots[1].contains(event.getX(), event.getY()))
-			previous();
-		return false;
+	    return sendMotionEvent(e);
+	}
+	
+	private boolean sendMotionEvent(MotionEvent e) {
+	    event.setMotionEvent(e);
+        
+        boolean pressed = false;
+        
+        event.setOffsetX((int)xOffset);
+        int currentTournament = getCurrentTournamentIndex();
+        if (!tournamentsInfo[currentTournament].isLocked) {
+        	 pressed |= tournamentsInfo[currentTournament].button.input(event);
+        }
+        event.setOffsetX(0);
+        
+        pressed |= leftArrow.input(event);
+        pressed |= rightArrow.input(event);
+        
+        return pressed;
+	}
+	
+	@Override
+	public int getValues(TournamentSelectionScreen s, int type, float[] values) {
+		values[0] = xOffset;
+		return 1;
 	}
 
 	@Override
-	public void onBackPressed() {
-		Game.getInstance().goTo(GameState.MAIN_MENU);
+	public void setValues(TournamentSelectionScreen s, int type, float[] values) {
+		xOffset = values[0];
 	}
 }
