@@ -103,10 +103,6 @@ public class Account implements OnStateLoadedListener {
 		return new HashMap<ItemType, Integer>();
 	}
 	
-	public boolean useItem(ItemType it){
-		return GameDatabase.getInstance().useItem(it);
-	}
-	
 	public boolean buyItem(ItemType it){
 		return GameDatabase.getInstance().buyItem(it);
 	}

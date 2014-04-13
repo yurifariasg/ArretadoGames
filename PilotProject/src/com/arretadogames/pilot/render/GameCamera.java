@@ -304,7 +304,7 @@ public class GameCamera implements Renderable, Steppable {
 		
 		// Start Toucan if needed
         if (maxXDistance > 10) {
-            toucan.activate(lowerBound.x, upperBound.y, furthestPlayer, secondFurthestPlayer);
+            toucan.activate(lowerBound.x, upperBound.y, furthestPlayer, secondFurthestPlayer, flagX);
         }
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Calculate Viewport");

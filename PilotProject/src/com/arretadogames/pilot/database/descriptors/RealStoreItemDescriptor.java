@@ -7,7 +7,7 @@ public class RealStoreItemDescriptor extends StoreItemDescriptor {
 
 	public RealStoreItemDescriptor(String name, String description, String resId,
 			String skuCode, float price) {
-		super(name, description, resId, StoreItemType.REAL);
+		super(name, description, resId, StoreItemType.REAL, false);
 		
 		this.skuCode = skuCode;
 		this.price = price;

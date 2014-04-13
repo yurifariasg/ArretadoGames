@@ -61,7 +61,7 @@ public class Breakable extends Entity implements Steppable{
 	}
 	
 	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
+	public void postSolve(Entity e, Contact contact, ContactImpulse impulse) {
 		if (m_broke) return;
 		int count = contact.getManifold().pointCount;
 		float maxImpulse = 0.0f;

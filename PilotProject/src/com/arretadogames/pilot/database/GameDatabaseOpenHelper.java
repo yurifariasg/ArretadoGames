@@ -54,8 +54,7 @@ public class GameDatabaseOpenHelper extends SQLiteOpenHelper  {
     private static final String PLAYER_ITEMS_TABLE_CREATE = "CREATE TABLE " +
 		    GameDatabase.TABLE_PLAYER_ITEMS + " (" +
 			GameDatabase.R_ITEM_ID + " INTEGER PRIMARY KEY, " +
-			GameDatabase.R_ITEM_NAME + " TEXT, " +
-			GameDatabase.R_QUANT_ITEMS + " INTEGER); ";
+			GameDatabase.R_ITEM_NAME + " TEXT); ";
 
     private static final String PLAYER_TOURNAMENTS_TABLE_CREATE = "CREATE TABLE " +
     		GameDatabase.TABLE_PLAYER_TOURNAMENTS + " (" +

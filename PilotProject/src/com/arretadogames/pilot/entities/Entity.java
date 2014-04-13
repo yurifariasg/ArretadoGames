@@ -27,6 +27,7 @@ public abstract class Entity implements Renderable, LayerEntity {
 	protected World world;
 	protected PhysicsRect physRect;
 	protected State state;
+	protected boolean isOnWater;
 
 	public Entity(float x, float y) {
 		world = PhysicalWorld.getInstance().getWorld();
@@ -43,6 +44,14 @@ public abstract class Entity implements Renderable, LayerEntity {
 	@Override
 	public int getLayerPosition() {
 		return 0;
+	}
+	
+	public void setOnWater(boolean isOnWater) {
+	    this.isOnWater = isOnWater;
+	}
+	
+	public boolean isOnWater() {
+	    return isOnWater;
 	}
 	
 	public final boolean isAlive() {
@@ -92,10 +101,10 @@ public abstract class Entity implements Renderable, LayerEntity {
 		world.destroyBody(body);
 	}
 
-	public void preSolve(Contact contact, Manifold oldManifold) {
+	public void preSolve(Entity e, Contact contact, Manifold oldManifold) {
 	}
 
-	public void postSolve(Contact contact, ContactImpulse impulse) {
+	public void postSolve(Entity e, Contact contact, ContactImpulse impulse) {
 	}
 
 	public PolygonShape getWaterContactShape() {

@@ -6,6 +6,7 @@
 package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.BoxItem;
 import com.arretados.leveleditor.entities.BoxPanel;
 import com.arretados.leveleditor.entities.Breakable;
 import com.arretados.leveleditor.entities.BreakablePanel;
@@ -258,6 +259,10 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                 case HOLE:
                     entityToAdd = new Hole(e.getX(), e.getY());
                 break;
+                    
+                case BOX_ITEM:
+                    entityToAdd = new BoxItem(e.getX(), e.getY());
+                    break;
             }
             
             if (entityToAdd != null) {

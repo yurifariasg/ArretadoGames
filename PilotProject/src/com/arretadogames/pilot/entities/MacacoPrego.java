@@ -153,7 +153,7 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 	
 	@Override
-	public void render(GLCanvas canvas, float timeElapsed) {
+	public void playerRender(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());

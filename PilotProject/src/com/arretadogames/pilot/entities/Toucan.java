@@ -21,7 +21,8 @@ public class Toucan implements Renderable, Steppable {
 
     private static final PhysicsRect TOUCAN_SIZE = new PhysicsRect(2, 2);
     private static final Vec2 GRAB_OFFSET = new Vec2(0, 0.6f);
-    private static final Vec2 TARGET_PLAYER_OFFSET = new Vec2(-3, 5);
+    private static final Vec2 TARGET_PLAYER_OFFSET = new Vec2(-5, 5);
+    private static final Vec2 TARGET_FLAG_OFFSET = new Vec2(-10, 5);
     private static final Vec2 FLIGHT_OUT_POSITION_RELATIVE_TO_TARGET = new Vec2(4, 10);
 
     /* All duration are in seconds */
@@ -38,6 +39,7 @@ public class Toucan implements Renderable, Steppable {
     private Player playerToGrab;
     private Player target;
     private AnimationSwitcher sprite;
+    private float flagX;
 
     private float remainingTime;
     private ToucanState state;
@@ -69,7 +71,7 @@ public class Toucan implements Renderable, Steppable {
      * @param playerToGrab The player to be grabbed
      * @param targetPlayer The player that the toucan will be grabbed to
      */
-    public void activate(float xPos, float yPos, Player playerToGrab, Player targetPlayer) {
+    public void activate(float xPos, float yPos, Player playerToGrab, Player targetPlayer, float flagX) {
         if (!isActive() && playerToGrab != null && targetPlayer != null) {
             this.center.set(xPos, yPos);
             this.oldPos.set(xPos, yPos);
@@ -78,6 +80,7 @@ public class Toucan implements Renderable, Steppable {
             this.remainingTime = GRAB_FLIGHT_DURATION;
             this.state = ToucanState.INITIAL_FLIGHT;
             this.playerToGrab.setToucanTarget(true);
+            this.flagX = flagX;
         }
     }
 
@@ -89,6 +92,7 @@ public class Toucan implements Renderable, Steppable {
         this.playerToGrab = null;
         this.remainingTime = 0;
         this.state = null;
+        this.flagX = Float.MAX_VALUE;
     }
 
     @Override
@@ -145,10 +149,18 @@ public class Toucan implements Renderable, Steppable {
                     remainingTime = DROP_DURATION;
                     setOldPosition();
                 } else {
+                    
                     Body b = target.body;
-                    moveTowards(b.getPosition().x + TARGET_PLAYER_OFFSET.x,
-                            b.getPosition().y + TARGET_PLAYER_OFFSET.y,
-                            remainingTime, PULL_FLIGHT_DURATION);
+                    
+                    if (b.getPosition().x < flagX) {
+                        moveTowards(b.getPosition().x + TARGET_PLAYER_OFFSET.x,
+                                b.getPosition().y + TARGET_PLAYER_OFFSET.y,
+                                remainingTime, PULL_FLIGHT_DURATION);
+                    } else {
+                        moveTowards(flagX + TARGET_FLAG_OFFSET.x, TARGET_FLAG_OFFSET.y,
+                                remainingTime, PULL_FLIGHT_DURATION);
+                    }
+                    
                     grabbedPlayerPos.set(center).addLocal(GRAB_OFFSET.x, -GRAB_OFFSET.y);
                     playerToGrab.body.setTransform(grabbedPlayerPos, 0);
                 }

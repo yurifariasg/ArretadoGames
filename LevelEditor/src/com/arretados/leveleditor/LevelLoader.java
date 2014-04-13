@@ -5,6 +5,7 @@
 package com.arretados.leveleditor;
 
 import com.arretados.leveleditor.entities.Box;
+import com.arretados.leveleditor.entities.BoxItem;
 import com.arretados.leveleditor.entities.Breakable;
 import com.arretados.leveleditor.entities.Coin;
 import com.arretados.leveleditor.entities.Flag;
@@ -122,6 +123,11 @@ public class LevelLoader {
                 
                 // HOLE
                 gc.addEntities(new Hole(jObj));
+                
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.BOX_ITEM.toString())) {
+                
+                // BOX ITEM
+                gc.addEntities(new BoxItem(jObj));
                 
             } else {
                 System.out.println("Not Found: " + jObj.get("type"));

@@ -15,7 +15,8 @@ public enum DrawMode {
     PULLEY("pulley"), ONEWAY_WALL("oneway_wall"), FLAG("finalflag"),
     COIN("coin"), FLUID("water"), BREAKABLE("breakable"), LIANA("liana"),
     SPIKE("spike"), HOLE("hole"),
-    TREE("tree"), SHRUB("shrub"), GRASS("grass");
+    TREE("tree"), SHRUB("shrub"), GRASS("grass"),
+    BOX_ITEM("boxitem");
 
     private String name;
 

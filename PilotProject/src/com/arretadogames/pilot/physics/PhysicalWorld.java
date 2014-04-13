@@ -97,16 +97,16 @@ public class PhysicalWorld implements ContactListener, Renderable {
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		Entity a = (Entity)contact.m_fixtureA.getBody().getUserData();
 		Entity b = (Entity)contact.m_fixtureB.getBody().getUserData();
-		a.postSolve(contact, impulse);
-		b.postSolve(contact, impulse);
+		a.postSolve(b, contact, impulse);
+		b.postSolve(a, contact, impulse);
 	}
 
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		Entity a = (Entity)contact.m_fixtureA.getBody().getUserData();
 		Entity b = (Entity)contact.m_fixtureB.getBody().getUserData();
-		a.preSolve(contact, oldManifold);
-		b.preSolve(contact, oldManifold);
+		a.preSolve(b, contact, oldManifold);
+		b.preSolve(a, contact, oldManifold);
 	}
 
 	public void step(float timeElapsed) {

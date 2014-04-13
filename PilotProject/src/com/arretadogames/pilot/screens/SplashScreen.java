@@ -72,9 +72,7 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 
         GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-
 		canvas.restoreState();
-
 	}
 
 	@Override

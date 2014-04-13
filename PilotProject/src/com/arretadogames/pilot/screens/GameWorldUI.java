@@ -1,7 +1,7 @@
 package com.arretadogames.pilot.screens;
 
-import android.graphics.Color;
 import android.graphics.RectF;
+import android.opengl.GLES11;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
@@ -10,39 +10,57 @@ import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Fire;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
-import com.arretadogames.pilot.loading.FontLoader;
-import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
-import com.arretadogames.pilot.loading.ImageLoader;
+import com.arretadogames.pilot.render.AnimationManager;
+import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.render.opengl.GLCircle;
-import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.world.GameWorld;
+
+import javax.microedition.khronos.opengles.GL10;
 
 public class GameWorldUI extends GameScreen {
 
+    private final float COOLDOWN_IMAGE_SIZE = getDimension(R.dimen.cooldown_image_size);
 	private final int INIT_OF_STATUS_INTERVAL = 270;
 	private final int END_OF_STATUS_INTERVAL = 487 - INIT_OF_STATUS_INTERVAL;
-	private final int COOLDOWN_RADIUS = 30;
-	private final int COOLDOWN1_X = 40;
-	private final int COOLDOWN2_X = 590;
-	private final int COOLDOWN_Y = 40;
-
-	private final int COIN1_X = 140;
-	private final int COIN2_X = 690;
-	private final int COINS_Y = 40;
+	
+	// These two first rects will determine the position of the others
+	private final RectF PLAYER_1_ITEM_FRAME_SIZE = new RectF(
+	        40 - COOLDOWN_IMAGE_SIZE / 2, 40 - COOLDOWN_IMAGE_SIZE / 2,
+	        40 + COOLDOWN_IMAGE_SIZE / 2, 40 + COOLDOWN_IMAGE_SIZE / 2);
+	
+	private final RectF PLAYER_2_ITEM_FRAME_SIZE = new RectF(
+            590 - COOLDOWN_IMAGE_SIZE / 2, 40 - COOLDOWN_IMAGE_SIZE / 2,
+            590 + COOLDOWN_IMAGE_SIZE / 2, 40 + COOLDOWN_IMAGE_SIZE / 2);
+	
+	private final RectF PLAYER_1_ITEM_SIZE = new RectF(PLAYER_1_ITEM_FRAME_SIZE);
+	{
+	    PLAYER_1_ITEM_SIZE.inset(5, 5); // Move 10 px inwards
+	}
+	
+	private final RectF PLAYER_2_ITEM_SIZE = new RectF(PLAYER_2_ITEM_FRAME_SIZE);
+    {
+        PLAYER_2_ITEM_SIZE.inset(5, 5); // Move 10 px inwards
+    }
+	
+    private final RectF PLAYER_1_EFFECT_ACTIVE_SIZE = new RectF(PLAYER_1_ITEM_FRAME_SIZE);
+    {
+        PLAYER_1_EFFECT_ACTIVE_SIZE.inset(-30, -30); // Move 50 px outwards
+    }
+    
+    private final RectF PLAYER_2_EFFECT_ACTIVE_SIZE = new RectF(PLAYER_2_ITEM_FRAME_SIZE);
+    {
+        PLAYER_2_EFFECT_ACTIVE_SIZE.inset(-30, -30); // Move 50 px outwards
+    }
 
 	private Player p1;
 	private Player p2;
 	private Fire fire;
 	private GameWorld gWorld;
-//	private Text completionText;
-	private Text coin1Text;
-	private Text coin2Text;
-	private GLCircle coolDown1;
-	private GLCircle coolDown2;
+	
+	private AnimationSwitcher itemActiveAnim;
+	private AnimationSwitcher itemActiveAnim2;
 
 	float totalDistance = Float.MIN_VALUE;
-	private RectF seedRenderingRect = new RectF(0, 0, 40, 40);
 
 	public GameWorldUI(GameWorld gameWorld) {
 		this.gWorld = gameWorld;
@@ -55,13 +73,8 @@ public class GameWorldUI extends GameScreen {
 				fire = (Fire) e;
 		}
 
-		coin1Text = new Text(COIN1_X, COINS_Y, "0",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
-		coin2Text = new Text(COIN2_X, COINS_Y, "0",
-				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 1, false);
-
-		coolDown1 = new GLCircle(COOLDOWN_RADIUS);
-		coolDown2 = new GLCircle(COOLDOWN_RADIUS);
+		itemActiveAnim = AnimationManager.getInstance().getSprite("Spinner");
+		itemActiveAnim2 = AnimationManager.getInstance().getSprite("Spinner");
 	}
 
 	@Override
@@ -70,112 +83,53 @@ public class GameWorldUI extends GameScreen {
 		canvas.drawBitmap(R.drawable.ui_buttons, 0, 
 		        getDimension(R.dimen.screen_height) - getDimension(R.dimen.ui_buttons_height),
 		        getDimension(R.dimen.screen_width), getDimension(R.dimen.ui_buttons_height));
-
-		seedRenderingRect.right = 90 + seedRenderingRect.width();
-		seedRenderingRect.left = 90;
-		if (!p1.getItems().isEmpty()) {
-			seedRenderingRect.right += 80;
-			seedRenderingRect.left += 80;
-			coin1Text.setX(COIN1_X + 80);
-		}
-
-		seedRenderingRect.bottom = 20 + seedRenderingRect.height();
-		seedRenderingRect.top = 20;
-		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
-		coin1Text.render(canvas, timeElapsed);
-
-		seedRenderingRect.right = 640 + seedRenderingRect.width();
-		seedRenderingRect.left = 640;
-		seedRenderingRect.bottom = 20 + seedRenderingRect.height();
-		seedRenderingRect.top = 20;
-		canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
-		coin2Text.render(canvas, timeElapsed);
-
-		// Draw Items
-		if (p1.getItems().size() > 0) {
-			// For now, just show 1 Item
-			canvas.drawBitmap(p1.getItems().get(0).getImage(), COOLDOWN1_X + 40, COOLDOWN_Y - 40,
-			        getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
-		}
-
-		if (p2.getItems().size() > 0) {
-			// For now, just show 1 Item
-			canvas.drawBitmap(p2.getItems().get(0).getImage(), COOLDOWN2_X - 40, COOLDOWN_Y - 40,
-			        getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
-		}
-
+		
 		if (!p1.isDead()){
 			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390,
 			        getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
-			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLUE, true, 5, p1.getPercentageLeftToNextAct());
-			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLACK, false, 5, p1.getPercentageLeftToNextAct());
-
-			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0, COOLDOWN1_X),
-												centerImage(R.drawable.power, 2, COOLDOWN_Y),
-							                    getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
-		} else {
-			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.GRAY, true, 5, 100);
-			coolDown1.drawCircle(canvas, COOLDOWN1_X, COOLDOWN_Y, Color.BLACK, false, 5, 100);
-			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 0, COOLDOWN1_X),
-					centerImage(R.drawable.power, 2, COOLDOWN_Y),
-                    getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
+			
+			if (p1.getItem() != null) {
+    			canvas.drawRect(PLAYER_1_ITEM_SIZE, p1.getItem().getColor());
+    	        canvas.drawBitmap(p1.getItem().getImageDrawable(), PLAYER_1_ITEM_SIZE);
+    	        
+    	        if (p1.getItem().isActive()) {
+    	        	
+    	        	GLES11.glBlendFunc(GLES11.GL_SRC_ALPHA, GLES11.GL_ONE); // Additive Blending Effect
+    	        	
+    	        	itemActiveAnim.render(canvas, PLAYER_1_EFFECT_ACTIVE_SIZE, timeElapsed);
+    
+    	            GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+    	        }
+			}
 		}
+		
+        canvas.drawBitmap(R.drawable.item_frame, PLAYER_1_ITEM_FRAME_SIZE);
 
 		if (!p2.isDead()){
-			int cooldownX = COOLDOWN2_X;
-			if (!p2.getItems().isEmpty())
-				cooldownX -= 80;
-
 			canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2.body.getPosition().x), 440,
                     getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
-			coolDown2.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.RED, true, 5, p2.getPercentageLeftToNextAct());
-			coolDown2.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.BLACK, false, 5, p2.getPercentageLeftToNextAct());
-			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1, cooldownX),
-												centerImage(R.drawable.power, 2, COOLDOWN_Y),
-							                    getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
-		} else {
-			int cooldownX = COOLDOWN2_X;
-			if (!p2.getItems().isEmpty())
-				cooldownX -= 80;
-			coolDown1.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.GRAY, true, 5, 100);
-			coolDown1.drawCircle(canvas, cooldownX, COOLDOWN_Y, Color.BLACK, false, 5, 100);
-			canvas.drawBitmap(R.drawable.power, centerImage(R.drawable.power, 1, cooldownX),
-					centerImage(R.drawable.power, 2, COOLDOWN_Y),
-                    getDimension(R.dimen.cooldown_image_size), getDimension(R.dimen.cooldown_image_size));
+			
+			if (p2.getItem() != null) {
+                canvas.drawRect(PLAYER_2_ITEM_SIZE, p2.getItem().getColor());
+    	        canvas.drawBitmap(p2.getItem().getImageDrawable(), PLAYER_2_ITEM_SIZE);
+    	        
+    	        if (p2.getItem().isActive()) {
+                    
+                    GLES11.glBlendFunc(GLES11.GL_SRC_ALPHA, GLES11.GL_ONE); // Additive Blending Effect
+                    
+    	        	itemActiveAnim2.render(canvas, PLAYER_2_EFFECT_ACTIVE_SIZE, timeElapsed);
+    
+                    GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+    	        }
+			}
 		}
-	}
-
-	private float centerImage(int imgId, int cooldown, float cooldownValue){
-		int[] size = ImageLoader.checkBitmapSize(imgId);
-		int width = size[0];
-		int height = size[1];
-		float x = 0.0f;
-
-		switch(cooldown){
-		case 0://First Player - Horizontal
-			x = cooldownValue - (width/2);
-			break;
-		case 1://Second Player - Horizontal
-			x = cooldownValue - (width/2);
-			break;
-		case 2://Players - Vertical
-			x = cooldownValue - (height/2);
-			break;
-		default:
-			break;
-		}
-
-		return x;
+        
+        canvas.drawBitmap(R.drawable.item_frame, PLAYER_2_ITEM_FRAME_SIZE);
+		
 	}
 
 	@Override
 	public void step(float timeElapsed) {
-
-		int coins = gWorld.getPlayers().get(PlayerNumber.ONE).getCoins();
-		coin1Text.setText(String.valueOf(coins));
-		coins = gWorld.getPlayers().get(PlayerNumber.TWO).getCoins();
-		coin2Text.setText(String.valueOf(coins));
-
 	}
 
 	private int calculateMapCompletion(float pos) {
@@ -232,8 +186,18 @@ public class GameWorldUI extends GameScreen {
 				}
 			}
 		}
+		
+		if (PLAYER_1_ITEM_FRAME_SIZE.contains(x, y)) {
+		    if (p1.getItem() != null) {
+		        p1.getItem().activate(p1, gWorld);
+		    }
+		} else if (PLAYER_2_ITEM_FRAME_SIZE.contains(x, y)) {
+		    if (p2.getItem() != null) {
+		        p2.getItem().activate(p2, gWorld);
+		    }
+		}
 	}
-
+	
 	@Override
 	public void onPause() {
 	}

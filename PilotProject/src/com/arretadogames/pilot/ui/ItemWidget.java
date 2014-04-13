@@ -5,9 +5,7 @@ import android.widget.Toast;
 
 import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.accounts.Account;
 import com.arretadogames.pilot.accounts.AccountManager;
-import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.database.descriptors.DigitalStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
@@ -100,12 +98,6 @@ public class ItemWidget implements Renderable, GameButtonListener {
 			createItemInfoLabels();
 		}
 
-		// TODO @yuri: avoid this calc every frame
-		seedRenderingRect.right = x + 455 + seedRenderingRect.width();
-		seedRenderingRect.left = x + 455;
-		seedRenderingRect.bottom = y + 88 + seedRenderingRect.height();
-		seedRenderingRect.top = y + 88;
-
 		titleLabel.render(canvas, timeElapsed);
 		descriptionLabel.render(canvas, timeElapsed);
 //		descriptionLabel2.render(canvas, timeElapsed);
@@ -114,24 +106,30 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		canvas.drawBitmap(R.drawable.item_bg, x + 25, y + 22,
                 MainActivity.getContext().getResources().getDimension(R.dimen.item_icon_bg_size),
                 MainActivity.getContext().getResources().getDimension(R.dimen.item_icon_bg_size));
-		canvas.drawBitmap(itemDescriptor.getIconId(), x + 38, y + 35,
+		canvas.drawBitmap(itemDescriptor.getIconId(), x + 43, y + 40,
                 MainActivity.getContext().getResources().getDimension(R.dimen.item_icon_size),
                 MainActivity.getContext().getResources().getDimension(R.dimen.item_icon_size)); // THE ITEM ICON
-
-		if (itemDescriptor.getType() != StoreItemType.REAL)
-			canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
-		priceLabel.render(canvas, timeElapsed);
-
-		// TODO @yuri: avoid this calc every frame
-		buttonBuy.setX(x + 447);
-		buttonBuy.setY(y + 31);
-		buttonBuy.render(canvas, timeElapsed);
-//		canvas.drawBitmap(R.drawable.buy_bg, x + 447, y + 31);
-//		buttonBuyText.render(canvas, timeElapsed);
+		
+		
+		if (!itemDescriptor.doesPlayerHasItem()) {
+            // TODO @yuri: avoid this calc every frame
+            seedRenderingRect.right = x + 455 + seedRenderingRect.width();
+            seedRenderingRect.left = x + 455;
+            seedRenderingRect.bottom = y + 88 + seedRenderingRect.height();
+            seedRenderingRect.top = y + 88;
+    
+    		if (itemDescriptor.getType() != StoreItemType.REAL)
+    			canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
+    		priceLabel.render(canvas, timeElapsed);
+    
+    		// TODO @yuri: avoid this calc every frame
+    		buttonBuy.setX(x + 447);
+    		buttonBuy.setY(y + 31);
+    		buttonBuy.render(canvas, timeElapsed);
+		}
 	}
 
 	private void createItemInfoLabels() {
-		Account acc = AccountManager.get().getAccount1();
 		titleLabel = new Text(x + 143, y + 45, itemDescriptor.getName(),
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.75f, false);
 		descriptionLabel = new Text(x + 141, y + 96, itemDescriptor.getDescription(),
@@ -165,12 +163,12 @@ public class ItemWidget implements Renderable, GameButtonListener {
 				int valor = it.getValue();
 				if(AccountManager.get().getAccount1().getCoins() >= valor ){
 					AccountManager.get().getAccount1().setCoins(AccountManager.get().getAccount1().getCoins()-valor);
-					ItemType type = ItemType.SUPER_STRENGHT;
-					if(it.getName().equals("Double Jump")) type = ItemType.DOUBLE_JUMP;
-					else if(it.getName().equals("Super Velocity")) type = ItemType.SUPER_VELOCITY;
-					else if(it.getName().equals("Super Jump")) type = ItemType.SUPER_JUMP;
-					AccountManager.get().getAccount1().buyItem(type);
-					Toast.makeText(MainActivity.getContext(),"Item comprado! Agora voce tem " + GameDatabase.getInstance().getQuantItems(type), Toast.LENGTH_SHORT).show();
+					ItemType type = ItemType.parse(it.getName());
+					if (AccountManager.get().getAccount1().buyItem(type)) {
+	                    Toast.makeText(MainActivity.getContext(),"Item comprado!", Toast.LENGTH_SHORT).show();
+					} else {
+                        Toast.makeText(MainActivity.getContext(),"Failed to add item to your acc :(", Toast.LENGTH_SHORT).show();
+					}
 				} else {
 					Toast.makeText(MainActivity.getContext(),"Sem sementes suficientes!", Toast.LENGTH_SHORT).show();
 				}

@@ -130,6 +130,10 @@ public class GLCanvas {
 	public void setClearColor(float a, float r, float g, float b) {
 		GLES11.glClearColor(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
+	
+	public void drawRect(final RectF dst, int color) {
+        GLRect.draw(gl, dst.left, dst.top, dst.right, dst.bottom, color);
+    }
 
 	public void drawRect(float left, float top, float right, float bottom, int color) {
 		GLRect.draw(gl, left, top, right, bottom, color);
@@ -193,7 +197,6 @@ public class GLCanvas {
 		}
 
 		GLTexture tex = textures.get(imageId);
-//		GLES11.glColor4f(1, 1, 1, 1);
 
 		auxiliaryRect.left = (int) dstRect.left;
 		auxiliaryRect.top = (int) dstRect.top;

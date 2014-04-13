@@ -154,7 +154,7 @@ public class TatuBola extends Player {
 	}
 	
 	@Override
-	public void render(GLCanvas canvas, float timeElapsed) {
+	public void playerRender(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI));

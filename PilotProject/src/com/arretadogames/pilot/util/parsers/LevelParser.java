@@ -124,6 +124,10 @@ public class LevelParser {
 				}else if(EntityType.HOLE.toString().equals(entityType)){
 					entity = new HoleDescriptor(
 							(float) jsonEntity.getDouble("x"), (float) jsonEntity.getDouble("distance"));
+				}else if(EntityType.BOX_ITEM.toString().equals(entityType)){
+                    entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+                            (float) jsonEntity.getDouble("y"),
+                            EntityType.BOX_ITEM);
 				} else {		// Entity not defined
 					Log.e("LevelDescriptor.jsonParse()", "Entity " + entityType + " not defined");
 					continue;
