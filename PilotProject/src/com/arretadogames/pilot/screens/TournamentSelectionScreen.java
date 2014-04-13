@@ -127,7 +127,8 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 		
 		ti.tournamentBg = LevelTable.TOURNAMENT_BACKGROUNDS.get(tournament.getTournamentType());
 		
-		ti.isLocked = !tournament.getEnable();
+//		ti.isLocked = !tournament.getEnable();
+		ti.isLocked = false;
 		
 		ti.type = tournament.getTournamentType();
 		
