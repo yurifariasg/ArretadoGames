@@ -8,6 +8,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
 import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameMode;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.googlesync.SyncManager;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -169,6 +170,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			break;
 		case TOURNAMENT_BUTTON:
 			startTournamentSelection();
+			Game.getInstance().setGameMode(GameMode.TOURNAMENT);
 		}
 	}
 

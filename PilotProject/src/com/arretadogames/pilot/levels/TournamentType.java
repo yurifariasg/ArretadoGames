@@ -2,7 +2,7 @@ package com.arretadogames.pilot.levels;
 
 public enum TournamentType {
 	
-	DESERT("Mirage"), SWAMP("Victoria"), JUNGLE("cacau");
+	DESERT("mirage"), SWAMP("victoria"), JUNGLE("cacau");
 	
 	private String name;
 	

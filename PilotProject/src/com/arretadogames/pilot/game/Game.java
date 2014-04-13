@@ -46,6 +46,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	private Rect transitionRect;
 	private LoadManager loadManager;
 	private GameState nextState;
+	private GameMode gameMode;
 
 	/**
 	 * Creates a Game
@@ -54,6 +55,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		nextState = GameState.SPLASH;
 		loadManager = LoadManager.getInstance();
 		gameScreens = new HashMap<GameState, GameScreen>();
+		setGameMode(GameMode.UNDEFINED);
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen());
 		gameScreens.put(GameState.SPLASH, new SplashScreen());
@@ -281,5 +283,13 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	public void onBackPressed() {
 		if (gameScreens.get(currentState) != null)
 			gameScreens.get(currentState).onBackPressed();
+	}
+
+	public GameMode getGameMode() {
+		return gameMode;
+	}
+
+	public void setGameMode(GameMode gameMode) {
+		this.gameMode = gameMode;
 	}
 }

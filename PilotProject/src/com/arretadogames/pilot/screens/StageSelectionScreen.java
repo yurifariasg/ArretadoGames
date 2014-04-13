@@ -5,7 +5,6 @@ import android.opengl.GLES11;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
-
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
@@ -20,6 +19,7 @@ import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelManager;
 import com.arretadogames.pilot.levels.LevelTable;
 import com.arretadogames.pilot.levels.Tournament;
+import com.arretadogames.pilot.levels.TournamentType;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.loading.FontSpecification;
@@ -63,6 +63,7 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 		private boolean isLocked;
 		public ImageButton[] buttons;
 		private Text[] numbers;
+		public TournamentType type;
 		
 		public void renderStages(GLCanvas canvas, float timeElapsed) {
 			for (int i = 0 ; i < buttons.length ; i++) {
@@ -138,6 +139,8 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 		ti.numbers = new Text[MAX_STAGES];
 		ti.isLocked = !tournament.getEnable();
 		
+		ti.type = tournament.getTournamentType();
+		
 		float buttonsOffset = index * SCREEN_WIDTH;
 		
 		// These numbers are based on the location in the screen
@@ -192,7 +195,7 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 						0, getDimension(R.dimen.tournament_bg_extra_height),
 						MAX_ALPHA - diff * MAX_ALPHA);
 				
-				canvas.drawText(tournamentsInfo[i].tournamentName,
+				canvas.drawText(tournamentsInfo[i].type.name(),
 				        auxOffset + SCREEN_WIDTH / 2f, 45,
 						titleFont, 1.2f, true, MAX_ALPHA - diff * MAX_ALPHA);
 				
