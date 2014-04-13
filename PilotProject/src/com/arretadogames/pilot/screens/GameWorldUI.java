@@ -84,40 +84,44 @@ public class GameWorldUI extends GameScreen {
 		        getDimension(R.dimen.screen_height) - getDimension(R.dimen.ui_buttons_height),
 		        getDimension(R.dimen.screen_width), getDimension(R.dimen.ui_buttons_height));
 		
-		if (!p1.isDead() && p1.getItem() != null){
+		if (!p1.isDead()){
 			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390,
 			        getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
 			
-			canvas.drawRect(PLAYER_1_ITEM_SIZE, p1.getItem().getColor());
-	        canvas.drawBitmap(p1.getItem().getImageDrawable(), PLAYER_1_ITEM_SIZE);
-	        
-	        if (p1.getItem().isActive()) {
-	        	
-	        	GLES11.glBlendFunc(GLES11.GL_SRC_ALPHA, GLES11.GL_ONE); // Additive Blending Effect
-	        	
-	        	itemActiveAnim.render(canvas, PLAYER_1_EFFECT_ACTIVE_SIZE, timeElapsed);
-
-	            GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-	        }
+			if (p1.getItem() != null) {
+    			canvas.drawRect(PLAYER_1_ITEM_SIZE, p1.getItem().getColor());
+    	        canvas.drawBitmap(p1.getItem().getImageDrawable(), PLAYER_1_ITEM_SIZE);
+    	        
+    	        if (p1.getItem().isActive()) {
+    	        	
+    	        	GLES11.glBlendFunc(GLES11.GL_SRC_ALPHA, GLES11.GL_ONE); // Additive Blending Effect
+    	        	
+    	        	itemActiveAnim.render(canvas, PLAYER_1_EFFECT_ACTIVE_SIZE, timeElapsed);
+    
+    	            GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+    	        }
+			}
 		}
 		
         canvas.drawBitmap(R.drawable.item_frame, PLAYER_1_ITEM_FRAME_SIZE);
 
-		if (!p2.isDead() && p2.getItem() != null){
+		if (!p2.isDead()){
 			canvas.drawBitmap(p2.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p2.body.getPosition().x), 440,
                     getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
-
-            canvas.drawRect(PLAYER_2_ITEM_SIZE, p2.getItem().getColor());
-	        canvas.drawBitmap(p2.getItem().getImageDrawable(), PLAYER_2_ITEM_SIZE);
-	        
-	        if (p2.getItem().isActive()) {
-                
-                GLES11.glBlendFunc(GLES11.GL_SRC_ALPHA, GLES11.GL_ONE); // Additive Blending Effect
-                
-	        	itemActiveAnim2.render(canvas, PLAYER_2_EFFECT_ACTIVE_SIZE, timeElapsed);
-
-                GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-	        }
+			
+			if (p2.getItem() != null) {
+                canvas.drawRect(PLAYER_2_ITEM_SIZE, p2.getItem().getColor());
+    	        canvas.drawBitmap(p2.getItem().getImageDrawable(), PLAYER_2_ITEM_SIZE);
+    	        
+    	        if (p2.getItem().isActive()) {
+                    
+                    GLES11.glBlendFunc(GLES11.GL_SRC_ALPHA, GLES11.GL_ONE); // Additive Blending Effect
+                    
+    	        	itemActiveAnim2.render(canvas, PLAYER_2_EFFECT_ACTIVE_SIZE, timeElapsed);
+    
+                    GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+    	        }
+			}
 		}
         
         canvas.drawBitmap(R.drawable.item_frame, PLAYER_2_ITEM_FRAME_SIZE);

@@ -92,6 +92,10 @@ public class LoboGuara extends Player {
 			direction.mulLocal(force);
 			body.applyForceToCenter(direction);
 		}
+		
+		if (body.getLinearVelocity().x > 5) {
+		    sprite.setAnimationState("run");
+		}
 	}
 
 	public void act() {	
