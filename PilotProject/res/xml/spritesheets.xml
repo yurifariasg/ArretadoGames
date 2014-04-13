@@ -194,4 +194,13 @@
             </Animation>
         </AnimationSwitcher>
     </Sheet>
+    <Sheet resId="stun">
+        <AnimationSwitcher name="stun">
+            <Animation name="default">
+			    <Frame x="2" y="2" w="256" h="128" t="0.2" />
+			    <Frame x="2" y="132" w="256" h="128" t="0.2" />
+			    <Frame x="2" y="262" w="256" h="128" t="0.2" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
 </Spritesheets>

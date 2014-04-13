@@ -36,16 +36,16 @@ public class StoreInitializeHelper {
         values.clear();
 
         // Uncomment when the item is added to the game
-//        values.put(GameDatabase.R_ITEM_NAME, ItemType.Coconut.getName());
-//		values.put(GameDatabase.R_ITEM_DESCRIPTION, "A coconut to throw at your enemies! HAAAA");
-//		values.put(GameDatabase.R_ITEM_PRICE, 10);
-//		values.put(GameDatabase.R_ITEM_RES_NAME, "it_superjump");
-//        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
-//        values.clear();
+        values.put(GameDatabase.R_ITEM_NAME, ItemType.Coconut.getName());
+		values.put(GameDatabase.R_ITEM_DESCRIPTION, "Throw at your enemies! HAAAA");
+		values.put(GameDatabase.R_ITEM_PRICE, 1000);
+		values.put(GameDatabase.R_ITEM_RES_NAME, "coconut_item");
+        db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
+        values.clear();
         
         values.put(GameDatabase.R_ITEM_NAME, ItemType.WaterWalk.getName());
 		values.put(GameDatabase.R_ITEM_DESCRIPTION, "Be just like Jesus!");
-		values.put(GameDatabase.R_ITEM_PRICE, 10);
+		values.put(GameDatabase.R_ITEM_PRICE, 1000);
 		values.put(GameDatabase.R_ITEM_RES_NAME, "waterwalk_item");
         db.insert(GameDatabase.TABLE_DIGITAL_ITEMS, null, values);
         values.clear();

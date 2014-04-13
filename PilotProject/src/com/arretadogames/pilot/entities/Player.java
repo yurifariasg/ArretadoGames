@@ -3,11 +3,14 @@ package com.arretadogames.pilot.entities;
 import android.graphics.Color;
 import android.opengl.GLES11;
 
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.items.Item;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 
@@ -53,6 +56,7 @@ public abstract class Player extends Entity implements Steppable{
 	
 	private boolean ghostModeActive;
 	private boolean toucanTarget;
+	private float stunDuration;
     
     private Vec2 stopImpulse = new Vec2(-1f, 0);
     private Item item;
@@ -90,8 +94,27 @@ public abstract class Player extends Entity implements Steppable{
 	    }
     }
 	
+	public void stun(float stunDuration) {
+	    this.stunDuration = stunDuration;
+	    
+	    EffectDescriptor descriptor = new EffectDescriptor();
+	    descriptor.position = body.getPosition();
+	    descriptor.repeat = true;
+	    descriptor.type = "stun";
+	    descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
+	    descriptor.position.y += physRect.height() / 2;
+	    descriptor.duration = stunDuration;
+	    
+	    EffectManager.getInstance().addEffect(descriptor);
+	    
+	}
+	
+	public boolean isStunned() {
+	    return stunDuration > 0;
+	}
+	
 	public boolean shouldStop() {
-	    return isToucanTarget() || isDead() || hasFinished();
+	    return isToucanTarget() || isDead() || hasFinished() || isStunned();
 	}
 	
 	public void setToucanTarget(boolean isToucanTarget) {
@@ -110,6 +133,10 @@ public abstract class Player extends Entity implements Steppable{
 		
 		if (getItem() != null) {
 		    getItem().step(timeElapsed);
+		}
+		
+		if (stunDuration > 0) {
+		    stunDuration -= timeElapsed;
 		}
 	}
 	

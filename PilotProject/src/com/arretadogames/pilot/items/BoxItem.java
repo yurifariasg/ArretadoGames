@@ -43,11 +43,11 @@ public class BoxItem extends Entity {
         
         switch (items[randomIndex]) {
             case Coconut:
-                return new WaterWalkItem();
+                return new CoconutItem();
             case Mine:
-                return new WaterWalkItem();
+                return new CoconutItem();
             case WaterWalk:
-                return new WaterWalkItem();
+                return new CoconutItem();
         }
         return null;
     }

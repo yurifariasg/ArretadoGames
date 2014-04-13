@@ -1,20 +1,20 @@
 package com.arretadogames.pilot.entities;
 
-import org.jbox2d.callbacks.ContactImpulse;
-import org.jbox2d.collision.Manifold;
-import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.FixtureDef;
-import org.jbox2d.dynamics.World;
-import org.jbox2d.dynamics.contacts.Contact;
-
 import android.util.Log;
 
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.Renderable;
+
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 
 
 public abstract class Entity implements Renderable, LayerEntity {
@@ -107,8 +107,8 @@ public abstract class Entity implements Renderable, LayerEntity {
 	public void postSolve(Entity e, Contact contact, ContactImpulse impulse) {
 	}
 
-	public PolygonShape getWaterContactShape() {
-		return (PolygonShape) body.m_fixtureList.m_shape;
+	public Shape getWaterContactShape() {
+		return body.m_fixtureList.m_shape;
 	}
 	
 }

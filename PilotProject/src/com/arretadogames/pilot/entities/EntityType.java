@@ -6,7 +6,8 @@ public enum EntityType {
 	PULLEY("pulley"), ONEWAY_WALL("oneway_wall"), FINALFLAG("finalflag"),
 	SEED("seed"), FLUID("fluid"), BREAKABLE("breakable"), LIANA("liana"),
 	SPIKE("spike"), WATER("water"), HOLE("hole"),
-	TREE("tree"), SHRUB("shrub"), GRASS("grass"), BOX_ITEM("boxitem");
+	TREE("tree"), SHRUB("shrub"), GRASS("grass"), BOX_ITEM("boxitem"),
+	COCONUT("coconut");
 	
 	private String name;
 	

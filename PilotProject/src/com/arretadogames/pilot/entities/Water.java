@@ -11,6 +11,8 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.collision.shapes.ShapeType;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
@@ -328,65 +330,85 @@ public class Water extends Entity implements Steppable {
 	}
 
 	private void applyBuoyancy(Entity caixa) {
+	    
+	    Shape shape = caixa.getWaterContactShape();
+	    
+	    if (shape.getType() == ShapeType.POLYGON) {
+	        
+	        PolygonShape polygon = (PolygonShape) shape;
 		
-		final Vec2 v[] = caixa.getWaterContactShape().getVertices();
-		int cont = caixa.getWaterContactShape().getVertexCount();
-		
-		final Vec2 v2[] = shapeA.getVertices();
-		int cont2 = shapeA.getVertexCount();
-		
-		List<List<Float>> a = new ArrayList<List<Float>>();
-		List<List<Float>> b = new ArrayList<List<Float>>();
-		for( int i = 0; i < cont; i++){
-			Vec2 p = caixa.body.getWorldPoint(v[i]);
-			List<Float> ui = new ArrayList<Float>();
-			ui.add(p.x);
-			ui.add(p.y);
-			
-			a.add(ui);
-		}
-		
-		for( int i = 0; i < cont2; i++){
-			Vec2 p = body.getWorldPoint(v2[i]);
-			List<Float> ui = new ArrayList<Float>();
-			ui.add(p.x);
-			ui.add(p.y);
-			
-			b.add(ui);
-		}
-		List<List<Float>> in = findIntersectionOfPolygon(a, b);
-		if( in.size() > 2){
-		float area = calcArea(in);
-		Vec2 centroid = getCentroid(in);
-		float displacedMass = density * area;
-		Vec2 force =  world.getGravity().mul(-displacedMass);
-		caixa.body.applyForce(force, centroid);
-		}
-		
-		List<Vec2> intersectionPoints = transformToVec2(in);
-		for (int i = 0; i < intersectionPoints.size(); i++) {
-		      //the end points and mid-point of this edge 
-		      Vec2 v0 = intersectionPoints.get(i);
-		      Vec2 v1 = i+1 < intersectionPoints.size() ? intersectionPoints.get(i+1) : intersectionPoints.get(0);
-		      Vec2 midPoint = (v0.add(v1)).mul(0.5f);
-		      
-		      //find relative velocity between object and fluid at edge midpoint
-		      Vec2 velDir = caixa.body.getLinearVelocityFromWorldPoint( midPoint ).sub(
-		                      body.getLinearVelocityFromWorldPoint( midPoint ));
-		      float vel = velDir.normalize();
-		  
-		      Vec2 edge = v1.sub(v0);
-		      float edgelength = edge.normalize();
-		      Vec2 normal = Vec2.cross(-1,edge); //gets perpendicular vector
-		      
-		      float dragDot = Vec2.dot(normal, velDir);
-		      if ( dragDot < 0 )
-		          continue; //normal points backwards - this is not a leading edge
-		  
-		      float dragMag = (float) (dragDot * edgelength * density * vel * vel);
-		      Vec2 dragForce = velDir.mul(- dragMag);
-		      caixa.body.applyForce( dragForce, midPoint );
-		  }
+    		final Vec2 v[] = polygon.getVertices();  
+    		int cont = polygon.getVertexCount();
+    		
+    		final Vec2 v2[] = shapeA.getVertices();
+    		int cont2 = shapeA.getVertexCount();
+    		
+    		List<List<Float>> a = new ArrayList<List<Float>>();
+    		List<List<Float>> b = new ArrayList<List<Float>>();
+    		for( int i = 0; i < cont; i++){
+    			Vec2 p = caixa.body.getWorldPoint(v[i]);
+    			List<Float> ui = new ArrayList<Float>();
+    			ui.add(p.x);
+    			ui.add(p.y);
+    			
+    			a.add(ui);
+    		}
+    		
+    		for( int i = 0; i < cont2; i++){
+    			Vec2 p = body.getWorldPoint(v2[i]);
+    			List<Float> ui = new ArrayList<Float>();
+    			ui.add(p.x);
+    			ui.add(p.y);
+    			
+    			b.add(ui);
+    		}
+    		List<List<Float>> in = findIntersectionOfPolygon(a, b);
+    		if( in.size() > 2){
+    		float area = calcArea(in);
+    		Vec2 centroid = getCentroid(in);
+    		float displacedMass = density * area;
+    		Vec2 force =  world.getGravity().mul(-displacedMass);
+    		caixa.body.applyForce(force, centroid);
+    		}
+    		
+    		List<Vec2> intersectionPoints = transformToVec2(in);
+    		for (int i = 0; i < intersectionPoints.size(); i++) {
+    		      //the end points and mid-point of this edge 
+    		      Vec2 v0 = intersectionPoints.get(i);
+    		      Vec2 v1 = i+1 < intersectionPoints.size() ? intersectionPoints.get(i+1) : intersectionPoints.get(0);
+    		      Vec2 midPoint = (v0.add(v1)).mul(0.5f);
+    		      
+    		      //find relative velocity between object and fluid at edge midpoint
+    		      Vec2 velDir = caixa.body.getLinearVelocityFromWorldPoint( midPoint ).sub(
+    		                      body.getLinearVelocityFromWorldPoint( midPoint ));
+    		      float vel = velDir.normalize();
+    		  
+    		      Vec2 edge = v1.sub(v0);
+    		      float edgelength = edge.normalize();
+    		      Vec2 normal = Vec2.cross(-1,edge); //gets perpendicular vector
+    		      
+    		      float dragDot = Vec2.dot(normal, velDir);
+    		      if ( dragDot < 0 )
+    		          continue; //normal points backwards - this is not a leading edge
+    		  
+    		      float dragMag = (float) (dragDot * edgelength * density * vel * vel);
+    		      Vec2 dragForce = velDir.mul(- dragMag);
+    		      caixa.body.applyForce( dragForce, midPoint );
+    		  }
+	    } else if (shape.getType() == ShapeType.CIRCLE) {
+	        
+	        Vec2 midPoint = caixa.body.getWorldCenter();
+	        
+	        //find relative velocity between object and fluid at edge midpoint
+            Vec2 velDir = caixa.body.getLinearVelocityFromWorldPoint( midPoint ).sub(
+                            body.getLinearVelocityFromWorldPoint( midPoint )).clone();
+            float vel = velDir.normalize();
+        
+            float dragMag = (float) (density * vel * vel);
+            Vec2 dragForce = velDir.mul(- dragMag);
+            caixa.body.applyForce( dragForce, midPoint );
+	        
+	    }
 	}
 
 	@Override

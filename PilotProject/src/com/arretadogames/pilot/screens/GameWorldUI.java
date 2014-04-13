@@ -59,6 +59,9 @@ public class GameWorldUI extends GameScreen {
 	
 	private AnimationSwitcher itemActiveAnim;
 	private AnimationSwitcher itemActiveAnim2;
+	
+	private boolean activateItemP1;
+	private boolean activateItemP2;
 
 	float totalDistance = Float.MIN_VALUE;
 
@@ -75,6 +78,9 @@ public class GameWorldUI extends GameScreen {
 
 		itemActiveAnim = AnimationManager.getInstance().getSprite("Spinner");
 		itemActiveAnim2 = AnimationManager.getInstance().getSprite("Spinner");
+		
+		activateItemP1 = false;
+		activateItemP2 = false;
 	}
 
 	@Override
@@ -130,6 +136,16 @@ public class GameWorldUI extends GameScreen {
 
 	@Override
 	public void step(float timeElapsed) {
+	    
+        if (activateItemP1 && p1.getItem() != null) {
+            p1.getItem().activate(p1, gWorld);
+        }
+        if (activateItemP2 && p2.getItem() != null) {
+            p2.getItem().activate(p2, gWorld);
+        }
+        
+        activateItemP1 = activateItemP2 = false;
+	    
 	}
 
 	private int calculateMapCompletion(float pos) {
@@ -189,11 +205,11 @@ public class GameWorldUI extends GameScreen {
 		
 		if (PLAYER_1_ITEM_FRAME_SIZE.contains(x, y)) {
 		    if (p1.getItem() != null) {
-		        p1.getItem().activate(p1, gWorld);
+		        activateItemP1 = true;
 		    }
 		} else if (PLAYER_2_ITEM_FRAME_SIZE.contains(x, y)) {
 		    if (p2.getItem() != null) {
-		        p2.getItem().activate(p2, gWorld);
+		        activateItemP2 = true;
 		    }
 		}
 	}
