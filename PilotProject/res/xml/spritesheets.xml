@@ -203,4 +203,43 @@
             </Animation>
         </AnimationSwitcher>
     </Sheet>
+    <Sheet resId="mine">
+        <AnimationSwitcher name="mine">
+            <Animation name="default">
+                <Frame n="mine1.png" x="2" y="2" w="400" h="400" t="0.05" />
+			    <Frame n="mine2.png" x="404" y="2" w="400" h="400" t="0.05" />
+			    <Frame n="mine3.png" x="2" y="404" w="400" h="400" t="0.05" />
+			    <Frame n="mine4.png" x="404" y="404" w="400" h="400" t="0.05" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="explosion">
+        <AnimationSwitcher name="explosion">
+            <Animation name="default">
+                <Frame x="0" y="0" w="205" h="205" t="0.05" />
+                <Frame x="205" y="0" w="205" h="205" t="0.05" />
+                <Frame x="410" y="0" w="205" h="205" t="0.05" />
+                <Frame x="615" y="0" w="205" h="205" t="0.05" />
+                <Frame x="820" y="0" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="205" w="205" h="205" t="0.05" />
+                <Frame x="205" y="205" w="205" h="205" t="0.05" />
+                <Frame x="410" y="205" w="205" h="205" t="0.05" />
+                <Frame x="615" y="205" w="205" h="205" t="0.05" />
+                <Frame x="820" y="205" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="410" w="205" h="205" t="0.05" />
+                <Frame x="205" y="410" w="205" h="205" t="0.05" />
+                <Frame x="410" y="410" w="205" h="205" t="0.05" />
+                <Frame x="615" y="410" w="205" h="205" t="0.05" />
+                <Frame x="820" y="410" w="205" h="205" t="0.05" />
+                
+                <Frame x="0" y="615" w="205" h="205" t="0.05" />
+                <Frame x="205" y="615" w="205" h="205" t="0.05" />
+                <Frame x="410" y="615" w="205" h="205" t="0.05" />
+                <Frame x="615" y="615" w="205" h="205" t="0.05" />
+                <Frame x="820" y="615" w="205" h="205" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
 </Spritesheets>

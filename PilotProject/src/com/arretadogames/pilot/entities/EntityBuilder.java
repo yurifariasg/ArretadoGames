@@ -280,7 +280,6 @@ public class EntityBuilder {
 		}
 		
 		setEntitySprite(player);
-		entities.add(player);
 	}
 
 }

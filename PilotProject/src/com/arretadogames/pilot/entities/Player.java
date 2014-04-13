@@ -57,6 +57,7 @@ public abstract class Player extends Entity implements Steppable{
 	private boolean ghostModeActive;
 	private boolean toucanTarget;
 	private float stunDuration;
+	private float paralysisDuration;
     
     private Vec2 stopImpulse = new Vec2(-1f, 0);
     private Item item;
@@ -109,12 +110,34 @@ public abstract class Player extends Entity implements Steppable{
 	    
 	}
 	
+	public void paralyze(float duration) {
+	    this.paralysisDuration = duration;
+	    
+	    EffectDescriptor descriptor = new EffectDescriptor();
+        descriptor.position = body.getPosition();
+        descriptor.repeat = true;
+        descriptor.type = "stun";
+        descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
+        descriptor.position.y += physRect.height() / 2;
+        descriptor.duration = duration;
+        
+        EffectManager.getInstance().addEffect(descriptor);
+	}
+	
 	public boolean isStunned() {
 	    return stunDuration > 0;
 	}
 	
+	public boolean isParalyzed() {
+	    return paralysisDuration > 0;
+	}
+	
 	public boolean shouldStop() {
 	    return isToucanTarget() || isDead() || hasFinished() || isStunned();
+	}
+	
+	public boolean shouldAct() {
+	    return !isParalyzed();
 	}
 	
 	public void setToucanTarget(boolean isToucanTarget) {
@@ -137,6 +160,9 @@ public abstract class Player extends Entity implements Steppable{
 		
 		if (stunDuration > 0) {
 		    stunDuration -= timeElapsed;
+		}
+		if (paralysisDuration > 0) {
+		    paralysisDuration -= timeElapsed;
 		}
 	}
 	

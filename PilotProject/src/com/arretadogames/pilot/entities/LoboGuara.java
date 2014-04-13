@@ -125,8 +125,10 @@ public class LoboGuara extends Player {
 		applyConstants();
 		super.step(timeElapsed);
 		setTimeForNextAct(Math.max(0.0f,getTimeForNextAct()-timeElapsed));
-        if (shouldStop()) {
-            stopAction();
+        if (shouldStop() || !shouldAct()) {
+            if (shouldStop()) {
+                stopAction();
+            }
             return;
         }
 		if (jumpActive) {

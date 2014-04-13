@@ -45,9 +45,9 @@ public class BoxItem extends Entity {
             case Coconut:
                 return new CoconutItem();
             case Mine:
-                return new CoconutItem();
+                return new MineItem();
             case WaterWalk:
-                return new CoconutItem();
+                return new WaterWalkItem();
         }
         return null;
     }
@@ -73,9 +73,11 @@ public class BoxItem extends Entity {
         
         if (e.getType() == EntityType.PLAYER && isAlive()) {
             Player p = (Player) e;
-            p.setItem(item);
-            kill();
-            PhysicalWorld.getInstance().addDeadEntity(this);
+            if (p.getItem() == null) {
+                p.setItem(item);
+                kill();
+                PhysicalWorld.getInstance().addDeadEntity(this);
+            }
         }
         
         super.beginContact(e, contact);

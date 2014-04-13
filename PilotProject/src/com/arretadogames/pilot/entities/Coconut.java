@@ -14,6 +14,7 @@ public class Coconut extends Entity {
     
     private static final float COCONUT_SIZE = 0.1f;
     private static final float COCONUT_IMAGE_SIZE = 0.3f;
+    private static final float STUN_DURATION = 3;
 
     public Coconut(float x, float y) {
         super(x, y);
@@ -50,7 +51,7 @@ public class Coconut extends Entity {
     public void beginContact(Entity e, Contact contact) {
         if (body.getLinearVelocity().length() > 2 && e.getType() == EntityType.PLAYER) {
             Player p = (Player) e;
-            p.stun(5);
+            p.stun(STUN_DURATION);
         }
     }
 
