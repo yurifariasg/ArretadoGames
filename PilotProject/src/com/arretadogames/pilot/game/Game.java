@@ -20,6 +20,7 @@ import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameStore;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
+import com.arretadogames.pilot.screens.PremiationScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
 import com.arretadogames.pilot.screens.StageSelectionScreen;
 import com.arretadogames.pilot.screens.TournamentSelectionScreen;
@@ -63,6 +64,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		gameScreens.put(GameState.CHARACTER_SELECTION, new CharacterSelectionScreen());
 		gameScreens.put(GameState.LEVEL_SELECTION, new StageSelectionScreen());
 		gameScreens.put(GameState.TOURNAMENT_SELECTION, new TournamentSelectionScreen());
+		gameScreens.put(GameState.PREMIATION, new PremiationScreen());
 		gameScreens.put(GameState.GAME_STORE, new GameStore());
 		transitionStateOn = false;
 		loadManager.prepareLoad(new GameState[] { nextState });

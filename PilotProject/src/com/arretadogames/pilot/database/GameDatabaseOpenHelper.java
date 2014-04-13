@@ -1,7 +1,7 @@
 package com.arretadogames.pilot.database;
 
 import com.arretadogames.pilot.levels.LevelTable;
-import com.arretadogames.pilot.levels.TournamentType;
+import com.arretadogames.pilot.tournaments.TournamentType;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -14,8 +14,8 @@ import com.arretadogames.pilot.database.descriptors.RealStoreItemDescriptor;
 import com.arretadogames.pilot.database.descriptors.StoreItemDescriptor;
 import com.arretadogames.pilot.items.ItemType;
 import com.arretadogames.pilot.levels.LevelDescriptor;
-import com.arretadogames.pilot.levels.Tournament;
-import com.arretadogames.pilot.levels.TournamentType;
+import com.arretadogames.pilot.tournaments.Tournament;
+import com.arretadogames.pilot.tournaments.TournamentType;
 
 public class GameDatabase {
 

@@ -2,7 +2,6 @@ package com.arretadogames.pilot.screens;
 
 import android.graphics.Color;
 import android.view.MotionEvent;
-
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.equations.Quart;
@@ -10,10 +9,12 @@ import aurelienribon.tweenengine.equations.Quart;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameMode;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.tournaments.TournamentManager;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.TextImageButton;
@@ -168,6 +169,9 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 			Game.getInstance().goTo(GameState.LEVEL_RESTART);
 			break;
 		case QUIT_BT:
+			if (Game.getInstance().getGameMode() == GameMode.TOURNAMENT)
+				TournamentManager.getInstance().resetTournamentData();
+			
 			Game.getInstance().goTo(GameState.MAIN_MENU);
 			break;
 		default:

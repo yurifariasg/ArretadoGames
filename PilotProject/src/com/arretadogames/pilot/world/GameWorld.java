@@ -190,8 +190,8 @@ public class GameWorld extends GameScreen {
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Pause Screen Render Time");
 	}
 	
-	public int getTotalElapsedTime() {
-		return (int) (totalElapsedSeconds);
+	public float getTotalElapsedTime() {
+		return totalElapsedSeconds;
 	}
 	
 	@Override

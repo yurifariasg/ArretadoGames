@@ -15,6 +15,7 @@ import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.tournaments.TournamentManager;
 import com.arretadogames.pilot.ui.Text;
 
 import java.util.ArrayList;
@@ -78,6 +79,12 @@ public class EndScreen extends GameScreen {
 
 		initializePlayerInfo(140, p1);
 		initializePlayerInfo(660, p2);
+		
+		if (p1.getTimeFinished() < p2.getTimeFinished()){
+			TournamentManager.getInstance().countWins(PlayerNumber.ONE);
+		} else {
+			TournamentManager.getInstance().countWins(PlayerNumber.TWO);
+		}
 	}
 
 	private void initializePlayerInfo(int x, Player player) {
@@ -121,9 +128,16 @@ public class EndScreen extends GameScreen {
 
 			if (Game.getInstance().getGameMode() == GameMode.QUICKRACE)
 				Game.getInstance().goTo(GameState.MAIN_MENU);// Go To Main Menu
+			
 			else {
-				//TODO Change to nextLevel - checking if hasNext...
-				Game.getInstance().goTo(GameState.RUNNING_GAME);
+				
+				if (TournamentManager.getInstance().nextLevel()){
+					Game.getInstance().goTo(GameState.RUNNING_GAME);
+				} else {
+					//Premiation
+					Game.getInstance().goTo(GameState.PREMIATION);// Go To Main Menu
+				}
+
 			}
 		}
 	}

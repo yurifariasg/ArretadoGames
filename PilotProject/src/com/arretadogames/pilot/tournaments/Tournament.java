@@ -1,4 +1,5 @@
-package com.arretadogames.pilot.levels;
+package com.arretadogames.pilot.tournaments;
+
 
 public class Tournament {
 

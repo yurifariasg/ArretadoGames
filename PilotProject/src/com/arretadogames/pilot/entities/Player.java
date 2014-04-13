@@ -42,7 +42,7 @@ public abstract class Player extends Entity implements Steppable{
 	protected boolean jumpActive;
 	protected boolean actActive;
 	
-	private int timeFinished;
+	private float timeFinished;
 
 	protected AnimationSwitcher sprite;
 	protected int contJump;
@@ -158,7 +158,7 @@ public abstract class Player extends Entity implements Steppable{
 		}
 	}
 	
-	public int getTimeFinished() {
+	public float getTimeFinished() {
 		if (hasFinished())
 			return timeFinished;
 		return 0;
