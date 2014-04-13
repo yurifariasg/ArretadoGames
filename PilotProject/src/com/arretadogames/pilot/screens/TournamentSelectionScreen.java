@@ -260,8 +260,6 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 
 	@Override
 	public void onClick(int stageId) {
-		System.out.println("OWOWOWOWO "+stageId);
-		
 		int currentIndex = getCurrentTournamentIndex();
 		if (stageId == -1 && currentIndex > 0) {
 		    startAnimationTo(getCurrentTournamentIndex() - 1);
