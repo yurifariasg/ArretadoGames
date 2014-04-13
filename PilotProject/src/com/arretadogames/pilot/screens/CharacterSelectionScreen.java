@@ -14,6 +14,7 @@ import com.arretadogames.pilot.entities.PlayableCharacter;
 import com.arretadogames.pilot.entities.PlayableItem;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameMode;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
@@ -285,7 +286,10 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 
 	@Override
 	public void onBackPressed() {
-		Game.getInstance().goTo(GameState.LEVEL_SELECTION);
+		if (Game.getInstance().getGameMode() == GameMode.TOURNAMENT)
+			Game.getInstance().goTo(GameState.TOURNAMENT_SELECTION);
+		else 
+			Game.getInstance().goTo(GameState.LEVEL_SELECTION);
 	}
 
 	@Override

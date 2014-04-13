@@ -1,5 +1,10 @@
 package com.arretadogames.pilot.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.microedition.khronos.opengles.GL10;
+
 import android.graphics.Color;
 import android.opengl.GLES11;
 import android.support.v4.view.GestureDetectorCompat;
@@ -30,21 +35,13 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
-import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.world.GameWorld;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.microedition.khronos.opengles.GL10;
-
-public class StageSelectionScreen extends GameScreen implements GameButtonListener, OnGestureListener, TweenAccessor<StageSelectionScreen> {
+public class TournamentSelectionScreen extends GameScreen implements GameButtonListener, OnGestureListener, TweenAccessor<TournamentSelectionScreen> {
 	
     private static final int LOCK_SCREEN_MAX_ALPHA = 100;
     private static final int MAX_ALPHA = 255;
-	private static final float NUMBERS_SIZE = 1f;
 	private static final float TRANSITION_ANIM_DURATION = 0.25f;
-	private static final int MAX_STAGES = 6;
 	
 	private final float SCREEN_WIDTH = getDimension(R.dimen.screen_width);
 	private final float SCREEN_HEIGHT = getDimension(R.dimen.screen_height);
@@ -57,27 +54,20 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 	
 	private Timeline currentAnimation;
 	
-	private class TournamentInformation {
+	private class TournamentData {
 		public String tournamentName;
 		private int tournamentBg;
 		private boolean isLocked;
-		public ImageButton[] buttons;
-		private Text[] numbers;
+		public ImageButton button;
 		public TournamentType type;
 		
-		public void renderStages(GLCanvas canvas, float timeElapsed) {
-			for (int i = 0 ; i < buttons.length ; i++) {
-				buttons[i].render(canvas, timeElapsed);
-			}
-			
-			for (int i = 0 ; i < numbers.length ; i++) {
-				numbers[i].render(canvas, timeElapsed);
-			}
+		public void renderTrophy(GLCanvas canvas, float timeElapsed) {
+			button.render(canvas, timeElapsed);
 		}
 	}
 	
 	private float xOffset;
-	private TournamentInformation[] tournamentsInfo;
+	private TournamentData[] tournamentsInfo;
 	private List<Tournament> tournaments;
 	private boolean isScrolling; /* Needed to handle stop scroll event */
     private float auxOffset; // Use this Aux variable will be used to avoid flickering later on...
@@ -91,11 +81,11 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 		return currentIndex;
 	}
 	
-	public StageSelectionScreen() {
+	public TournamentSelectionScreen() {
 		
 		tournaments = GameDatabase.getInstance().getAllTournaments();
 		
-		tournamentsInfo = new TournamentInformation[tournaments.size()]; // Mock Info
+		tournamentsInfo = new TournamentData[tournaments.size()]; // Mock Info
 		for (int i = 0 ; i < tournaments.size() ; i++) {
 			tournamentsInfo[i] = createTournamentInfo(i, tournaments.get(i));
 		}
@@ -128,45 +118,62 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 	    LoadManager.getInstance().addExtraObjects(objs);
 	}
 	
-	private TournamentInformation createTournamentInfo(int index, Tournament tournament) {
-		TournamentInformation ti = new TournamentInformation();
+	private TournamentData createTournamentInfo(int index, Tournament tournament) {
+		TournamentData ti = new TournamentData();
+		int imgPressed = 0;
+		int imgUnpressed = 0;
 		
 		ti.tournamentName = tournament.getTournamentType().toString();
 		
 		ti.tournamentBg = LevelTable.TOURNAMENT_BACKGROUNDS.get(tournament.getTournamentType());
 		
-		ti.buttons = new ImageButton[MAX_STAGES];
-		ti.numbers = new Text[MAX_STAGES];
 		ti.isLocked = !tournament.getEnable();
 		
 		ti.type = tournament.getTournamentType();
 		
-		float buttonsOffset = index * SCREEN_WIDTH;
-		
-		// These numbers are based on the location in the screen
-		ti.buttons[0] = createButton(1, 94 + buttonsOffset, 96);
-		ti.buttons[1] = createButton(2, 317 + buttonsOffset, 96);
-		ti.buttons[2] = createButton(3, 540 + buttonsOffset, 96);
-		ti.buttons[3] = createButton(4, 94 + buttonsOffset, 288);
-		ti.buttons[4] = createButton(5, 317 + buttonsOffset, 288);
-		ti.buttons[5] = createButton(6, 540 + buttonsOffset, 288);
-		
-		for (int i = 0 ; i < ti.numbers.length ; i++) {
-			ti.numbers[i] = createTextBasedOn(ti.buttons[i]);
+		switch (tournament.getTournamentType()) {
+			case JUNGLE://cacau
+				if (ti.isLocked){
+					imgPressed = R.drawable.trophy_cacau_blocked;
+					imgUnpressed = R.drawable.trophy_cacau_blocked;
+				} else {
+					imgPressed = R.drawable.trophy_cacau_selected;
+					imgUnpressed = R.drawable.trophy_cacau_unselected;
+				}
+				break;
+			case DESERT://mirage
+				if (ti.isLocked){
+					imgPressed = R.drawable.trophy_mirage_blocked;
+					imgUnpressed = R.drawable.trophy_mirage_blocked;
+				} else {
+					imgPressed = R.drawable.trophy_mirage_selected;
+					imgUnpressed = R.drawable.trophy_mirage_unselected;
+				}			
+				break;
+			case SWAMP://victoria
+				if (ti.isLocked){
+					imgPressed = R.drawable.trophy_victoria_blocked;
+					imgUnpressed = R.drawable.trophy_victoria_blocked;
+				} else {
+					imgPressed = R.drawable.trophy_victoria_selected;
+					imgUnpressed = R.drawable.trophy_victoria_unselected;
+				}	
+				break;
+			default:
+				break;
 		}
+		
+		ti.button = createButton(index, getDimension(R.dimen.screen_width)/2 - 82 + index * 800,// 82 is half of the button
+									getDimension(R.dimen.screen_height)/2 - 82,// 82 is half of the button
+									imgPressed, imgUnpressed);
 		
 		return ti;
 	}
 	
-	private ImageButton createButton(int id, float x, float y) {
-		return new ImageButton(id, x, y, 165, 165, this, R.drawable.bt_level_pressed, R.drawable.bt_level_unpressed);
+	private ImageButton createButton(int id, float x, float y, int imgPressed, int imgUnpressed) {
+		return new ImageButton(id, x, y, 165, 165, this, imgPressed, imgUnpressed);
 	}
-	
-	private Text createTextBasedOn(ImageButton button) {
-		return new Text(button.getX() + button.getWidth() / 2, button.getY() + button.getHeight() / 2,
-				String.valueOf(button.getId()), FontLoader.getInstance().getFont(FontTypeFace.ARIAN_BLACK), NUMBERS_SIZE, true);
-	}
-	
+
 	private boolean collidesWithScreen(int tournamentIndex) {
 		return diffFromCenterScreen(tournamentIndex) < 1f;
 	}
@@ -199,19 +206,17 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 				        auxOffset + SCREEN_WIDTH / 2f, 45,
 						titleFont, 1.2f, true, MAX_ALPHA - diff * MAX_ALPHA);
 				
-				
-				tournamentsInfo[i].renderStages(canvas, timeElapsed);
+				tournamentsInfo[i].renderTrophy(canvas, timeElapsed);
 				
 				if (tournamentsInfo[i].isLocked) {
 				    int alpha = (int) (LOCK_SCREEN_MAX_ALPHA - LOCK_SCREEN_MAX_ALPHA * diff);
 				    canvas.drawRect(auxOffset, 0, auxOffset + SCREEN_WIDTH, SCREEN_HEIGHT, Color.argb(alpha, 0, 0, 0));
-				    
-				    float padlockSize = getDimension(R.dimen.padlock_size);
-				    canvas.drawBitmap(R.drawable.padlock, auxOffset + SCREEN_WIDTH / 2 - padlockSize / 2,
-				            60, padlockSize, padlockSize, MAX_ALPHA - diff * MAX_ALPHA);
-
 	                
 	                canvas.drawText("Tournament Locked",
+	                        auxOffset + SCREEN_WIDTH / 2f, 435,
+	                        titleFont, 1.2f, true, MAX_ALPHA - diff * MAX_ALPHA);
+				} else {
+					canvas.drawText(tournamentsInfo[i].tournamentName + " trophy",
 	                        auxOffset + SCREEN_WIDTH / 2f, 435,
 	                        titleFont, 1.2f, true, MAX_ALPHA - diff * MAX_ALPHA);
 				}
@@ -239,7 +244,6 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 		        && isScrolling) {
 		    isScrolling = false;
 		    if (xOffset % SCREEN_WIDTH != 0) {
-		        unselectAllButtons();
 		        startAnimationTo(getCurrentTournamentIndex());
 		    }
 		}
@@ -256,19 +260,17 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 
 	@Override
 	public void onClick(int stageId) {
-	    int currentIndex = getCurrentTournamentIndex();
+		int currentIndex = getCurrentTournamentIndex();
 		if (stageId == -1 && currentIndex > 0) {
 		    startAnimationTo(getCurrentTournamentIndex() - 1);
 		} else if (stageId == -2 && currentIndex < tournamentsInfo.length - 1) {
             startAnimationTo(getCurrentTournamentIndex() + 1);
-		} else if (stageId > 0) {
-			
-			int stageTableId = tournaments.get(getCurrentTournamentIndex()).getIdsLevels()[stageId - 1];
+		} else if (stageId > -1) {
+			int stageTableId = tournaments.get(getCurrentTournamentIndex()).getIdsLevels()[stageId];
 			// Sets the level
 			((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME)).setLevel(LevelManager.getLevels().get(stageTableId));
 			// Start Loading ?
 			Game.getInstance().goTo(GameState.CHARACTER_SELECTION);
-			
 		}
 	}
 
@@ -291,9 +293,7 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 		if (targetIndex < 0 || targetIndex >= tournamentsInfo.length) {
 			return false;
 		}
-		
-		unselectAllButtons();
-		
+	
 		isScrolling = false;
 		
 		startAnimationTo(targetIndex);
@@ -358,9 +358,7 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
         event.setOffsetX((int)xOffset);
         int currentTournament = getCurrentTournamentIndex();
         if (!tournamentsInfo[currentTournament].isLocked) {
-            for (int i = 0 ; i < tournamentsInfo[currentTournament].buttons.length ; i++) {
-                pressed |= tournamentsInfo[currentTournament].buttons[i].input(event);
-            }
+        	 pressed |= tournamentsInfo[currentTournament].button.input(event);
         }
         event.setOffsetX(0);
         
@@ -370,21 +368,14 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
         return pressed;
 	}
 	
-	private void unselectAllButtons() {
-	    int currentTournament = getCurrentTournamentIndex();
-        for (int i = 0 ; i < tournamentsInfo[currentTournament].buttons.length ; i++) {
-            tournamentsInfo[currentTournament].buttons[i].forceUnselect();
-        }
-	}
-
 	@Override
-	public int getValues(StageSelectionScreen s, int type, float[] values) {
+	public int getValues(TournamentSelectionScreen s, int type, float[] values) {
 		values[0] = xOffset;
 		return 1;
 	}
 
 	@Override
-	public void setValues(StageSelectionScreen s, int type, float[] values) {
+	public void setValues(TournamentSelectionScreen s, int type, float[] values) {
 		xOffset = values[0];
 	}
 }

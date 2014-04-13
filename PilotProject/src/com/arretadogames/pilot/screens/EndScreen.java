@@ -9,6 +9,7 @@ import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameMode;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -118,8 +119,12 @@ public class EndScreen extends GameScreen {
 		if (!nextScreenCalled) {
 			nextScreenCalled = true;
 
-			// Go To Main Menu
-			Game.getInstance().goTo(GameState.MAIN_MENU);
+			if (Game.getInstance().getGameMode() == GameMode.QUICKRACE)
+				Game.getInstance().goTo(GameState.MAIN_MENU);// Go To Main Menu
+			else {
+				//TODO Change to nextLevel - checking if hasNext...
+				Game.getInstance().goTo(GameState.RUNNING_GAME);
+			}
 		}
 	}
 

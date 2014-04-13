@@ -22,6 +22,7 @@ import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.MainMenuScreen;
 import com.arretadogames.pilot.screens.SplashScreen;
 import com.arretadogames.pilot.screens.StageSelectionScreen;
+import com.arretadogames.pilot.screens.TournamentSelectionScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.world.GameWorld;
 
@@ -45,6 +46,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	private Rect transitionRect;
 	private LoadManager loadManager;
 	private GameState nextState;
+	private GameMode gameMode;
 
 	/**
 	 * Creates a Game
@@ -53,12 +55,14 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		nextState = GameState.SPLASH;
 		loadManager = LoadManager.getInstance();
 		gameScreens = new HashMap<GameState, GameScreen>();
+		setGameMode(GameMode.UNDEFINED);
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen());
 		gameScreens.put(GameState.SPLASH, new SplashScreen());
 		gameScreens.put(GameState.GAME_OVER, new EndScreen());
 		gameScreens.put(GameState.CHARACTER_SELECTION, new CharacterSelectionScreen());
 		gameScreens.put(GameState.LEVEL_SELECTION, new StageSelectionScreen());
+		gameScreens.put(GameState.TOURNAMENT_SELECTION, new TournamentSelectionScreen());
 		gameScreens.put(GameState.GAME_STORE, new GameStore());
 		transitionStateOn = false;
 		loadManager.prepareLoad(new GameState[] { nextState });
@@ -279,5 +283,13 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 	public void onBackPressed() {
 		if (gameScreens.get(currentState) != null)
 			gameScreens.get(currentState).onBackPressed();
+	}
+
+	public GameMode getGameMode() {
+		return gameMode;
+	}
+
+	public void setGameMode(GameMode gameMode) {
+		this.gameMode = gameMode;
 	}
 }
