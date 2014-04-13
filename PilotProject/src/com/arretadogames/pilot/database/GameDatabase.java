@@ -120,7 +120,6 @@ public class GameDatabase {
             typeName = c.getString(c.getColumnIndexOrThrow(T_TYPE_NAME));
             type = getTournamentType(typeName);
             Tournament curTournament = new Tournament(c.getInt( c.getColumnIndexOrThrow(TOURNAMENT_ID)), type);
-            System.out.println(curTournament.getTournamentType().toString());
             curTournament.setEnable(c.getInt( c.getColumnIndexOrThrow(T_ENABLED))==1);
 
             cLevels = db.query(TABLE_TOURNAMENT_LEVELS, null, TOURNAMENT_ID + " = " +
