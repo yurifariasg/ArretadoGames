@@ -1,10 +1,14 @@
 package com.arretadogames.pilot.entities;
 
+import android.graphics.Color;
+import android.opengl.GLES11;
+
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.items.Item;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.world.GameWorld;
 
 import org.jbox2d.common.Vec2;
@@ -16,7 +20,11 @@ import org.jbox2d.dynamics.contacts.Contact;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.microedition.khronos.opengles.GL10;
+
 public abstract class Player extends Entity implements Steppable{
+    
+    protected static final int GHOST_MODE_TRANSPARENCY_COLOR = Color.argb(80, 255, 255, 255);
 	
 	private static float TIME_BEFORE_DIE = 3f; // This will actually depend on the animation
 	private float timeToDie;
@@ -34,7 +42,6 @@ public abstract class Player extends Entity implements Steppable{
 	protected boolean jumpActive;
 	protected boolean actActive;
 	
-	private int acquiredCoins;
 	private int timeFinished;
 
 	protected AnimationSwitcher sprite;
@@ -157,18 +164,6 @@ public abstract class Player extends Entity implements Steppable{
 		return 0;
 	}
 	
-	public void addCoins(int amount) {
-		acquiredCoins += amount;
-	}
-	
-	public void resetCoins() {
-		acquiredCoins = 0;
-	}
-	
-	public int getCoins() {
-		return acquiredCoins;
-	}
-	
 	protected void stopAction() {
 		if (body.getLinearVelocity().x != 0) {
 			if (body.getLinearVelocity().x > 0) {
@@ -261,7 +256,6 @@ public abstract class Player extends Entity implements Steppable{
     }
     
     protected double getAngle(){
-        //return body.getAngle();
         double angle = 0;
         if(body.getLinearVelocity().length() > 1){
             double cos = Vec2.dot(body.getLinearVelocity(), new Vec2(1,0)) / (body.getLinearVelocity().length());
@@ -293,5 +287,24 @@ public abstract class Player extends Entity implements Steppable{
     public Item getItem() {
         return this.item;
     }
+    
+    @Override
+    public final void render(GLCanvas canvas, float timeElapsed) {
+
+        if (isGhostMode()) {
+            GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+            canvas.setColor(GHOST_MODE_TRANSPARENCY_COLOR);
+        }
+        
+        playerRender(canvas, timeElapsed);
+        
+        if (isGhostMode()) {
+            canvas.setColor(Color.WHITE);
+            GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        }
+        
+    }
+    
+    protected abstract void playerRender(GLCanvas canvas, float timeElapsed);
 	
 }

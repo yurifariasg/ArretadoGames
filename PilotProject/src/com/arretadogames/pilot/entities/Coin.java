@@ -3,8 +3,8 @@ package com.arretadogames.pilot.entities;
 import com.arretadogames.pilot.entities.effects.EffectDescriptor;
 import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.physics.PhysicalWorld;
-import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 import org.jbox2d.collision.shapes.CircleShape;
@@ -13,13 +13,10 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 public class Coin extends Entity {
 	
-	private static final int DEFAULT_VALUE = 10;
-
 	private final static PhysicsRect SEED_RECT = new PhysicsRect(0.4f, 0.4f);
     private final static PhysicsRect SEED_EFFECT_RECT = new PhysicsRect(0.8f, 0.8f);
 	private static EffectDescriptor dieAnimation;
 	private AnimationSwitcher sprite;
-	private int value;
 	
 	private static EffectDescriptor getDieEffect() {
 	    if (dieAnimation == null) {
@@ -33,11 +30,6 @@ public class Coin extends Entity {
 	
 	public Coin(float x, float y, int value) {
 		super(x, y);
-		
-		if (value == 0)
-			this.value = DEFAULT_VALUE;
-		else
-			this.value = value;
 		
 		CircleShape shape = new CircleShape();
 		shape.setRadius(0.5f);
@@ -71,8 +63,6 @@ public class Coin extends Entity {
 	public void beginContact(Entity e, Contact contact) {
 		super.beginContact(e, contact);
 		if (e.getType() == EntityType.PLAYER && isAlive()) {
-			Player p = (Player) e;
-			p.addCoins(value);
 			kill();
 			PhysicalWorld.getInstance().addDeadEntity(this);
 		}
