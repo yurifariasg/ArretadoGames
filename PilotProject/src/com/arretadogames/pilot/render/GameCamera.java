@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class GameCamera implements Renderable, Steppable {
 
@@ -321,9 +323,9 @@ public class GameCamera implements Renderable, Steppable {
 		gameCanvas.saveState();
 
 		gameCanvas.translate(translator.x, translator.y);
-
-		List<Entity> entities = getPhysicalEntitiesToBeDrawn(lowerBound,
-				upperBound);
+		
+		List<Entity> entities = new ArrayList<Entity>();
+		entities.addAll(getPhysicalEntitiesToBeDrawn(lowerBound, upperBound));
 		List<Effect> effects = EffectManager.getInstance().getEffects();
 
 		// Sort based on layer
@@ -361,10 +363,10 @@ public class GameCamera implements Renderable, Steppable {
 
 		gameCanvas.restoreState();
 	}
-	private List<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound,
+	private Set<Entity> getPhysicalEntitiesToBeDrawn(Vec2 lowerBound,
 			Vec2 upperBound) {
 
-		final List<Entity> entities = new ArrayList<Entity>();
+		final Set<Entity> entities = new HashSet<Entity>();
 
 		PhysicalWorld.getInstance().getWorld().queryAABB(new QueryCallback() { // TODO:
 																				// create
@@ -374,7 +376,7 @@ public class GameCamera implements Renderable, Steppable {
 
 					@Override
 					public boolean reportFixture(Fixture fixture) {
-
+						fixture.getBody().setAwake(true);
 						Object e = fixture.getBody().getUserData();
 						if (e != null) {
 

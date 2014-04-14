@@ -8,7 +8,7 @@ import com.arretadogames.pilot.world.GameWorld;
 
 public class WaterWalkItem implements Item {
     
-    private static final float WATER_WALK_DURATION = 15; // in seconds
+    private static final float WATER_WALK_DURATION = 5; // in seconds
     
     private ItemType type = ItemType.WaterWalk;
     

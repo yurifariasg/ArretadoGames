@@ -1,7 +1,5 @@
 package com.arretadogames.pilot.entities;
 
-import android.opengl.GLES11;
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.PhysicsRect;
@@ -14,8 +12,6 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Filter;
 
 import java.util.Date;
-
-import javax.microedition.khronos.opengles.GL10;
 
 public class LoboGuara extends Player {
 
@@ -129,8 +125,10 @@ public class LoboGuara extends Player {
 		applyConstants();
 		super.step(timeElapsed);
 		setTimeForNextAct(Math.max(0.0f,getTimeForNextAct()-timeElapsed));
-        if (shouldStop()) {
-            stopAction();
+        if (shouldStop() || !shouldAct()) {
+            if (shouldStop()) {
+                stopAction();
+            }
             return;
         }
 		if (jumpActive) {

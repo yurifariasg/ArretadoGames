@@ -138,8 +138,10 @@ public class MacacoPrego extends Player implements Steppable{
 	public void step(float timeElapsed) {
 		applyConstants();
 		super.step(timeElapsed);
-        if (shouldStop()) {
-            stopAction();
+        if (shouldStop() || !shouldAct()) {
+            if (shouldStop()) {
+                stopAction();
+            }
             return;
         }
 		if (jumpActive) {

@@ -131,9 +131,10 @@ public class TatuBola extends Player {
 		applyConstants();
 		super.step(timeElapsed);
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
-		if (shouldStop()) {
-			stopAction();
-			return;
+        if (shouldStop() || !shouldAct()) {
+            if (shouldStop()) {
+                stopAction();
+            }
 		}
 		if (jumpActive) {
 			jump();
