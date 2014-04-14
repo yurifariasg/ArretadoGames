@@ -220,7 +220,7 @@ public abstract class Player extends Entity implements Steppable{
 	protected void stopAction() {
 		if (body.getLinearVelocity().x != 0) {
 			if (body.getLinearVelocity().x > 0) {
-				body.applyLinearImpulse(stopImpulse.mul(body.getMass()/ 10f), body.getPosition());
+				body.applyLinearImpulse(stopImpulse.mul(body.getMass()/ 10f), body.getPosition(), true);
 			} else {
 				body.setLinearVelocity(new Vec2(0, 0)); // Just done once
 				
@@ -324,9 +324,9 @@ public abstract class Player extends Entity implements Steppable{
     protected void applyReturn(Vec2 impulse){
         int quant = bodiesContact.size() * 3;
         for(Body b : bodiesContact){
-            b.applyLinearImpulse(impulse.mul(-1/quant), b.getWorldCenter());
-            b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(-0.5f,-0.6f)));
-            b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(0.5f,-0.6f)));
+            b.applyLinearImpulse(impulse.mul(-1/quant), b.getWorldCenter(), true);
+            b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(-0.5f,-0.6f)), true);
+            b.applyLinearImpulse(impulse.mul(-1/quant), body.getWorldPoint(new Vec2(0.5f,-0.6f)), true);
         }
     }
 

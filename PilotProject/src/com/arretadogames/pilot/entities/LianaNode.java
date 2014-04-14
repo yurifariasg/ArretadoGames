@@ -39,7 +39,7 @@ public class LianaNode extends Entity implements Steppable{
 
 	@Override
 	public void step(float timeElapsed) {
-		body.applyLinearImpulse((new Vec2(-0.1f,0)).mul(body.getMass()), new Vec2(body.getWorldCenter().x,body.getWorldCenter().y));
+		body.applyLinearImpulse((new Vec2(-0.1f,0)).mul(body.getMass()), new Vec2(body.getWorldCenter().x,body.getWorldCenter().y), true);
 	}
 	
 	@Override

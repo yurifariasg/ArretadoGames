@@ -85,7 +85,7 @@ public class TatuBola extends Player {
 		Vec2 direction = new Vec2(0,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
-		body.applyLinearImpulse(direction, body.getWorldCenter());
+		body.applyLinearImpulse(direction, body.getWorldCenter(), true);
 		contJump = 5;
 		applyReturn(direction);
 		
@@ -93,7 +93,7 @@ public class TatuBola extends Player {
 	
 	public void run(){
 		if(body.getLinearVelocity().x < 1.5){ 
-			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
+			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter(), true);
 		}
 		if(body.getLinearVelocity().length() > 8){
 			Vec2 vel = body.getLinearVelocity().clone();
@@ -119,7 +119,7 @@ public class TatuBola extends Player {
     			Vec2 direction = new Vec2(1,0);
     			direction.normalize();
     			direction.mulLocal(impulse);
-    			body.applyLinearImpulse(direction, body.getWorldCenter());
+    			body.applyLinearImpulse(direction, body.getWorldCenter(), true);
     			contAct = 50;
     			lastAct = new Date();
     		}

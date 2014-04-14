@@ -36,8 +36,8 @@ public class PhysicalWorld implements ContactListener, Renderable {
 	
 	private PhysicalWorld() {
 		world = new World(new Vec2(0.0f,-6.0f));
+		world.setAutoClearForces(true);
 		world.setContactListener(this);
-		world.setAllowSleep(true);
 		deadEntities = Collections.synchronizedCollection(new ArrayList<Entity>());
 	}
 	
@@ -113,7 +113,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 		Profiler.initTick(ProfileType.STEP);
 		
 		world.step(GameSettings.PHYSICS_TIMESTEP < 0 ?
-				timeElapsed : GameSettings.PHYSICS_TIMESTEP, 8, 10);
+				timeElapsed : GameSettings.PHYSICS_TIMESTEP, 16, 6);
 		
 		Profiler.profileFromLastTick(ProfileType.STEP, "Box2D World Step Time");
 		

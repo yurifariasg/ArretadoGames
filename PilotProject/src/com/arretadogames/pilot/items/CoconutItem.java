@@ -48,7 +48,7 @@ public class CoconutItem implements Item {
             
             impulse.mulLocal(14);
             
-            coconut.body.applyLinearImpulse(impulse, coconut.body.getWorldCenter());
+            coconut.body.applyLinearImpulse(impulse, coconut.body.getWorldCenter(), true);
         }
     }
     

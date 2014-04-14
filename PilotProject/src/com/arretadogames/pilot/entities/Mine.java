@@ -127,7 +127,7 @@ public class Mine extends Entity {
             
             pushDirection.mulLocal(pushForce);
             
-            entity.body.applyLinearImpulse(pushDirection, entity.body.getWorldCenter());
+            entity.body.applyLinearImpulse(pushDirection, entity.body.getWorldCenter(), true);
             
         }
         

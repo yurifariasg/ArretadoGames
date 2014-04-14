@@ -71,14 +71,14 @@ public class LoboGuara extends Player {
 		Vec2 direction = new Vec2(0,6); // TODO: Add this as a constant
 		direction.normalize();
 		direction.mulLocal(impulseX);
-		body.applyLinearImpulse(direction, body.getWorldCenter());
+		body.applyLinearImpulse(direction, body.getWorldCenter(), true);
 		contJump = 5;
 		applyReturn(direction);
 	}
 	
 	public void run(){
 		if(body.getLinearVelocity().x < 0.5){ 
-			body.applyLinearImpulse(new Vec2(0.5f * body.getMass(),0f), body.getWorldCenter());
+			body.applyLinearImpulse(new Vec2(0.5f * body.getMass(),0f), body.getWorldCenter(), true);
 		}
 		if(body.getLinearVelocity().length() > 8){
 			Vec2 vel = body.getLinearVelocity().clone();
@@ -106,7 +106,7 @@ public class LoboGuara extends Player {
 			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
 			direction.mulLocal(impulse);
-			body.applyLinearImpulse(direction, body.getWorldCenter());
+			body.applyLinearImpulse(direction, body.getWorldCenter(), true);
 			contAct = 50;
 			lastAct = new Date();
 		}

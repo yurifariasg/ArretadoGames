@@ -106,7 +106,7 @@ public class MacacoPrego extends Player implements Steppable{
 		Vec2 direction = new Vec2(1,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
-		body.applyLinearImpulse(direction, body.getWorldCenter());
+		body.applyLinearImpulse(direction, body.getWorldCenter(), true);
 		contJump = 5;
 		applyReturn(direction);
 	}
@@ -117,7 +117,7 @@ public class MacacoPrego extends Player implements Steppable{
 			return;
 		}
 		if(body.getLinearVelocity().x < 1.5){ 
-			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter());
+			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter(), true);
 		}
 		if(body.getLinearVelocity().length() > 8){
 			Vec2 vel = body.getLinearVelocity().clone();
