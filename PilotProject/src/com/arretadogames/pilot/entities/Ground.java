@@ -10,6 +10,8 @@ import com.arretadogames.pilot.util.Util;
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Filter;
+import org.jbox2d.dynamics.Fixture;
 
 public class Ground extends Entity {
 	
@@ -26,8 +28,16 @@ public class Ground extends Entity {
 		this.vec = vec;
 		ChainShape shape = new ChainShape();
 		shape.createChain(vec, count);
-		body.createFixture(shape, 0.5f);
+		Fixture bodyFixture = body.createFixture(shape, 0.5f);
+		bodyFixture.setFriction(0.5f);
+		bodyFixture.setRestitution(0.1f);
 		body.setType(BodyType.STATIC);
+		
+        Filter filter = new Filter();
+        filter.categoryBits = CollisionFlag.GROUP_GROUND.getValue();
+        filter.maskBits = CollisionFlag.GROUP_COMMON_ENTITIES.getValue() | CollisionFlag.GROUP_PLAYERS.getValue();
+        bodyFixture.setFilterData(filter);
+		
 	}
 
 	public Ground() {
@@ -38,8 +48,14 @@ public class Ground extends Entity {
 		vec[1] = new Vec2(10000,0);
 		ChainShape shape = new ChainShape();
 		shape.createChain(vec, 2);
-		body.createFixture(shape, 0.5f);
+		Fixture bodyFixture = body.createFixture(shape, 0.5f);
 		body.setType(BodyType.STATIC);
+		
+
+        Filter filter = new Filter();
+        filter.categoryBits = CollisionFlag.GROUP_GROUND.getValue();
+        filter.maskBits = CollisionFlag.GROUP_GROUND.getValue();
+        bodyFixture.setFilterData(filter);
 	}
 
 	@Override

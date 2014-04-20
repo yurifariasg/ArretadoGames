@@ -22,9 +22,10 @@ public class Coconut extends Entity {
         CircleShape shape = new CircleShape();
         shape.setRadius(COCONUT_SIZE);
         Fixture bodyFixture = body.createFixture(shape,  50f);
-        bodyFixture.setFriction(0.8f);
+        bodyFixture.setFriction(5f);
         body.setType(BodyType.DYNAMIC);
         body.setFixedRotation(false);
+        
         
         physRect = new PhysicsRect(COCONUT_IMAGE_SIZE, COCONUT_IMAGE_SIZE);
     }

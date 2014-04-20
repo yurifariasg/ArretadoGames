@@ -9,7 +9,6 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Filter;
 
 import java.util.Date;
 
@@ -26,29 +25,29 @@ public class LoboGuara extends Player {
 		doubleJump = getMaxDoubleJumps();
 		
 		CircleShape shape = new CircleShape();
-		size = 0.5f;
+		size = 0.35f;
 		shape.setRadius(size);
 		bodyFixture = body.createFixture(shape,  3f);
 		bodyFixture.setFriction(0f);
-		
-		Filter filter = new Filter();
-		filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
-		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
-		bodyFixture.setFilterData(filter);
 		
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
-		footShape.setAsBox(0.5f, 0.1f, new Vec2(0f,-0.4f), 0f);
+		footShape.setAsBox(0.35f, 0.1f, new Vec2(0f,-0.4f), 0f);
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
-		footFixture.setFilterData(filter);
+
+        categoryBits = CollisionFlag.GROUP_PLAYERS.getValue() ;
+        maskBits = CollisionFlag.GROUP_COMMON_ENTITIES.getValue() | CollisionFlag.GROUP_GROUND.getValue()
+                | CollisionFlag.GROUP_PLAYERS.getValue();
+        
+        setMaskAndCategoryBits();
 		
 		physRect = new PhysicsRect(1.6f, 1.8f); // 1.4, 1.6
 	}
 	
-	private void applyConstants() {
+	public void applyConstants() {
 		setMaxJumpVelocity(GameSettings.LOBO_MAX_JUMP_VELOCITY);
 		setMaxRunVelocity(GameSettings.LOBO_MAX_RUN_VELOCITY);
 		setJumpAceleration(GameSettings.LOBO_JUMP_ACELERATION);
@@ -92,10 +91,6 @@ public class LoboGuara extends Player {
 			direction.mulLocal(force);
 			body.applyForceToCenter(direction);
 		}
-		
-		if (body.getLinearVelocity().x > 5) {
-		    sprite.setAnimationState("run");
-		}
 	}
 
 	public void act() {	
@@ -121,31 +116,17 @@ public class LoboGuara extends Player {
 	
 	
 	@Override
-	public void step(float timeElapsed) {
-		applyConstants();
-		super.step(timeElapsed);
+	public void playerStep(float timeElapsed) {
 		setTimeForNextAct(Math.max(0.0f,getTimeForNextAct()-timeElapsed));
-        if (shouldStop() || !shouldAct()) {
-            if (shouldStop()) {
-                stopAction();
-            }
-            return;
-        }
-		if (jumpActive) {
-			jump();
-			jumpActive = false;
-		}
-		if(actActive){
-			act();
-		}
-		if(contJump > 0) contJump--;
-		if(contAct > 0 ) contAct--;
-		run();
 	}
 	
 	@Override
 	public void playerRender(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
+		
+        if (body.getLinearVelocity().x > 3.5f) {
+            sprite.setAnimationState("run");
+        }
 		
 		canvas.translatePhysics(getPosX(), getPosY() + 0.3f);
 		canvas.rotate((float) (180 * - getAngle() / Math.PI));

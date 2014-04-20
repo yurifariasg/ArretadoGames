@@ -12,7 +12,6 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Filter;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -33,12 +32,8 @@ public class TatuBola extends Player {
 
 		CircleShape shape = new CircleShape();
 		shape.setRadius(rad);
-		bodyFixture = body.createFixture(shape,  3f);
+		bodyFixture = body.createFixture(shape,  6f);
 		bodyFixture.setFriction(0f);
-		Filter filter = new Filter();
-		filter.categoryBits = CollisionFlag.GROUP_1.getValue() | CollisionFlag.GROUP_2.getValue();
-		filter.maskBits = CollisionFlag.GROUP_1.getValue() | CollisionFlag.GROUP_2.getValue();
-		bodyFixture.setFilterData(filter);
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		body.setFixedRotation(true);
@@ -47,10 +42,17 @@ public class TatuBola extends Player {
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
 		bodiesContact = new HashSet<Body>();
+
+        categoryBits = CollisionFlag.GROUP_PLAYERS.getValue() | CollisionFlag.GROUP_TATU_HOLE.getValue();
+        maskBits = CollisionFlag.GROUP_COMMON_ENTITIES.getValue() | CollisionFlag.GROUP_TATU_HOLE.getValue() 
+                | CollisionFlag.GROUP_GROUND.getValue() | CollisionFlag.GROUP_PLAYERS.getValue();
+        
+        setMaskAndCategoryBits();
 		
 		physRect = new PhysicsRect(rad + 0.5f, rad + 0.5f);
 	}
-	private void applyConstants() {
+	
+	public void applyConstants() {
 		setMaxJumpVelocity(GameSettings.TATU_MAX_JUMP_VELOCITY);
 		setMaxRunVelocity(GameSettings.TATU_MAX_RUN_VELOCITY);
 		setJumpAceleration(GameSettings.TATU_JUMP_ACELERATION);
@@ -127,31 +129,12 @@ public class TatuBola extends Player {
 	}
 
 	@Override
-	public void step(float timeElapsed) {
-		applyConstants();
-		super.step(timeElapsed);
+	public void playerStep(float timeElapsed) {
 		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
-        if (shouldStop() || !shouldAct()) {
-            if (shouldStop()) {
-                stopAction();
-            }
-		}
-		if (jumpActive) {
-			jump();
-			jumpActive = false;
-		}
-		if(actActive){
-			act();
-		}
-		
 		Date t = new Date();
 		if( bodiesContact.size() > 0 && !actActive && (lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  )){
 			sprite.setAnimationState("default");
 		}
-		
-		if(contJump > 0) contJump--;
-		if(contAct > 0 ) contAct--;
-		run();
 	}
 	
 	@Override

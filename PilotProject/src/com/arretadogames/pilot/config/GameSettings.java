@@ -32,6 +32,8 @@ public class GameSettings {
 	public static float WidthRatio = 1f;
 	public static float HeightRatio = 1f;
 	
+	public static final float MAX_VELOCITY_X = 6;
+	
 	
 	//LoboGuara
 	public static final float LOBO_MAX_JUMP_VELOCITY = 5;

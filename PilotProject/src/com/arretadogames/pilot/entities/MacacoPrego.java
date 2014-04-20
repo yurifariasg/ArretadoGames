@@ -9,11 +9,7 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Filter;
-import org.jbox2d.dynamics.FixtureDef;
-import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 public class MacacoPrego extends Player implements Steppable{
 
@@ -31,48 +27,46 @@ public class MacacoPrego extends Player implements Steppable{
 		shape.setRadius(radius );
 		bodyFixture = body.createFixture(shape,  3f);
 		bodyFixture.setFriction(0f);
-		
-		Filter filter = new Filter();
-		filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
-		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
-		bodyFixture.setFilterData(filter);
-		
 		body.setType(BodyType.DYNAMIC);
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
 		footShape.setAsBox(radius, 0.1f, new Vec2(0f,-radius+0.1f), 0f);
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
-		
-		footFixture.setFilterData(filter);
+    		
+        categoryBits = CollisionFlag.GROUP_PLAYERS.getValue() ;
+        maskBits = CollisionFlag.GROUP_COMMON_ENTITIES.getValue() | CollisionFlag.GROUP_GROUND.getValue()
+                | CollisionFlag.GROUP_PLAYERS.getValue();
+        
+        setMaskAndCategoryBits();
 		
 		isOnLiana = false;
-		
-		PolygonShape shape2 = new PolygonShape();
-		shape2.setAsBox(0.05f, 0.2f);
 
-		FixtureDef fd = new FixtureDef();
-		fd.shape = shape2;
-		fd.density = 3.0f;
-		fd.friction = 0.2f;
-		BodyDef bf = new BodyDef();
-		bf.type = BodyType.DYNAMIC;
-		b = world.createBody(bf);
-		b.createFixture(fd).setFilterData(filter);;
-		b.setUserData(this);
-		RevoluteJointDef jd2 = new RevoluteJointDef();
-		jd2.bodyA = body;
-		jd2.bodyB = b;
-		jd2.collideConnected = false;
-		jd2.localAnchorA.set(new Vec2(0f,0.2f));
+		// Tail
+//		PolygonShape shape2 = new PolygonShape();
+//		shape2.setAsBox(0.05f, 0.2f);
+//		FixtureDef fd = new FixtureDef();
+//		fd.shape = shape2;
+//		fd.density = 3.0f;
+//		fd.friction = 0.2f;
+//		BodyDef bf = new BodyDef();
+//		bf.type = BodyType.DYNAMIC;
+//		b = world.createBody(bf);
+//		b.createFixture(fd).setFilterData(filter);;
+//		b.setUserData(this);
+//		RevoluteJointDef jd2 = new RevoluteJointDef();
+//		jd2.bodyA = body;
+//		jd2.bodyB = b;
+//		jd2.collideConnected = false;
+//		jd2.localAnchorA.set(new Vec2(0f,0.2f));
+//		
+//		jd2.localAnchorB.set(new Vec2(0f,0.1f));
+//		world.createJoint(jd2);
 		
-		jd2.localAnchorB.set(new Vec2(0f,0.1f));
-		world.createJoint(jd2);
-		
-		physRect = new PhysicsRect(0.5f, 0.6f);
+		physRect = new PhysicsRect(0.6f, 0.7f);
 	}
 	
-	private void applyConstants() {
+	public void applyConstants() {
 		setMaxJumpVelocity(GameSettings.MACACO_MAX_JUMP_VELOCITY);
 		setMaxRunVelocity(GameSettings.MACACO_MAX_RUN_VELOCITY);
 		setJumpAceleration(GameSettings.MACACO_JUMP_ACELERATION);
@@ -135,23 +129,7 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 
 	@Override
-	public void step(float timeElapsed) {
-		applyConstants();
-		super.step(timeElapsed);
-        if (shouldStop() || !shouldAct()) {
-            if (shouldStop()) {
-                stopAction();
-            }
-            return;
-        }
-		if (jumpActive) {
-			jump();
-			jumpActive = false;
-		}
-
-		if(contJump > 0) contJump--;
-		if(contAct > 0 ) contAct--;
-		run();
+	public void playerStep(float timeElapsed) {
 	}
 	
 	@Override
@@ -173,4 +151,10 @@ public class MacacoPrego extends Player implements Steppable{
 	public int getStatusImg() {
 		return R.drawable.macaco_status;
 	}
+
+    @Override
+    public void act() {
+        // TODO Auto-generated method stub
+        
+    }
 }

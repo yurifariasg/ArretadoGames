@@ -79,7 +79,7 @@ public class Toucan implements Renderable, Steppable {
             this.playerToGrab = playerToGrab;
             this.remainingTime = GRAB_FLIGHT_DURATION;
             this.state = ToucanState.INITIAL_FLIGHT;
-            this.playerToGrab.setToucanTarget(true);
+            this.playerToGrab.setForceStop(true);
             this.flagX = flagX;
         }
     }
@@ -144,7 +144,7 @@ public class Toucan implements Renderable, Steppable {
 
                 if (remainingTime <= 0) {
                     playerToGrab.setGhostMode(false);
-                    playerToGrab.setToucanTarget(false);
+                    playerToGrab.setForceStop(false);
                     state = ToucanState.DROP;
                     remainingTime = DROP_DURATION;
                     setOldPosition();

@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.entities;
 
+import org.jbox2d.collision.Collision;
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -158,8 +159,8 @@ public class Hole extends Entity implements Steppable{
 		if(contatoTatu && tatu!=null && tatu.actActive && ! seta && !entrou) seta = true;
 		if(seta){
 			Filter filter = new Filter();
-			filter.categoryBits = 2;
-			filter.maskBits = 2;
+			filter.categoryBits = CollisionFlag.GROUP_TATU_HOLE.getValue();
+			filter.maskBits = CollisionFlag.GROUP_TATU_HOLE.getValue();
 			tatu.bodyFixture.setFilterData(filter);
 //			tatu.footFixture.setFilterData(filter);
 //			tatu.body.setLinearVelocity(new Vec2(0,0));

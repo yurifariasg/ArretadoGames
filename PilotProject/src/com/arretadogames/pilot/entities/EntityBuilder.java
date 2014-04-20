@@ -213,7 +213,7 @@ public class EntityBuilder {
 		int groundLineIndex = 0;
 		
 		// Initial Pos
-		Vec2 pos = new Vec2(-10, 0);
+		Vec2 pos = new Vec2(-50, 0);
 		groundLines[groundLineIndex++] = pos;
 		
 		float waterWidth;
