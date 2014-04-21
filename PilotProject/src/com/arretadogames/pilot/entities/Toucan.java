@@ -21,8 +21,8 @@ public class Toucan implements Renderable, Steppable {
 
     private static final PhysicsRect TOUCAN_SIZE = new PhysicsRect(2, 2);
     private static final Vec2 GRAB_OFFSET = new Vec2(0, 0.6f);
-    private static final Vec2 TARGET_PLAYER_OFFSET = new Vec2(-5, 5);
-    private static final Vec2 TARGET_FLAG_OFFSET = new Vec2(-10, 5);
+    private static final Vec2 TARGET_PLAYER_OFFSET = new Vec2(-5, 2);
+    private static final Vec2 TARGET_FLAG_OFFSET = new Vec2(-10, 2);
     private static final Vec2 FLIGHT_OUT_POSITION_RELATIVE_TO_TARGET = new Vec2(4, 10);
 
     /* All duration are in seconds */

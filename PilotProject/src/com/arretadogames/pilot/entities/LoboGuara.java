@@ -25,7 +25,7 @@ public class LoboGuara extends Player {
 		doubleJump = getMaxDoubleJumps();
 		
 		CircleShape shape = new CircleShape();
-		size = 0.35f;
+		size = 0.5f;
 		shape.setRadius(size);
 		bodyFixture = body.createFixture(shape,  3f);
 		bodyFixture.setFriction(0f);
