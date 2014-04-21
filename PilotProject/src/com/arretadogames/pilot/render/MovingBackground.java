@@ -19,8 +19,9 @@ public class MovingBackground {
 	private RectF dstRectF;
 	private int originalWidth;
 	private int originalHeight;
+	private float speed;
 	
-	public MovingBackground(int imageId) {
+	public MovingBackground(int imageId, float speed) { // (Default: 100)
 		this.imageId = imageId;
 		int[] imageSize = ImageLoader.checkBitmapSize(imageId);
 		this.originalWidth = imageSize[0];
@@ -30,6 +31,7 @@ public class MovingBackground {
 		
 		this.width = this.originalWidth;
 		this.height = this.originalHeight;
+		this.speed = speed;
 	}
 	
 	private void setSrcRect(float centerX, float centerY, float width, float height) {
@@ -49,14 +51,14 @@ public class MovingBackground {
 		if (imageMeterRatio == -1) {
 			initialX -= 30; // GAP
 			finalX += 30; // GAP
-			this.width *= (finalX - initialX) / 100f; // (Default: 100) Adjust this.. will affect speed
+			this.width *= (finalX - initialX) / speed;
 			imageMeterRatio = this.width / (finalX - initialX);
 		}
 		
 		dstRectF.bottom = GameSettings.TARGET_HEIGHT + translator.y;
 		// ADAPT THIS DEPENDING ON THE IMAGE (just to make sure it is where it is supposed to be)
-		// Higher Values means..
-		dstRectF.bottom +=  80f // 110
+		// Higher Values means the background will be lower
+		dstRectF.bottom +=  120f // 110
 				*  Math.abs(zoomRatio) / 70f; // MaximumZoom = 70
 		dstRectF.top = dstRectF.bottom - height * Math.abs(zoomRatio) / 70f; // MaximumZoom = 70
 		

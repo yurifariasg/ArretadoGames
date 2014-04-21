@@ -46,7 +46,7 @@ public class GameCamera implements Renderable, Steppable {
 	private float transitionDuration; // Measured in milliseconds.
 	private long startTime;
 
-	private MovingBackground movingBackground;
+	private MovingBackground[] movingBackgrounds;
 
 	private enum TransitionTrigger {
 		NONE, PLAYER_NUM_CHANGED, VIEWPORT_SIDE_PRIORITY_CHANGED;
@@ -87,7 +87,11 @@ public class GameCamera implements Renderable, Steppable {
 		startTime = 0;
 		
 		toucan = new Toucan();
-        movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
+		
+		movingBackgrounds = new MovingBackground[3];
+        movingBackgrounds[0] = new MovingBackground(R.drawable.mountains_repeatable, 150);
+        movingBackgrounds[1] = new MovingBackground(R.drawable.repeatable_back_trees, 100);
+        movingBackgrounds[2] = new MovingBackground(R.drawable.repeatable_trees, 70);
 	}
 
 	private int getNumberOfAlivePlayers(Collection<Player> players) {
@@ -311,9 +315,11 @@ public class GameCamera implements Renderable, Steppable {
 		Profiler.initTick(ProfileType.RENDER);
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
-
-		movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
-				center.y, initialX, flagX, translator);
+		
+		for (int i = 0 ; i < movingBackgrounds.length ; i++) {
+		    movingBackgrounds[i].render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
+	                center.y, initialX, flagX, translator);
+		}
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw background");
 		Profiler.initTick(ProfileType.RENDER);

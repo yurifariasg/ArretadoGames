@@ -26,7 +26,7 @@ public class Mine extends Entity {
     private static final float MINE_SIZE = 0.1f;
     private static final PhysicsRect MINE_IMAGE_SIZE = new PhysicsRect(0.6f, 0.6f);
     private static final PhysicsRect EXPLOSION_SIZE = new PhysicsRect(5, 5);
-    private static final float PUSH_FORCE = 10;
+    private static final float PUSH_FORCE = 5;
     private static final float PARALYSIS_DURATION = 5;
     
     private AnimationSwitcher sprite;
@@ -123,7 +123,7 @@ public class Mine extends Entity {
             float distance = pushDirection.normalize(); // Normalizes the vector
             float halfExplosionSize = EXPLOSION_SIZE.width() / 2;
             
-            float pushForce = (halfExplosionSize - distance) * PUSH_FORCE;
+            float pushForce = (halfExplosionSize - distance) * PUSH_FORCE * b.getMass();
             
             pushDirection.mulLocal(pushForce);
             

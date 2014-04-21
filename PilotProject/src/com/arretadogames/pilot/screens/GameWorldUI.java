@@ -134,7 +134,7 @@ public class GameWorldUI extends GameScreen {
 	    
 	    setPlayersCollision(false);
 	    
-        Vec2 offset = new Vec2(-INITIAL_POS_X_OFFSET, 0);
+        Vec2 offset = new Vec2(INITIAL_POS_X_OFFSET, 0);
         p1.body.setTransform(p1.body.getPosition().add(offset), 0);
         p2.body.setTransform(p1.body.getPosition(), 0);
         

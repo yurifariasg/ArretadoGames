@@ -14,11 +14,11 @@ public class Box extends Entity {
 		super(x, y);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(size/2, size/2);
-		body.createFixture(shape,  0.5f).setFriction(0.8f);
+		body.createFixture(shape,  5f).setFriction(0.8f);
 		body.setType(BodyType.DYNAMIC);
 		body.setFixedRotation(false);
 		
-		physRect = new PhysicsRect(size, size);
+		physRect = new PhysicsRect(size + 0.1f, size + 0.1f);
 	}
 
 	@Override

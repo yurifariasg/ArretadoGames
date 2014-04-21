@@ -44,7 +44,7 @@ public class CoconutItem implements Item {
             Coconut coconut = new Coconut(aabb.upperBound.x, aabb.upperBound.y);
             world.getEntities().add(coconut);
             
-            Vec2 impulse = new Vec2(0.9f, 0.4f);
+            Vec2 impulse = new Vec2(0.9f, 0.15f);
             
             impulse.mulLocal(14);
             
