@@ -12,7 +12,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 public class Coconut extends Entity {
     
-    private static final float COCONUT_SIZE = 0.1f;
+    public static final float COCONUT_SIZE = 0.1f;
     private static final float COCONUT_IMAGE_SIZE = 0.3f;
     private static final float STUN_DURATION = 3;
 

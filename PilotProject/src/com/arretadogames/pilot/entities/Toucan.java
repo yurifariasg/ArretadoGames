@@ -28,7 +28,7 @@ public class Toucan implements Renderable, Steppable {
     /* All duration are in seconds */
     private static final float GRAB_FLIGHT_DURATION = 1;
     private static final float GRAB_DURATION = 0.0001f;
-    private static final float PULL_FLIGHT_DURATION = 2;
+    private static final float PULL_FLIGHT_DURATION = 1f;
     private static final float DROP_DURATION = 0.0001f;
     private static final float OUT_FLIGHT_DURATION = 3;
 

@@ -22,7 +22,7 @@ public class TatuBola extends Player {
 	private final float TIME_WAITING_FOR_ACT = 6f;
 	private float timeForNextAct = 0f;
 	
-	private final float rad = 0.3f;
+	private final float rad = 0.2f;
 	private int doubleJump;
 	
 	public TatuBola(float x, float y, PlayerNumber number) {
@@ -140,7 +140,7 @@ public class TatuBola extends Player {
 	@Override
 	public void playerRender(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.translatePhysics(getPosX(), getPosY() + 0.07f);
 		canvas.rotate((float) (180 * - getAngle() / Math.PI));
         sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();

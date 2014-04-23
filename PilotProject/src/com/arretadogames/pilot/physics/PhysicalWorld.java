@@ -145,30 +145,36 @@ public class PhysicalWorld implements ContactListener, Renderable {
 			Fixture fixture = body.getFixtureList();
 			
 			canvas.saveState();
-			canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
-			canvas.rotate((float) (180 *  body.getAngle() / Math.PI));
 			
 			while (fixture != null) {
 			    
+				canvas.saveState();
 				
 				switch (fixture.getShape().getType()) {
 				
 				case POLYGON:
+					canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
+					canvas.rotate((float) (180 *  (-body.getAngle()) / Math.PI));
 					drawPolygon(canvas, (PolygonShape) fixture.getShape());
 					break;
 				case CIRCLE:
+					CircleShape circleShape =  (CircleShape) fixture.getShape();
+					canvas.translatePhysics(body.getPosition().x + circleShape.m_p.x, body.getPosition().y + circleShape.m_p.y);
+					canvas.rotate((float) (180 *  (-body.getAngle()) / Math.PI));
 					drawCircle(canvas, (CircleShape) fixture.getShape());
 					break;
 					
 				case CHAIN:
-					canvas.restoreState(); // TODO: Remove this hack when we stop rotating OpenGL
-					canvas.saveState(); // TODO: same as above
 					drawChain(canvas, (ChainShape) fixture.getShape());
 					break;
 				case EDGE:
+					canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
+					canvas.rotate((float) (180 *  (-body.getAngle()) / Math.PI));
 					drawEdge(canvas, (EdgeShape) fixture.getShape());
 					break;
 				}
+			    
+				canvas.restoreState();
 				
 				fixture = fixture.getNext();
 			}
@@ -198,7 +204,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 	}
 
 	private void drawPolygon(GLCanvas canvas, PolygonShape shape) {
-		canvas.drawPhysicsLines(shape.getVertices(), shape.getVertexCount(), 3, Color.YELLOW, true);
+		canvas.drawPhysicsLines(shape.getVertices(), shape.getVertexCount(), 3, Color.YELLOW, true, true);
 		
 	}
 }

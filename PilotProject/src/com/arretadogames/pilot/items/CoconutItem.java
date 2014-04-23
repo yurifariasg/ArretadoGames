@@ -35,13 +35,15 @@ public class CoconutItem implements Item {
             Fixture f = owner.body.getFixtureList();
             
             AABB aabb = new AABB();
+            AABB auxAABB = new AABB();
             
             while (f != null) {
-            	aabb.combine(f.getAABB(0));
+            	f.getShape().computeAABB(auxAABB, owner.body.getTransform(), 0);
+            	aabb.combine(auxAABB);
             	f = f.getNext();
             }
             
-            Coconut coconut = new Coconut(aabb.upperBound.x, aabb.upperBound.y);
+            Coconut coconut = new Coconut(aabb.upperBound.x + Coconut.COCONUT_SIZE, aabb.upperBound.y + Coconut.COCONUT_SIZE);
             world.getEntities().add(coconut);
             
             Vec2 impulse = new Vec2(0.9f, 0.15f);

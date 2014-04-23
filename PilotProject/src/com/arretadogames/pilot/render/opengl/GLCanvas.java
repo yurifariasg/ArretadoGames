@@ -1,6 +1,7 @@
 package com.arretadogames.pilot.render.opengl;
 
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -146,9 +147,13 @@ public class GLCanvas {
 	public void drawPhysicsLines(Vec2[] vecs, int count, float width, int color, boolean connectStartAndEnd) {
 		GLLine.drawLineStrip(vecs, count, width, color, connectStartAndEnd, GLCanvas.physicsRatio);
 	}
+	
+	public void drawPhysicsLines(Vec2[] vecs, int count, float width, int color, boolean connectStartAndEnd, boolean invertY) {
+		GLLine.drawLineStrip(vecs, count, width, color, connectStartAndEnd, GLCanvas.physicsRatio, invertY, true);
+	}
 
 	public void drawGroundLines(Vec2[] vecs, int count, float width, int color) {
-		GLLine.drawLineStrip(vecs, count, width, color, false, GLCanvas.physicsRatio, true);
+		GLLine.drawLineStrip(vecs, count, width, color, false, GLCanvas.physicsRatio, true, false);
 	}
 
 	public void drawBitmap(int imageId, float x, float y, float width, float height) {

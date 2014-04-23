@@ -64,7 +64,7 @@ public class Ground extends Entity {
 			drawGround(canvas, vec);
 		
         // Draw Darker Lines
-        int width = 2;
+        int width = 3;
         int color = Color.rgb(77, 34, 0);
         canvas.saveState();
         

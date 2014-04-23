@@ -13,7 +13,8 @@ import org.jbox2d.dynamics.BodyType;
 
 public class MacacoPrego extends Player implements Steppable{
 
-	private float radius = 0.3f;
+    private static final Vec2 BODY_DIMEN = new Vec2(0.26f, 0.5f);
+//	private float radius = 0.3f;
 	private boolean isOnLiana;
 	private Body b;
 	private int doubleJump;
@@ -22,17 +23,42 @@ public class MacacoPrego extends Player implements Steppable{
 		super(x, y, number);
 		applyConstants();
 		doubleJump = getMaxDoubleJumps();
+		
+		float radius = BODY_DIMEN.x / 2f;
+        
+        CircleShape shape = new CircleShape();
+        shape.setRadius(radius);
+        shape.m_p.set(0f, (- BODY_DIMEN.y / 2f) + radius);
+        footFixture = body.createFixture(shape, 0.1f);
+        footFixture.setFriction(0f);
+        // FOOT OK
+        
+        // Head
+        shape = new CircleShape();
+        shape.setRadius(radius);
+        shape.m_p.set(0f, (BODY_DIMEN.y / 2f) - radius);
+        body.createFixture(shape, 0.1f); // HEAD
+        
 
-		CircleShape shape = new CircleShape();
-		shape.setRadius(radius );
-		bodyFixture = body.createFixture(shape,  3f);
-		bodyFixture.setFriction(0f);
-		body.setType(BodyType.DYNAMIC);
-		body.setFixedRotation(true);
-		PolygonShape footShape = new PolygonShape();
-		footShape.setAsBox(radius, 0.1f, new Vec2(0f,-radius+0.1f), 0f);
-		footFixture = body.createFixture(footShape, 0f);
-		footFixture.setSensor(true);
+        PolygonShape bodyShape = new PolygonShape();
+        bodyShape.setAsBox(BODY_DIMEN.x / 2f, BODY_DIMEN.y / 2f - radius);
+        bodyFixture = body.createFixture(bodyShape,  2.8f);
+        bodyFixture.setFriction(0f);
+        
+        body.setType(BodyType.DYNAMIC);
+        contJump = 0;
+        body.setFixedRotation(true);
+
+//		CircleShape shape = new CircleShape();
+//		shape.setRadius(radius );
+//		bodyFixture = body.createFixture(shape,  3f);
+//		bodyFixture.setFriction(0f);
+//		body.setType(BodyType.DYNAMIC);
+//		body.setFixedRotation(true);
+//		PolygonShape footShape = new PolygonShape();
+//		footShape.setAsBox(radius, 0.1f, new Vec2(0f,-radius+0.1f), 0f);
+//		footFixture = body.createFixture(footShape, 0f);
+//		footFixture.setSensor(true);
     		
         categoryBits = CollisionFlag.GROUP_PLAYERS.getValue() ;
         maskBits = CollisionFlag.GROUP_COMMON_ENTITIES.getValue() | CollisionFlag.GROUP_GROUND.getValue()
@@ -75,12 +101,12 @@ public class MacacoPrego extends Player implements Steppable{
 		setMaxDoubleJumps(0);
 	}
 	
-	@Override
-	public PolygonShape getWaterContactShape() {
-		PolygonShape a = new PolygonShape();
-		a.setAsBox(radius, radius);
-		return a;
-	}
+//	@Override
+//	public PolygonShape getWaterContactShape() {
+//		PolygonShape a = new PolygonShape();
+//		a.setAsBox(radius, radius);
+//		return a;
+//	}
 	
 	public void setOnLiana(boolean bo){
 		isOnLiana = bo;

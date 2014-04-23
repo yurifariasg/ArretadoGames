@@ -8,6 +8,7 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 
 public class AraraAzul extends Player implements Steppable {
@@ -22,7 +23,7 @@ public class AraraAzul extends Player implements Steppable {
 		doubleJump = getMaxDoubleJumps();
 
 		CircleShape shape = new CircleShape();
-		radius = 0.3f;
+		radius = 0.2f;
 		shape.setRadius(radius);
 		bodyFixture = body.createFixture(shape,  k);
 		bodyFixture.setFriction(0f);
@@ -30,7 +31,7 @@ public class AraraAzul extends Player implements Steppable {
 		
 		body.setFixedRotation(true);
 		PolygonShape footShape = new PolygonShape();
-		footShape.setAsBox(0.3f, 0.1f, new Vec2(0f,-0.4f), 0f);
+		footShape.setAsBox(radius, 0.1f, new Vec2(0f, - radius), 0f);
 		footFixture = body.createFixture(footShape, 0f);
 		footFixture.setSensor(true);
 		
@@ -113,7 +114,7 @@ public class AraraAzul extends Player implements Steppable {
 	public void playerRender(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.translatePhysics(getPosX(), getPosY() + 0.1f);
 		canvas.rotate((float) (180 * - getAngle() / Math.PI));
 		sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
