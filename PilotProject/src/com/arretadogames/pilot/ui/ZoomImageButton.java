@@ -8,7 +8,7 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 public class ZoomImageButton extends ImageButton implements TweenAccessor<ZoomImageButton> {
 
-	private static final float MAX_ZOOM = 1.5f;
+	private static final float MAX_ZOOM = 1.1f;
 
 	private TweenManager tweenManager;
 	private float currentZoom;

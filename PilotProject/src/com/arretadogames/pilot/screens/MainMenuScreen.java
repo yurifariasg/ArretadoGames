@@ -6,6 +6,8 @@ import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
+import com.arretadogames.pilot.audio.MusicI;
+import com.arretadogames.pilot.audio.SoundI;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameMode;
 import com.arretadogames.pilot.game.GameState;
@@ -16,6 +18,8 @@ import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
+import com.arretadogames.pilot.ui.ZoomImageButton;
+import com.arretadogames.pilot.util.Settings;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener, TweenAccessor<MainMenuScreen> {
 
@@ -41,16 +45,20 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private float currentBlackAlpha;
 	private float currentZoom;
 	private State currentState;
+	
+	// Audio
+	public static MusicI music;
+	public static SoundI clickSound;
 
 	public MainMenuScreen() {
-		playBt = new ImageButton(PLAY_BUTTON, 340, 240,
+		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 240,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
                 this,
 				R.drawable.quickrace_button_selected,
 				R.drawable.quickrace_button_unselected);
 
-		settingsBt = new ImageButton(SETTINGS_BUTTON, 20, 20,
+		settingsBt = new ZoomImageButton(SETTINGS_BUTTON, 20, 20,
 				getDimension(R.dimen.main_menu_button_size),
                 getDimension(R.dimen.main_menu_button_size),
 				this,
@@ -72,7 +80,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				R.drawable.bt_tournament_selected,
 				R.drawable.bt_tournament_unselected);
 
-		storeBt = new ImageButton(STORE_BUTTON,
+		storeBt = new ZoomImageButton(STORE_BUTTON,
 				550, 240,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
@@ -80,7 +88,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 				R.drawable.store_button_selected,
 				R.drawable.store_button_unselected);
 		
-		tournamentBt = new ImageButton(TOURNAMENT_BUTTON,
+		tournamentBt = new ZoomImageButton(TOURNAMENT_BUTTON,
 				130, 240,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
@@ -96,6 +104,17 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 		currentState = State.MAIN;
 		settingsScreen = new SettingsScreen(this);
+		
+		System.out.println("------b4------");
+		System.out.println("getAudio : " + MainActivity.getActivity().getAudio());
+		music = MainActivity.getActivity().getAudio().newMusic("main_menu.mp3");
+		System.out.println("------end------");
+		music.setLooping(true);
+		music.setVolume(0.5f);
+		if (Settings.soundEnabled)
+			music.play();
+		
+		
 	}
 
 	@Override
@@ -162,9 +181,10 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		case PLAY_BUTTON:
 			Game.getInstance().setGameMode(GameMode.QUICKRACE);
 			startGame();
+			music.stop();
 			break;
 		case SETTINGS_BUTTON:
-			currentState = State.SETTINGS;
+			//currentState = State.SETTINGS;
 			break;
 		case G_SIGN_IN_BUTTON:
 			if (SyncManager.get().isSignedIn()) {
@@ -173,13 +193,16 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			} else {
 				SyncManager.get().userClickedSignIn();
 			}
+			music.stop();
 			break;
 		case STORE_BUTTON:
 			startStore();
+			music.stop();
 			break;
 		case TOURNAMENT_BUTTON:
 			startTournamentSelection();
 			Game.getInstance().setGameMode(GameMode.TOURNAMENT);
+			music.stop();
 			break;
 		}
 	}

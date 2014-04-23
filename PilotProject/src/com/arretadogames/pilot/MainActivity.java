@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.arretadogames.pilot.android.KeyboardManager;
+import com.arretadogames.pilot.audio.AndroidAudio;
+import com.arretadogames.pilot.audio.AudioI;
 import com.arretadogames.pilot.database.GameDatabase;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
@@ -27,7 +29,8 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 	private static Context context;
 	private static MainActivity mainActivity;
 	private GameGLSurfaceView renderingSurface;
-
+	AudioI audio;
+	
 	public MainActivity() {
 		super();
 		MainActivity.mainActivity = this;
@@ -42,11 +45,14 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 		super.onCreate(savedInstanceState);
 //		if (GameSettings.USE_CRASHLYTICS)
 //			Crashlytics.start(this);
+		audio = new AndroidAudio(this);
+		System.out.println("onCreate audio " + audio);
 		context = getApplicationContext(); // Sets the Context for external use
 		FontLoader.create(context); // Create the FontLoader
 		GameDatabase.createDatabase(getApplicationContext());
 		Game.getInstance(); // Create Game
 		KeyboardManager.setup(this);
+		
 	}
 
 //	@Override
@@ -121,5 +127,9 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
         .setNegativeButton("Play More!", null)
         .show();
 	}
+	
+    public AudioI getAudio() {
+        return audio;
+    }
 
 }
