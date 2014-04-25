@@ -1,0 +1,86 @@
+/*================= 1. Reset =============== */
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, img, small, strong, ol, ul, li, form, label,
+table, caption, tr, td, footer, header {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+footer, header, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+    text-rendering: optimizeLegibility;
+
+}
+ol, ul {
+  list-style: none;
+}
+
+a:focus { outline:0; }
+a:hover {  text-decoration:none; }
+
+::-moz-selection { color: #f3f5f5;  background:#406371; }
+
+
+/*============== 2. typography ===================*/
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  size:14px;
+  line-height:1.6em;
+  color:#666666;
+}
+
+/*============== 3. General ===================*/
+
+.wrapper { width:940px; margin:0 auto; } 
+.clear { clear:both; } 
+
+/*============== 4. Header ===================*/
+
+.top-nav { 
+  position:fixed; 
+  width:100%; 
+  height:40px; 
+  padding:20px 0 20px 0; 
+  background:#000; 
+  opacity:0.9;
+  z-index:1000; 
+  top:0;
+  display:block; 
+}
+.top-nav { 
+  color:#678c99;      
+  text-shadow: 2px 2px 3px rgba(255,255,255,0.1); 
+  box-shadow:1px 0px 4px #666; 
+}
+.top-nav h1 { font-size:37px; height:31px; padding:0 0 0 36px;  line-height:30px; float:left; }
+
+.top-arrow { position:fixed; width:20px; height:18px;   margin-left:60px; background:url(../img/top-arrow.png) no-repeat; z-index:199; top:81px;display:block; 
+
+ }
+.top-nav2 { position:fixed; width:100%; height:4px;  background-color:#7298a5; z-index:200; top:0px;display:block; }
+
+/* logo */
+.logo {
+  float:left;
+}
+
+/* Intro */
+
+section#intro{
+  background:url(../img/forest_bg.jpg) 50% 0 no-repeat fixed;
+  color: #fff;
+  min-height: 300px;
+  max-height: 650px;
+  height:auto;
+  margin: 0 auto;
+  padding: 0;
+}
