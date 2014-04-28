@@ -1,6 +1,6 @@
 /*================= 1. Reset =============== */
 
-html, body, div, span, object, iframe,
+/*html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, img, small, strong, ol, ul, li, form, label,
 table, caption, tr, td, footer, header {
@@ -10,7 +10,7 @@ table, caption, tr, td, footer, header {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
-}
+}*/
 footer, header, menu, nav, section {
   display: block;
 }
@@ -29,8 +29,14 @@ a:hover {  text-decoration:none; }
 
 ::-moz-selection { color: #f3f5f5;  background:#406371; }
 
+.center
+{
+margin-left:auto;
+margin-right:auto;
+width:50%;
+/*background-color:#b0e0e6;*/
+}
 
-/*============== 2. typography ===================*/
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   size:14px;
@@ -38,12 +44,8 @@ body {
   color:#666666;
 }
 
-/*============== 3. General ===================*/
-
 .wrapper { width:940px; margin:0 auto; } 
 .clear { clear:both; } 
-
-/*============== 4. Header ===================*/
 
 .top-nav { 
   position:fixed; 
@@ -54,7 +56,8 @@ body {
   opacity:0.9;
   z-index:1000; 
   top:0;
-  display:block; 
+  /*display:block;*/  
+  display:none;
 }
 .top-nav { 
   color:#678c99;      
@@ -78,9 +81,58 @@ body {
 section#intro{
   background:url(../img/forest_bg.jpg) 50% 0 no-repeat fixed;
   color: #fff;
-  min-height: 300px;
+  /*min-height: 300px;*/
   max-height: 650px;
   height:auto;
-  margin: 0 auto;
-  padding: 0;
+  /*margin: 0 auto;
+  padding: 0;*/
+  box-shadow: 0px 5px 30px #888888;
+  padding: 50px 0px 50px 0px;
+}
+
+
+#app_description h5 {
+  text-align: justify;
+}
+
+section#cta .center {
+  padding: 30px 0px 0px 0px;
+  width: 30%;
+}
+
+.box {
+  max-width: 400px;
+}
+
+.box .box-content {
+  background: #F5F5F5; /*#F5F5F5;*/
+  margin: 10px 10px 10px 10px;
+  padding: 30px 30px 30px 30px;
+  border-radius: 10px;
+}
+
+.box h1 {
+  text-align: center;
+}
+
+.box h5 {
+  text-align: justify;
+}
+
+.box img {
+  margin-left:auto;
+  margin-right:auto;
+  width:100%;
+}
+
+section#footer {
+  background: #1a1a1a;
+  color: #666666;
+  text-align: center;
+  /*height: 100px;*/
+  padding: 20px 20px 20px 20px
+}
+
+section#footer a {
+  color: #c64121;
 }
