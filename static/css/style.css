@@ -11,6 +11,12 @@ table, caption, tr, td, footer, header {
   font: inherit;
   vertical-align: baseline;
 }*/
+
+@font-face {
+    font-family: "st-marie-thin";
+    src: local("StMarieThin"), url("../fonts/stmarie-thin.otf");/* format("truetype");*/
+}
+
 footer, header, menu, nav, section {
   display: block;
 }
@@ -33,15 +39,18 @@ a:hover {  text-decoration:none; }
 {
 margin-left:auto;
 margin-right:auto;
-width:50%;
-/*background-color:#b0e0e6;*/
+text-align: center;
+margin: auto;
 }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  size:14px;
-  line-height:1.6em;
+  /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  font-family: "Lato", sans-serif;
   color:#666666;
+}
+
+h1 {
+  font-weight: bold;
 }
 
 .wrapper { width:940px; margin:0 auto; } 
@@ -81,13 +90,21 @@ body {
 section#intro{
   background:url(../img/forest_bg.jpg) 50% 0 no-repeat fixed;
   color: #fff;
-  /*min-height: 300px;*/
   max-height: 650px;
   height:auto;
-  /*margin: 0 auto;
-  padding: 0;*/
   box-shadow: 0px 5px 30px #888888;
-  padding: 50px 0px 50px 0px;
+  padding: 130px 0px 130px 0px;
+}
+
+section#intro h1 {
+  text-align: left;
+}
+
+section#intro .social {
+  margin-top: 30px;
+}
+
+section#features {
 }
 
 
@@ -95,17 +112,12 @@ section#intro{
   text-align: justify;
 }
 
-section#cta .center {
-  padding: 30px 0px 0px 0px;
-  width: 30%;
-}
-
 .box {
   max-width: 400px;
 }
 
 .box .box-content {
-  background: #F5F5F5; /*#F5F5F5;*/
+  background: #F3F3F3;
   margin: 10px 10px 10px 10px;
   padding: 30px 30px 30px 30px;
   border-radius: 10px;
@@ -113,6 +125,7 @@ section#cta .center {
 
 .box h1 {
   text-align: center;
+  font-size: 30px;
 }
 
 .box h5 {
@@ -128,11 +141,71 @@ section#cta .center {
 section#footer {
   background: #1a1a1a;
   color: #666666;
-  text-align: center;
-  /*height: 100px;*/
   padding: 20px 20px 20px 20px
 }
 
 section#footer a {
-  color: #c64121;
+  color: #21C67D;
+}
+
+section#video {
+  background: #EDEDED;
+}
+
+section#video h1 {
+  margin: 0px 0px 20px 0px;
+  text-align: center;
+}
+
+section {
+  padding: 50px 0px 50px 0px;
+}
+
+section#subscribe {
+  background: #1a1a1a;
+  color: #949494;
+}
+
+section#subscribe .larger {
+  display: block;
+  font-size: 40px;
+}
+
+section#subscribe .smaller {
+  display: block;
+  font-size: 20px;
+  font-family: "st-marie-thin";
+  color: #FFFFFF;
+  margin: 15px 0px 0px 0px;
+}
+
+section#subscribe .form-control {
+  background: transparent;
+}
+
+section#subscribe .btn-primary {
+  color: #FFFFFF;
+  background: #19964B;
+  border-color: transparent;
+  width: 100%;
+}
+
+section#subscribe .form-control:focus {
+  border-color: #000000;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(255, 255, 255, 1);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(255, 255, 255, 1);
+}
+
+section#subscribe .subscribe-text-content {
+  padding: 0px 0px 30px 0px;
+}
+
+section#screenshots img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+section#screenshots .row {
+  padding: 15px 0px 15px 0px;
 }
