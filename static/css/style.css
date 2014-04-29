@@ -53,7 +53,23 @@ h1 {
   font-weight: bold;
 }
 
-.wrapper { width:940px; margin:0 auto; } 
+
+
+@media(max-width:767px){
+  .wrapper {
+    width:480px;
+    margin:0 auto;
+  }
+}
+@media(min-width:768px){
+  .wrapper {
+    width:940px;
+    margin:0 auto;
+  } 
+}
+@media(min-width:992px){}
+@media(min-width:1200px){}
+
 .clear { clear:both; } 
 
 .top-nav { 
