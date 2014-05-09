@@ -49,29 +49,28 @@ h1 {
   font-weight: bold;
 }
 
-.clear { clear:both; } 
+.clear { clear:both; }
 
-.top-nav { 
-  position:fixed; 
-  width:100%; 
-  height:40px; 
-  padding:20px 0 20px 0; 
-  background:#000; 
+.top-nav {
+  position:fixed;
+  width:100%;
+  height:40px;
+  padding:20px 0 20px 0;
+  background:#000;
   opacity:0.9;
-  z-index:1000; 
+  z-index:1000;
   top:0;
-  /*display:block;*/  
+  /*display:block;*/
   display:none;
 }
-.top-nav { 
-  color:#678c99;      
-  text-shadow: 2px 2px 3px rgba(255,255,255,0.1); 
-  box-shadow:1px 0px 4px #666; 
+.top-nav {
+  color:#678c99;
+  text-shadow: 2px 2px 3px rgba(255,255,255,0.1);
+  box-shadow:1px 0px 4px #666;
 }
 .top-nav h1 { font-size:37px; height:31px; padding:0 0 0 36px;  line-height:30px; float:left; }
 
-.top-arrow { position:fixed; width:20px; height:18px;   margin-left:60px; background:url(../img/top-arrow.png) no-repeat; z-index:199; top:81px;display:block; 
-
+.top-arrow { position:fixed; width:20px; height:18px;   margin-left:60px; background:url(../img/top-arrow.png) no-repeat; z-index:199; top:81px;display:block;
  }
 .top-nav2 { position:fixed; width:100%; height:4px;  background-color:#7298a5; z-index:200; top:0px;display:block; }
 
@@ -83,7 +82,8 @@ h1 {
 /* Intro */
 
 section#intro{
-  background:url(../img/forest_bg.jpg) 50% 0 no-repeat fixed;
+  background:url(../img/forest_bg.jpg) fixed no-repeat; /* 50% 0 no-repeat fixed; */
+  background-size: 100% 100%;
   color: #fff;
   box-shadow: 0px 5px 30px #888888;
   padding: 0px 0px 0px 0px;
@@ -257,7 +257,7 @@ section#team .profile h5 {
   .wrapper {
     width:940px;
     margin:0 auto;
-  } 
+  }
 }
 @media(min-width:992px){}
 @media(min-width:1200px){}
