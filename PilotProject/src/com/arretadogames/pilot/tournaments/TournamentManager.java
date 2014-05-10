@@ -4,19 +4,25 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelManager;
+import com.arretadogames.pilot.screens.PremiationScreen;
 import com.arretadogames.pilot.world.GameWorld;
 
 public class TournamentManager {
 
 	private static TournamentManager tManager;
 
-//	private Tournament mTournament;
 	private int winsNumberP1;
 	private int winsNumberP2;
+	private int p1TotalScore;
+	private int p2TotalScore;
 	private int currentLevel;
 
 	private TournamentManager() {
-
+		currentLevel = 0;
+		winsNumberP1 = 0;
+		winsNumberP2 = 0;
+		p1TotalScore = 0;
+		p2TotalScore = 0;
 	}
 
 	/**
@@ -33,10 +39,23 @@ public class TournamentManager {
 	public void resetTournamentData(){
 		winsNumberP1 = 0;
 		winsNumberP2 = 0;
+		p1TotalScore = 0;
+		p2TotalScore = 0;
 		currentLevel = 0;
 	}
 	
-	public void countWins(PlayerNumber pNumber){
+	public int getWins(PlayerNumber pNumber){
+		switch (pNumber) {
+		case ONE:
+			return winsNumberP1; 
+		case TWO:
+			return winsNumberP2;
+		default:
+			return 0;
+		}
+	}
+	
+	public void countWins(PlayerNumber pNumber) {
 		switch (pNumber) {
 		case ONE:
 			winsNumberP1++;
@@ -50,13 +69,27 @@ public class TournamentManager {
 		}
 	}
 	
+	public void countScore(PlayerNumber pNumber, int score) {
+		switch (pNumber) {
+		case ONE:
+			p1TotalScore += score;
+			break;
+
+		case TWO:
+			p2TotalScore += score;
+			break;
+		default:
+			break;
+		}
+	}
+	
 	public String getWinner(){
 		if (winsNumberP1 > winsNumberP2) {
-			return "P1 wins";
+			return "P1 wins!";
 		} else if (winsNumberP1 < winsNumberP2){
-			return "P2 wins";
+			return "P2 wins!";
 		} else {
-			return "P1 and P2 wins!!!";
+			return "P1 & P2 wins!";
 		}
 	}
 
@@ -66,17 +99,26 @@ public class TournamentManager {
 	 * @return Returns true if has a next level
 	 */
 	public boolean nextLevel() {
-		if (currentLevel < 6) {
+		
+		if (winsNumberP1 == 4 || winsNumberP2 == 4) {
+			((PremiationScreen) Game.getInstance().getScreen(GameState.PREMIATION))
+			.updateWinner();
+			Game.getInstance().goTo(GameState.PREMIATION);
+			currentLevel = 0;
+			return false;
+		}
+		
+		if (currentLevel < 5 ) {
+			currentLevel++;
+			
 			((GameWorld) Game.getInstance().getScreen(GameState.RUNNING_GAME))
 			.setLevel(LevelManager.getLevels().get(currentLevel));
-			
-			currentLevel++;
 			return true;
 		} else {
-			
+			((PremiationScreen) Game.getInstance().getScreen(GameState.PREMIATION))
+			.updateWinner();
+			Game.getInstance().goTo(GameState.PREMIATION);
 			currentLevel = 0;
-			System.out.println("Who wins the tournament!?!");
-			//TODO goto the premiation screen with the winner and that kind of stuff
 		}
 		return false;	
 	}

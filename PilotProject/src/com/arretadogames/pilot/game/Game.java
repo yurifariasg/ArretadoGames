@@ -15,7 +15,7 @@ import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.CharacterSelectionScreen;
-import com.arretadogames.pilot.screens.EndScreen;
+import com.arretadogames.pilot.screens.FinishRaceScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameStore;
 import com.arretadogames.pilot.screens.InputEventHandler;
@@ -60,7 +60,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen());
 		gameScreens.put(GameState.SPLASH, new SplashScreen());
-		gameScreens.put(GameState.GAME_OVER, new EndScreen());
+//		gameScreens.put(GameState.GAME_OVER, new FinishRaceScreen());
 		gameScreens.put(GameState.CHARACTER_SELECTION, new CharacterSelectionScreen());
 		gameScreens.put(GameState.LEVEL_SELECTION, new StageSelectionScreen());
 		gameScreens.put(GameState.TOURNAMENT_SELECTION, new TournamentSelectionScreen());
