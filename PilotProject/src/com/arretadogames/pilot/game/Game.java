@@ -25,6 +25,7 @@ import com.arretadogames.pilot.screens.SplashScreen;
 import com.arretadogames.pilot.screens.StageSelectionScreen;
 import com.arretadogames.pilot.screens.TournamentSelectionScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
+import com.arretadogames.pilot.util.Assets;
 import com.arretadogames.pilot.world.GameWorld;
 
 /**
@@ -57,6 +58,7 @@ public class Game implements TweenAccessor<Game>, LoadManager.LoadFinisherCallBa
 		loadManager = LoadManager.getInstance();
 		gameScreens = new HashMap<GameState, GameScreen>();
 		setGameMode(GameMode.UNDEFINED);
+		Assets.load();
 		gameScreens.put(GameState.RUNNING_GAME, new GameWorld());
 		gameScreens.put(GameState.MAIN_MENU, new MainMenuScreen());
 		gameScreens.put(GameState.SPLASH, new SplashScreen());

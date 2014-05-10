@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.InputEventHandler;
+import com.arretadogames.pilot.util.Assets;
 
 public abstract class Button {
 	
@@ -45,9 +46,12 @@ public abstract class Button {
 	
 	public boolean input(InputEventHandler event) {
 		
+		
+		
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			if (pressed(event.getX(), event.getY())) {
+				Assets.playSound(Assets.clickSound);
 				isSelected = true;
 				return true;
 			} else {

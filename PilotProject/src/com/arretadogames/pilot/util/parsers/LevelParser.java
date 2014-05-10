@@ -128,7 +128,15 @@ public class LevelParser {
                     entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
                             (float) jsonEntity.getDouble("y"),
                             EntityType.BOX_ITEM);
-				} else {		// Entity not defined
+				
+				} else if (EntityType.TREELOG.toString().equals(entityType)) { // BOX
+					
+					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
+							(float) jsonEntity.getDouble("y"),
+							EntityType.TREELOG, (float) jsonEntity.getDouble("size"));
+					
+				
+				}else {		// Entity not defined
 					Log.e("LevelDescriptor.jsonParse()", "Entity " + entityType + " not defined");
 					continue;
 				}

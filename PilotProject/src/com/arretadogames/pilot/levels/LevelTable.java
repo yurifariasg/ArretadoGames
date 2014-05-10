@@ -10,7 +10,7 @@ public class LevelTable {
 	
 	/* This table holds reference to all our levels */
 	public static final int[] LEVELS = {
-            R.raw.map, R.raw.map2, R.raw.third_stage,
+            R.raw.map_log, R.raw.map2, R.raw.third_stage,
             R.raw.second_stage, R.raw.second_stage,
             R.raw.second_stage
 	};

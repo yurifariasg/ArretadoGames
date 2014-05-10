@@ -6,6 +6,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Assets;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -138,6 +139,7 @@ public class TatuBola extends Player {
 		}
 		if (jumpActive) {
 			jump();
+			Assets.playSound(Assets.jumpSound);
 			jumpActive = false;
 		}
 		if(actActive){

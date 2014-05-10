@@ -18,6 +18,7 @@ import com.arretadogames.pilot.tournaments.TournamentManager;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.TextImageButton;
+import com.arretadogames.pilot.util.Assets;
 
 public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen>, GameButtonListener {
 
@@ -171,7 +172,7 @@ public class PauseScreen extends GameScreen implements TweenAccessor<PauseScreen
 		case QUIT_BT:
 			if (Game.getInstance().getGameMode() == GameMode.TOURNAMENT)
 				TournamentManager.getInstance().resetTournamentData();
-			
+			Assets.mainMenuMusic.play();
 			Game.getInstance().goTo(GameState.MAIN_MENU);
 			break;
 		default:

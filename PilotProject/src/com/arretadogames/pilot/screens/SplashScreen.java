@@ -17,6 +17,8 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.AnimationManager;
+import com.arretadogames.pilot.util.Assets;
+import com.arretadogames.pilot.util.Settings;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -183,6 +185,8 @@ public class SplashScreen extends GameScreen implements TweenAccessor<SplashScre
 	}
 
 	private void startMainMenu() {
+		if (Settings.soundEnabled)
+			Assets.mainMenuMusic.play();
 		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}
 

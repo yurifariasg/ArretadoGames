@@ -35,6 +35,7 @@ import com.arretadogames.pilot.tournaments.TournamentType;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
+import com.arretadogames.pilot.util.Assets;
 import com.arretadogames.pilot.world.GameWorld;
 
 public class TournamentSelectionScreen extends GameScreen implements GameButtonListener, OnGestureListener, TweenAccessor<TournamentSelectionScreen> {
@@ -255,6 +256,7 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 	
 	@Override
 	public void onBackPressed() {
+		Assets.mainMenuMusic.play();
 		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}
 
@@ -295,7 +297,7 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 		}
 	
 		isScrolling = false;
-		
+		Assets.playSound(Assets.swipeSound);
 		startAnimationTo(targetIndex);
 		
 		return true;

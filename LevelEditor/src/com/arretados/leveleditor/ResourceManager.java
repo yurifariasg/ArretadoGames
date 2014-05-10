@@ -10,7 +10,7 @@ public class ResourceManager {
     
     public enum Resource {
         COIN, ONEWAY_WALL, BOX, BREAKABLE, P1, P2, TREE1,
-        SHRUB, GRASS, SPIKE, FLAG, HOLE, QUESTION_ITEM
+        SHRUB, GRASS, SPIKE, FLAG, HOLE, QUESTION_ITEM, TREE_LOG
     }
     
     
@@ -32,6 +32,7 @@ public class ResourceManager {
             images.put(Resource.COIN, ImageIO.read(new File("imgs/coin.png")));
             images.put(Resource.ONEWAY_WALL, ImageIO.read(new File("imgs/forest_platform.png")));
             images.put(Resource.BOX, ImageIO.read(new File("imgs/box.png")));
+            images.put(Resource.TREE_LOG, ImageIO.read(new File("imgs/tree_log.png")));
             images.put(Resource.BREAKABLE, ImageIO.read(new File("imgs/breakable.png")));
             images.put(Resource.P1, ImageIO.read(new File("imgs/p1.png")));
             images.put(Resource.P2, ImageIO.read(new File("imgs/p2.png")));

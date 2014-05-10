@@ -7,7 +7,7 @@ public enum EntityType {
 	SEED("seed"), FLUID("fluid"), BREAKABLE("breakable"), LIANA("liana"),
 	SPIKE("spike"), WATER("water"), HOLE("hole"),
 	TREE("tree"), SHRUB("shrub"), GRASS("grass"), BOX_ITEM("boxitem"),
-	COCONUT("coconut"), MINE("mine");
+	COCONUT("coconut"), MINE("mine"), TREELOG("treelog");
 	
 	private String name;
 	

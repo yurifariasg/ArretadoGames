@@ -22,11 +22,8 @@ public class AndroidAudio implements AudioI {
     public MusicI newMusic(String filename) {
         try {
             AssetFileDescriptor assetDescriptor = assets.openFd(filename);
-            System.out.println("filename " + filename);
-            System.out.println("AssetDescriptor " + assetDescriptor);
             return new AndroidMusic(assetDescriptor);
         } catch (IOException e) {
-        	System.out.println("Entrou no catch");
             throw new RuntimeException("Couldn't load music '" + filename + "'");
         }
     }

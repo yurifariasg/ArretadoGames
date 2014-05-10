@@ -10,6 +10,7 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Assets;
 import com.arretadogames.pilot.world.GameWorld;
 
 import javax.microedition.khronos.opengles.GL10;

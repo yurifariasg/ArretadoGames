@@ -112,6 +112,11 @@ public class EntityBuilder {
 				case BOX_ITEM:
 				    entity = new BoxItem(entityDescriptor.getX(), entityDescriptor.getY());
 				    break;
+				    
+				case TREELOG:
+					entity = new TreeLog(entityDescriptor.getX(), entityDescriptor.getY(),
+							entityDescriptor.getSize());
+					break;
 					
 				default:
 				    System.out.println("Entity Builder failed to assign item: " + entityDescriptor.getType().toString());

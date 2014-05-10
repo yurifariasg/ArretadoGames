@@ -18,6 +18,7 @@ import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.render.opengl.GameGLSurfaceView;
 import com.arretadogames.pilot.screens.InputEventHandler;
+import com.arretadogames.pilot.util.Assets;
 
 /**
  * GameActivity represents the MainActivity of our game,
@@ -46,7 +47,6 @@ public class MainActivity extends BaseGameActivity implements OnTouchListener {
 //		if (GameSettings.USE_CRASHLYTICS)
 //			Crashlytics.start(this);
 		audio = new AndroidAudio(this);
-		System.out.println("onCreate audio " + audio);
 		context = getApplicationContext(); // Sets the Context for external use
 		FontLoader.create(context); // Create the FontLoader
 		GameDatabase.createDatabase(getApplicationContext());

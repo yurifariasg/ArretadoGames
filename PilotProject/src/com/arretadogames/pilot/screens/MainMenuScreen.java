@@ -6,8 +6,6 @@ import com.arretadogames.pilot.MainActivity;
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.accounts.AccountManager;
 import com.arretadogames.pilot.android.KeyboardManager;
-import com.arretadogames.pilot.audio.MusicI;
-import com.arretadogames.pilot.audio.SoundI;
 import com.arretadogames.pilot.game.Game;
 import com.arretadogames.pilot.game.GameMode;
 import com.arretadogames.pilot.game.GameState;
@@ -19,7 +17,7 @@ import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
 import com.arretadogames.pilot.ui.ZoomImageButton;
-import com.arretadogames.pilot.util.Settings;
+import com.arretadogames.pilot.util.Assets;
 
 public class MainMenuScreen extends GameScreen implements GameButtonListener, TweenAccessor<MainMenuScreen> {
 
@@ -46,11 +44,8 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private float currentZoom;
 	private State currentState;
 	
-	// Audio
-	public static MusicI music;
-	public static SoundI clickSound;
-
 	public MainMenuScreen() {
+		
 		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 240,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
@@ -104,23 +99,12 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 		currentState = State.MAIN;
 		settingsScreen = new SettingsScreen(this);
-		
-		System.out.println("------b4------");
-		System.out.println("getAudio : " + MainActivity.getActivity().getAudio());
-		music = MainActivity.getActivity().getAudio().newMusic("main_menu.mp3");
-		System.out.println("------end------");
-		music.setLooping(true);
-		music.setVolume(0.5f);
-		if (Settings.soundEnabled)
-			music.play();
-		
-		
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
-
+		
 		canvas.setClearColor(255, 0, 0, 0);
 
 //		canvas.scale(currentZoom, currentZoom, GameSettings.TARGET_WIDTH / 2, GameSettings.TARGET_HEIGHT / 2);
@@ -181,7 +165,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 		case PLAY_BUTTON:
 			Game.getInstance().setGameMode(GameMode.QUICKRACE);
 			startGame();
-			music.stop();
+			Assets.mainMenuMusic.stop();
 			break;
 		case SETTINGS_BUTTON:
 			//currentState = State.SETTINGS;
@@ -193,16 +177,16 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			} else {
 				SyncManager.get().userClickedSignIn();
 			}
-			music.stop();
+			Assets.mainMenuMusic.stop();
 			break;
 		case STORE_BUTTON:
 			startStore();
-			music.stop();
+			Assets.mainMenuMusic.stop();
 			break;
 		case TOURNAMENT_BUTTON:
 			startTournamentSelection();
 			Game.getInstance().setGameMode(GameMode.TOURNAMENT);
-			music.stop();
+			Assets.mainMenuMusic.stop();
 			break;
 		}
 	}

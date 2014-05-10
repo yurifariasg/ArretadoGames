@@ -22,12 +22,15 @@ import com.arretados.leveleditor.entities.OneWayWallPanel;
 import com.arretados.leveleditor.entities.Player;
 import com.arretados.leveleditor.entities.Spike;
 import com.arretados.leveleditor.entities.SpikePanel;
+import com.arretados.leveleditor.entities.TreeLog;
+import com.arretados.leveleditor.entities.TreeLogPanel;
 import com.arretados.leveleditor.entities.layer.Grass;
 import com.arretados.leveleditor.entities.layer.GrassPanel;
 import com.arretados.leveleditor.entities.layer.Shrub;
 import com.arretados.leveleditor.entities.layer.ShrubPanel;
 import com.arretados.leveleditor.entities.layer.Tree;
 import com.arretados.leveleditor.entities.layer.TreePanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -185,6 +188,14 @@ public class GameCanvas extends JPanel implements MouseMotionListener, MouseList
                     entityToAdd = new Box(e.getX(), e.getY(), sizeBox);
                     ((Box)entityToAdd).setWeight(weightBox);
                 break;
+                
+                case TREE_LOG:
+                    float sizeLog = ((TreeLogPanel)mainView.getEntityPanel()).getCurrentSize();
+                    float weightLog = ((TreeLogPanel)mainView.getEntityPanel()).getCurrentWeight();
+                    entityToAdd = new TreeLog(e.getX(), e.getY(), sizeLog);
+                    ((TreeLog)entityToAdd).setWeight(weightLog);
+                break;
+                    
                 case COIN:
                     float coinValue = ((CoinPanel)mainView.getEntityPanel()).getCurrentValue();
                     entityToAdd = new Coin(e.getX(), e.getY());

@@ -16,6 +16,7 @@ import com.arretados.leveleditor.entities.OneWayWall;
 import com.arretados.leveleditor.entities.Player;
 import com.arretados.leveleditor.entities.Pulley;
 import com.arretados.leveleditor.entities.Spike;
+import com.arretados.leveleditor.entities.TreeLog;
 import com.arretados.leveleditor.entities.layer.Grass;
 import com.arretados.leveleditor.entities.layer.Shrub;
 import com.arretados.leveleditor.entities.layer.Tree;
@@ -129,7 +130,12 @@ public class LevelLoader {
                 // BOX ITEM
                 gc.addEntities(new BoxItem(jObj));
                 
-            } else {
+            }else if (String.valueOf(jObj.get("type")).equals(DrawMode.TREE_LOG.toString())) {
+                
+                // TREE LOG
+                gc.addEntities(new TreeLog(jObj));
+                
+            }else {
                 System.out.println("Not Found: " + jObj.get("type"));
             }
             

@@ -9,6 +9,7 @@ import com.arretadogames.pilot.loading.FontLoader;
 import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.tournaments.TournamentManager;
+import com.arretadogames.pilot.util.Assets;
 
 public class PremiationScreen extends GameScreen {
 
@@ -30,8 +31,10 @@ public class PremiationScreen extends GameScreen {
 
 	@Override
 	public void input(InputEventHandler event) {
-		if (event.getAction() == MotionEvent.ACTION_UP)
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			Assets.mainMenuMusic.play();
 			Game.getInstance().goTo(GameState.MAIN_MENU);
+		}
 	}
 
 	@Override

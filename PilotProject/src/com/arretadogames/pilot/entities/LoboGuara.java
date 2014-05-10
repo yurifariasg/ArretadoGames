@@ -4,6 +4,7 @@ import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Assets;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -67,6 +68,7 @@ public class LoboGuara extends Player {
 		}
 		
 		sprite.setAnimationState("jump");
+		Assets.playSound(Assets.jumpSound);
 		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
 		Vec2 direction = new Vec2(0,6); // TODO: Add this as a constant
 		direction.normalize();

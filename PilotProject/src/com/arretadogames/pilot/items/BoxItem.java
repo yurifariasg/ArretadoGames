@@ -8,6 +8,7 @@ import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Assets;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
@@ -75,6 +76,7 @@ public class BoxItem extends Entity {
             Player p = (Player) e;
             if (p.getItem() == null) {
                 p.setItem(item);
+                Assets.playSound(Assets.pickupSound, 0.05f);
                 kill();
                 PhysicalWorld.getInstance().addDeadEntity(this);
             }

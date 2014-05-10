@@ -31,6 +31,7 @@ import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.Text;
+import com.arretadogames.pilot.util.Assets;
 import com.arretadogames.pilot.world.GameWorld;
 
 import java.util.ArrayList;
@@ -251,6 +252,7 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 	
 	@Override
 	public void onBackPressed() {
+		Assets.mainMenuMusic.play();
 		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}
 
@@ -295,7 +297,7 @@ public class StageSelectionScreen extends GameScreen implements GameButtonListen
 		unselectAllButtons();
 		
 		isScrolling = false;
-		
+		Assets.playSound(Assets.swipeSound);
 		startAnimationTo(targetIndex);
 		
 		return true;

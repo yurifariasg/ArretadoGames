@@ -25,6 +25,7 @@ import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.ui.ItemWidget;
 import com.arretadogames.pilot.ui.Text;
+import com.arretadogames.pilot.util.Assets;
 
 public class GameStore extends GameScreen implements GameButtonListener, OnGestureListener {
 
@@ -155,6 +156,7 @@ public class GameStore extends GameScreen implements GameButtonListener, OnGestu
 	public void onClick(int buttonId) {
 		switch (buttonId) {
 		case BACK_BT:
+			Assets.mainMenuMusic.play();
 			Game.getInstance().goTo(GameState.MAIN_MENU);
 			break;
 		}
@@ -175,6 +177,7 @@ public class GameStore extends GameScreen implements GameButtonListener, OnGestu
 
 	@Override
 	public void onBackPressed() {
+		Assets.mainMenuMusic.play();
 		Game.getInstance().goTo(GameState.MAIN_MENU);
 	}
 

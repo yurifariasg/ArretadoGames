@@ -15,7 +15,8 @@ import org.json.simple.JSONObject;
 
 public class BoxItem extends Entity{
     
-    public static BoxItemPanel boxItem_panel;
+    public static EntityPanel boxItem_panel;
+    
     
     public BoxItem(int x, int y) {
         super(x, y, DrawMode.BOX_ITEM);

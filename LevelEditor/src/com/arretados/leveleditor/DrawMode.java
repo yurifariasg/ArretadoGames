@@ -16,7 +16,7 @@ public enum DrawMode {
     COIN("coin"), FLUID("water"), BREAKABLE("breakable"), LIANA("liana"),
     SPIKE("spike"), HOLE("hole"),
     TREE("tree"), SHRUB("shrub"), GRASS("grass"),
-    BOX_ITEM("boxitem");
+    BOX_ITEM("boxitem"), TREE_LOG("treelog");
 
     private String name;
 

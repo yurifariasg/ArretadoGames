@@ -24,6 +24,8 @@ import com.arretados.leveleditor.entities.Pulley;
 import com.arretados.leveleditor.entities.PulleyPanel;
 import com.arretados.leveleditor.entities.Spike;
 import com.arretados.leveleditor.entities.SpikePanel;
+import com.arretados.leveleditor.entities.TreeLog;
+import com.arretados.leveleditor.entities.TreeLogPanel;
 import com.arretados.leveleditor.entities.layer.Grass;
 import com.arretados.leveleditor.entities.layer.GrassPanel;
 import com.arretados.leveleditor.entities.layer.Shrub;
@@ -97,6 +99,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         OneWayWall.onewaywall_panel = new OneWayWallPanel(this);
         Pulley.pulley_panel = new PulleyPanel(this);
         Tree.tree_panel = new TreePanel(this);
+        TreeLog.treelog_panel = new TreeLogPanel(this);
         Grass.grass_panel = new GrassPanel(this);
         Shrub.shrub_panel = new ShrubPanel(this);
         Spike.spike_panel = new SpikePanel(this);
@@ -268,7 +271,7 @@ public class LevelEditorView extends FrameView implements ItemPropertyChangedLis
         jTextHeigthValue.setText(resourceMap.getString("jTextHeigthValue.text")); // NOI18N
         jTextHeigthValue.setName("jTextHeigthValue"); // NOI18N
 
-        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.GRASS, DrawMode.SHRUB, DrawMode.SPIKE, DrawMode.HOLE, DrawMode.BOX_ITEM}));
+        itemComboBox.setModel(new DefaultComboBoxModel(new DrawMode[] {DrawMode.BOX, DrawMode.BREAKABLE, DrawMode.COIN, DrawMode.FLAG, DrawMode.FLUID, DrawMode.LIANA, DrawMode.ONEWAY_WALL, DrawMode.PLAYER, DrawMode.PULLEY, DrawMode.TREE, DrawMode.TREE_LOG,DrawMode.GRASS, DrawMode.SHRUB, DrawMode.SPIKE, DrawMode.HOLE,DrawMode.BOX_ITEM}));
         itemComboBox.setName("itemComboBox"); // NOI18N
         itemComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -549,6 +552,9 @@ private void itemComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-F
         break;
         case TREE:
             itemPanel.add(Tree.tree_panel);
+        break;
+        case TREE_LOG:
+            itemPanel.add(TreeLog.treelog_panel);
         break;
         case GRASS:
             itemPanel.add(Grass.grass_panel);
