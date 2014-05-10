@@ -1,13 +1,5 @@
 package com.arretadogames.pilot.render.opengl;
 
-import java.nio.IntBuffer;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import javax.microedition.khronos.opengles.GL10;
-
-import org.jbox2d.common.Vec2;
-
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -26,6 +18,13 @@ import com.arretadogames.pilot.loading.ImageLoader;
 import com.arretadogames.pilot.loading.LoadableGLObject;
 import com.arretadogames.pilot.loading.LoadableType;
 import com.arretadogames.pilot.render.PhysicsRect;
+
+import org.jbox2d.common.Vec2;
+
+import java.nio.IntBuffer;
+import java.util.HashMap;
+
+import javax.microedition.khronos.opengles.GL10;
 
 public class GLCanvas {
 
@@ -225,6 +224,30 @@ public class GLCanvas {
 				dstRect.right, dstRect.bottom,
 				textures.get(imageId));
 	}
+	
+	public void drawBitmap(int imageId, RectF dstRect, float alpha) {
+        if (textures.get(imageId) == null) {
+            Log.w("GLCanvas", "Texture not loaded " +
+                    MainActivity.getContext().getResources().getResourceEntryName(imageId));
+            if (GameSettings.LAZY_LOAD_ENABLED)
+                loadImage(imageId);
+        }
+        
+        if (alpha >= 0 && alpha <= 255) {
+            GLES11.glColor4f(1f, 1f, 1f, alpha / 255f);
+        }
+        
+        GLTexture img = textures.get(imageId);
+        GLTexturedRect.draw(gl,
+                0, 0, img.getTextureWidth(), img.getTextureHeight(),
+                dstRect.left, dstRect.top,
+                dstRect.right, dstRect.bottom,
+                textures.get(imageId));
+        
+        if (alpha >= 0 && alpha <= 255) {
+            GLES11.glColor4f(1f, 1f, 1f, 1f);
+        }
+    }
 
 	public void drawColorRect(int color, PhysicsRect physicsRect) {
 		GLRect.draw(gl,

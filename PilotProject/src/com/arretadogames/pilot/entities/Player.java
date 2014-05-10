@@ -83,10 +83,14 @@ public abstract class Player extends Entity implements Steppable{
 	
 	public void setMaskAndCategoryBits() {
         Filter filter = new Filter();
-        filter.categoryBits = categoryBits ;
+        filter.categoryBits = categoryBits;
         filter.maskBits = maskBits;
-        bodyFixture.setFilterData(filter);
-        footFixture.setFilterData(filter);
+        
+        Fixture f = body.getFixtureList();
+        while (f != null) {
+            f.setFilterData(filter);
+            f = f.getNext();
+        }
 	}
 	
 	public boolean isEnabled() {
@@ -119,32 +123,35 @@ public abstract class Player extends Entity implements Steppable{
     }
 	
 	public void stun(float stunDuration) {
-	    this.stunDuration = stunDuration;
-	    
-	    EffectDescriptor descriptor = new EffectDescriptor();
-	    descriptor.position = body.getPosition();
-	    descriptor.repeat = true;
-	    descriptor.type = "stun";
-	    descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
-	    descriptor.position.y += physRect.height() / 2;
-	    descriptor.duration = stunDuration;
-	    
-	    EffectManager.getInstance().addEffect(descriptor);
-	    
+	    if (!isStunned()) {
+    	    this.stunDuration = stunDuration;
+    	    
+    	    EffectDescriptor descriptor = new EffectDescriptor();
+    	    descriptor.position = body.getPosition();
+    	    descriptor.repeat = true;
+    	    descriptor.type = "stun";
+    	    descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
+    	    descriptor.position.y += physRect.height() / 2;
+    	    descriptor.duration = stunDuration;
+    	    
+    	    EffectManager.getInstance().addEffect(descriptor);
+	    }
 	}
 	
 	public void paralyze(float duration) {
-	    this.paralysisDuration = duration;
-	    
-	    EffectDescriptor descriptor = new EffectDescriptor();
-        descriptor.position = body.getPosition();
-        descriptor.repeat = true;
-        descriptor.type = "stun";
-        descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
-        descriptor.position.y += physRect.height() / 2;
-        descriptor.duration = duration;
-        
-        EffectManager.getInstance().addEffect(descriptor);
+	    if (!isParalyzed()) {
+    	    this.paralysisDuration = duration;
+    	    
+    	    EffectDescriptor descriptor = new EffectDescriptor();
+            descriptor.position = body.getPosition();
+            descriptor.repeat = true;
+            descriptor.type = "stun";
+            descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
+            descriptor.position.y += physRect.height() / 2;
+            descriptor.duration = duration;
+            
+            EffectManager.getInstance().addEffect(descriptor);
+	    }
 	}
 	
 	public boolean isStunned() {

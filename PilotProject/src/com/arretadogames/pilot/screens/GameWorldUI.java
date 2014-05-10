@@ -5,22 +5,24 @@ import android.opengl.GLES11;
 import android.view.MotionEvent;
 
 import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.entities.CollisionFlag;
 import com.arretadogames.pilot.entities.Player;
 import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.world.GameWorld;
-
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Fixture;
-
-import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
 public class GameWorldUI extends GameScreen {
+    
+    public static final int BT_PLAYER_1_JUMP = 1;
+    public static final int BT_PLAYER_1_ACT = 2;
+    public static final int BT_PLAYER_1_ITEM = 3;
+    public static final int BT_PLAYER_2_JUMP = 4;
+    public static final int BT_PLAYER_2_ACT = 5;
+    public static final int BT_PLAYER_2_ITEM = 6;
 
     private final float COOLDOWN_IMAGE_SIZE = getDimension(R.dimen.cooldown_image_size);
 	private final int INIT_OF_STATUS_INTERVAL = 270;
@@ -55,22 +57,6 @@ public class GameWorldUI extends GameScreen {
         PLAYER_2_EFFECT_ACTIVE_SIZE.inset(-30, -30); // Move 50 px outwards
     }
     
-    private final float HALF_SCREEN_WIDTH = getDimension(R.dimen.screen_width) / 2;
-    private final float HALF_SCREEN_HEIGHT = getDimension(R.dimen.screen_height) / 2;
-
-    private static final float countdownSize = 200;
-    
-    private final RectF COUNTDOWN_RECT = new RectF(
-            HALF_SCREEN_WIDTH - countdownSize / 2, HALF_SCREEN_HEIGHT - countdownSize / 2,
-            HALF_SCREEN_WIDTH + countdownSize / 2, HALF_SCREEN_HEIGHT + countdownSize / 2);
-    
-    // Impulse it gives to the player that wins the drag
-    private static final Vec2 START_RACE_IMPULSE = new Vec2(4, 0);
-    // Force that pulls the players before the race begins
-    private static final float FORCE = 40.0f;
-    // The initial x offset
-    private static final float INITIAL_POS_X_OFFSET = -42.0f;
-
 	private Player p1;
 	private Player p2;
 	private GameWorld gWorld;
@@ -78,20 +64,12 @@ public class GameWorldUI extends GameScreen {
 	private AnimationSwitcher itemActiveAnim;
 	private AnimationSwitcher itemActiveAnim2;
 	
-	private boolean activateItemP1;
-	private boolean activateItemP2;
-
-	// This countdown is not the same as the images (3 here does not mean 3 in the image - check render)
-	private float countDownTimer;
-	private boolean raceStarted;
-	private boolean arePlayersCollliding;
-	
-	private boolean activateInput;
-    
-    private Vec2 impulseP1;
-    private Vec2 impulseBackP1;
-    private Vec2 impulseP2;
-    private Vec2 impulseBackP2;
+    private GameButtonListener p1JumpListener;
+    private GameButtonListener p1ActListener;
+    private GameButtonListener p1ItemListener;
+    private GameButtonListener p2JumpListener;
+    private GameButtonListener p2ActListener;
+    private GameButtonListener p2ItemListener;
     
 	private float totalDistance = Float.MIN_VALUE;
 
@@ -103,111 +81,26 @@ public class GameWorldUI extends GameScreen {
 
 		itemActiveAnim = AnimationManager.getInstance().getSprite("Spinner");
 		itemActiveAnim2 = AnimationManager.getInstance().getSprite("Spinner");
-		
-		activateItemP1 = false;
-		activateItemP2 = false;
-		
-		resetCountdown();
-		
-		impulseP1 = new Vec2(1,0);
-		impulseP1.normalize();
-		impulseP1.mul(FORCE * p1.body.getMass());
-
-        impulseP2 = new Vec2(1,0);
-        impulseP2.normalize();
-        impulseP2.mul(FORCE * p2.body.getMass());
-        
-        impulseBackP1 = new Vec2(-1,0);
-        impulseBackP1.normalize();
-        impulseBackP1.mul(p1.body.getMass());
-
-        impulseBackP2 = new Vec2(-1,0);
-        impulseBackP2.normalize();
-        impulseBackP2.mul(p2.body.getMass());
 	}
 	
-	public void resetCountdown() {
-	    countDownTimer = 5.5f;
-	    p1.setEnabled(false);
-	    p2.setEnabled(false);
-	    raceStarted = false;
-	    
-	    setPlayersCollision(false);
-	    
-        Vec2 offset = new Vec2(INITIAL_POS_X_OFFSET, 0);
-        p1.body.setTransform(p1.body.getPosition().add(offset), 0);
-        p2.body.setTransform(p1.body.getPosition(), 0);
-        
-        activateInput = false;
-        
-        // Give P1 an bigger impulse
-        p1.body.applyLinearImpulse(new Vec2(5.0f, 0).mul(p1.body.getMass()), p1.body.getPosition(), true);
-        p2.body.applyLinearImpulse(new Vec2(4.5f, 0).mul(p2.body.getMass()), p2.body.getPosition(), true);
-        
+	public void setAllButtonListeners(GameButtonListener listener) {
+	    setP1ButtonListeners(listener);
+	    setP2ButtonListeners(listener);
 	}
 	
-	private void setPlayersCollision(boolean shouldCollide) {
-	    if (shouldCollide) {
-	        Fixture f = p1.body.getFixtureList();
-	        while (f != null) {
-	            f.getFilterData().maskBits = f.getFilterData().maskBits | CollisionFlag.GROUP_PLAYERS.getValue();
-	            
-	            f = f.getNext();
-	        }
-	        
-	        f = p2.body.getFixtureList();
-	        
-	        while (f != null) {
-	            f.getFilterData().maskBits = f.getFilterData().maskBits | CollisionFlag.GROUP_PLAYERS.getValue();
-	            
-	            f = f.getNext();
-	        }
-	    } else {
-	        Fixture f = p1.body.getFixtureList();
-	        while (f != null) {
-	            f.getFilterData().maskBits = f.getFilterData().maskBits & ~CollisionFlag.GROUP_PLAYERS.getValue();
-	            
-	            f = f.getNext();
-	        }
-	        
-	        f = p2.body.getFixtureList();
-	        
-	        while (f != null) {
-	            f.getFilterData().maskBits = f.getFilterData().maskBits & ~CollisionFlag.GROUP_PLAYERS.getValue();
-	            
-	            f = f.getNext();
-	        }
-	    }
-	    
-	    arePlayersCollliding = shouldCollide;
-	}
-	
-	private void impulsePlayer(PlayerNumber impulseWinPlayer) {
-	    raceStarted = true;
-	    
-	    if (impulseWinPlayer == null) {
-	        // Random..
-	        int randomizedNumber = new Random().nextInt(10);
-	        if (randomizedNumber % 2 == 0) {
-	            impulseWinPlayer = PlayerNumber.ONE;
-	        } else {
-	            impulseWinPlayer = PlayerNumber.TWO;
-	        }
-	    }
-	    
-	    if (impulseWinPlayer.equals(PlayerNumber.ONE)) {
-	        p1.body.applyLinearImpulse(START_RACE_IMPULSE.mul(p1.body.getMass()), p1.body.getPosition(), true);
-	    } else if (impulseWinPlayer.equals(PlayerNumber.TWO)) {
-	        p2.body.applyLinearImpulse(START_RACE_IMPULSE.mul(p2.body.getMass()), p2.body.getPosition(), true);
-	    }
-	}
-	
-	private void enablePlayers() {
-	    p1.setEnabled(true);
-        p2.setEnabled(true);
-        setPlayersCollision(true);
+	// We may need to split this for each listener... For now, we don't need this
+	public void setP1ButtonListeners(GameButtonListener listener) {
+        p1JumpListener = listener;
+        p1ActListener = listener;
+        p1ItemListener = listener;
 	}
 
+	public void setP2ButtonListeners(GameButtonListener listener) {
+        p2JumpListener = listener;
+        p2ActListener = listener;
+        p2ItemListener = listener;
+    }
+	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 
@@ -255,58 +148,11 @@ public class GameWorldUI extends GameScreen {
 		}
         
         canvas.drawBitmap(R.drawable.item_frame, PLAYER_2_ITEM_FRAME_SIZE);
-        
-        
-        
-        if (countDownTimer > 0) { // Draw numbers if we have a countdown
-            if (countDownTimer > 4) {
-                canvas.drawBitmap(R.drawable.countdown_3, COUNTDOWN_RECT);
-            } else if (countDownTimer > 3) {
-                canvas.drawBitmap(R.drawable.countdown_2, COUNTDOWN_RECT);
-            } else if (countDownTimer > 2) {
-                canvas.drawBitmap(R.drawable.countdown_1, COUNTDOWN_RECT);
-            } else if (countDownTimer > 1) {
-                canvas.drawBitmap(R.drawable.countdown_go, COUNTDOWN_RECT);
-            }
-        }
 		
 	}
 
 	@Override
 	public void step(float timeElapsed) {
-	    
-        if (activateItemP1 && p1.getItem() != null) {
-            p1.getItem().activate(p1, gWorld);
-        }
-        if (activateItemP2 && p2.getItem() != null) {
-            p2.getItem().activate(p2, gWorld);
-        }
-        
-        activateItemP1 = activateItemP2 = false;
-        
-        
-        if (countDownTimer >= 2) {
-            
-            if (p1.getPosX() - 0.1f > p2.getPosX()) {
-                p2.body.applyForceToCenter(impulseP2);
-                p1.body.applyForceToCenter(impulseBackP1);
-            } else if (p2.getPosX() - 0.1f > p1.getPosX()) {
-                p1.body.applyForceToCenter(impulseP1);
-                p2.body.applyForceToCenter(impulseBackP2);
-            }
-            
-        } else if (countDownTimer < 2 && !raceStarted && !activateInput) { // At 2s mark, activate input
-            activateInput = true;
-        } else if (countDownTimer < 1.5 && !raceStarted) { // If players havent pressed, impulse someone...
-            impulsePlayer(null);
-        } else if (countDownTimer < 1.1 && !arePlayersCollliding) {
-            // If the race hasnt started and it is 1.1 mark, then enable players anyway
-            enablePlayers();
-        }
-        
-        if (countDownTimer > 0) { // Decrements countdown only until it reaches a negative... (we dont need it anymore)
-            countDownTimer -= timeElapsed;
-        }
 	}
 
 	private int calculateMapCompletion(float pos) {
@@ -338,47 +184,43 @@ public class GameWorldUI extends GameScreen {
 	}
 
 	private void pressButtons(float x, float y, boolean pressed) {
-	    if (!activateInput) { // Only if input is active
-	        return;
-	    }
-	    
 		if (y > 340) {
 			if (x < 230) {
-			    if (!raceStarted) { // If race has not started, then try to get impulse!
-			        impulsePlayer(PlayerNumber.ONE);
-			    } else if (x < 105) {
+			    if (x < 105) {
 					// Jump 1
-					Player p = gWorld.getPlayers().get(PlayerNumber.ONE);
-					if(p!=null) p.setJumping(pressed);
+					if (p1JumpListener != null) {
+					    p1JumpListener.onClick(BT_PLAYER_1_JUMP);
+					}
 				} else {
 					// Act 1
-					Player p = gWorld.getPlayers().get(PlayerNumber.ONE);
-					if(p!=null) p.setAct(pressed);
+					if (p1ActListener != null) {
+					    p1ActListener.onClick(BT_PLAYER_1_ACT);
+					}
 				}
 			}
 
 			if (x > 600) {
-			    if (!raceStarted) { // If race has not started, then try to get impulse!
-                    impulsePlayer(PlayerNumber.TWO);
-                } else if (x < 710) {
+                 if (x < 710) {
 					// Jump 2
-					Player p = gWorld.getPlayers().get(PlayerNumber.TWO);
-					if(p!=null) p.setJumping(pressed);
+					if (p2JumpListener != null) {
+					    p2JumpListener.onClick(BT_PLAYER_2_JUMP);
+					}
 				} else {
 					// Act 2
-					Player p = gWorld.getPlayers().get(PlayerNumber.TWO);
-					if(p!=null) p.setAct(pressed);
+                    if (p2ActListener != null) {
+                        p2ActListener.onClick(BT_PLAYER_2_ACT);
+                    }
 				}
 			}
 		}
 		
 		if (PLAYER_1_ITEM_FRAME_SIZE.contains(x, y)) {
-		    if (p1.getItem() != null) {
-		        activateItemP1 = true;
+		    if (p1ItemListener != null) {
+		        p1ItemListener.onClick(BT_PLAYER_1_ITEM);
 		    }
 		} else if (PLAYER_2_ITEM_FRAME_SIZE.contains(x, y)) {
-		    if (p2.getItem() != null) {
-		        activateItemP2 = true;
+		    if (p2ItemListener != null) {
+		        p2ItemListener.onClick(BT_PLAYER_2_ITEM);
 		    }
 		}
 	}

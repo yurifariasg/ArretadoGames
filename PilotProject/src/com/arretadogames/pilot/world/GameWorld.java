@@ -27,6 +27,7 @@ import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
+import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
@@ -41,7 +42,7 @@ import java.util.List;
 /**
  * GameWorld class represents the World in our Game
  */
-public class GameWorld extends GameScreen {
+public class GameWorld extends GameScreen implements GameButtonListener {
 	private int backgroundId;
 	
 	private GameWorldUI ui;
@@ -60,6 +61,7 @@ public class GameWorld extends GameScreen {
 	private LevelDescriptor level;
 
 	private Weather weather;
+	private RaceStartManager raceStartManager;
 	
 	public GameWorld() {
 		backgroundId = R.drawable.mountains_repeatable;
@@ -96,10 +98,11 @@ public class GameWorld extends GameScreen {
 			return;
 		
 		AnimationManager.getInstance().loadXml();
-		load(level); 
+		load(level);
 		isInitialized = true;
 		setPlayersAsCurrentEntitiesToWatch();
 		ui = new GameWorldUI(this);
+        raceStartManager = new RaceStartManager(this, ui);
 	}
 	
 	private void load(LevelDescriptor ld) {
@@ -175,7 +178,7 @@ public class GameWorld extends GameScreen {
 		Profiler.initTick(ProfileType.RENDER);
 		
 		ui.render(canvas, timeElapsed);
-		
+		raceStartManager.render(canvas, timeElapsed);
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "UI Render Time");
 		Profiler.initTick(ProfileType.RENDER);
@@ -199,6 +202,7 @@ public class GameWorld extends GameScreen {
 				p.step(timeElapsed);
 			gameCamera.step(timeElapsed);
 			ui.step(timeElapsed);
+			raceStartManager.step(timeElapsed);
 			pWorld.step(timeElapsed);
 		}
 		removeDeadEntities();
@@ -254,7 +258,6 @@ public class GameWorld extends GameScreen {
 		for (PlayerNumber n : players.keySet() ){
 			toWatch.put(n.getValue(), players.get(n));
 		}
-//		gameCamera.setEntitiesToWatch(toWatch);
 	}
 
 	public Collection<Entity> getEntities(){
@@ -284,11 +287,43 @@ public class GameWorld extends GameScreen {
 		this.selectedItems = selectedItems;
 	}
 
-	public void destroyResources() {
-		// TODO Auto-generated method stub
-	}
-	
 	public float getFlagPos(){
 		return flagPos;
 	}
+
+    @Override
+    public void onClick(int buttonId) {
+        Player p;
+        if (buttonId == GameWorldUI.BT_PLAYER_1_ACT) {
+            p = getPlayers().get(PlayerNumber.ONE);
+            if (p != null) {
+                p.setAct(true);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_1_JUMP) {
+            p = getPlayers().get(PlayerNumber.ONE);
+            if (p != null) {
+                p.setJumping(true);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_1_ITEM) {
+            p = getPlayers().get(PlayerNumber.ONE);
+            if (p != null && p.getItem() != null) {
+                p.getItem().activate(p, this);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_2_ACT) {
+            p = getPlayers().get(PlayerNumber.TWO);
+            if (p != null) {
+                p.setAct(true);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_2_JUMP) {
+            p = getPlayers().get(PlayerNumber.TWO);
+            if (p != null) {
+                p.setJumping(true);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_2_ITEM) {
+            p = getPlayers().get(PlayerNumber.TWO);
+            if (p != null && p.getItem() != null) {
+                p.getItem().activate(p, this);
+            }
+        }
+    }
 }
