@@ -22,7 +22,6 @@ import java.text.NumberFormat;
 public class ItemWidget implements Renderable, GameButtonListener {
 
 	private static final int BUY_BT = 1;
-
 	private float x, y;
 	private int id;
 	private RectF itemRenderingRect;
@@ -30,9 +29,7 @@ public class ItemWidget implements Renderable, GameButtonListener {
 	private Text titleLabel;
 	private Text descriptionLabel;
 	private Text priceLabel;
-
 	private TextImageButton buttonBuy;
-
 	private StoreItemDescriptor itemDescriptor;
 
 	public ItemWidget(int id, float x, float y, float width, float height, StoreItemDescriptor item){
@@ -69,6 +66,9 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		if (this.x != x) {
 			itemRenderingRect = new RectF(x, y, x + itemRenderingRect.width(), y + itemRenderingRect.height());
 			this.x = x;
+	        seedRenderingRect.right = x + 455 + seedRenderingRect.width();
+	        seedRenderingRect.left = x + 455;
+            buttonBuy.setX(x + 447);
 			createItemInfoLabels();
 		} else {
 			this.x = x;
@@ -79,6 +79,9 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		if (this.y != y) {
 			itemRenderingRect = new RectF(x, y, x + itemRenderingRect.width(), y + itemRenderingRect.height());
 			this.y = y;
+	        seedRenderingRect.bottom = y + 88 + seedRenderingRect.height();
+	        seedRenderingRect.top = y + 88;
+            buttonBuy.setY(y + 31);
 			createItemInfoLabels();
 		} else {
 			this.y = y;
@@ -92,7 +95,6 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		        itemRenderingRect.left, itemRenderingRect.top,
 		        itemRenderingRect.width(), itemRenderingRect.height(),
 		        0, MainActivity.getContext().getResources().getDimension(R.dimen.store_widget_extra_height));
-		        //itemRenderingRect);
 
 		if (titleLabel == null || descriptionLabel == null || priceLabel == null){
 			createItemInfoLabels();
@@ -100,9 +102,7 @@ public class ItemWidget implements Renderable, GameButtonListener {
 
 		titleLabel.render(canvas, timeElapsed);
 		descriptionLabel.render(canvas, timeElapsed);
-//		descriptionLabel2.render(canvas, timeElapsed);
 
-		// TODO @yuri: avoid this calc every frame
 		canvas.drawBitmap(R.drawable.item_bg, x + 25, y + 22,
                 MainActivity.getContext().getResources().getDimension(R.dimen.item_icon_bg_size),
                 MainActivity.getContext().getResources().getDimension(R.dimen.item_icon_bg_size));
@@ -112,20 +112,15 @@ public class ItemWidget implements Renderable, GameButtonListener {
 		
 		
 		if (!itemDescriptor.doesPlayerHasItem()) {
-            // TODO @yuri: avoid this calc every frame
-            seedRenderingRect.right = x + 455 + seedRenderingRect.width();
-            seedRenderingRect.left = x + 455;
-            seedRenderingRect.bottom = y + 88 + seedRenderingRect.height();
-            seedRenderingRect.top = y + 88;
-    
     		if (itemDescriptor.getType() != StoreItemType.REAL)
     			canvas.drawBitmap(R.drawable.seed1, seedRenderingRect);
     		priceLabel.render(canvas, timeElapsed);
-    
-    		// TODO @yuri: avoid this calc every frame
-    		buttonBuy.setX(x + 447);
-    		buttonBuy.setY(y + 31);
     		buttonBuy.render(canvas, timeElapsed);
+		} else {
+		    // We are reusing the size of the icon
+		    canvas.drawBitmap(R.drawable.bought_icon, x + 480, y + 31,
+		            MainActivity.getContext().getResources().getDimension(R.dimen.bought_icon_size),
+	                MainActivity.getContext().getResources().getDimension(R.dimen.bought_icon_size));
 		}
 	}
 
@@ -134,9 +129,6 @@ public class ItemWidget implements Renderable, GameButtonListener {
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.75f, false);
 		descriptionLabel = new Text(x + 141, y + 96, itemDescriptor.getDescription(),
 				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.524f, false);
-//		descriptionLabel2 = new Text(x + 141, y + 110, "all obstacles in your way",
-//				FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STROKED), 0.424f, false);
-
 		if (itemDescriptor.getType() == StoreItemType.REAL) {
 			priceLabel = new Text(x + 500, y + 100, getPrice(((RealStoreItemDescriptor)itemDescriptor).getPrice()),
 					FontLoader.getInstance().getFont(FontTypeFace.TRANSMETALS_STORE), 0.65f, true);
@@ -167,7 +159,7 @@ public class ItemWidget implements Renderable, GameButtonListener {
 					if (AccountManager.get().getAccount1().buyItem(type)) {
 	                    Toast.makeText(MainActivity.getContext(),"Item comprado!", Toast.LENGTH_SHORT).show();
 					} else {
-                        Toast.makeText(MainActivity.getContext(),"Failed to add item to your acc :(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.getContext(),"Failed to add item to your acc", Toast.LENGTH_SHORT).show();
 					}
 				} else {
 					Toast.makeText(MainActivity.getContext(),"Sem sementes suficientes!", Toast.LENGTH_SHORT).show();
@@ -175,7 +167,6 @@ public class ItemWidget implements Renderable, GameButtonListener {
 			}
 			break;
 		}
-
 	}
 
 	public boolean input(InputEventHandler event) {

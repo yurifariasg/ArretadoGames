@@ -2,6 +2,9 @@ package com.arretadogames.pilot.entities;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
+import com.arretadogames.pilot.entities.effects.PostEffectCallback;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.util.Assets;
@@ -10,56 +13,62 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Filter;
 
-import java.util.Date;
+public class LoboGuara extends Player implements PostEffectCallback {
 
-public class LoboGuara extends Player {
-
-	Date lastAct;
-	private float size;
-	private float timeForNextAct = 0f;
+	private static final Vec2 BODY_DIMEN = new Vec2(0.4f, 0.8f);
 	private int doubleJump;
 	
 	public LoboGuara(float x, float y, PlayerNumber number) {
-		super(x, y, number);
+		super(x, y, number,
+		        GameSettings.LOBO_TIME_WAITING_FOR_ACT,
+		        GameSettings.LOBO_DASH_DURATION);
 		applyConstants();
 		doubleJump = getMaxDoubleJumps();
 		
-		CircleShape shape = new CircleShape();
-		size = 0.5f;
-		shape.setRadius(size);
-		bodyFixture = body.createFixture(shape,  3f);
-		bodyFixture.setFriction(0f);
+		float radius = BODY_DIMEN.x / 2f;
 		
-		Filter filter = new Filter();
-		filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
-		filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
-		bodyFixture.setFilterData(filter);
+		CircleShape shape = new CircleShape();
+		shape.setRadius(radius);
+		shape.m_p.set(0f, (- BODY_DIMEN.y / 2f) + radius);
+		footFixture = body.createFixture(shape, 0.1f);
+		footFixture.setFriction(0f);
+
+		// Head
+		shape = new CircleShape();
+		shape.setRadius(radius);
+		shape.m_p.set(0f, (BODY_DIMEN.y / 2f) - radius);
+		body.createFixture(shape, 0.1f); // HEAD
+		
+
+		PolygonShape bodyShape = new PolygonShape();
+		bodyShape.setAsBox(BODY_DIMEN.x / 2f, BODY_DIMEN.y / 2f - radius);
+		bodyFixture = body.createFixture(bodyShape,  2.8f);
+		bodyFixture.setFriction(0f);
 		
 		body.setType(BodyType.DYNAMIC);
 		contJump = 0;
 		body.setFixedRotation(true);
-		PolygonShape footShape = new PolygonShape();
-		footShape.setAsBox(0.5f, 0.1f, new Vec2(0f,-0.4f), 0f);
-		footFixture = body.createFixture(footShape, 0f);
-		footFixture.setSensor(true);
-		footFixture.setFilterData(filter);
+
+        categoryBits = CollisionFlag.GROUP_PLAYERS.getValue() ;
+        maskBits = CollisionFlag.GROUP_COMMON_ENTITIES.getValue() | CollisionFlag.GROUP_GROUND.getValue()
+                | CollisionFlag.GROUP_PLAYERS.getValue();
+        
+        setMaskAndCategoryBits();
 		
-		physRect = new PhysicsRect(1.6f, 1.8f); // 1.4, 1.6
+		physRect = new PhysicsRect(1.8f, 1.8f);
 	}
 	
-	private void applyConstants() {
+	public void applyConstants() {
 		setMaxJumpVelocity(GameSettings.LOBO_MAX_JUMP_VELOCITY);
 		setMaxRunVelocity(GameSettings.LOBO_MAX_RUN_VELOCITY);
 		setJumpAceleration(GameSettings.LOBO_JUMP_ACELERATION);
-		setRunAceleration(GameSettings.LOBO_RUN_ACELERATION);
-		setTimeWaitingForAct(GameSettings.LOBO_TIME_WAITING_FOR_ACT);
+		setRunAceleration(GameSettings.LOBO_RUN_ACELERATION, GameSettings.ARARA_INITIAL_RUN_ACELERATION);
 		setMaxDoubleJumps(0);
 	}
 
 	public void jump() {
-		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
+		if (hasFinished() || isDashActive() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
 			return;
 		if(bodiesContact.size() <= 0 && doubleJump > 0){
 			doubleJump--;
@@ -70,7 +79,7 @@ public class LoboGuara extends Player {
 		sprite.setAnimationState("jump");
 		Assets.playSound(Assets.jumpSound);
 		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
-		Vec2 direction = new Vec2(0,6); // TODO: Add this as a constant
+		Vec2 direction = new Vec2(2,6); // TODO: Add this as constant
 		direction.normalize();
 		direction.mulLocal(impulseX);
 		body.applyLinearImpulse(direction, body.getWorldCenter(), true);
@@ -79,83 +88,54 @@ public class LoboGuara extends Player {
 	}
 	
 	public void run(){
-		if(body.getLinearVelocity().x < 0.5){ 
-			body.applyLinearImpulse(new Vec2(0.5f * body.getMass(),0f), body.getWorldCenter(), true);
-		}
-		if(body.getLinearVelocity().length() > 8){
-			Vec2 vel = body.getLinearVelocity().clone();
-			vel.normalize();
-			body.setLinearVelocity(vel.mul(8));
-		}
-		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < getMaxRunVelocity()){
-			float force = (getRunAceleration()) * body.getMass();
-			Vec2 direction = new Vec2(1,0);
-			direction.normalize();
-			direction.mulLocal(force);
-			body.applyForceToCenter(direction);
-		}
-		
-		if (body.getLinearVelocity().x > 5) {
-		    sprite.setAnimationState("run");
-		}
+	    if (!isDashActive()) {
+    		if(body.getLinearVelocity().x < getMaxRunVelocity()){
+    			float force = (getRunAceleration()) * body.getMass();
+    			Vec2 direction = new Vec2(1,0);
+    			direction.normalize();
+    			direction.mulLocal(force);
+    			body.applyForceToCenter(direction);
+    		}
+	    } else {
+	        body.getLinearVelocity().x =
+	                getMaxRunVelocity() * GameSettings.DASH_MAX_VEL_MULTIPLIER;
+	    }
 	}
-
-	public void act() {	
-		if( bodiesContact.size() > 0 && contAct == 0){
-			if( getTimeForNextAct() < 0.00000001 ){
-			setTimeForNextAct(getTimeWaitingForAct());
-			float impulse = (3) * body.getMass();
-			Vec2 direction = new Vec2(1,0);
-			direction.normalize();
-			direction.mulLocal(impulse);
-			body.applyLinearImpulse(direction, body.getWorldCenter(), true);
-			contAct = 50;
-			lastAct = new Date();
-		}
-		}
+	
+	public boolean dash() {	
+        shouldLimitVelocity = false;
+        
+        EffectDescriptor descriptor = new EffectDescriptor();
+        descriptor.pRect = physRect.clone();
+        descriptor.pRect.inset(-0.2f, -0.2f);
+        descriptor.position = body.getPosition();
+        descriptor.duration = GameSettings.LOBO_DASH_DURATION;
+        descriptor.type = "speed_burst";
+        descriptor.xOffset -= 0.65f;
+        descriptor.alpha = 100;
+        descriptor.callback = this;
+        
+        EffectManager.getInstance().addEffect(descriptor);
+        return true;
 	}
 	
 	@Override
-	public int getPercentageLeftToNextAct() {
-		return Math.min((int)((((getTimeWaitingForAct()-getTimeForNextAct())/getTimeWaitingForAct()) * 100) + 0.000000001),100);
-	}
-	
-	
-	
-	@Override
-	public void step(float timeElapsed) {
-		applyConstants();
-		super.step(timeElapsed);
-		setTimeForNextAct(Math.max(0.0f,getTimeForNextAct()-timeElapsed));
-        if (shouldStop() || !shouldAct()) {
-            if (shouldStop()) {
-                stopAction();
-            }
-            return;
-        }
-		if (jumpActive) {
-			jump();
-			jumpActive = false;
-		}
-		if(actActive){
-			act();
-		}
-		if(contJump > 0) contJump--;
-		if(contAct > 0 ) contAct--;
-		run();
+	public void playerStep(float timeElapsed) {
 	}
 	
 	@Override
 	public void playerRender(GLCanvas canvas, float timeElapsed) {
 		canvas.saveState();
 		
-		canvas.translatePhysics(getPosX(), getPosY() + 0.3f);
+        if (body.getLinearVelocity().x > 3.5f) {
+            sprite.setAnimationState("run");
+        }
+		
+		canvas.translatePhysics(getPosX(), getPosY() + 0.39f);
 		canvas.rotate((float) (180 * - getAngle() / Math.PI));
         sprite.render(canvas, physRect, timeElapsed);
         
 		canvas.restoreState();
-		
-		
 	}
 	
 	@Override
@@ -163,11 +143,9 @@ public class LoboGuara extends Player {
 		return R.drawable.lobo_status;
 	}
 
-	public float getTimeForNextAct() {
-		return timeForNextAct;
-	}
-
-	public void setTimeForNextAct(float timeForNextAct) {
-		this.timeForNextAct = timeForNextAct;
-	}
+    @Override
+    public void finished() {
+        body.getLinearVelocity().x *= GameSettings.AFTER_DASH_DAMPING;
+        shouldLimitVelocity = true;
+    }
 }

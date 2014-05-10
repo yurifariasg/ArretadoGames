@@ -26,8 +26,12 @@ public class EffectManager {
 		while (it.hasNext()) {
 			Effect e = it.next();
 			if (e.isFinished()) {
+			    if (e.getCallback() != null) {
+			        e.getCallback().finished();
+			    }
 				it.remove();
 				inactiveEffects.add(e);
+				e.resetProperties();
 			}
 		}
 	}
@@ -56,4 +60,13 @@ public class EffectManager {
 		effect.setDescriptor(effectDescriptor);
 		activeEffects.add(effect);
 	}
+
+    public void reset() {
+        Iterator<Effect> it = activeEffects.iterator();
+        while (it.hasNext()) {
+            Effect e = it.next();
+            it.remove();
+            inactiveEffects.add(e);
+        }
+    }
 }

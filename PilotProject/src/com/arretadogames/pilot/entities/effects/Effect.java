@@ -20,16 +20,19 @@ public class Effect implements Renderable, LayerEntity {
     private AnimationSwitcher animation;
     private float totalTimeElapsed;
     private float alpha;
-    public Vec2 position;
-    public int color = 0;
-    public String type;
-    public RectF rect;
-    public PhysicsRect pRect;
-    public int layerPosition = 0;
-    public float xOffset, yOffset;
-    public float duration;
-    public float animationVelocityMultiplier = 1;
-    public boolean repeat = true;
+    private Vec2 position;
+    private float angle;
+    private int color = 0;
+//    private String type;
+    private RectF rect;
+    private PhysicsRect pRect;
+    private int layerPosition = 0;
+    private float xOffset, yOffset;
+    private float duration;
+    private float animationVelocityMultiplier = 1;
+    private boolean repeat = true;
+    private PostEffectCallback callback;
+    
     
     protected Effect() {
     }
@@ -45,16 +48,28 @@ public class Effect implements Renderable, LayerEntity {
         rect = descriptor.rect;
         color = descriptor.color;
         position = descriptor.position;
+        callback = descriptor.callback;
+        angle = descriptor.angle;
         
         animation = AnimationManager.getInstance().getSprite(descriptor.type);
         totalTimeElapsed = 0;
         animation.setRepeatableForAnimations(repeat);
         animation.setAnimationRateMultiplier(animationVelocityMultiplier);
-        alpha = 1;
+        alpha = descriptor.alpha;
         
         if (duration <= 0) {
             duration = animation.getDuration();
         }
+    }
+    
+    public void resetProperties() {
+        /* Release Memory */
+        animation = null;
+        callback = null;
+        position = null;
+        rect = null;
+        pRect = null;
+        angle = 0;
     }
 
     public void setAnimation(AnimationSwitcher animation) {
@@ -86,9 +101,11 @@ public class Effect implements Renderable, LayerEntity {
             
             if (rect == null) {
                 canvas.translatePhysics(position.x + xOffset, position.y + yOffset);
+                canvas.rotate(angle);
                 animation.render(canvas, pRect, timeElapsed);
             } else {
                 canvas.translate(position.x + xOffset, position.y + yOffset);
+                canvas.rotate(angle);
                 animation.render(canvas, rect, timeElapsed);
             }
             
@@ -107,6 +124,10 @@ public class Effect implements Renderable, LayerEntity {
             return true;
         }
         return false;
+    }
+    
+    public PostEffectCallback getCallback() {
+        return callback;
     }
     
 }

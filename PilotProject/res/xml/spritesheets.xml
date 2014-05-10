@@ -3,20 +3,20 @@
 	<Sheet resId="bird" >
 	     <AnimationSwitcher name="AraraAzul" >
 	         <Animation name="default"> 
-	             <Frame x="2" y="2" w="256" h="256" t="0.5" />
-	             <Frame x="260" y="2" w="256" h="256" t="0.5" />
-	             <Frame x="518" y="2" w="256" h="256" t="0.5" />
-	             <Frame x="2" y="260" w="256" h="256" t="0.5" />
-	             <Frame x="260" y="260" w="256" h="256" t="0.5" />
-	             <Frame x="518" y="260" w="256" h="256" t="0.5" />
+	             <Frame x="2" y="2" w="256" h="256" t="0.3" />
+	             <Frame x="260" y="2" w="256" h="256" t="0.3" />
+	             <Frame x="518" y="2" w="256" h="256" t="0.3" />
+	             <Frame x="2" y="260" w="256" h="256" t="0.3" />
+	             <Frame x="260" y="260" w="256" h="256" t="0.3" />
+	             <Frame x="518" y="260" w="256" h="256" t="0.3" />
 	          </Animation>
              <Animation name="jump"> 
-                 <Frame x="2" y="2" w="256" h="256" t="0.5" />
-                 <Frame x="260" y="2" w="256" h="256" t="0.5" />
-                 <Frame x="518" y="2" w="256" h="256" t="0.5" />
-                 <Frame x="2" y="260" w="256" h="256" t="0.5" />
-                 <Frame x="260" y="260" w="256" h="256" t="0.5" />
-                 <Frame x="518" y="260" w="256" h="256" t="0.5" />
+                 <Frame x="2" y="2" w="256" h="256" t="0.3" />
+                 <Frame x="260" y="2" w="256" h="256" t="0.3" />
+                 <Frame x="518" y="2" w="256" h="256" t="0.3" />
+                 <Frame x="2" y="260" w="256" h="256" t="0.3" />
+                 <Frame x="260" y="260" w="256" h="256" t="0.3" />
+                 <Frame x="518" y="260" w="256" h="256" t="0.3" />
               </Animation>
 	     </AnimationSwitcher>
 	</Sheet>
@@ -37,10 +37,10 @@
                  <Frame n="walk -2.png" x="129" y="256" w="125" h="125" t="0.1" />
              </Animation>
              <Animation name="run">
-                 <Frame n="run 1.png" x="383" y="129" w="125" h="125" t="0.15" />
-                 <Frame n="run 2.png" x="2" y="129" w="125" h="125" t="0.15" />
-                 <Frame n="run 3.png" x="129" y="129" w="125" h="125" t="0.15" />
-                 <Frame n="run 4.png" x="256" y="129" w="125" h="125" t="0.15" />
+                 <Frame n="run 1.png" x="383" y="129" w="125" h="125" t="0.3" />
+                 <Frame n="run 2.png" x="2" y="129" w="125" h="125" t="0.3" />
+                 <Frame n="run 3.png" x="129" y="129" w="125" h="125" t="0.3" />
+                 <Frame n="run 4.png" x="256" y="129" w="125" h="125" t="0.3" />
              </Animation>
 	         <Animation name="jump">
                  <Frame n="jump1.png" x="2" y="2" w="125" h="125" t="0.1" />
@@ -239,6 +239,13 @@
                 <Frame x="410" y="615" w="205" h="205" t="0.05" />
                 <Frame x="615" y="615" w="205" h="205" t="0.05" />
                 <Frame x="820" y="615" w="205" h="205" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="speed_effect">
+        <AnimationSwitcher name="speed_burst">
+            <Animation name="default">
+                <Frame x="0" y="0" w="512" h="512" t="0.0" />
             </Animation>
         </AnimationSwitcher>
     </Sheet>

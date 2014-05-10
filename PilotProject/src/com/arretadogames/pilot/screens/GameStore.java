@@ -78,8 +78,8 @@ public class GameStore extends GameScreen implements GameButtonListener, OnGestu
 				702, 388,
                 getDimension(R.dimen.main_menu_button_size),
                 getDimension(R.dimen.main_menu_button_size), this,
-				R.drawable.bt_back_selected,
-				R.drawable.bt_back_unselected);
+				R.drawable.back_bt, //bt_back_selected,
+				R.drawable.back_bt);// bt_back_unselected);
 		
 		mDetector = new GestureDetectorCompat(MainActivity.getContext(), this);
 	}

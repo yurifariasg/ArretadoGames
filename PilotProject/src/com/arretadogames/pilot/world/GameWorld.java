@@ -1,5 +1,11 @@
 package com.arretadogames.pilot.world;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import android.graphics.Color;
 import android.util.SparseArray;
 
@@ -22,26 +28,21 @@ import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.screens.EndScreen;
+import com.arretadogames.pilot.screens.FinishRaceScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
+import com.arretadogames.pilot.ui.GameHUDButton;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
 import com.arretadogames.pilot.weathers.Weather;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * GameWorld class represents the World in our Game
  */
-public class GameWorld extends GameScreen {
+public class GameWorld extends GameScreen implements GameHUDButton {
 	private int backgroundId;
 	
 	private GameWorldUI ui;
@@ -53,13 +54,22 @@ public class GameWorld extends GameScreen {
 	private HashMap<PlayerNumber, List<PlayableItem>> selectedItems;
 	private GameCamera gameCamera;
 	private PauseScreen pauseScreen;
+	private FinishRaceScreen finishRaceScreen;
 	private float flagPos;
 	private float totalElapsedSeconds;
+
+//	At this race
+	private int p1LevelScore = 540;
+	private int p2LevelScore = 680;
 	
 	private boolean isInitialized;
 	private LevelDescriptor level;
+	
+	private boolean activatePlayer1Item;
+	private boolean activatePlayer2Item;
 
 	private Weather weather;
+	private RaceStartManager raceStartManager;
 	
 	public GameWorld() {
 		backgroundId = R.drawable.mountains_repeatable;
@@ -73,11 +83,13 @@ public class GameWorld extends GameScreen {
 	public void onLoading() {
 		gameCamera = new GameCamera(this, backgroundId);
 		pauseScreen = new PauseScreen();
+		finishRaceScreen = new FinishRaceScreen();
 		initialize();
 	}
 	
 	@Override
 	public void onUnloading() {
+		System.out.println("Unloading");
 		totalElapsedSeconds = 0;
 		isInitialized = false;
 		pWorld.removeAll();
@@ -95,11 +107,15 @@ public class GameWorld extends GameScreen {
 		if (isInitialized || selectedCharacters == null || level == null || selectedItems == null)
 			return;
 		
+		EffectManager.getInstance().reset();
 		AnimationManager.getInstance().loadXml();
-		load(level); 
+		load(level);
 		isInitialized = true;
+        activatePlayer1Item = false;
+        activatePlayer2Item = false;
 		setPlayersAsCurrentEntitiesToWatch();
 		ui = new GameWorldUI(this);
+        raceStartManager = new RaceStartManager(this, ui);
 	}
 	
 	private void load(LevelDescriptor ld) {
@@ -169,19 +185,19 @@ public class GameWorld extends GameScreen {
 			gameCamera.render(canvas, timeElapsed);
 		}
 		
-//		weather.render(canvas, timeElapsed);
-		
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Camera Render Time");
 		Profiler.initTick(ProfileType.RENDER);
 		
-		ui.render(canvas, timeElapsed);
-		
+		if (finishWorld) {
+			finishRaceScreen.render(canvas, timeElapsed);
+		} else {
+			ui.render(canvas, timeElapsed);
+			raceStartManager.render(canvas, timeElapsed);
+			pauseScreen.render(canvas, timeElapsed);
+		}
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "UI Render Time");
 		Profiler.initTick(ProfileType.RENDER);
-		
-		pauseScreen.render(canvas, timeElapsed);
-
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Pause Screen Render Time");
 	}
 	
@@ -191,14 +207,22 @@ public class GameWorld extends GameScreen {
 	
 	@Override
 	public void step(float timeElapsed) {
+		if (finishWorld)
+			return;
+		
 		totalElapsedSeconds += timeElapsed;
 		
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
+		    
+		    if (activatePlayer1Item || activatePlayer2Item)
+		        activateItems();
+		    
 			for (Steppable p : steppables)
 				p.step(timeElapsed);
 			gameCamera.step(timeElapsed);
 			ui.step(timeElapsed);
+			raceStartManager.step(timeElapsed);
 			pWorld.step(timeElapsed);
 		}
 		removeDeadEntities();
@@ -212,7 +236,22 @@ public class GameWorld extends GameScreen {
 			onLevelFinished();
 	}
 	
-	private void removeDeadEntities(){
+	private void activateItems() {
+	    Player p;
+	    if (activatePlayer1Item) {
+	        p = getPlayers().get(PlayerNumber.ONE);
+	        p.getItem().activate(p, this);
+	    }
+	    
+	    if (activatePlayer2Item) {
+	        p = getPlayers().get(PlayerNumber.TWO);
+            p.getItem().activate(p, this);
+        }
+	    
+	    activatePlayer1Item = activatePlayer2Item = false;
+    }
+
+    private void removeDeadEntities(){
 		Iterator<Entity> it = pWorld.getDeadEntities();
 		while(it.hasNext()){
 			Entity e = it.next();
@@ -231,9 +270,13 @@ public class GameWorld extends GameScreen {
 
 	@Override
 	public void input(InputEventHandler event) {
-		pauseScreen.input(event);
-		if (pauseScreen.isHidden())
-			ui.input(event);
+		if (!finishWorld) {
+			pauseScreen.input(event);
+			if (pauseScreen.isHidden())
+				ui.input(event);
+		} else {
+			finishRaceScreen.input(event);
+		}
 	}
 
 	@Override
@@ -254,7 +297,6 @@ public class GameWorld extends GameScreen {
 		for (PlayerNumber n : players.keySet() ){
 			toWatch.put(n.getValue(), players.get(n));
 		}
-//		gameCamera.setEntitiesToWatch(toWatch);
 	}
 
 	public Collection<Entity> getEntities(){
@@ -267,9 +309,18 @@ public class GameWorld extends GameScreen {
 		if (finishWorld)
 			return;
 		finishWorld = true;
+		Player p1 = players.get(PlayerNumber.ONE);
+		Player p2 = players.get(PlayerNumber.TWO);
 		
-		((EndScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).initialize(players, level);
-		Game.getInstance().goTo(GameState.GAME_OVER);
+		if(p1.getTimeFinished() <= p2.getTimeFinished()) {
+			finishRaceScreen.setRaceWinner(PlayerNumber.ONE, p1);
+		} else {
+			finishRaceScreen.setRaceWinner(PlayerNumber.TWO, p2);
+		}
+		
+//		((FinishRaceScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).
+//			initialize(players);
+//		Game.getInstance().goTo(GameState.GAME_OVER);
 	}
 
 	public void setLevel(LevelDescriptor level) {
@@ -284,11 +335,43 @@ public class GameWorld extends GameScreen {
 		this.selectedItems = selectedItems;
 	}
 
-	public void destroyResources() {
-		// TODO Auto-generated method stub
-	}
-	
 	public float getFlagPos(){
 		return flagPos;
 	}
+
+    @Override
+    public void onClick(int buttonId, boolean pressed) {
+        Player p;
+        if (buttonId == GameWorldUI.BT_PLAYER_1_ACT) {
+            p = getPlayers().get(PlayerNumber.ONE);
+            if (p != null) {
+                p.setAct(pressed);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_1_JUMP) {
+            p = getPlayers().get(PlayerNumber.ONE);
+            if (p != null) {
+                p.setJumping(pressed);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_1_ITEM) {
+            p = getPlayers().get(PlayerNumber.ONE);
+            if (p != null && p.getItem() != null) {
+                activatePlayer1Item = pressed;
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_2_ACT) {
+            p = getPlayers().get(PlayerNumber.TWO);
+            if (p != null) {
+                p.setAct(pressed);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_2_JUMP) {
+            p = getPlayers().get(PlayerNumber.TWO);
+            if (p != null) {
+                p.setJumping(pressed);
+            }
+        } else if (buttonId == GameWorldUI.BT_PLAYER_2_ITEM) {
+            p = getPlayers().get(PlayerNumber.TWO);
+            if (p != null && p.getItem() != null) {
+                activatePlayer2Item = pressed;
+            }
+        }
+    }
 }

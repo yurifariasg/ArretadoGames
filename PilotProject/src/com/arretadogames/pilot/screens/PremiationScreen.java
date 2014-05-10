@@ -12,11 +12,19 @@ import com.arretadogames.pilot.tournaments.TournamentManager;
 import com.arretadogames.pilot.util.Assets;
 
 public class PremiationScreen extends GameScreen {
+	
+	private String winner = ""; 
+	
+	public PremiationScreen() {
+	}
+	
+	public void updateWinner() {
+		this.winner = TournamentManager.getInstance().getWinner();
+	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		// TODO Auto-generated method stub
-		canvas.drawText(TournamentManager.getInstance().getWinner(),
+		canvas.drawText(this.winner,
 				getDimension(R.dimen.screen_width)/2,
 				getDimension(R.dimen.screen_height)/2,
 				FontLoader.getInstance().getFont(FontTypeFace.ARIAN),
@@ -26,7 +34,6 @@ public class PremiationScreen extends GameScreen {
 	@Override
 	public void step(float timeElapsed) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -34,13 +41,13 @@ public class PremiationScreen extends GameScreen {
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			Assets.mainMenuMusic.play();
 			Game.getInstance().goTo(GameState.MAIN_MENU);
+			TournamentManager.getInstance().resetTournamentData();
 		}
 	}
 
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
-
 	}
 
 }

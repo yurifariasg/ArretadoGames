@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Set;
 
 public class GameCamera implements Renderable, Steppable {
+    
+    private static final float CAMERA_MINIMUM_Y = 0.8f;
+    private static final float CAMERA_MOVE_UP_THRESHOLD = 2.4f;
 
 	private static GameWorld gameWorld = null;
 
@@ -46,7 +49,7 @@ public class GameCamera implements Renderable, Steppable {
 	private float transitionDuration; // Measured in milliseconds.
 	private long startTime;
 
-	private MovingBackground movingBackground;
+	private MovingBackground[] movingBackgrounds;
 
 	private enum TransitionTrigger {
 		NONE, PLAYER_NUM_CHANGED, VIEWPORT_SIDE_PRIORITY_CHANGED;
@@ -87,7 +90,11 @@ public class GameCamera implements Renderable, Steppable {
 		startTime = 0;
 		
 		toucan = new Toucan();
-        movingBackground = new MovingBackground(R.drawable.mountains_repeatable);
+		
+		movingBackgrounds = new MovingBackground[3];
+        movingBackgrounds[0] = new MovingBackground(R.drawable.mountains_repeatable, 150);
+        movingBackgrounds[1] = new MovingBackground(R.drawable.repeatable_back_trees, 100);
+        movingBackgrounds[2] = new MovingBackground(R.drawable.repeatable_trees, 70);
 	}
 
 	private int getNumberOfAlivePlayers(Collection<Player> players) {
@@ -224,6 +231,12 @@ public class GameCamera implements Renderable, Steppable {
 				calculateWidthFirst = false;
 			}
 		}
+		
+		if (center.y < CAMERA_MOVE_UP_THRESHOLD) {
+		    center.y = CAMERA_MINIMUM_Y;
+		} else {
+		    center.y -= CAMERA_MOVE_UP_THRESHOLD - CAMERA_MINIMUM_Y;
+		}
 
 		lowerBound = new Vec2(center.x - viewportWidth / 2, center.y
 				- viewportHeight / 2);
@@ -303,7 +316,7 @@ public class GameCamera implements Renderable, Steppable {
 		}
 		
 		// Start Toucan if needed
-        if (maxXDistance > 10) {
+        if (maxXDistance > 10 && !secondFurthestPlayer.hasFinished()) {
             toucan.activate(lowerBound.x, upperBound.y, furthestPlayer, secondFurthestPlayer, flagX);
         }
 
@@ -311,9 +324,11 @@ public class GameCamera implements Renderable, Steppable {
 		Profiler.initTick(ProfileType.RENDER);
 
 		gameCanvas.setPhysicsRatio(physicsRatio);
-
-		movingBackground.render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
-				center.y, initialX, flagX, translator);
+		
+		for (int i = 0 ; i < movingBackgrounds.length ; i++) {
+		    movingBackgrounds[i].render(gameCanvas, 0, GLCanvas.physicsRatio, center.x,
+	                center.y, initialX, flagX, translator);
+		}
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw background");
 		Profiler.initTick(ProfileType.RENDER);
@@ -352,6 +367,8 @@ public class GameCamera implements Renderable, Steppable {
 		}
 		
 		toucan.render(gameCanvas, timeElapsed);
+		
+        EffectManager.getInstance().removeInactiveEffects();
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
 		Profiler.initTick(ProfileType.RENDER);

@@ -12,7 +12,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 public class Coconut extends Entity {
     
-    private static final float COCONUT_SIZE = 0.1f;
+    public static final float COCONUT_SIZE = 0.1f;
     private static final float COCONUT_IMAGE_SIZE = 0.3f;
     private static final float STUN_DURATION = 3;
 
@@ -22,9 +22,10 @@ public class Coconut extends Entity {
         CircleShape shape = new CircleShape();
         shape.setRadius(COCONUT_SIZE);
         Fixture bodyFixture = body.createFixture(shape,  50f);
-        bodyFixture.setFriction(0.8f);
+        bodyFixture.setFriction(5f);
         body.setType(BodyType.DYNAMIC);
         body.setFixedRotation(false);
+        
         
         physRect = new PhysicsRect(COCONUT_IMAGE_SIZE, COCONUT_IMAGE_SIZE);
     }

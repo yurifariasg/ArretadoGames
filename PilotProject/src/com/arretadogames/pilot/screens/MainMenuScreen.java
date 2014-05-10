@@ -24,13 +24,13 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private final static int ZOOM_PROPERTY = 1;
 	private final static int BLACK_ALPHA_PROPERTY = 2;
 
-	private static final int PLAY_BUTTON = 1;
+	private static final int QUICK_RACE_BUTTON = 1;
 	private static final int SETTINGS_BUTTON = 2;
 	private static final int G_SIGN_IN_BUTTON = 3;
 	private static final int STORE_BUTTON = 4;
 	private static final int TOURNAMENT_BUTTON = 5;
 
-	private ImageButton playBt;
+	private ImageButton quickRaceBt;
 	private ImageButton settingsBt;
 	private ImageButton gPlusBt;
 	private ImageButton tournamentBt;
@@ -45,8 +45,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	private State currentState;
 	
 	public MainMenuScreen() {
-		
-		playBt = new ZoomImageButton(PLAY_BUTTON, 340, 240,
+		quickRaceBt = new ZoomImageButton(QUICK_RACE_BUTTON, 340, 240,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
                 getDimension(R.dimen.main_menu_play_button_size)+30,
                 this,
@@ -115,7 +114,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 
 		if (currentState == State.MAIN) {
 			settingsBt.render(canvas, timeElapsed);
-			playBt.render(canvas, timeElapsed);
+			quickRaceBt.render(canvas, timeElapsed);
 			gPlusBt.render(canvas, timeElapsed);
 			storeBt.render(canvas, timeElapsed);
 			tournamentBt.render(canvas, timeElapsed);
@@ -144,7 +143,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	@Override
 	public void input(InputEventHandler event) {
 		if (currentState == State.MAIN) {
-			playBt.input(event);
+			quickRaceBt.input(event);
 			settingsBt.input(event);
 			gPlusBt.input(event);
 			storeBt.input(event);
@@ -162,7 +161,7 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 	@Override
 	public void onClick(int buttonId) {
 		switch (buttonId) {
-		case PLAY_BUTTON:
+		case QUICK_RACE_BUTTON:
 			Game.getInstance().setGameMode(GameMode.QUICKRACE);
 			startGame();
 			Assets.mainMenuMusic.stop();
@@ -184,9 +183,9 @@ public class MainMenuScreen extends GameScreen implements GameButtonListener, Tw
 			Assets.mainMenuMusic.stop();
 			break;
 		case TOURNAMENT_BUTTON:
-			startTournamentSelection();
 			Game.getInstance().setGameMode(GameMode.TOURNAMENT);
 			Assets.mainMenuMusic.stop();
+			startTournamentSelection();
 			break;
 		}
 	}

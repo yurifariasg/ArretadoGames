@@ -18,7 +18,7 @@ public class PhysicsRect extends RectF {
 		super(-width / 2f, -height / 2f, width / 2f, height / 2f);
 		this.angle = angle;
 	}
-
+	
 	public float getAngle() {
 		return angle;
 	}

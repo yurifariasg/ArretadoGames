@@ -49,6 +49,7 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 	
 	private ImageButton leftArrow;
 	private ImageButton rightArrow;
+    private ImageButton backBt;
 	private InputEventHandler event;
 	private FontSpecification titleFont;
 	private GestureDetectorCompat mDetector;
@@ -96,6 +97,8 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 		        this, R.drawable.level_arrow_left_selected, R.drawable.level_arrow_left_unselected);
 		rightArrow = new ImageButton(-2, 723, 242, 60, 60,
 		        this, R.drawable.level_arrow_right_selected, R.drawable.level_arrow_right_unselected);
+        backBt = new ImageButton(-3, 720, 20, 50, 50,
+                this, R.drawable.back_bt, R.drawable.back_bt);
 		
 		titleFont = FontLoader.getInstance().getFont(FontTypeFace.ARIAN);
 		
@@ -228,6 +231,7 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 		
 		leftArrow.render(canvas, timeElapsed);
 		rightArrow.render(canvas, timeElapsed);
+		backBt.render(canvas, timeElapsed);
 		
         GLES11.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -263,7 +267,9 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
 	@Override
 	public void onClick(int stageId) {
 		int currentIndex = getCurrentTournamentIndex();
-		if (stageId == -1 && currentIndex > 0) {
+		if (stageId == -3) {
+		    onBackPressed();
+		} else if (stageId == -1 && currentIndex > 0) {
 		    startAnimationTo(getCurrentTournamentIndex() - 1);
 		} else if (stageId == -2 && currentIndex < tournamentsInfo.length - 1) {
             startAnimationTo(getCurrentTournamentIndex() + 1);
@@ -366,6 +372,7 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
         
         pressed |= leftArrow.input(event);
         pressed |= rightArrow.input(event);
+        pressed |= backBt.input(event);
         
         return pressed;
 	}

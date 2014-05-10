@@ -1,11 +1,9 @@
 package com.arretadogames.pilot.screens;
 
-import java.util.HashMap;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
 import android.view.MotionEvent;
+
 import aurelienribon.tweenengine.TweenAccessor;
 
 import com.arretadogames.pilot.R;
@@ -22,15 +20,20 @@ import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.world.GameWorld;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class CharacterSelectionScreen extends GameScreen implements GameButtonListener {
 
 	private final RectF BASE_RECT = new RectF(0, 0, 400, 240);
 	private static final int GO_BUTTON = 1;
+	private static final int BACK_BUTTON = 2;
 	private PlayerSelector[] selectors;
 	private CharacterSpot[] spots;
 	private ImageButton btCharsSelected;
 	private boolean playerOne;
 	private boolean playerTwo;
+	private ImageButton backBt;
 
 	public CharacterSelectionScreen() {
 		playerOne = false;
@@ -44,6 +47,9 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 		        getDimension(R.dimen.screen_height) / 2 - getDimension(R.dimen.player_selector_size) / 2,
 		        getDimension(R.dimen.player_selector_size), getDimension(R.dimen.player_selector_size), this, 
 		        R.drawable.bt_chars_selected, R.drawable.bt_chars_selected);
+
+        backBt = new ImageButton(BACK_BUTTON, 740, 10, 50, 50,
+                this, R.drawable.back_bt, R.drawable.back_bt);
 	}
 
 	@Override
@@ -126,7 +132,8 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 			        getDimension(R.dimen.screen_height) / 2 - getDimension(R.dimen.player_selector_size) / 2,
 			        getDimension(R.dimen.player_selector_size), getDimension(R.dimen.player_selector_size));
 		}
-			
+		
+		backBt.render(canvas, timeElapsed);
 	}
 
 	@Override
@@ -135,19 +142,23 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 
 	@Override
 	public void input(InputEventHandler event) {
-
-		if (!btCharsSelected.input(event)){
-			if (event.getAction()== MotionEvent.ACTION_UP){
-				if (!playerOne){
-					if (selectors[0].touch(event.getX(), event.getY()))
-						playerOne = true;
-				}else{
-					if (selectors[1].touch(event.getX(), event.getY())) {
-						playerTwo = true;
-					}
-				}
-			}
-		}
+	    
+	    if (!backBt.input(event)) {
+    		if (!btCharsSelected.input(event)){
+    			if (event.getAction()== MotionEvent.ACTION_UP){
+    				if (!playerOne){
+    					if (selectors[0].touch(event.getX(), event.getY()))
+    						playerOne = true;
+    				}else{
+    					if (selectors[1].touch(event.getX(), event.getY())) {
+    						playerTwo = true;
+    					}
+    				}
+    			}
+    		}
+	    }
+		
+		
 	}
 
 	@Override
@@ -299,7 +310,9 @@ public class CharacterSelectionScreen extends GameScreen implements GameButtonLi
 			if (playerOne && playerTwo)
 				initGame();
 			break;
-
+		case BACK_BUTTON:
+		    onBackPressed();
+		    break;
 		default:
 			break;
 		}
