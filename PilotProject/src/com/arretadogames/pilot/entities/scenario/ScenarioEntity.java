@@ -26,8 +26,8 @@ public abstract class ScenarioEntity extends Entity {
 		
 		fixture.setSensor(true);
 		Filter filter = new Filter();
-		filter.categoryBits = CollisionFlag.GROUP_3.getValue() ;
-		filter.maskBits = CollisionFlag.GROUP_3.getValue() ;
+		filter.categoryBits = CollisionFlag.GROUP_NON_COLLIDABLE.getValue() ;
+		filter.maskBits = CollisionFlag.GROUP_NON_COLLIDABLE.getValue() ;
 		fixture.setFilterData(filter);
 		
 		this.width = width;

@@ -10,11 +10,19 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.world.GameWorld;
 
 import javax.microedition.khronos.opengles.GL10;
 
 public class GameWorldUI extends GameScreen {
+    
+    public static final int BT_PLAYER_1_JUMP = 1;
+    public static final int BT_PLAYER_1_ACT = 2;
+    public static final int BT_PLAYER_1_ITEM = 3;
+    public static final int BT_PLAYER_2_JUMP = 4;
+    public static final int BT_PLAYER_2_ACT = 5;
+    public static final int BT_PLAYER_2_ITEM = 6;
 
     private final float COOLDOWN_IMAGE_SIZE = getDimension(R.dimen.cooldown_image_size);
 	private final int INIT_OF_STATUS_INTERVAL = 270;
@@ -48,7 +56,7 @@ public class GameWorldUI extends GameScreen {
     {
         PLAYER_2_EFFECT_ACTIVE_SIZE.inset(-30, -30); // Move 50 px outwards
     }
-
+    
 	private Player p1;
 	private Player p2;
 	private GameWorld gWorld;
@@ -56,10 +64,14 @@ public class GameWorldUI extends GameScreen {
 	private AnimationSwitcher itemActiveAnim;
 	private AnimationSwitcher itemActiveAnim2;
 	
-	private boolean activateItemP1;
-	private boolean activateItemP2;
-
-	float totalDistance = Float.MIN_VALUE;
+    private GameButtonListener p1JumpListener;
+    private GameButtonListener p1ActListener;
+    private GameButtonListener p1ItemListener;
+    private GameButtonListener p2JumpListener;
+    private GameButtonListener p2ActListener;
+    private GameButtonListener p2ItemListener;
+    
+	private float totalDistance = Float.MIN_VALUE;
 
 	public GameWorldUI(GameWorld gameWorld) {
 		this.gWorld = gameWorld;
@@ -69,11 +81,26 @@ public class GameWorldUI extends GameScreen {
 
 		itemActiveAnim = AnimationManager.getInstance().getSprite("Spinner");
 		itemActiveAnim2 = AnimationManager.getInstance().getSprite("Spinner");
-		
-		activateItemP1 = false;
-		activateItemP2 = false;
+	}
+	
+	public void setAllButtonListeners(GameButtonListener listener) {
+	    setP1ButtonListeners(listener);
+	    setP2ButtonListeners(listener);
+	}
+	
+	// We may need to split this for each listener... For now, we don't need this
+	public void setP1ButtonListeners(GameButtonListener listener) {
+        p1JumpListener = listener;
+        p1ActListener = listener;
+        p1ItemListener = listener;
 	}
 
+	public void setP2ButtonListeners(GameButtonListener listener) {
+        p2JumpListener = listener;
+        p2ActListener = listener;
+        p2ItemListener = listener;
+    }
+	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 
@@ -126,16 +153,6 @@ public class GameWorldUI extends GameScreen {
 
 	@Override
 	public void step(float timeElapsed) {
-	    
-        if (activateItemP1 && p1.getItem() != null) {
-            p1.getItem().activate(p1, gWorld);
-        }
-        if (activateItemP2 && p2.getItem() != null) {
-            p2.getItem().activate(p2, gWorld);
-        }
-        
-        activateItemP1 = activateItemP2 = false;
-	    
 	}
 
 	private int calculateMapCompletion(float pos) {
@@ -169,37 +186,41 @@ public class GameWorldUI extends GameScreen {
 	private void pressButtons(float x, float y, boolean pressed) {
 		if (y > 340) {
 			if (x < 230) {
-				if (x < 105) {
+			    if (x < 105) {
 					// Jump 1
-					Player p = gWorld.getPlayers().get(PlayerNumber.ONE);
-					if(p!=null) p.setJumping(pressed);
+					if (p1JumpListener != null) {
+					    p1JumpListener.onClick(BT_PLAYER_1_JUMP);
+					}
 				} else {
 					// Act 1
-					Player p = gWorld.getPlayers().get(PlayerNumber.ONE);
-					if(p!=null) p.setAct(pressed);
+					if (p1ActListener != null) {
+					    p1ActListener.onClick(BT_PLAYER_1_ACT);
+					}
 				}
 			}
 
 			if (x > 600) {
-				if (x < 710) {
+                 if (x < 710) {
 					// Jump 2
-					Player p = gWorld.getPlayers().get(PlayerNumber.TWO);
-					if(p!=null) p.setJumping(pressed);
+					if (p2JumpListener != null) {
+					    p2JumpListener.onClick(BT_PLAYER_2_JUMP);
+					}
 				} else {
 					// Act 2
-					Player p = gWorld.getPlayers().get(PlayerNumber.TWO);
-					if(p!=null) p.setAct(pressed);
+                    if (p2ActListener != null) {
+                        p2ActListener.onClick(BT_PLAYER_2_ACT);
+                    }
 				}
 			}
 		}
 		
 		if (PLAYER_1_ITEM_FRAME_SIZE.contains(x, y)) {
-		    if (p1.getItem() != null) {
-		        activateItemP1 = true;
+		    if (p1ItemListener != null) {
+		        p1ItemListener.onClick(BT_PLAYER_1_ITEM);
 		    }
 		} else if (PLAYER_2_ITEM_FRAME_SIZE.contains(x, y)) {
-		    if (p2.getItem() != null) {
-		        activateItemP2 = true;
+		    if (p2ItemListener != null) {
+		        p2ItemListener.onClick(BT_PLAYER_2_ITEM);
 		    }
 		}
 	}

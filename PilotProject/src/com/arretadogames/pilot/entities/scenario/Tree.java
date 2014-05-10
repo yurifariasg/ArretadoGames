@@ -31,7 +31,7 @@ public class Tree extends ScenarioEntity {
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		drawBasic(canvas, TREE_RESOURCES[treeType]);
+//		drawBasic(canvas, TREE_RESOURCES[treeType]); // TODO: Uncomment here when tree images are changed
 	}
 
 	@Override

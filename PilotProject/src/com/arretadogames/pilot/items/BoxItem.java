@@ -9,6 +9,7 @@ import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -22,12 +23,12 @@ public class BoxItem extends Entity {
     private static final int IMAGE = R.drawable.box_stopped;
     
     private Item item;
-    private boolean isVisible;
+    private boolean isRandom;
 
     public BoxItem(float x, float y) {
         super(x, y);
         this.item = randomizeItem();
-        this.isVisible = new Random().nextBoolean();
+        this.isRandom = new Random().nextBoolean();
         
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(BOX_SIZE.width()/2, BOX_SIZE.height()/2);
@@ -57,9 +58,10 @@ public class BoxItem extends Entity {
         canvas.saveState();
         
         canvas.translatePhysics(body.getPosition().x, body.getPosition().y);
+        canvas.rotate((float) (-body.getAngle() * 180 / Math.PI));
         canvas.drawBitmap(IMAGE, BOX_SIZE);
         
-        if (isVisible) {
+        if (isRandom) {
             canvas.drawBitmap(item.getImageDrawable(), ITEM_IMAGE_SIZE);
         } else {
             canvas.drawBitmap(R.drawable.question_item, ITEM_IMAGE_SIZE);
@@ -69,9 +71,9 @@ public class BoxItem extends Entity {
     }
     
     @Override
-    public void beginContact(Entity e, Contact contact) {
-        
-        if (e.getType() == EntityType.PLAYER && isAlive()) {
+    public void preSolve(Entity e, Contact contact, Manifold oldManifold) {
+
+    	if (e.getType() == EntityType.PLAYER && isAlive()) {
             Player p = (Player) e;
             if (p.getItem() == null) {
                 p.setItem(item);
@@ -79,6 +81,17 @@ public class BoxItem extends Entity {
                 PhysicalWorld.getInstance().addDeadEntity(this);
             }
         }
+    	
+    	if (isDead()) {
+    		contact.setEnabled(false);
+    	}
+    	
+    }
+    
+    @Override
+    public void beginContact(Entity e, Contact contact) {
+        
+        
         
         super.beginContact(e, contact);
     }

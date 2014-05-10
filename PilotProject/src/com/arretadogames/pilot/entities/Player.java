@@ -3,6 +3,7 @@ package com.arretadogames.pilot.entities;
 import android.graphics.Color;
 import android.opengl.GLES11;
 
+import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.effects.EffectDescriptor;
 import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.game.Game;
@@ -55,9 +56,14 @@ public abstract class Player extends Entity implements Steppable{
 	protected Collection<Body> bodiesContact;
 	
 	private boolean ghostModeActive;
-	private boolean toucanTarget;
+	private boolean forceStop;
 	private float stunDuration;
 	private float paralysisDuration;
+	
+	private boolean isEnabled;
+    
+    protected int categoryBits;
+    protected int maskBits;
     
     private Vec2 stopImpulse = new Vec2(-1f, 0);
     private Item item;
@@ -71,8 +77,29 @@ public abstract class Player extends Entity implements Steppable{
 		timeToDie = 0;
         bodiesContact = new HashSet<Body>();
         ghostModeActive = false;
-        toucanTarget = false;
+        forceStop = false;
+        isEnabled = true;
 	}
+	
+	public void setMaskAndCategoryBits() {
+        Filter filter = new Filter();
+        filter.categoryBits = categoryBits;
+        filter.maskBits = maskBits;
+        
+        Fixture f = body.getFixtureList();
+        while (f != null) {
+            f.setFilterData(filter);
+            f = f.getNext();
+        }
+	}
+	
+	public boolean isEnabled() {
+        return isEnabled;
+    }
+	
+	public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
 	
 	public void setGhostMode(boolean ghostModeActive) {
 	    
@@ -80,12 +107,12 @@ public abstract class Player extends Entity implements Steppable{
 
             Filter filter = new Filter();
 	        if (ghostModeActive) {
-	            filter.categoryBits = CollisionFlag.GROUP_3.getValue() ;
-	            filter.maskBits = CollisionFlag.GROUP_3.getValue() ;
+	            filter.categoryBits = CollisionFlag.GROUP_NON_COLLIDABLE.getValue() ;
+	            filter.maskBits = CollisionFlag.GROUP_NON_COLLIDABLE.getValue() ;
 	            body.setGravityScale(0);
 	        } else {
-                filter.categoryBits = CollisionFlag.GROUP_1.getValue() ;
-                filter.maskBits = CollisionFlag.GROUP_1.getValue() ;
+                filter.categoryBits = categoryBits;
+                filter.maskBits = maskBits;
                 body.setGravityScale(1);
 	        }
 	        
@@ -96,32 +123,35 @@ public abstract class Player extends Entity implements Steppable{
     }
 	
 	public void stun(float stunDuration) {
-	    this.stunDuration = stunDuration;
-	    
-	    EffectDescriptor descriptor = new EffectDescriptor();
-	    descriptor.position = body.getPosition();
-	    descriptor.repeat = true;
-	    descriptor.type = "stun";
-	    descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
-	    descriptor.position.y += physRect.height() / 2;
-	    descriptor.duration = stunDuration;
-	    
-	    EffectManager.getInstance().addEffect(descriptor);
-	    
+	    if (!isStunned()) {
+    	    this.stunDuration = stunDuration;
+    	    
+    	    EffectDescriptor descriptor = new EffectDescriptor();
+    	    descriptor.position = body.getPosition();
+    	    descriptor.repeat = true;
+    	    descriptor.type = "stun";
+    	    descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
+    	    descriptor.position.y += physRect.height() / 2;
+    	    descriptor.duration = stunDuration;
+    	    
+    	    EffectManager.getInstance().addEffect(descriptor);
+	    }
 	}
 	
 	public void paralyze(float duration) {
-	    this.paralysisDuration = duration;
-	    
-	    EffectDescriptor descriptor = new EffectDescriptor();
-        descriptor.position = body.getPosition();
-        descriptor.repeat = true;
-        descriptor.type = "stun";
-        descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
-        descriptor.position.y += physRect.height() / 2;
-        descriptor.duration = duration;
-        
-        EffectManager.getInstance().addEffect(descriptor);
+	    if (!isParalyzed()) {
+    	    this.paralysisDuration = duration;
+    	    
+    	    EffectDescriptor descriptor = new EffectDescriptor();
+            descriptor.position = body.getPosition();
+            descriptor.repeat = true;
+            descriptor.type = "stun";
+            descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
+            descriptor.position.y += physRect.height() / 2;
+            descriptor.duration = duration;
+            
+            EffectManager.getInstance().addEffect(descriptor);
+	    }
 	}
 	
 	public boolean isStunned() {
@@ -133,19 +163,19 @@ public abstract class Player extends Entity implements Steppable{
 	}
 	
 	public boolean shouldStop() {
-	    return isToucanTarget() || isDead() || hasFinished() || isStunned();
+	    return isForceStopped() || isDead() || hasFinished() || isStunned();
 	}
 	
 	public boolean shouldAct() {
 	    return !isParalyzed();
 	}
 	
-	public void setToucanTarget(boolean isToucanTarget) {
-	    this.toucanTarget = isToucanTarget;
+	public void setForceStop(boolean forceStop) {
+	    this.forceStop = forceStop;
 	}
 	
 	@Override
-	public void step(float timeElapsed){
+	public final void step(float timeElapsed){
 		if (state == State.DYING) {
 			timeToDie -= timeElapsed;
 			if (timeToDie <= 0) {
@@ -164,7 +194,44 @@ public abstract class Player extends Entity implements Steppable{
 		if (paralysisDuration > 0) {
 		    paralysisDuration -= timeElapsed;
 		}
+		
+		if (isEnabled()) {
+	        applyConstants();
+	        if (shouldStop() || !shouldAct()) {
+	            if (shouldStop()) {
+	                stopAction();
+	            }
+	            return;
+	        }
+	        if (jumpActive) {
+	            jump();
+	            jumpActive = false;
+	        }
+	        if(actActive){
+	            act();
+	        }
+	        
+	        if(contJump > 0) {
+	            contJump--;
+	        }
+	        if(contAct > 0 ) {
+	            contAct--;
+	        }
+	        run();
+		    
+		    playerStep(timeElapsed);
+		    
+		    if (Math.abs(body.getLinearVelocity().x) > GameSettings.MAX_VELOCITY_X) {
+		        body.getLinearVelocity().x = GameSettings.MAX_VELOCITY_X *
+		                (body.getLinearVelocity().x / Math.abs(body.getLinearVelocity().x));
+		    }
+		}
 	}
+	
+	public abstract void act();
+	public abstract void jump();
+	public abstract void run();
+	public abstract void applyConstants();
 	
 	public PlayerNumber getNumber() {
 		return playerNumber;
@@ -199,8 +266,8 @@ public abstract class Player extends Entity implements Steppable{
         return ghostModeActive;
     }
 	
-	public boolean isToucanTarget() {
-	    return toucanTarget;
+	public boolean isForceStopped() {
+	    return forceStop;
 	}
 	
 	@Override
@@ -223,7 +290,6 @@ public abstract class Player extends Entity implements Steppable{
 				body.applyLinearImpulse(stopImpulse.mul(body.getMass()/ 10f), body.getPosition(), true);
 			} else {
 				body.setLinearVelocity(new Vec2(0, 0)); // Just done once
-				
 			}
 		}
 	}
@@ -344,6 +410,8 @@ public abstract class Player extends Entity implements Steppable{
     @Override
     public final void render(GLCanvas canvas, float timeElapsed) {
 
+        sprite.setAnimationRateMultiplier(body.getLinearVelocity().x / 2f);
+
         if (isGhostMode()) {
             GLES11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
             canvas.setColor(GHOST_MODE_TRANSPARENCY_COLOR);
@@ -359,5 +427,6 @@ public abstract class Player extends Entity implements Steppable{
     }
     
     protected abstract void playerRender(GLCanvas canvas, float timeElapsed);
+    protected abstract void playerStep(float timeElapsed);
 	
 }

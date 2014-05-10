@@ -48,7 +48,7 @@ public class Fire extends Entity implements Steppable {
 		Fixture f = body.createFixture(shape,  1f);
 		f.setSensor(true);
 		Filter filter = new Filter();
-		filter.categoryBits = CollisionFlag.GROUP_3.getValue() ;
+		filter.categoryBits = CollisionFlag.GROUP_NON_COLLIDABLE.getValue() ;
 		filter.maskBits = f.m_filter.maskBits ;
 		f.setFilterData(filter);
 		

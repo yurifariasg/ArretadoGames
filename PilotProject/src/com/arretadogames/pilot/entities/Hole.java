@@ -1,5 +1,10 @@
 package com.arretadogames.pilot.entities;
 
+import com.arretadogames.pilot.R;
+import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.opengl.GLCanvas;
+
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -9,11 +14,6 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
-
-import com.arretadogames.pilot.R;
-import com.arretadogames.pilot.render.AnimationSwitcher;
-import com.arretadogames.pilot.render.PhysicsRect;
-import com.arretadogames.pilot.render.opengl.GLCanvas;
 
 
 public class Hole extends Entity implements Steppable{
@@ -60,8 +60,8 @@ public class Hole extends Entity implements Steppable{
 		shape.createChain(vec, 4);
 		fixture = body.createFixture(shape, 0.5f);
 		Filter filter = new Filter();
-		filter.categoryBits = 2;
-		filter.maskBits = 2;
+		filter.categoryBits = CollisionFlag.GROUP_TATU_HOLE.getValue();
+		filter.maskBits = CollisionFlag.GROUP_TATU_HOLE.getValue();
 		fixture.setFilterData(filter);
 		body.setType(BodyType.STATIC);
 		
@@ -82,6 +82,7 @@ public class Hole extends Entity implements Steppable{
 		exit = world.createBody(bd2);
 		fexit = exit.createFixture(pshape2, 0);
 		fexit.setSensor(true);
+		fexit.setFilterData(filter);
 		exit.setUserData(this);
 		
 		tatu = null;
@@ -121,13 +122,6 @@ public class Hole extends Entity implements Steppable{
 	
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-//		RectF rect = new RectF(
-//				(- HOLE_WIDTH * GLCanvas.physicsRatio), // Top Left
-//				(- HOLE_WIDTH * GLCanvas.physicsRatio), // Top Left
-//				(HOLE_WIDTH * GLCanvas.physicsRatio), // Bottom Right
-//				(HOLE_WIDTH * GLCanvas.physicsRatio)); // Bottom Right
-		
-//		
 
 		canvas.saveState();
 		canvas.translatePhysics(x1 + ENTRANCE_IMAGE_X_OFFSET, 0f);
@@ -143,28 +137,27 @@ public class Hole extends Entity implements Steppable{
 
 	@Override
 	public EntityType getType() {
-		// TODO Auto-generated method stub
 		return EntityType.HOLE;
 	}
 
 	@Override
 	public void setSprite(AnimationSwitcher sprite) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void step(float timeElapsed) {
 		if(contatoTatu && tatu!=null && tatu.actActive && ! seta && !entrou) seta = true;
 		if(seta){
-			Filter filter = new Filter();
-			filter.categoryBits = 2;
-			filter.maskBits = 2;
-			tatu.bodyFixture.setFilterData(filter);
-//			tatu.footFixture.setFilterData(filter);
-//			tatu.body.setLinearVelocity(new Vec2(0,0));
 			entrou = true;
 			seta = false;			
+			
+            Filter filter = new Filter();
+            filter.categoryBits = CollisionFlag.GROUP_TATU_HOLE.getValue();
+            filter.maskBits = CollisionFlag.GROUP_TATU_HOLE.getValue();
+
+            tatu.bodyFixture.setFilterData(filter);
+            tatu.footFixture.setFilterData(filter);
+            tatu.body.setLinearVelocity(new Vec2(0,0));
 			
 			Vec2 vec[] = new Vec2[2];
 			vec[0] = new Vec2(x1+HOLE_WIDTH,HOLE_HEIGHT);
@@ -174,11 +167,10 @@ public class Hole extends Entity implements Steppable{
 			body.createFixture(shape, 0.5f).setFilterData(filter);
 		}
 		if (sai){
-			Filter filter = new Filter();
-			filter.categoryBits = data;
-			filter.maskBits = data2;
-			tatu.bodyFixture.setFilterData(filter);
-//			tatu.footFixture.setFilterData(filter);
+			tatu.footFixture.getFilterData().categoryBits = data;
+            tatu.footFixture.getFilterData().maskBits = data2;
+            tatu.bodyFixture.getFilterData().categoryBits = data;
+            tatu.bodyFixture.getFilterData().maskBits = data2;
 			sai = false;
 			tatu = null;
 		}

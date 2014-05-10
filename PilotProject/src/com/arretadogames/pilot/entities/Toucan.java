@@ -21,14 +21,14 @@ public class Toucan implements Renderable, Steppable {
 
     private static final PhysicsRect TOUCAN_SIZE = new PhysicsRect(2, 2);
     private static final Vec2 GRAB_OFFSET = new Vec2(0, 0.6f);
-    private static final Vec2 TARGET_PLAYER_OFFSET = new Vec2(-5, 5);
-    private static final Vec2 TARGET_FLAG_OFFSET = new Vec2(-10, 5);
+    private static final Vec2 TARGET_PLAYER_OFFSET = new Vec2(-5, 2);
+    private static final Vec2 TARGET_FLAG_OFFSET = new Vec2(-10, 2);
     private static final Vec2 FLIGHT_OUT_POSITION_RELATIVE_TO_TARGET = new Vec2(4, 10);
 
     /* All duration are in seconds */
     private static final float GRAB_FLIGHT_DURATION = 1;
     private static final float GRAB_DURATION = 0.0001f;
-    private static final float PULL_FLIGHT_DURATION = 2;
+    private static final float PULL_FLIGHT_DURATION = 1f;
     private static final float DROP_DURATION = 0.0001f;
     private static final float OUT_FLIGHT_DURATION = 3;
 
@@ -79,7 +79,7 @@ public class Toucan implements Renderable, Steppable {
             this.playerToGrab = playerToGrab;
             this.remainingTime = GRAB_FLIGHT_DURATION;
             this.state = ToucanState.INITIAL_FLIGHT;
-            this.playerToGrab.setToucanTarget(true);
+            this.playerToGrab.setForceStop(true);
             this.flagX = flagX;
         }
     }
@@ -144,7 +144,7 @@ public class Toucan implements Renderable, Steppable {
 
                 if (remainingTime <= 0) {
                     playerToGrab.setGhostMode(false);
-                    playerToGrab.setToucanTarget(false);
+                    playerToGrab.setForceStop(false);
                     state = ToucanState.DROP;
                     remainingTime = DROP_DURATION;
                     setOldPosition();

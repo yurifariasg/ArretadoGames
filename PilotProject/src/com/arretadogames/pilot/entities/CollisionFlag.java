@@ -8,12 +8,14 @@ package com.arretadogames.pilot.entities;
  *
  */
 public enum CollisionFlag {
-	GROUP_1(1),//default, usado por todas as entidades que querem se colidir no jogo, players, chao 
-	GROUP_2(2),//usado pelo buraco do tatu e o tatu
-	GROUP_3(4);//usado por quem nao deseja se colidir, senario e uma fixture do fogo
+	GROUP_COMMON_ENTITIES(1),//default, usado por todas as entidades que querem se colidir no jogo, players, chao 
+    GROUP_PLAYERS(2), // usado pelos jogadores
+	GROUP_TATU_HOLE(4),//usado pelo buraco do tatu e o tatu
+	GROUP_NON_COLLIDABLE(8),//usado por quem nao deseja se colidir, senario e uma fixture do fogo
+    GROUP_GROUND(16);
 	
 	private int value;
-	CollisionFlag( int a){
+	CollisionFlag(int a){
 		value = a;
 	}
 	

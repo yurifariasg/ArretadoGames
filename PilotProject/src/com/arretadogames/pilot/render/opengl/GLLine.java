@@ -1,5 +1,12 @@
 package com.arretadogames.pilot.render.opengl;
 
+import android.graphics.Color;
+import android.opengl.GLES11;
+
+import com.arretadogames.pilot.config.GameSettings;
+
+import org.jbox2d.common.Vec2;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -7,23 +14,16 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import org.jbox2d.common.Vec2;
-
-import com.arretadogames.pilot.config.GameSettings;
-
-import android.graphics.Color;
-import android.opengl.GLES11;
-
 public class GLLine {
 	
     protected static FloatBuffer vertexBuffer;
     protected static ShortBuffer indexBuffer;
     
     public static void drawLineStrip(Vec2[] vecs, int count, float width, int color, boolean connectEndAndStart, float multiplier) {
-    	drawLineStrip(vecs, count, width, color, connectEndAndStart, multiplier, false);
+    	drawLineStrip(vecs, count, width, color, connectEndAndStart, multiplier, false, false);
     }
 
-	public static void drawLineStrip(Vec2[] vecs, int count, float width, int color, boolean connectEndAndStart, float multiplier, boolean invertY) {
+	public static void drawLineStrip(Vec2[] vecs, int count, float width, int color, boolean connectEndAndStart, float multiplier, boolean invertY, boolean negateY) {
 		if (indexBuffer == null || indexBuffer.capacity() < count) {
 			createIndicesBuffer(count);
 		}
@@ -37,10 +37,13 @@ public class GLLine {
 		for (int i = 0 ; i < count ; i++) {
 			vertexBuffer.put(vecs[i].x * multiplier);
 			
-			if (invertY) // TODO: This hack should be removed when we invert OpenGL coordinates
-				vertexBuffer.put(GameSettings.TARGET_HEIGHT - vecs[i].y * multiplier);
-			else
+			if (negateY) {
+			    vertexBuffer.put(- vecs[i].y * multiplier);
+			} else if (invertY) {// TODO: This hack should be removed when we invert OpenGL coordinates
+			    vertexBuffer.put(GameSettings.TARGET_HEIGHT - vecs[i].y * multiplier);
+			} else {
 				vertexBuffer.put(vecs[i].y * multiplier);
+			}
 			
 			vertexBuffer.put(0);
 			
