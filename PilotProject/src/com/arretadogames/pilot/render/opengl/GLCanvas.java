@@ -260,7 +260,7 @@ public class GLCanvas {
 
 	public void drawBitmap(int imageId, PhysicsRect physicsRect) {
 		if (textures.get(imageId) == null) {
-			Log.e("GLCanvas", "Texture not loaded " +
+			Log.w("GLCanvas", "Texture not loaded " +
 					MainActivity.getContext().getResources().getResourceEntryName(imageId));
 			if (GameSettings.LAZY_LOAD_ENABLED)
 				loadImage(imageId);

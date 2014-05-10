@@ -27,7 +27,7 @@ import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
-import com.arretadogames.pilot.ui.GameButtonListener;
+import com.arretadogames.pilot.ui.GameHUDButton;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * GameWorld class represents the World in our Game
  */
-public class GameWorld extends GameScreen implements GameButtonListener {
+public class GameWorld extends GameScreen implements GameHUDButton {
 	private int backgroundId;
 	
 	private GameWorldUI ui;
@@ -59,6 +59,9 @@ public class GameWorld extends GameScreen implements GameButtonListener {
 	
 	private boolean isInitialized;
 	private LevelDescriptor level;
+	
+	private boolean activatePlayer1Item;
+	private boolean activatePlayer2Item;
 
 	private Weather weather;
 	private RaceStartManager raceStartManager;
@@ -97,9 +100,12 @@ public class GameWorld extends GameScreen implements GameButtonListener {
 		if (isInitialized || selectedCharacters == null || level == null || selectedItems == null)
 			return;
 		
+		EffectManager.getInstance().reset();
 		AnimationManager.getInstance().loadXml();
 		load(level);
 		isInitialized = true;
+        activatePlayer1Item = false;
+        activatePlayer2Item = false;
 		setPlayersAsCurrentEntitiesToWatch();
 		ui = new GameWorldUI(this);
         raceStartManager = new RaceStartManager(this, ui);
@@ -198,6 +204,10 @@ public class GameWorld extends GameScreen implements GameButtonListener {
 		
 		pauseScreen.step(timeElapsed);
 		if (pauseScreen.isHidden()) {
+		    
+		    if (activatePlayer1Item || activatePlayer2Item)
+		        activateItems();
+		    
 			for (Steppable p : steppables)
 				p.step(timeElapsed);
 			gameCamera.step(timeElapsed);
@@ -216,7 +226,22 @@ public class GameWorld extends GameScreen implements GameButtonListener {
 			onLevelFinished();
 	}
 	
-	private void removeDeadEntities(){
+	private void activateItems() {
+	    Player p;
+	    if (activatePlayer1Item) {
+	        p = getPlayers().get(PlayerNumber.ONE);
+	        p.getItem().activate(p, this);
+	    }
+	    
+	    if (activatePlayer2Item) {
+	        p = getPlayers().get(PlayerNumber.TWO);
+            p.getItem().activate(p, this);
+        }
+	    
+	    activatePlayer1Item = activatePlayer2Item = false;
+    }
+
+    private void removeDeadEntities(){
 		Iterator<Entity> it = pWorld.getDeadEntities();
 		while(it.hasNext()){
 			Entity e = it.next();
@@ -292,37 +317,37 @@ public class GameWorld extends GameScreen implements GameButtonListener {
 	}
 
     @Override
-    public void onClick(int buttonId) {
+    public void onClick(int buttonId, boolean pressed) {
         Player p;
         if (buttonId == GameWorldUI.BT_PLAYER_1_ACT) {
             p = getPlayers().get(PlayerNumber.ONE);
             if (p != null) {
-                p.setAct(true);
+                p.setAct(pressed);
             }
         } else if (buttonId == GameWorldUI.BT_PLAYER_1_JUMP) {
             p = getPlayers().get(PlayerNumber.ONE);
             if (p != null) {
-                p.setJumping(true);
+                p.setJumping(pressed);
             }
         } else if (buttonId == GameWorldUI.BT_PLAYER_1_ITEM) {
             p = getPlayers().get(PlayerNumber.ONE);
             if (p != null && p.getItem() != null) {
-                p.getItem().activate(p, this);
+                activatePlayer1Item = pressed;
             }
         } else if (buttonId == GameWorldUI.BT_PLAYER_2_ACT) {
             p = getPlayers().get(PlayerNumber.TWO);
             if (p != null) {
-                p.setAct(true);
+                p.setAct(pressed);
             }
         } else if (buttonId == GameWorldUI.BT_PLAYER_2_JUMP) {
             p = getPlayers().get(PlayerNumber.TWO);
             if (p != null) {
-                p.setJumping(true);
+                p.setJumping(pressed);
             }
         } else if (buttonId == GameWorldUI.BT_PLAYER_2_ITEM) {
             p = getPlayers().get(PlayerNumber.TWO);
             if (p != null && p.getItem() != null) {
-                p.getItem().activate(p, this);
+                activatePlayer2Item = pressed;
             }
         }
     }

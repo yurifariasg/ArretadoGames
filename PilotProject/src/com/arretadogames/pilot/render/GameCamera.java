@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Set;
 
 public class GameCamera implements Renderable, Steppable {
+    
+    private static final float CAMERA_MINIMUM_Y = 0.8f;
+    private static final float CAMERA_MOVE_UP_THRESHOLD = 2.4f;
 
 	private static GameWorld gameWorld = null;
 
@@ -228,6 +231,12 @@ public class GameCamera implements Renderable, Steppable {
 				calculateWidthFirst = false;
 			}
 		}
+		
+		if (center.y < CAMERA_MOVE_UP_THRESHOLD) {
+		    center.y = CAMERA_MINIMUM_Y;
+		} else {
+		    center.y -= CAMERA_MOVE_UP_THRESHOLD - CAMERA_MINIMUM_Y;
+		}
 
 		lowerBound = new Vec2(center.x - viewportWidth / 2, center.y
 				- viewportHeight / 2);
@@ -307,7 +316,7 @@ public class GameCamera implements Renderable, Steppable {
 		}
 		
 		// Start Toucan if needed
-        if (maxXDistance > 10) {
+        if (maxXDistance > 10 && !secondFurthestPlayer.hasFinished()) {
             toucan.activate(lowerBound.x, upperBound.y, furthestPlayer, secondFurthestPlayer, flagX);
         }
 
@@ -358,6 +367,8 @@ public class GameCamera implements Renderable, Steppable {
 		}
 		
 		toucan.render(gameCanvas, timeElapsed);
+		
+        EffectManager.getInstance().removeInactiveEffects();
 
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Draw entities");
 		Profiler.initTick(ProfileType.RENDER);

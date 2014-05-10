@@ -1,12 +1,5 @@
 package com.arretadogames.pilot.util.parsers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.util.Log;
 
 import com.arretadogames.pilot.entities.EntityType;
@@ -15,9 +8,15 @@ import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.GroundDescriptor;
 import com.arretadogames.pilot.levels.HoleDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
-import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.levels.WaterDescriptor;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LevelParser {
 	public static boolean parseJSON(String jsonString, LevelDescriptor level) {
@@ -70,12 +69,6 @@ public class LevelParser {
 							(float) jsonEntity.getDouble("y"),
 							EntityType.ONEWAY_WALL);
 				
-				} else if (EntityType.PULLEY.toString().equals(entityType)) { // PULLEY
-
-					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
-							(float) jsonEntity.getDouble("y"),
-							EntityType.PULLEY);
-					
 				} else if (EntityType.TREE.toString().equals(entityType)) {
 					
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
@@ -100,17 +93,6 @@ public class LevelParser {
 					entity = new EntityDescriptor((float) jsonEntity.getDouble("x"),
 							(float) jsonEntity.getDouble("y"),
 							EntityType.BREAKABLE);
-					
-				} else if (EntityType.LIANA.toString().equals(entityType)) { // LIANA
-					
-					entity = new LianaDescriptor(
-							(float) jsonEntity.getDouble("x0"),
-							(float) jsonEntity.getDouble("y0"),
-							(float) jsonEntity.getDouble("x1"),
-							(float) jsonEntity.getDouble("y1"),
-							(float) jsonEntity.getDouble("size"),
-							EntityType.LIANA);
-
 					
 				} else if (EntityType.FINALFLAG.toString().equals(entityType)) { // FINAL FLAG
 					

@@ -2,8 +2,12 @@ package com.arretadogames.pilot.entities;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
+import com.arretadogames.pilot.entities.effects.PostEffectCallback;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Util;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -11,108 +15,66 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 
-public class MacacoPrego extends Player implements Steppable{
+public class MacacoPrego extends Player implements Steppable, PostEffectCallback{
 
-    private static final Vec2 BODY_DIMEN = new Vec2(0.26f, 0.5f);
-//	private float radius = 0.3f;
-	private boolean isOnLiana;
+    private static final Vec2 SUPER_JUMP_IMPULSE = new Vec2(GameSettings.DASH_MAX_VEL_MULTIPLIER,
+            GameSettings.DASH_MAX_VEL_MULTIPLIER);
+    private static final PhysicsRect BODY_DIMEN = new PhysicsRect(0.4f, 0.75f);
 	private Body b;
 	private int doubleJump;
+	private boolean shouldSuperJump;
+	
 	
 	public MacacoPrego(float x, float y, PlayerNumber number) {
-		super(x, y, number);
+		super(x, y, number,
+		        GameSettings.MACACO_TIME_WAITING_FOR_ACT,
+		        GameSettings.MACACO_DASH_DURATION);
 		applyConstants();
 		doubleJump = getMaxDoubleJumps();
+		shouldSuperJump = false;
 		
-		float radius = BODY_DIMEN.x / 2f;
+		float radius = BODY_DIMEN.width() / 2f;
         
         CircleShape shape = new CircleShape();
         shape.setRadius(radius);
-        shape.m_p.set(0f, (- BODY_DIMEN.y / 2f) + radius);
+        shape.m_p.set(0f, (- BODY_DIMEN.height() / 2f) + radius);
         footFixture = body.createFixture(shape, 0.1f);
         footFixture.setFriction(0f);
-        // FOOT OK
         
         // Head
         shape = new CircleShape();
         shape.setRadius(radius);
-        shape.m_p.set(0f, (BODY_DIMEN.y / 2f) - radius);
+        shape.m_p.set(0f, (BODY_DIMEN.height() / 2f) - radius);
         body.createFixture(shape, 0.1f); // HEAD
-        
 
         PolygonShape bodyShape = new PolygonShape();
-        bodyShape.setAsBox(BODY_DIMEN.x / 2f, BODY_DIMEN.y / 2f - radius);
-        bodyFixture = body.createFixture(bodyShape,  2.8f);
+        bodyShape.setAsBox(BODY_DIMEN.width() / 2f, BODY_DIMEN.height() / 2f - radius);
+        bodyFixture = body.createFixture(bodyShape,  2.8f); // 2.8f
         bodyFixture.setFriction(0f);
         
         body.setType(BodyType.DYNAMIC);
         contJump = 0;
         body.setFixedRotation(true);
 
-//		CircleShape shape = new CircleShape();
-//		shape.setRadius(radius );
-//		bodyFixture = body.createFixture(shape,  3f);
-//		bodyFixture.setFriction(0f);
-//		body.setType(BodyType.DYNAMIC);
-//		body.setFixedRotation(true);
-//		PolygonShape footShape = new PolygonShape();
-//		footShape.setAsBox(radius, 0.1f, new Vec2(0f,-radius+0.1f), 0f);
-//		footFixture = body.createFixture(footShape, 0f);
-//		footFixture.setSensor(true);
-    		
         categoryBits = CollisionFlag.GROUP_PLAYERS.getValue() ;
         maskBits = CollisionFlag.GROUP_COMMON_ENTITIES.getValue() | CollisionFlag.GROUP_GROUND.getValue()
                 | CollisionFlag.GROUP_PLAYERS.getValue();
         
         setMaskAndCategoryBits();
 		
-		isOnLiana = false;
-
-		// Tail
-//		PolygonShape shape2 = new PolygonShape();
-//		shape2.setAsBox(0.05f, 0.2f);
-//		FixtureDef fd = new FixtureDef();
-//		fd.shape = shape2;
-//		fd.density = 3.0f;
-//		fd.friction = 0.2f;
-//		BodyDef bf = new BodyDef();
-//		bf.type = BodyType.DYNAMIC;
-//		b = world.createBody(bf);
-//		b.createFixture(fd).setFilterData(filter);;
-//		b.setUserData(this);
-//		RevoluteJointDef jd2 = new RevoluteJointDef();
-//		jd2.bodyA = body;
-//		jd2.bodyB = b;
-//		jd2.collideConnected = false;
-//		jd2.localAnchorA.set(new Vec2(0f,0.2f));
-//		
-//		jd2.localAnchorB.set(new Vec2(0f,0.1f));
-//		world.createJoint(jd2);
-		
-		physRect = new PhysicsRect(0.6f, 0.7f);
+        // Image Rect
+		physRect = Util.convertToSquare(BODY_DIMEN);
+		physRect.inset(-0.1f, -0.1f);
 	}
 	
 	public void applyConstants() {
 		setMaxJumpVelocity(GameSettings.MACACO_MAX_JUMP_VELOCITY);
 		setMaxRunVelocity(GameSettings.MACACO_MAX_RUN_VELOCITY);
 		setJumpAceleration(GameSettings.MACACO_JUMP_ACELERATION);
-		setRunAceleration(GameSettings.MACACO_RUN_ACELERATION);
-		setTimeWaitingForAct(GameSettings.MACACO_TIME_WAITING_FOR_ACT);
+		setRunAceleration(GameSettings.MACACO_RUN_ACELERATION, GameSettings.MACACO_INITIAL_RUN_ACELERATION);
 		setMaxDoubleJumps(0);
 	}
 	
-//	@Override
-//	public PolygonShape getWaterContactShape() {
-//		PolygonShape a = new PolygonShape();
-//		a.setAsBox(radius, radius);
-//		return a;
-//	}
-	
-	public void setOnLiana(boolean bo){
-		isOnLiana = bo;
-		b.setFixedRotation(!bo);
-	}
-
 	public void jump() {
 		if (hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
 			return;
@@ -123,7 +85,7 @@ public class MacacoPrego extends Player implements Steppable{
 		}
 		sprite.setAnimationState("jump");
 		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
-		Vec2 direction = new Vec2(1,6);
+		Vec2 direction = new Vec2(2,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
 		body.applyLinearImpulse(direction, body.getWorldCenter(), true);
@@ -132,21 +94,8 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 	
 	public void run(){
-		if( isOnLiana) {
-			sprite.setAnimationState("jump");
-			return;
-		}
-		if(body.getLinearVelocity().x < 1.5){ 
-			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter(), true);
-		}
-		if(body.getLinearVelocity().length() > 8){
-			Vec2 vel = body.getLinearVelocity().clone();
-			vel.normalize();
-			body.setLinearVelocity(vel.mul(8));
-		}
-		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < getMaxRunVelocity()){
+		if(body.getLinearVelocity().x < getMaxRunVelocity()){
 			float force = (getRunAceleration()) * body.getMass();
-			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
 			Vec2 direction = new Vec2(1,0);
 			direction.normalize();
 			direction.mulLocal(force);
@@ -156,17 +105,19 @@ public class MacacoPrego extends Player implements Steppable{
 
 	@Override
 	public void playerStep(float timeElapsed) {
+	    if (shouldSuperJump) {
+	        shouldSuperJump = false;
+	        body.applyLinearImpulse(SUPER_JUMP_IMPULSE.mul(body.getMass() * getJumpAceleration()), body.getPosition(), true);
+	    }
 	}
 	
 	@Override
 	public void playerRender(GLCanvas canvas, float timeElapsed) {
-		
 		canvas.saveState();
 		canvas.translatePhysics(getPosX(), getPosY());
 		canvas.rotate((float) (180 * - getAngle() / Math.PI));
         sprite.render(canvas, physRect, timeElapsed);
 		canvas.restoreState();
-		
 	}
 
 	public Body getContactLianaBody() {
@@ -179,8 +130,29 @@ public class MacacoPrego extends Player implements Steppable{
 	}
 
     @Override
-    public void act() {
-        // TODO Auto-generated method stub
-        
+    public boolean dash() {
+        if (bodiesContact.size() > 0) {
+            shouldSuperJump = true;
+            
+            EffectDescriptor descriptor = new EffectDescriptor();
+            descriptor.pRect = physRect.clone();
+            descriptor.pRect.inset(-0.2f, -0.2f);
+            descriptor.position = body.getPosition();
+            descriptor.duration = GameSettings.MACACO_DASH_DURATION;
+            descriptor.type = "speed_burst";
+            descriptor.xOffset -= 0.2f;
+            descriptor.yOffset -= 0.1f;
+            descriptor.alpha = 100;
+            descriptor.callback = this;
+            descriptor.angle = -45;
+            
+            EffectManager.getInstance().addEffect(descriptor);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void finished() {
     }
 }

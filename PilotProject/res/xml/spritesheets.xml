@@ -242,4 +242,11 @@
             </Animation>
         </AnimationSwitcher>
     </Sheet>
+    <Sheet resId="speed_effect">
+        <AnimationSwitcher name="speed_burst">
+            <Animation name="default">
+                <Frame x="0" y="0" w="512" h="512" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
 </Spritesheets>

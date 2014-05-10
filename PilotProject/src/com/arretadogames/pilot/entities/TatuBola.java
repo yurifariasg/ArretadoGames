@@ -1,9 +1,10 @@
 package com.arretadogames.pilot.entities;
 
-
-
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
+import com.arretadogames.pilot.entities.effects.EffectDescriptor;
+import com.arretadogames.pilot.entities.effects.EffectManager;
+import com.arretadogames.pilot.entities.effects.PostEffectCallback;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
@@ -13,20 +14,17 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 
-import java.util.Date;
 import java.util.HashSet;
 
-public class TatuBola extends Player {
+public class TatuBola extends Player implements PostEffectCallback {
 
-	Date lastAct;
-	private final float TIME_WAITING_FOR_ACT = 6f;
-	private float timeForNextAct = 0f;
-	
 	private final float rad = 0.2f;
 	private int doubleJump;
 	
 	public TatuBola(float x, float y, PlayerNumber number) {
-		super(x, y, number);
+		super(x, y, number,
+		        GameSettings.TATU_TIME_WAITING_FOR_ACT,
+		        GameSettings.TATU_DASH_DURATION);
 		applyConstants();
 		doubleJump = getMaxDoubleJumps();
 
@@ -56,8 +54,7 @@ public class TatuBola extends Player {
 		setMaxJumpVelocity(GameSettings.TATU_MAX_JUMP_VELOCITY);
 		setMaxRunVelocity(GameSettings.TATU_MAX_RUN_VELOCITY);
 		setJumpAceleration(GameSettings.TATU_JUMP_ACELERATION);
-		setRunAceleration(GameSettings.TATU_RUN_ACELERATION);
-		setTimeWaitingForAct(GameSettings.TATU_TIME_WAITING_FOR_ACT);
+		setRunAceleration(GameSettings.TATU_RUN_ACELERATION, GameSettings.ARARA_INITIAL_RUN_ACELERATION);
 		setMaxDoubleJumps(0);
 	}
 	
@@ -68,11 +65,6 @@ public class TatuBola extends Player {
 		return a;
 	}
 	
-	@Override
-	public int getPercentageLeftToNextAct() {
-		return Math.min((int)((((TIME_WAITING_FOR_ACT-timeForNextAct)/TIME_WAITING_FOR_ACT) * 100) + 0.000000001),100);
-	}
-
 	public void jump() {
 		if (isGhostMode() || hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
 			return;
@@ -84,7 +76,7 @@ public class TatuBola extends Player {
 		
 		sprite.setAnimationState("jump");
 		float impulseX = (getJumpAceleration()-body.getLinearVelocity().y) * body.getMass();
-		Vec2 direction = new Vec2(0,6);
+		Vec2 direction = new Vec2(2,6);
 		direction.normalize();
 		direction.mulLocal(impulseX);
 		body.applyLinearImpulse(direction, body.getWorldCenter(), true);
@@ -94,45 +86,40 @@ public class TatuBola extends Player {
 	}
 	
 	public void run(){
-		if(body.getLinearVelocity().x < 1.5){ 
-			body.applyLinearImpulse(new Vec2(1 * body.getMass(),0f), body.getWorldCenter(), true);
-		}
-		if(body.getLinearVelocity().length() > 8){
-			Vec2 vel = body.getLinearVelocity().clone();
-			vel.normalize();
-			body.setLinearVelocity(vel.mul(8));
-		}
-		if(bodiesContact.size() > 0 && body.getLinearVelocity().x < getMaxRunVelocity()){
-			float force = (getRunAceleration()) * body.getMass();
-			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
-			Vec2 direction = new Vec2(1,0);
-			direction.normalize();
-			direction.mulLocal(force);
-			body.applyForceToCenter(direction);
-		}
-	}
-
-	public void act() {
-		if( bodiesContact.size() > 0 && contAct == 0){
-			if ( timeForNextAct < 0.00000001 ){
-    			timeForNextAct = TIME_WAITING_FOR_ACT;	
-    			sprite.setAnimationState("jump");
-    			float impulse = (3) * body.getMass();
+	    if (!isDashActive()) {
+    		if(body.getLinearVelocity().x < getMaxRunVelocity()){
+    			float force = (getRunAceleration()) * body.getMass();
+    			//Vec2 direction = new Vec2((float)Math.cos(body.getAngle() ),(float)Math.sin(body.getAngle()));
     			Vec2 direction = new Vec2(1,0);
     			direction.normalize();
-    			direction.mulLocal(impulse);
-    			body.applyLinearImpulse(direction, body.getWorldCenter(), true);
-    			contAct = 50;
-    			lastAct = new Date();
+    			direction.mulLocal(force);
+    			body.applyForceToCenter(direction);
     		}
-		}
+	    } else {
+            body.getLinearVelocity().x =
+                    getMaxRunVelocity() * GameSettings.DASH_MAX_VEL_MULTIPLIER;
+        }
+	}
+
+	public boolean dash() {
+	    shouldLimitVelocity = false;
+        EffectDescriptor descriptor = new EffectDescriptor();
+        descriptor.pRect = physRect.clone();
+        descriptor.pRect.inset(-0.2f, -0.2f);
+        descriptor.position = body.getPosition();
+        descriptor.duration = GameSettings.TATU_DASH_DURATION;
+        descriptor.type = "speed_burst";
+        descriptor.xOffset -= 0.2f;
+        descriptor.alpha = 100;
+        descriptor.callback = this;
+        
+        EffectManager.getInstance().addEffect(descriptor);
+	    return true;
 	}
 
 	@Override
 	public void playerStep(float timeElapsed) {
-		timeForNextAct = Math.max(0.0f,timeForNextAct-timeElapsed);
-		Date t = new Date();
-		if( bodiesContact.size() > 0 && !actActive && (lastAct == null || (t.getTime() - lastAct.getTime())/1000 > 3  )){
+		if( bodiesContact.size() > 0 && !actActive){
 			sprite.setAnimationState("default");
 		}
 	}
@@ -151,4 +138,10 @@ public class TatuBola extends Player {
 	public int getStatusImg() {
 		return R.drawable.tatu_status;
 	}
+
+    @Override
+    public void finished() {
+        body.getLinearVelocity().x *= GameSettings.AFTER_DASH_DAMPING;
+        shouldLimitVelocity = true;
+    }
 }

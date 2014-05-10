@@ -1,13 +1,5 @@
 package com.arretadogames.pilot.entities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
-import org.jbox2d.common.Vec2;
-
 import android.util.Pair;
 
 import com.arretadogames.pilot.config.GameSettings;
@@ -18,11 +10,18 @@ import com.arretadogames.pilot.items.BoxItem;
 import com.arretadogames.pilot.levels.EntityDescriptor;
 import com.arretadogames.pilot.levels.HoleDescriptor;
 import com.arretadogames.pilot.levels.LevelDescriptor;
-import com.arretadogames.pilot.levels.LianaDescriptor;
 import com.arretadogames.pilot.levels.PlayerDescriptor;
 import com.arretadogames.pilot.levels.WaterDescriptor;
 import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
+
+import org.jbox2d.common.Vec2;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class EntityBuilder {
 	
@@ -83,11 +82,6 @@ public class EntityBuilder {
 					entity = new Breakable(entityDescriptor.getX(),entityDescriptor.getY(),0.2f,1.5f,0,false);
 					break;
 				
-				case LIANA:
-					LianaDescriptor entityLiana = (LianaDescriptor) entityDescriptor; 
-					entity = new Liana(entityLiana.getX(), entityLiana.getY(), entityLiana.getX1(), entityLiana.getY1());
-					break;
-					
 				case FINALFLAG:
 					entity = new FinalFlag(entityDescriptor.getX(), entityDescriptor.getY());
 					break;

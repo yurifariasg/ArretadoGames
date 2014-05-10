@@ -12,7 +12,7 @@ import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.GameWorldUI;
-import com.arretadogames.pilot.ui.GameButtonListener;
+import com.arretadogames.pilot.ui.GameHUDButton;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
@@ -21,7 +21,7 @@ import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class RaceStartManager implements Renderable, Steppable, GameButtonListener {
+public class RaceStartManager implements Renderable, Steppable, GameHUDButton {
 
     private static final float COUNTDOWN_SIZE = 200;
     private static final float COUNTDOWN_START_TIME = 5.0f;
@@ -36,7 +36,7 @@ public class RaceStartManager implements Renderable, Steppable, GameButtonListen
     // Force that pulls the players before the race begins
     private static final float FORCE = 40.0f;
     // The initial x offset
-    private static final float INITIAL_POS_X_OFFSET = -42.0f;
+    private static final float INITIAL_POS_X_OFFSET = -22.0f;
     
  // This countdown is not the same as the images (3 here does not mean 3 in the image - check render)
     private float countDownTimer;
@@ -53,7 +53,7 @@ public class RaceStartManager implements Renderable, Steppable, GameButtonListen
     private Player p1;
     private Player p2;
     
-    private GameButtonListener nextUIListener;
+    private GameHUDButton nextUIListener;
     
     private GameWorldUI ui;
     
@@ -92,7 +92,7 @@ public class RaceStartManager implements Renderable, Steppable, GameButtonListen
                 halfScreenWidth + COUNTDOWN_SIZE / 2, halfScreenHeight + COUNTDOWN_SIZE / 2);
     }
     
-    private void setNextUIListener(GameButtonListener listener) {
+    private void setNextUIListener(GameHUDButton listener) {
         nextUIListener = listener;
     }
     
@@ -243,7 +243,7 @@ public class RaceStartManager implements Renderable, Steppable, GameButtonListen
     }
 
     @Override
-    public void onClick(int buttonId) {
+    public void onClick(int buttonId, boolean pressed) {
         if (!activateInput) {
             return;
         }

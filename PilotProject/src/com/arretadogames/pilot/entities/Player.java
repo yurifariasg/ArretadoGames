@@ -26,7 +26,7 @@ import java.util.HashSet;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public abstract class Player extends Entity implements Steppable{
+public abstract class Player extends DashableEntity {
     
     protected static final int GHOST_MODE_TRANSPARENCY_COLOR = Color.argb(80, 255, 255, 255);
 	
@@ -38,7 +38,6 @@ public abstract class Player extends Entity implements Steppable{
 	private int maxDoubleJumps = 0;
 	private float jumpAceleration = 3;
 	private float runAceleration = 5;
-	private float timeWaitingForAct = 6;
 	
 	private PlayerNumber playerNumber;
 	private boolean hasFinished; /* Player has finished level */
@@ -50,7 +49,6 @@ public abstract class Player extends Entity implements Steppable{
 
 	protected AnimationSwitcher sprite;
 	protected int contJump;
-	protected int contAct;
     protected Fixture bodyFixture;
 	protected Fixture footFixture;
 	protected Collection<Body> bodiesContact;
@@ -67,9 +65,13 @@ public abstract class Player extends Entity implements Steppable{
     
     private Vec2 stopImpulse = new Vec2(-1f, 0);
     private Item item;
+
+    private float initialRunAceleration;
+    protected boolean shouldLimitVelocity;
 	
-	public Player(float x, float y, PlayerNumber playerNumber) {
-		super(x, y);
+	public Player(float x, float y, PlayerNumber playerNumber,
+	        float timeWaitingForAct, float dashDuration) {
+		super(x, y, timeWaitingForAct, dashDuration);
 		this.playerNumber = playerNumber;
 		hasFinished = false;
 		jumpActive = false;
@@ -79,6 +81,7 @@ public abstract class Player extends Entity implements Steppable{
         ghostModeActive = false;
         forceStop = false;
         isEnabled = true;
+        shouldLimitVelocity = true;
 	}
 	
 	public void setMaskAndCategoryBits() {
@@ -130,8 +133,8 @@ public abstract class Player extends Entity implements Steppable{
     	    descriptor.position = body.getPosition();
     	    descriptor.repeat = true;
     	    descriptor.type = "stun";
-    	    descriptor.pRect = new PhysicsRect(physRect.width(), physRect.width() / 2);
-    	    descriptor.position.y += physRect.height() / 2;
+    	    descriptor.pRect = new PhysicsRect(physRect.width() / 1.5f, physRect.width() / 3.5f);
+    	    descriptor.position.y += physRect.height() / 1.5f;
     	    descriptor.duration = stunDuration;
     	    
     	    EffectManager.getInstance().addEffect(descriptor);
@@ -176,6 +179,8 @@ public abstract class Player extends Entity implements Steppable{
 	
 	@Override
 	public final void step(float timeElapsed){
+	    super.step(timeElapsed);
+	    
 		if (state == State.DYING) {
 			timeToDie -= timeElapsed;
 			if (timeToDie <= 0) {
@@ -208,27 +213,23 @@ public abstract class Player extends Entity implements Steppable{
 	            jumpActive = false;
 	        }
 	        if(actActive){
-	            act();
+	            callAct();
 	        }
 	        
 	        if(contJump > 0) {
 	            contJump--;
 	        }
-	        if(contAct > 0 ) {
-	            contAct--;
-	        }
 	        run();
 		    
 		    playerStep(timeElapsed);
 		    
-		    if (Math.abs(body.getLinearVelocity().x) > GameSettings.MAX_VELOCITY_X) {
-		        body.getLinearVelocity().x = GameSettings.MAX_VELOCITY_X *
+		    if (Math.abs(body.getLinearVelocity().x) > getMaxRunVelocity() && shouldLimitVelocity) {
+		        body.getLinearVelocity().x = getMaxRunVelocity() *
 		                (body.getLinearVelocity().x / Math.abs(body.getLinearVelocity().x));
 		    }
 		}
 	}
-	
-	public abstract void act();
+    
 	public abstract void jump();
 	public abstract void run();
 	public abstract void applyConstants();
@@ -252,12 +253,10 @@ public abstract class Player extends Entity implements Steppable{
 		return EntityType.PLAYER;
 	}
 	
-//	public abstract void jump();
 	public void setJumping(boolean isJumping) {
 		this.jumpActive = isJumping;
 	}
 	
-//	public abstract void act();
 	public void setAct(boolean isAct) {
 		this.actActive = isAct;
 	}
@@ -319,24 +318,15 @@ public abstract class Player extends Entity implements Steppable{
 	}
 
 	public float getRunAceleration() {
-		return runAceleration;
+		return body.getLinearVelocity().x < GameSettings.INITIAL_RUN_THRESHOLD ?
+		        initialRunAceleration: runAceleration;
 	}
 
-	public void setRunAceleration(float runAceleration) {
+	public void setRunAceleration(float runAceleration, float initialRunAceleration) {
 		this.runAceleration = runAceleration;
-	}
-
-	public float getTimeWaitingForAct() {
-		return timeWaitingForAct;
-	}
-
-	public void setTimeWaitingForAct(float timeWaitingForAct) {
-		this.timeWaitingForAct = timeWaitingForAct;
+		this.initialRunAceleration = initialRunAceleration;
 	}
 	
-	public int getPercentageLeftToNextAct(){
-		return 100;
-	}
 	public abstract int getStatusImg();
 
 	public int getMaxDoubleJumps() {

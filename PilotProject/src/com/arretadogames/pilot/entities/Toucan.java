@@ -21,7 +21,8 @@ public class Toucan implements Renderable, Steppable {
 
     private static final PhysicsRect TOUCAN_SIZE = new PhysicsRect(2, 2);
     private static final Vec2 GRAB_OFFSET = new Vec2(0, 0.6f);
-    private static final Vec2 TARGET_PLAYER_OFFSET = new Vec2(-5, 2);
+    private static final float TARGET_PLAYER_X_OFFSET = -5f;
+    private static final float TARGET_GROUND_Y_OFFSET = 2f;
     private static final Vec2 TARGET_FLAG_OFFSET = new Vec2(-10, 2);
     private static final Vec2 FLIGHT_OUT_POSITION_RELATIVE_TO_TARGET = new Vec2(4, 10);
 
@@ -153,8 +154,8 @@ public class Toucan implements Renderable, Steppable {
                     Body b = target.body;
                     
                     if (b.getPosition().x < flagX) {
-                        moveTowards(b.getPosition().x + TARGET_PLAYER_OFFSET.x,
-                                b.getPosition().y + TARGET_PLAYER_OFFSET.y,
+                        moveTowards(b.getPosition().x + TARGET_PLAYER_X_OFFSET,
+                                TARGET_GROUND_Y_OFFSET,
                                 remainingTime, PULL_FLIGHT_DURATION);
                     } else {
                         moveTowards(flagX + TARGET_FLAG_OFFSET.x, TARGET_FLAG_OFFSET.y,

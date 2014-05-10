@@ -2,6 +2,8 @@ package com.arretadogames.pilot.util;
 
 import android.graphics.Color;
 
+import com.arretadogames.pilot.render.PhysicsRect;
+
 
 /**
  * Helper class to perform usual operations
@@ -42,6 +44,14 @@ public class Util {
 	    int blue = Color.blue(color);
 	    return Color.argb(alpha, red, green, blue);
 	}
+	
+	public static PhysicsRect convertToSquare(PhysicsRect pRect) {
+	    return new PhysicsRect(Math.max(pRect.width(), pRect.height()), Math.max(pRect.width(), pRect.height()));
+	}
+	
+//	public RectF convertToSquare(RectF rect) {
+//        return new RectF(Math.max(rect.width(), rect.height()), Math.max(rect.width(), rect.height()));
+//    }
 	
 	/**
 	 * @credits:

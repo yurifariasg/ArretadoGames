@@ -32,34 +32,44 @@ public class GameSettings {
 	public static float WidthRatio = 1f;
 	public static float HeightRatio = 1f;
 	
-	public static final float MAX_VELOCITY_X = 6;
+	public static final float INITIAL_RUN_THRESHOLD = 2.5f;
 	
+	public static final float DASH_MAX_VEL_MULTIPLIER = 1.5f;
+	public static final float AFTER_DASH_DAMPING = 1f / 2f;
 	
 	//LoboGuara
-	public static final float LOBO_MAX_JUMP_VELOCITY = 5;
-	public static final float LOBO_MAX_RUN_VELOCITY = 3;
-	public static float LOBO_JUMP_ACELERATION = 5;
-	public static float LOBO_RUN_ACELERATION = 5;
+	public static final float LOBO_MAX_JUMP_VELOCITY = 3.5f;
+	public static final float LOBO_MAX_RUN_VELOCITY = 5f;
+	public static float LOBO_JUMP_ACELERATION = 4.3f;
+	public static float LOBO_RUN_ACELERATION = 0.8f;
+    public static float LOBO_INITIAL_RUN_ACELERATION = 5;
 	public static final float LOBO_TIME_WAITING_FOR_ACT = 6;
+	public static final float LOBO_DASH_DURATION = 1f;
 	
 	//Arara
-	public static final float ARARA_MAX_JUMP_VELOCITY = 5;
-	public static final float ARARA_MAX_RUN_VELOCITY = 3;
-	public static float ARARA_JUMP_ACELERATION = 5;
-	public static float ARARA_RUN_ACELERATION = 5;
+	public static final float ARARA_MAX_JUMP_VELOCITY = 4;
+	public static final float ARARA_MAX_RUN_VELOCITY = 4f;
+	public static float ARARA_JUMP_ACELERATION = 3.5f;
+	public static float ARARA_RUN_ACELERATION = 0.4f;
+	public static float ARARA_INITIAL_RUN_ACELERATION = 4;
 	public static final float ARARA_TIME_WAITING_FOR_ACT = 6;
+    public static final float ARARA_DASH_DURATION = 0.8f;
 	
 	//Tatu
-	public static final float TATU_MAX_JUMP_VELOCITY = 5;
-	public static final float TATU_MAX_RUN_VELOCITY = 3;
-	public static float TATU_JUMP_ACELERATION = 5;
-	public static float TATU_RUN_ACELERATION = 5;
+	public static final float TATU_MAX_JUMP_VELOCITY = 2f;
+	public static final float TATU_MAX_RUN_VELOCITY = 4.5f;
+	public static float TATU_JUMP_ACELERATION = 3.5f;
+	public static float TATU_RUN_ACELERATION = 0.85f;
+	public static float TATU_INITIAL_RUN_ACELERATION = 4;
 	public static final float TATU_TIME_WAITING_FOR_ACT = 6;
+    public static final float TATU_DASH_DURATION = 0.8f;
 	
 	//Macaco
-	public static final float MACACO_MAX_JUMP_VELOCITY = 5;
-	public static final float MACACO_MAX_RUN_VELOCITY = 3;
-	public static float MACACO_JUMP_ACELERATION = 5;
-	public static float MACACO_RUN_ACELERATION = 5;
+	public static final float MACACO_MAX_JUMP_VELOCITY = 8;
+	public static final float MACACO_MAX_RUN_VELOCITY = 4f;
+	public static float MACACO_JUMP_ACELERATION = 5.5f;
+	public static float MACACO_RUN_ACELERATION = 0.7f;
+	public static float MACACO_INITIAL_RUN_ACELERATION = 4f;
 	public static final float MACACO_TIME_WAITING_FOR_ACT = 6;
+    public static final float MACACO_DASH_DURATION = 0.5f;
 }
