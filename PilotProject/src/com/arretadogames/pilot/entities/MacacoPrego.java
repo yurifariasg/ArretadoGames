@@ -24,7 +24,6 @@ public class MacacoPrego extends Player implements Steppable, PostEffectCallback
 	private int doubleJump;
 	private boolean shouldSuperJump;
 	
-	
 	public MacacoPrego(float x, float y, PlayerNumber number) {
 		super(x, y, number,
 		        GameSettings.MACACO_TIME_WAITING_FOR_ACT,
