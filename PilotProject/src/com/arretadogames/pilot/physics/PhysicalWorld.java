@@ -113,7 +113,7 @@ public class PhysicalWorld implements ContactListener, Renderable {
 		Profiler.initTick(ProfileType.STEP);
 		
 		world.step(GameSettings.PHYSICS_TIMESTEP < 0 ?
-				timeElapsed : GameSettings.PHYSICS_TIMESTEP, 16, 6);
+				timeElapsed : GameSettings.PHYSICS_TIMESTEP, 16, 6); // 16, 6
 		
 		Profiler.profileFromLastTick(ProfileType.STEP, "Box2D World Step Time");
 		

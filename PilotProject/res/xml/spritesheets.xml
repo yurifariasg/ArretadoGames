@@ -256,4 +256,21 @@
             </Animation>
         </AnimationSwitcher>
     </Sheet>
+    <Sheet resId="box_pieces">
+        <AnimationSwitcher name="box_piece1">
+            <Animation name="default">
+                <Frame x="2" y="2" w="64" h="64" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+        <AnimationSwitcher name="box_piece2">
+            <Animation name="default">
+                <Frame x="2" y="68" w="64" h="64" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+        <AnimationSwitcher name="box_piece3">
+            <Animation name="default">
+                <Frame x="2" y="134" w="64" h="64" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
 </Spritesheets>

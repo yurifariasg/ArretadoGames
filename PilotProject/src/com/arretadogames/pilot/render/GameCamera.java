@@ -394,7 +394,6 @@ public class GameCamera implements Renderable, Steppable {
 						fixture.getBody().setAwake(true);
 						Object e = fixture.getBody().getUserData();
 						if (e != null) {
-
 							Entity entity = (Entity) e;
 							entities.add(entity);
 						}

@@ -16,7 +16,6 @@ import com.arretadogames.pilot.items.BoxItem;
 import com.arretadogames.pilot.items.Item;
 import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
-import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.ui.GameHUDButton;
 import com.arretadogames.pilot.world.GameWorld;
