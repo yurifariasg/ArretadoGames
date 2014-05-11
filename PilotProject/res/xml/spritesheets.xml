@@ -73,6 +73,13 @@
                 <Frame x="518" y="2" w="256" h="256" t="0.5" />
                 <Frame x="2" y="260" w="256" h="256" t="0.5" />
             </Animation>
+            <Animation name="running">
+                <Frame x="260" y="260" w="256" h="256" t="0.5" />
+                <Frame x="518" y="260" w="256" h="256" t="0.5" />
+                <Frame x="2" y="518" w="256" h="256" t="0.5" />
+                <Frame x="260" y="518" w="256" h="256" t="0.5" />
+                <Frame x="518" y="518" w="256" h="256" t="0.5" />
+            </Animation>
             <Animation name="jump">
                 <Frame x="260" y="260" w="256" h="256" t="0.5" />
                 <Frame x="518" y="260" w="256" h="256" t="0.5" />

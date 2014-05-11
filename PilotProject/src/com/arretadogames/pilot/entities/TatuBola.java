@@ -96,6 +96,7 @@ public class TatuBola extends Player implements PostEffectCallback {
     			body.applyForceToCenter(direction);
     		}
 	    } else {
+	        sprite.setAnimationState("running");
             body.getLinearVelocity().x =
                     getMaxRunVelocity() * GameSettings.DASH_MAX_VEL_MULTIPLIER;
         }

@@ -1,11 +1,5 @@
 package com.arretadogames.pilot.world;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import android.graphics.Color;
 import android.util.SparseArray;
 
@@ -20,8 +14,6 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.effects.EffectDescriptor;
 import com.arretadogames.pilot.entities.effects.EffectManager;
-import com.arretadogames.pilot.game.Game;
-import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationManager;
@@ -38,6 +30,12 @@ import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
 import com.arretadogames.pilot.weathers.Weather;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * GameWorld class represents the World in our Game
@@ -89,7 +87,6 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 	
 	@Override
 	public void onUnloading() {
-		System.out.println("Unloading");
 		totalElapsedSeconds = 0;
 		isInitialized = false;
 		pWorld.removeAll();
@@ -375,5 +372,13 @@ public class GameWorld extends GameScreen implements GameHUDButton {
                 activatePlayer2Item = pressed;
             }
         }
+    }
+
+    public GameWorldUI getUI() {
+        return ui;
+    }
+
+    public GameCamera getCamera() {
+        return gameCamera;
     }
 }

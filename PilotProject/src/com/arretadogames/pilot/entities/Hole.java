@@ -68,7 +68,7 @@ public class Hole extends Entity implements Steppable{
 		PolygonShape pshape = new PolygonShape();
 		pshape.setAsBox(ENTRANCE_SENSOR_WIDTH, ENTRANCE_SENSOR_HEIGHT);
 		BodyDef bd = new BodyDef();
-		bd.position = new Vec2(x1,ENTRANCE_SENSOR_HEIGHT);
+		bd.position = new Vec2(x1 + 0.3f,ENTRANCE_SENSOR_HEIGHT);
 		entrance = world.createBody(bd);
 		fentrance = entrance.createFixture(pshape, 0);
 		fentrance.setFilterData(filter);
@@ -100,6 +100,7 @@ public class Hole extends Entity implements Steppable{
 			seta = true;
 			data = tatu.bodyFixture.getFilterData().categoryBits;
 			data2 = tatu.bodyFixture.getFilterData().maskBits;
+			((TatuBola)e).actActive = false;
 		}
 		if(e instanceof TatuBola && (contact.m_fixtureA == fentrance || contact.m_fixtureB == fentrance)){
 			tatu = (TatuBola)e;

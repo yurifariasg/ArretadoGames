@@ -62,7 +62,7 @@ public class GameSettings {
 	public static float TATU_RUN_ACELERATION = 0.85f;
 	public static float TATU_INITIAL_RUN_ACELERATION = 4;
 	public static final float TATU_TIME_WAITING_FOR_ACT = 6;
-    public static final float TATU_DASH_DURATION = 0.8f;
+    public static final float TATU_DASH_DURATION = 0.9f;
 	
 	//Macaco
 	public static final float MACACO_MAX_JUMP_VELOCITY = 8;
