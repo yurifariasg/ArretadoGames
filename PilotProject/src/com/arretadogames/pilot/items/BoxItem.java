@@ -1,17 +1,23 @@
-package com.arretadogames.pilot.items;
+ package com.arretadogames.pilot.items;
 
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.Entity;
 import com.arretadogames.pilot.entities.EntityType;
 import com.arretadogames.pilot.entities.Player;
+import com.arretadogames.pilot.game.Game;
+import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.GameCamera;
 import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.util.Assets;
+import com.arretadogames.pilot.world.GameWorld;
 
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.contacts.Contact;
 
@@ -19,8 +25,8 @@ import java.util.Random;
 
 public class BoxItem extends Entity {
     
-    private static final PhysicsRect BOX_SIZE = new PhysicsRect(0.8f, 0.8f);
-    private static final PhysicsRect ITEM_IMAGE_SIZE = new PhysicsRect(0.6f, 0.6f);
+    public static final PhysicsRect BOX_SIZE = new PhysicsRect(0.8f, 0.8f);
+    public static final PhysicsRect ITEM_IMAGE_SIZE = new PhysicsRect(0.6f, 0.6f);
     private static final int IMAGE = R.drawable.box_stopped;
     
     private Item item;
@@ -77,10 +83,20 @@ public class BoxItem extends Entity {
     	if (e.getType() == EntityType.PLAYER && isAlive()) {
             Player p = (Player) e;
             if (p.getItem() == null) {
+                
                 p.setItem(item);
                 Assets.playSound(Assets.pickupSound, 0.05f);
                 kill();
                 PhysicalWorld.getInstance().addDeadEntity(this);
+                
+                // Add Item to UI
+                GameWorld gameWorld = ((GameWorld)Game.getInstance().getScreen(GameState.RUNNING_GAME));
+                GameWorldUI ui = gameWorld.getUI();
+                GameCamera camera = gameWorld.getCamera();
+                
+                Vec2 result = camera.convertWorldToPixel(p.getPosX(), p.getPosY());
+                
+                ui.addItemAnimation(p.getNumber(), result.x, result.y, item);
             }
         }
     	
@@ -92,9 +108,6 @@ public class BoxItem extends Entity {
     
     @Override
     public void beginContact(Entity e, Contact contact) {
-        
-        
-        
         super.beginContact(e, contact);
     }
 
