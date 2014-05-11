@@ -92,6 +92,8 @@ public class ResourcesManager {
 			resources = new int[] {
 					R.drawable.ui_buttons,
 					R.drawable.pause_menu_bg,
+					R.drawable.pause_selected,
+					R.drawable.pause_unselected,
 					R.drawable.bt_pause_selected,
 					R.drawable.mountains_repeatable,
 					R.drawable.spike

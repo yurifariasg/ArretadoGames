@@ -20,8 +20,6 @@ import com.arretadogames.pilot.entities.PlayerNumber;
 import com.arretadogames.pilot.entities.Steppable;
 import com.arretadogames.pilot.entities.effects.EffectDescriptor;
 import com.arretadogames.pilot.entities.effects.EffectManager;
-import com.arretadogames.pilot.game.Game;
-import com.arretadogames.pilot.game.GameState;
 import com.arretadogames.pilot.levels.LevelDescriptor;
 import com.arretadogames.pilot.physics.PhysicalWorld;
 import com.arretadogames.pilot.render.AnimationManager;
@@ -33,7 +31,9 @@ import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
 import com.arretadogames.pilot.screens.PauseScreen;
+import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.GameHUDButton;
+import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
@@ -42,7 +42,7 @@ import com.arretadogames.pilot.weathers.Weather;
 /**
  * GameWorld class represents the World in our Game
  */
-public class GameWorld extends GameScreen implements GameHUDButton {
+public class GameWorld extends GameScreen implements GameHUDButton, GameButtonListener {
 	private int backgroundId;
 	
 	private GameWorldUI ui;
@@ -53,15 +53,11 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 	private HashMap<PlayerNumber, PlayableCharacter> selectedCharacters;
 	private HashMap<PlayerNumber, List<PlayableItem>> selectedItems;
 	private GameCamera gameCamera;
-	private PauseScreen pauseScreen;
+//	private PauseScreen pauseScreen;
 	private FinishRaceScreen finishRaceScreen;
 	private float flagPos;
 	private float totalElapsedSeconds;
 
-//	At this race
-	private int p1LevelScore = 540;
-	private int p2LevelScore = 680;
-	
 	private boolean isInitialized;
 	private LevelDescriptor level;
 	
@@ -71,18 +67,28 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 	private Weather weather;
 	private RaceStartManager raceStartManager;
 	
+//	private static final int PAUSE_BT = 1;
+//	private ImageButton pauseBt;
+	
 	public GameWorld() {
 		backgroundId = R.drawable.mountains_repeatable;
 		pWorld = PhysicalWorld.getInstance();
 		totalElapsedSeconds = 0;
 		weather = new Storm();
 		isInitialized = false;
+		
+//		pauseBt = new ImageButton(PAUSE_BT, 373, 10, 
+//				getDimension(R.dimen.main_menu_button_size) - 30, 
+//				getDimension(R.dimen.main_menu_button_size) - 30,
+//				this, 
+//				R.drawable.pause_selected, 
+//				R.drawable.pause_unselected);
 	}
 	
 	@Override
 	public void onLoading() {
 		gameCamera = new GameCamera(this, backgroundId);
-		pauseScreen = new PauseScreen();
+//		pauseScreen = new PauseScreen();
 		finishRaceScreen = new FinishRaceScreen();
 		initialize();
 	}
@@ -98,7 +104,7 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 		steppables.clear();
 		worldEntities.clear();
 		gameCamera = null;
-		pauseScreen = null;
+//		pauseScreen = null;
 		finishWorld = false;
 		System.gc();
 	}
@@ -177,9 +183,8 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
 		Profiler.initTick(ProfileType.RENDER);
-
 		weather.drawBackground(canvas);
-		if (!pauseScreen.isHidden()) {
+		if (!ui.isPauseHidden()) {
 			gameCamera.render(canvas, 0); // Draw a fixed frame - Dont move anything
 		} else {
 			gameCamera.render(canvas, timeElapsed);
@@ -191,11 +196,11 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 		if (finishWorld) {
 			finishRaceScreen.render(canvas, timeElapsed);
 		} else {
-			ui.render(canvas, timeElapsed);
 			raceStartManager.render(canvas, timeElapsed);
-			pauseScreen.render(canvas, timeElapsed);
+			ui.render(canvas, timeElapsed);
+//			pauseScreen.render(canvas, timeElapsed);
 		}
-
+		
 		Profiler.profileFromLastTick(ProfileType.RENDER, "UI Render Time");
 		Profiler.initTick(ProfileType.RENDER);
 		Profiler.profileFromLastTick(ProfileType.RENDER, "Pause Screen Render Time");
@@ -212,8 +217,9 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 		
 		totalElapsedSeconds += timeElapsed;
 		
-		pauseScreen.step(timeElapsed);
-		if (pauseScreen.isHidden()) {
+		//pauseScreen.step(timeElapsed);
+		if (ui.isPauseHidden()) {
+		//if (pauseScreen.isHidden()) {
 		    
 		    if (activatePlayer1Item || activatePlayer2Item)
 		        activateItems();
@@ -271,9 +277,10 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 	@Override
 	public void input(InputEventHandler event) {
 		if (!finishWorld) {
-			pauseScreen.input(event);
-			if (pauseScreen.isHidden())
-				ui.input(event);
+			ui.input(event);
+			//pauseScreen.input(event);
+//			if (pauseScreen.isHidden())
+//				ui.input(event);
 		} else {
 			finishRaceScreen.input(event);
 		}
@@ -281,8 +288,9 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 
 	@Override
 	public void onPause() {
-		if (pauseScreen.isHidden())
-			pauseScreen.show();
+		ui.onPause();
+//		if (pauseScreen.isHidden())
+//			pauseScreen.show();
 	}
 	
 	public HashMap<PlayerNumber, Player> getPlayers(){
@@ -374,4 +382,13 @@ public class GameWorld extends GameScreen implements GameHUDButton {
             }
         }
     }
+
+	@Override
+	public void onClick(int buttonId) {
+//		switch(buttonId){
+//		case PAUSE_BT:
+//			pauseScreen.show();
+//		}
+		
+	}
 }
