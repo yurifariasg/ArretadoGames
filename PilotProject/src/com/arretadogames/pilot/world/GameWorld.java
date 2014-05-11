@@ -87,7 +87,6 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 	
 	@Override
 	public void onUnloading() {
-		System.out.println("Unloading");
 		totalElapsedSeconds = 0;
 		isInitialized = false;
 		pWorld.removeAll();

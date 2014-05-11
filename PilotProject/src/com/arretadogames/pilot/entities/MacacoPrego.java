@@ -17,8 +17,9 @@ import org.jbox2d.dynamics.BodyType;
 
 public class MacacoPrego extends Player implements Steppable, PostEffectCallback{
 
-    private static final Vec2 SUPER_JUMP_IMPULSE = new Vec2(GameSettings.DASH_MAX_VEL_MULTIPLIER,
-            GameSettings.DASH_MAX_VEL_MULTIPLIER);
+    private static final Vec2 SUPER_JUMP_IMPULSE = new Vec2(
+            GameSettings.DASH_MAX_VEL_MULTIPLIER * 1f,
+            GameSettings.DASH_MAX_VEL_MULTIPLIER * 1f);
     private static final PhysicsRect BODY_DIMEN = new PhysicsRect(0.4f, 0.75f);
 	private Body b;
 	private int doubleJump;
@@ -132,6 +133,7 @@ public class MacacoPrego extends Player implements Steppable, PostEffectCallback
     public boolean dash() {
         if (bodiesContact.size() > 0) {
             shouldSuperJump = true;
+            shouldLimitVelocity = false;
             
             EffectDescriptor descriptor = new EffectDescriptor();
             descriptor.pRect = physRect.clone();
@@ -153,5 +155,6 @@ public class MacacoPrego extends Player implements Steppable, PostEffectCallback
 
     @Override
     public void finished() {
+        shouldLimitVelocity = true;
     }
 }
