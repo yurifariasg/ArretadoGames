@@ -1,5 +1,6 @@
 package com.arretadogames.pilot.screens;
 
+import android.graphics.Color;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -48,6 +49,7 @@ public class FinishRaceScreen extends GameScreen implements TweenAccessor<Finish
 	private int p2Victories = 0;
 	
 	private float currentY = 480;
+	private int alphaBack = 0;
 	
 	private boolean goOn = false;
 
@@ -84,6 +86,7 @@ public class FinishRaceScreen extends GameScreen implements TweenAccessor<Finish
 	public void render(GLCanvas canvas, float timeElapsed) {
 		
 		canvas.saveState();
+		canvas.drawRect(0, 0, 800, 480, Color.argb(alphaBack, 0, 0, 0));
 		canvas.translate(0, currentY);
 		
 		canvas.drawBitmap(backgroundId, 0, 0, GAME_WIDTH, GAME_HEIGHT, 0,
@@ -124,21 +127,24 @@ public class FinishRaceScreen extends GameScreen implements TweenAccessor<Finish
 	}
 	
 	public void activate(){
+		
 		Timeline.createSequence()
+		.push(Timeline.createParallel()
 			.push(Tween.to(this, 0, 1f).target(0)
 				.ease(TweenEquations.easeOutBounce))
-				.pushPause(1f)
-				.setCallback(new TweenCallback() {
+			.push(Tween.to(this,  1, 1f).target(100)))
+		.pushPause(1f)
+		.setCallback(new TweenCallback() {
 					
-					@Override
-					public void onEvent(int arg0, BaseTween<?> arg1) {
-						goOn = true;
-					}
-				})
+			@Override
+			public void onEvent(int arg0, BaseTween<?> arg1) {
+				goOn = true;
+			}
+		})
+		.start(AnimationManager.getInstance());
 //			.pushPause(1f)
 //			.push(Tween.to(this, 0, 1f).target(480)
 //				.ease(TweenEquations.easeOutBounce))
-			.start(AnimationManager.getInstance());
 	}
 
 	@Override
@@ -190,6 +196,8 @@ public class FinishRaceScreen extends GameScreen implements TweenAccessor<Finish
 	public int getValues(FinishRaceScreen arg0, int type, float[] arg2) {
 		if (type == 0) {
 			arg2[0] = currentY;
+		} else if (type == 1) {
+			arg2[0] = alphaBack;
 		}
 		
 		return 1;
@@ -197,9 +205,10 @@ public class FinishRaceScreen extends GameScreen implements TweenAccessor<Finish
 
 	@Override
 	public void setValues(FinishRaceScreen arg0, int type, float[] arg2) {
-		
 		if (type == 0) {
 			currentY = arg2[0];
+		} else if (type == 1) {
+			alphaBack = (int) arg2[0];
 		}
 	}
 
