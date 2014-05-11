@@ -13,6 +13,9 @@ public class LevelTable {
         R.raw.map, R.raw.map2, R.raw.third_stage,
         R.raw.second_stage, R.raw.second_stage,
         R.raw.second_stage
+//		R.raw.second_stage, R.raw.second_stage, R.raw.second_stage,
+//        R.raw.second_stage, R.raw.second_stage,
+//        R.raw.second_stage
 	};
 	
 	public static final Map<TournamentType, Integer> TOURNAMENT_BACKGROUNDS;

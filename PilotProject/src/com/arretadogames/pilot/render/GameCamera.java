@@ -61,6 +61,7 @@ public class GameCamera implements Renderable, Steppable {
 	private Vec2 targetUpperBound;
 	private Vec2 targetTranslator;
 	private float targetPhysicsRatio;
+    private Vec2 lowerBound, upperBound, translator;
 
 	private float initialX = -1; // Initial X position from players
 	private float flagX = -1;
@@ -128,7 +129,6 @@ public class GameCamera implements Renderable, Steppable {
 		}
 
 		float viewportWidth, viewportHeight, physicsRatio;
-		Vec2 lowerBound, upperBound, translator;
 
 		float maxXDistance = 0;
 		float maxYDistance = 0;
@@ -394,7 +394,6 @@ public class GameCamera implements Renderable, Steppable {
 						fixture.getBody().setAwake(true);
 						Object e = fixture.getBody().getUserData();
 						if (e != null) {
-
 							Entity entity = (Entity) e;
 							entities.add(entity);
 						}
@@ -422,5 +421,11 @@ public class GameCamera implements Renderable, Steppable {
 	private long getCurrentTime() {
 		return System.nanoTime() / 1000000;
 	}
+
+    public Vec2 convertWorldToPixel(float posX, float posY) {
+        posX = (posX - lowerBound.x) * GLCanvas.physicsRatio;
+        posY = GameSettings.TARGET_HEIGHT - (posY - lowerBound.y) * GLCanvas.physicsRatio;
+        return new Vec2(posX, posY);
+    }
 
 }

@@ -73,6 +73,13 @@
                 <Frame x="518" y="2" w="256" h="256" t="0.5" />
                 <Frame x="2" y="260" w="256" h="256" t="0.5" />
             </Animation>
+            <Animation name="running">
+                <Frame x="260" y="260" w="256" h="256" t="0.5" />
+                <Frame x="518" y="260" w="256" h="256" t="0.5" />
+                <Frame x="2" y="518" w="256" h="256" t="0.5" />
+                <Frame x="260" y="518" w="256" h="256" t="0.5" />
+                <Frame x="518" y="518" w="256" h="256" t="0.5" />
+            </Animation>
             <Animation name="jump">
                 <Frame x="260" y="260" w="256" h="256" t="0.5" />
                 <Frame x="518" y="260" w="256" h="256" t="0.5" />
@@ -246,6 +253,23 @@
         <AnimationSwitcher name="speed_burst">
             <Animation name="default">
                 <Frame x="0" y="0" w="512" h="512" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
+    <Sheet resId="box_pieces">
+        <AnimationSwitcher name="box_piece1">
+            <Animation name="default">
+                <Frame x="2" y="2" w="64" h="64" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+        <AnimationSwitcher name="box_piece2">
+            <Animation name="default">
+                <Frame x="2" y="68" w="64" h="64" t="0.0" />
+            </Animation>
+        </AnimationSwitcher>
+        <AnimationSwitcher name="box_piece3">
+            <Animation name="default">
+                <Frame x="2" y="134" w="64" h="64" t="0.0" />
             </Animation>
         </AnimationSwitcher>
     </Sheet>

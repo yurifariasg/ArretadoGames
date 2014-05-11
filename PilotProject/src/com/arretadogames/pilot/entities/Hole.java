@@ -27,9 +27,7 @@ public class Hole extends Entity implements Steppable{
 	private Fixture fexit;
 	private TatuBola tatu;
 	private boolean seta;
-	private int data;
 	private boolean sai;
-	private int data2;
 	private boolean contatoTatu;
 	private boolean entrou;
 	
@@ -68,7 +66,7 @@ public class Hole extends Entity implements Steppable{
 		PolygonShape pshape = new PolygonShape();
 		pshape.setAsBox(ENTRANCE_SENSOR_WIDTH, ENTRANCE_SENSOR_HEIGHT);
 		BodyDef bd = new BodyDef();
-		bd.position = new Vec2(x1,ENTRANCE_SENSOR_HEIGHT);
+		bd.position = new Vec2(x1 + 0.3f,ENTRANCE_SENSOR_HEIGHT);
 		entrance = world.createBody(bd);
 		fentrance = entrance.createFixture(pshape, 0);
 		fentrance.setFilterData(filter);
@@ -98,13 +96,10 @@ public class Hole extends Entity implements Steppable{
 		if(e instanceof TatuBola && (contact.m_fixtureA == fentrance || contact.m_fixtureB == fentrance) && ((TatuBola)e).actActive ){
 			tatu = (TatuBola)e;
 			seta = true;
-			data = tatu.bodyFixture.getFilterData().categoryBits;
-			data2 = tatu.bodyFixture.getFilterData().maskBits;
+			((TatuBola)e).actActive = false;
 		}
 		if(e instanceof TatuBola && (contact.m_fixtureA == fentrance || contact.m_fixtureB == fentrance)){
 			tatu = (TatuBola)e;
-			data = tatu.bodyFixture.getFilterData().categoryBits;
-			data2 = tatu.bodyFixture.getFilterData().maskBits;
 			contatoTatu = true;
 		}
 	}
@@ -165,13 +160,12 @@ public class Hole extends Entity implements Steppable{
 			ChainShape shape = new ChainShape();
 			shape.createChain(vec, 2);
 			body.createFixture(shape, 0.5f).setFilterData(filter);
+			tatu.setOnHole(true);
 		}
 		if (sai){
-			tatu.footFixture.getFilterData().categoryBits = data;
-            tatu.footFixture.getFilterData().maskBits = data2;
-            tatu.bodyFixture.getFilterData().categoryBits = data;
-            tatu.bodyFixture.getFilterData().maskBits = data2;
-			sai = false;
+            tatu.setMaskAndCategoryBits(); // Set Default Back
+			tatu.setOnHole(false);
+            sai = false;
 			tatu = null;
 		}
 	}

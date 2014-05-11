@@ -100,7 +100,11 @@ public class TournamentManager {
 	 */
 	public boolean nextLevel() {
 		
-		if (winsNumberP1 == 4 || winsNumberP2 == 4) {
+		System.out.println("currentLevel: " + currentLevel);
+		System.out.println("numberp1: " + winsNumberP1);
+		System.out.println("numberp2: " + winsNumberP2);
+		
+		if ((winsNumberP1 == 4 || winsNumberP2 == 4) || (winsNumberP1 == 3 && winsNumberP2 == 3) || (currentLevel > 5)) {
 			((PremiationScreen) Game.getInstance().getScreen(GameState.PREMIATION))
 			.updateWinner();
 			Game.getInstance().goTo(GameState.PREMIATION);
@@ -108,17 +112,12 @@ public class TournamentManager {
 			return false;
 		}
 		
-		if (currentLevel < 5 ) {
+		if (currentLevel <= 5 ) {
 			currentLevel++;
 			
 			((GameWorld) Game.getInstance().getScreen(GameState.RUNNING_GAME))
 			.setLevel(LevelManager.getLevels().get(currentLevel));
 			return true;
-		} else {
-			((PremiationScreen) Game.getInstance().getScreen(GameState.PREMIATION))
-			.updateWinner();
-			Game.getInstance().goTo(GameState.PREMIATION);
-			currentLevel = 0;
 		}
 		return false;	
 	}

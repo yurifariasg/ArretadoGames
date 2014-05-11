@@ -55,7 +55,7 @@ public abstract class Entity implements Renderable, LayerEntity {
 	}
 	
 	public final boolean isAlive() {
-		return state == State.ALIVE;
+		return state != State.DEAD;
 	}
 	
 	public final boolean isDead() {

@@ -30,10 +30,8 @@ import com.arretadogames.pilot.screens.FinishRaceScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameWorldUI;
 import com.arretadogames.pilot.screens.InputEventHandler;
-import com.arretadogames.pilot.screens.PauseScreen;
 import com.arretadogames.pilot.ui.GameButtonListener;
 import com.arretadogames.pilot.ui.GameHUDButton;
-import com.arretadogames.pilot.ui.ImageButton;
 import com.arretadogames.pilot.util.Profiler;
 import com.arretadogames.pilot.util.Profiler.ProfileType;
 import com.arretadogames.pilot.weathers.Storm;
@@ -53,7 +51,6 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 	private HashMap<PlayerNumber, PlayableCharacter> selectedCharacters;
 	private HashMap<PlayerNumber, List<PlayableItem>> selectedItems;
 	private GameCamera gameCamera;
-//	private PauseScreen pauseScreen;
 	private FinishRaceScreen finishRaceScreen;
 	private float flagPos;
 	private float totalElapsedSeconds;
@@ -67,35 +64,23 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 	private Weather weather;
 	private RaceStartManager raceStartManager;
 	
-//	private static final int PAUSE_BT = 1;
-//	private ImageButton pauseBt;
-	
 	public GameWorld() {
 		backgroundId = R.drawable.mountains_repeatable;
 		pWorld = PhysicalWorld.getInstance();
 		totalElapsedSeconds = 0;
 		weather = new Storm();
 		isInitialized = false;
-		
-//		pauseBt = new ImageButton(PAUSE_BT, 373, 10, 
-//				getDimension(R.dimen.main_menu_button_size) - 30, 
-//				getDimension(R.dimen.main_menu_button_size) - 30,
-//				this, 
-//				R.drawable.pause_selected, 
-//				R.drawable.pause_unselected);
 	}
 	
 	@Override
 	public void onLoading() {
 		gameCamera = new GameCamera(this, backgroundId);
-//		pauseScreen = new PauseScreen();
 		finishRaceScreen = new FinishRaceScreen();
 		initialize();
 	}
 	
 	@Override
 	public void onUnloading() {
-		System.out.println("Unloading");
 		totalElapsedSeconds = 0;
 		isInitialized = false;
 		pWorld.removeAll();
@@ -104,7 +89,6 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 		steppables.clear();
 		worldEntities.clear();
 		gameCamera = null;
-//		pauseScreen = null;
 		finishWorld = false;
 		System.gc();
 	}
@@ -198,7 +182,6 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 		} else {
 			raceStartManager.render(canvas, timeElapsed);
 			ui.render(canvas, timeElapsed);
-//			pauseScreen.render(canvas, timeElapsed);
 		}
 		
 		Profiler.profileFromLastTick(ProfileType.RENDER, "UI Render Time");
@@ -217,9 +200,7 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 		
 		totalElapsedSeconds += timeElapsed;
 		
-		//pauseScreen.step(timeElapsed);
 		if (ui.isPauseHidden()) {
-		//if (pauseScreen.isHidden()) {
 		    
 		    if (activatePlayer1Item || activatePlayer2Item)
 		        activateItems();
@@ -278,9 +259,6 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 	public void input(InputEventHandler event) {
 		if (!finishWorld) {
 			ui.input(event);
-			//pauseScreen.input(event);
-//			if (pauseScreen.isHidden())
-//				ui.input(event);
 		} else {
 			finishRaceScreen.input(event);
 		}
@@ -289,8 +267,6 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 	@Override
 	public void onPause() {
 		ui.onPause();
-//		if (pauseScreen.isHidden())
-//			pauseScreen.show();
 	}
 	
 	public HashMap<PlayerNumber, Player> getPlayers(){
@@ -320,15 +296,13 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 		Player p1 = players.get(PlayerNumber.ONE);
 		Player p2 = players.get(PlayerNumber.TWO);
 		
+		finishRaceScreen.disableGoOn();
+		finishRaceScreen.activate();
 		if(p1.getTimeFinished() <= p2.getTimeFinished()) {
 			finishRaceScreen.setRaceWinner(PlayerNumber.ONE, p1);
 		} else {
 			finishRaceScreen.setRaceWinner(PlayerNumber.TWO, p2);
 		}
-		
-//		((FinishRaceScreen) Game.getInstance().getScreen(GameState.GAME_OVER)).
-//			initialize(players);
-//		Game.getInstance().goTo(GameState.GAME_OVER);
 	}
 
 	public void setLevel(LevelDescriptor level) {
@@ -385,10 +359,13 @@ public class GameWorld extends GameScreen implements GameHUDButton, GameButtonLi
 
 	@Override
 	public void onClick(int buttonId) {
-//		switch(buttonId){
-//		case PAUSE_BT:
-//			pauseScreen.show();
-//		}
-		
 	}
+	
+    public GameWorldUI getUI() {
+        return ui;
+    }
+
+    public GameCamera getCamera() {
+        return gameCamera;
+    }
 }

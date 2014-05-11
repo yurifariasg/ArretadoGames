@@ -1,10 +1,9 @@
 package com.arretadogames.pilot.game;
 
-import java.util.HashMap;
-
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -15,7 +14,6 @@ import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.loading.LoadManager;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.screens.CharacterSelectionScreen;
-import com.arretadogames.pilot.screens.FinishRaceScreen;
 import com.arretadogames.pilot.screens.GameScreen;
 import com.arretadogames.pilot.screens.GameStore;
 import com.arretadogames.pilot.screens.InputEventHandler;
@@ -27,6 +25,8 @@ import com.arretadogames.pilot.screens.TournamentSelectionScreen;
 import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.util.Assets;
 import com.arretadogames.pilot.world.GameWorld;
+
+import java.util.HashMap;
 
 /**
  * Game class represents our Game.

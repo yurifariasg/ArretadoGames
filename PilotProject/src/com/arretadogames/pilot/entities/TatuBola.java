@@ -20,6 +20,7 @@ public class TatuBola extends Player implements PostEffectCallback {
 
 	private final float rad = 0.2f;
 	private int doubleJump;
+    private boolean isOnHole;
 	
 	public TatuBola(float x, float y, PlayerNumber number) {
 		super(x, y, number,
@@ -66,7 +67,9 @@ public class TatuBola extends Player implements PostEffectCallback {
 	}
 	
 	public void jump() {
-		if (isGhostMode() || hasFinished() || !isAlive() || contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0))
+		if (isGhostMode() || hasFinished() || !isAlive() ||
+		        contJump > 0 || (bodiesContact.size() <= 0 && doubleJump == 0) ||
+		        isOnHole)
 			return;
 		if(bodiesContact.size() <= 0 && doubleJump > 0){
 			doubleJump--;
@@ -96,25 +99,29 @@ public class TatuBola extends Player implements PostEffectCallback {
     			body.applyForceToCenter(direction);
     		}
 	    } else {
+	        sprite.setAnimationState("running");
             body.getLinearVelocity().x =
                     getMaxRunVelocity() * GameSettings.DASH_MAX_VEL_MULTIPLIER;
         }
 	}
 
 	public boolean dash() {
-	    shouldLimitVelocity = false;
-        EffectDescriptor descriptor = new EffectDescriptor();
-        descriptor.pRect = physRect.clone();
-        descriptor.pRect.inset(-0.2f, -0.2f);
-        descriptor.position = body.getPosition();
-        descriptor.duration = GameSettings.TATU_DASH_DURATION;
-        descriptor.type = "speed_burst";
-        descriptor.xOffset -= 0.2f;
-        descriptor.alpha = 100;
-        descriptor.callback = this;
-        
-        EffectManager.getInstance().addEffect(descriptor);
-	    return true;
+	    if (!isOnHole) {
+    	    shouldLimitVelocity = false;
+            EffectDescriptor descriptor = new EffectDescriptor();
+            descriptor.pRect = physRect.clone();
+            descriptor.pRect.inset(-0.2f, -0.2f);
+            descriptor.position = body.getPosition();
+            descriptor.duration = GameSettings.TATU_DASH_DURATION;
+            descriptor.type = "speed_burst";
+            descriptor.xOffset -= 0.2f;
+            descriptor.alpha = 100;
+            descriptor.callback = this;
+            
+            EffectManager.getInstance().addEffect(descriptor);
+    	    return true;
+	    }
+	    return false;
 	}
 
 	@Override
@@ -143,5 +150,9 @@ public class TatuBola extends Player implements PostEffectCallback {
     public void finished() {
         body.getLinearVelocity().x *= GameSettings.AFTER_DASH_DAMPING;
         shouldLimitVelocity = true;
+    }
+
+    public void setOnHole(boolean isOnHole) {
+        this.isOnHole = isOnHole;
     }
 }

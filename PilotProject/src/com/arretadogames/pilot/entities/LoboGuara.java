@@ -129,6 +129,8 @@ public class LoboGuara extends Player implements PostEffectCallback {
 		
         if (body.getLinearVelocity().x > 3.5f) {
             sprite.setAnimationState("run");
+        } else if (body.getLinearVelocity().x <= 0.1) {
+            sprite.setAnimationState("default");
         }
 		
 		canvas.translatePhysics(getPosX(), getPosY() + 0.39f);

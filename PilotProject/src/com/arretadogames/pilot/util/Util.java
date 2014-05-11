@@ -4,11 +4,23 @@ import android.graphics.Color;
 
 import com.arretadogames.pilot.render.PhysicsRect;
 
+import java.util.Random;
+
 
 /**
  * Helper class to perform usual operations
  */
 public class Util {
+    
+    private static final Random r = new Random();
+    
+    public static int random(int from, int to) {
+        return from + r.nextInt(to + 1);
+    }
+
+    public static float random(float from, float to) {
+        return from + r.nextFloat() * to;
+    }
 
 	/**
 	 * Converts a Nano Time to Seconds
