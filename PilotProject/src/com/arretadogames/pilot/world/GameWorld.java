@@ -312,6 +312,8 @@ public class GameWorld extends GameScreen implements GameHUDButton {
 		Player p1 = players.get(PlayerNumber.ONE);
 		Player p2 = players.get(PlayerNumber.TWO);
 		
+		finishRaceScreen.disableGoOn();
+		finishRaceScreen.activate();
 		if(p1.getTimeFinished() <= p2.getTimeFinished()) {
 			finishRaceScreen.setRaceWinner(PlayerNumber.ONE, p1);
 		} else {

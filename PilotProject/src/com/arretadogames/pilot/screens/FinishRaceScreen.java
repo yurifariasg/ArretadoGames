@@ -1,5 +1,12 @@
 package com.arretadogames.pilot.screens;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.TweenEquations;
+
 import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.entities.AraraAzul;
 import com.arretadogames.pilot.entities.LoboGuara;
@@ -15,9 +22,10 @@ import com.arretadogames.pilot.loading.FontLoader.FontTypeFace;
 import com.arretadogames.pilot.loading.FontSpecification;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 import com.arretadogames.pilot.tournaments.TournamentManager;
+import com.arretadogames.pilot.ui.AnimationManager;
 import com.arretadogames.pilot.ui.GameButtonListener;
 
-public class FinishRaceScreen extends GameScreen implements GameButtonListener {
+public class FinishRaceScreen extends GameScreen implements TweenAccessor<FinishRaceScreen>, GameButtonListener {
 
 	final FontSpecification titleFont = FontLoader.getInstance().getFont(FontTypeFace.ARIAN);
 	private final float GAME_WIDTH = getDimension(R.dimen.screen_width);
@@ -38,6 +46,10 @@ public class FinishRaceScreen extends GameScreen implements GameButtonListener {
 	
 	private int p1Victories = 0;
 	private int p2Victories = 0;
+	
+	private float currentY = 480;
+	
+	private boolean goOn = false;
 
 	public FinishRaceScreen() {
 		backgroundId = R.drawable.finishracebg;
@@ -70,16 +82,26 @@ public class FinishRaceScreen extends GameScreen implements GameButtonListener {
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
+		
+		canvas.saveState();
+		canvas.translate(0, currentY);
+		
 		canvas.drawBitmap(backgroundId, 0, 0, GAME_WIDTH, GAME_HEIGHT, 0,
 				getDimension(R.dimen.main_menu_bg_extra_height));
 		
-		canvas.drawBitmap(winnerProfile, 302, 132, 200, 200);
+		canvas.drawBitmap(winnerProfile, 300, 133, 200, 200);
 		
 		if (Game.getInstance().getGameMode() == GameMode.TOURNAMENT) {
 			drawPlayerStars(p1Victories, STAR_WIDTH_POS_P1, canvas);
 			drawPlayerStars(p2Victories, STAR_WIDTH_POS_P2, canvas);
-		} 
+		}
 		drawScore(canvas);
+		
+		canvas.restoreState();
+	}
+	
+	public void disableGoOn() {
+		goOn = false;
 	}
 	
 	private void drawScore(GLCanvas canvas) {
@@ -100,6 +122,24 @@ public class FinishRaceScreen extends GameScreen implements GameButtonListener {
 			}
 		}
 	}
+	
+	public void activate(){
+		Timeline.createSequence()
+			.push(Tween.to(this, 0, 1f).target(0)
+				.ease(TweenEquations.easeOutBounce))
+				.pushPause(1f)
+				.setCallback(new TweenCallback() {
+					
+					@Override
+					public void onEvent(int arg0, BaseTween<?> arg1) {
+						goOn = true;
+					}
+				})
+//			.pushPause(1f)
+//			.push(Tween.to(this, 0, 1f).target(480)
+//				.ease(TweenEquations.easeOutBounce))
+			.start(AnimationManager.getInstance());
+	}
 
 	@Override
 	public void step(float timeElapsed) {
@@ -110,12 +150,14 @@ public class FinishRaceScreen extends GameScreen implements GameButtonListener {
 	public void input(InputEventHandler event) {
 		
 		if (Game.getInstance().getGameMode() == GameMode.TOURNAMENT) {
-			if (TournamentManager.getInstance().nextLevel())
+			if (goOn && TournamentManager.getInstance().nextLevel())
 				Game.getInstance().goTo(GameState.LEVEL_RESTART);
 
 		} else {
-			TournamentManager.getInstance().resetTournamentData();
-			Game.getInstance().goTo(GameState.MAIN_MENU);
+			if (goOn) {
+				TournamentManager.getInstance().resetTournamentData();
+				Game.getInstance().goTo(GameState.MAIN_MENU);
+			}
 		}
 	}
 
@@ -143,4 +185,22 @@ public class FinishRaceScreen extends GameScreen implements GameButtonListener {
 //			break;
 //		}
 	}
+
+	@Override
+	public int getValues(FinishRaceScreen arg0, int type, float[] arg2) {
+		if (type == 0) {
+			arg2[0] = currentY;
+		}
+		
+		return 1;
+	}
+
+	@Override
+	public void setValues(FinishRaceScreen arg0, int type, float[] arg2) {
+		
+		if (type == 0) {
+			currentY = arg2[0];
+		}
+	}
+
 }

@@ -367,6 +367,12 @@ public class TournamentSelectionScreen extends GameScreen implements GameButtonL
         int currentTournament = getCurrentTournamentIndex();
         if (!tournamentsInfo[currentTournament].isLocked) {
         	 pressed |= tournamentsInfo[currentTournament].button.input(event);
+        } else { //Goes to store
+        	if (tournamentsInfo[currentTournament].button.input(event)) {
+        		System.out.println("Goes to Store");
+        		Game.getInstance().goTo(GameState.GAME_STORE);
+        	}
+        	
         }
         event.setOffsetX(0);
         
