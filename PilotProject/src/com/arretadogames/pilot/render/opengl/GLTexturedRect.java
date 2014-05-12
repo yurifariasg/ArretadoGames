@@ -73,17 +73,17 @@ public class GLTexturedRect extends GLRect {
     }
 
     private static void fillTextureCoordArray(float left, float top, float right, float bottom) {
-    	textureCoords[0] = (left) / image.getTextureWidth();
-		textureCoords[1] = (top) / image.getTextureHeight();
+    	textureCoords[0] = 0.001f + (left) / image.getTextureWidth();
+		textureCoords[1] = 0.001f + (top) / image.getTextureHeight();
 
-		textureCoords[2] = (left) / image.getTextureWidth();
+		textureCoords[2] = 0.001f + (left) / image.getTextureWidth();
 		textureCoords[3] = (bottom) / image.getTextureHeight();
 
 		textureCoords[4] = (right) / image.getTextureWidth();
 		textureCoords[5] = (bottom) / image.getTextureHeight();
 
 		textureCoords[6] = (right) / image.getTextureWidth();
-		textureCoords[7] = (top) / image.getTextureHeight();
+		textureCoords[7] = 0.001f + (top) / image.getTextureHeight();
 	}
 
 //    public static void draw(GL10 gl,

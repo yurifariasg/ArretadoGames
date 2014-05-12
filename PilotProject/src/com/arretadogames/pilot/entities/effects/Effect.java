@@ -109,9 +109,9 @@ public class Effect implements Renderable, LayerEntity {
                 animation.render(canvas, rect, timeElapsed);
             }
             
-            if (color != 0) {
+//            if (color != 0) {
                 canvas.resetColor();
-            }
+//            }
             
             canvas.restoreState();
             

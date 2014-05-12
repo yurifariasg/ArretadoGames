@@ -71,7 +71,7 @@ public class EntityBuilder {
 					
 					break;
 				case ONEWAY_WALL:
-					entity = new OneWayWall(entityDescriptor.getX(), entityDescriptor.getY());
+					entity = new Platform(entityDescriptor.getX(), entityDescriptor.getY());
 					break;
 					
 				case SPIKE:

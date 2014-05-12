@@ -16,27 +16,29 @@ import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.AnimationSwitcher;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
 
-public class OneWayWall extends Entity{
+public class Platform extends Entity{
 
 	private Fixture m_platformFixture;
 	private float width;
 	private float height;
 	final private WorldManifold worldManifold = new WorldManifold();
 	private HashSet<Contact> contactSet;
+	private PhysicsRect background;
 	
-	public OneWayWall(float x, float y) {
+	public Platform(float x, float y) {
 		super(x, y);
 		PolygonShape shape = new PolygonShape();
-		width = 3;
-		height = 0.1f;
+		width = 4f;
+		height = 0.7f;
 		shape.setAsBox(width/2, height/2);
 		m_platformFixture = body.createFixture(shape,  1f);
 		body.setType(BodyType.KINEMATIC);
 		contactSet = new HashSet<Contact>();
 		
-		physRect = new PhysicsRect(width, height + 2);
+		physRect = new PhysicsRect(width + 0.1f, height + 0.15f);
+		background = new PhysicsRect(width - 0.2f, y);
 	}
-
+	
 	public void beginContact(Entity e, Contact contact) {
 		Fixture fixtureA = contact.getFixtureA();
 		Fixture fixtureB = contact.getFixtureB();
@@ -85,19 +87,21 @@ public class OneWayWall extends Entity{
 	public void endContact(Entity e, Contact contact) {
 		contactSet.remove(contact);
 	}
-
-	public void preSolve(Contact contact, Manifold oldManifold){
-		if(contactSet.contains(contact))contact.setEnabled(false);
+	
+	@Override
+	public void preSolve(Entity e, Contact contact, Manifold oldManifold) {
+        if(contactSet.contains(contact))contact.setEnabled(false);
 	}
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		
+        canvas.saveState();
+        canvas.translatePhysics(getPosX(), getPosY() / 2); // TODO: place this as constant...
+        canvas.drawBitmap(R.drawable.back_platform, background, 1, background.height() / (height * 1.5f));
+        canvas.restoreState();
 		canvas.saveState();
-		canvas.translatePhysics(getPosX(), getPosY() - 0.8f); // TODO: move a little up ?
-		canvas.rotate((float) (180 * - body.getAngle() / Math.PI));
-//        sprite.render(canvas, physRect, timeElapsed);
-		canvas.drawBitmap(R.drawable.forest_platform, physRect);
+		canvas.translatePhysics(getPosX(), getPosY());
+		canvas.drawBitmap(R.drawable.platform, physRect);
 		canvas.restoreState();
 	}
 
@@ -108,5 +112,10 @@ public class OneWayWall extends Entity{
 
 	@Override
 	public void setSprite(AnimationSwitcher sprite) {
+	}
+	
+	@Override
+	public int getLayerPosition() {
+	    return super.getLayerPosition() + 1;
 	}
 }

@@ -19,6 +19,16 @@ public class PhysicsRect extends RectF {
 		this.angle = angle;
 	}
 	
+	public void setWidth(float width) {
+	    this.left = - width / 2;
+	    this.right = width / 2;
+    }
+	
+	public void setHeight(float height) {
+        this.top = - height / 2;
+        this.bottom = height / 2;
+    }
+	
 	public float getAngle() {
 		return angle;
 	}

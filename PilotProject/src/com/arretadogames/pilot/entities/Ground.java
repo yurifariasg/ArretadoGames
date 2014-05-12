@@ -1,11 +1,10 @@
 package com.arretadogames.pilot.entities;
 
-import android.graphics.Color;
-
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.PhysicsRect;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
-import com.arretadogames.pilot.util.Util;
 
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
@@ -16,8 +15,9 @@ import org.jbox2d.dynamics.Fixture;
 public class Ground extends Entity {
 	
 	public static final int GROUND_LAYER_POSITION = -50;
-	private int GROUND_SURFACE_COLOR = Color.argb(255, 137, 71, 38);
-	private int GROUND_BOTTOM_COLOR = Color.argb(255, 0, 0, 0);
+	
+	private static final PhysicsRect GROUND_SURFACE_SIZE = new PhysicsRect(8, 1); // Image Ratio 8:1
+    private static final PhysicsRect GROUND_SIZE = new PhysicsRect(2, 2); // Image Ratio 1:1
 	
 	private Vec2[] vec;
 	boolean chain = true;
@@ -57,45 +57,41 @@ public class Ground extends Entity {
         filter.maskBits = CollisionFlag.GROUP_GROUND.getValue();
         bodyFixture.setFilterData(filter);
 	}
+	
+	private PhysicsRect aux = new PhysicsRect(0, GROUND_SURFACE_SIZE.height());
 
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
-		if(chain){
-			drawGround(canvas, vec);
-		
-        // Draw Darker Lines
-        int width = 3;
-        int color = Color.rgb(77, 34, 0);
-        canvas.saveState();
-        
-//        canvas.translatePhysics(0, 0);
-        
-        canvas.drawGroundLines(vec, vec.length, width, color);
-        canvas.restoreState();
-		}else{
-			drawGround(canvas, vec);
-			int width = 2;
-	        int color = Color.rgb(77, 34, 0);
-	        canvas.drawGroundLines(vec, vec.length, width, color);
-		}
-	}
-	
-	private void drawGround(GLCanvas canvas, Vec2[] lines) {
-			
-		for (int i = 1 ; i < lines.length ; i++) {
-			if (lines[i - 1].x == lines[i].x)
-				continue;
-			
-			canvas.drawRectFromPhysics(
-					lines[i - 1].x, lines[i - 1].y,
-					lines[i - 1].x, GameSettings.GROUND_BOTTOM,
-					lines[i].x, GameSettings.GROUND_BOTTOM,
-					lines[i].x, lines[i].y,
-					Util.interpolateColor(GROUND_SURFACE_COLOR, GROUND_BOTTOM_COLOR, lines[i - 1].y / GameSettings.GROUND_BOTTOM),
-					GROUND_BOTTOM_COLOR,
-					GROUND_BOTTOM_COLOR,
-					Util.interpolateColor(GROUND_SURFACE_COLOR, GROUND_BOTTOM_COLOR, lines[i].y / GameSettings.GROUND_BOTTOM));
-		}
+        // We are considering that we have just perpendicular edges
+        // and vertices go from left to right
+        for (int i = 1 ; i < vec.length ; i++) {
+            Vec2 prev = vec[i-1];
+            Vec2 current = vec[i];
+            
+            if (prev.x != current.x) {
+                // We have a perpendicular edge
+                aux.setWidth(current.x - prev.x);
+                aux.setHeight( - GameSettings.GROUND_BOTTOM);
+                canvas.saveState();
+                canvas.translatePhysics(prev.x + (aux.width() / 2), - aux.height() / 2 + current.y);
+                canvas.drawBitmap(R.drawable.inner_ground, aux,
+                        aux.width() / GROUND_SIZE.width(),
+                        aux.height() / GROUND_SIZE.height());
+                
+                canvas.restoreState();
+                
+                if (prev.y == 0 && current.y == 0) {
+                    
+                    // We have a surface edge
+                    aux.setHeight(GROUND_SURFACE_SIZE.height());
+                    canvas.saveState();
+                    canvas.translatePhysics(prev.x + (aux.width() / 2), -0.2f);
+                    canvas.drawBitmap(R.drawable.ground, aux, aux.width() / GROUND_SURFACE_SIZE.width(), 1);
+                    
+                    canvas.restoreState();
+                }
+            }
+        }
 	}
 
 	@Override

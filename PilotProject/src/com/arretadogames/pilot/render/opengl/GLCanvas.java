@@ -259,24 +259,28 @@ public class GLCanvas {
 	}
 
 	public void drawBitmap(int imageId, PhysicsRect physicsRect) {
-		if (textures.get(imageId) == null) {
-			Log.w("GLCanvas", "Texture not loaded " +
-					MainActivity.getContext().getResources().getResourceEntryName(imageId));
-			if (GameSettings.LAZY_LOAD_ENABLED)
-				loadImage(imageId);
-		}
-
-		GLTexture tex = textures.get(imageId);
-//		GLES11.glColor4f(1, 1, 1, 1);
-
-		GLTexturedRect.draw(gl,
-		        0, 0, tex.getTextureWidth(), tex.getTextureHeight(),
-				physicsRect.left * physicsRatio,
-				physicsRect.top * physicsRatio,
-				physicsRect.right * physicsRatio,
-				physicsRect.bottom * physicsRatio,
-				tex);
+		drawBitmap(imageId, physicsRect, 1, 1);
 	}
+	
+	public void drawBitmap(int imageId, PhysicsRect physicsRect, float widthRepetitions, float heightRepetitions) {
+        if (textures.get(imageId) == null) {
+            Log.w("GLCanvas", "Texture not loaded " +
+                    MainActivity.getContext().getResources().getResourceEntryName(imageId));
+            if (GameSettings.LAZY_LOAD_ENABLED)
+                loadImage(imageId);
+        }
+
+        GLTexture tex = textures.get(imageId);
+        GLTexturedRect.draw(gl,
+                0, 0,
+                tex.getTextureWidth() * widthRepetitions,
+                tex.getTextureHeight() * heightRepetitions,
+                physicsRect.left * physicsRatio,
+                physicsRect.top * physicsRatio,
+                physicsRect.right * physicsRatio,
+                physicsRect.bottom * physicsRatio,
+                tex);
+    }
 
 	public int loadImage(int imageId) {
 		// Get bitmap
