@@ -272,7 +272,7 @@ public class GLCanvas {
 
         GLTexture tex = textures.get(imageId);
         GLTexturedRect.draw(gl,
-                0, 0,
+                0f, 0f,
                 tex.getTextureWidth() * widthRepetitions,
                 tex.getTextureHeight() * heightRepetitions,
                 physicsRect.left * physicsRatio,

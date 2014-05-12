@@ -96,7 +96,7 @@ public class Platform extends Entity{
 	@Override
 	public void render(GLCanvas canvas, float timeElapsed) {
         canvas.saveState();
-        canvas.translatePhysics(getPosX(), getPosY() / 2); // TODO: place this as constant...
+        canvas.translatePhysics(getPosX(), getPosY() / 2);
         canvas.drawBitmap(R.drawable.back_platform, background, 1, background.height() / (height * 1.5f));
         canvas.restoreState();
 		canvas.saveState();

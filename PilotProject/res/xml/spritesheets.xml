@@ -273,4 +273,22 @@
             </Animation>
         </AnimationSwitcher>
     </Sheet>
+    <Sheet resId="seaweed">
+        <AnimationSwitcher name="seaweed">
+            <Animation name="default">
+                <Frame x="2" y="2" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="157" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="312" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="467" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="622" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="777" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="932" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="1087" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="1242" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="1397" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="1552" w="115" h="153" t="0.1" />
+			    <Frame x="2" y="1707" w="115" h="153" t="0.1" />
+            </Animation>
+        </AnimationSwitcher>
+    </Sheet>
 </Spritesheets>

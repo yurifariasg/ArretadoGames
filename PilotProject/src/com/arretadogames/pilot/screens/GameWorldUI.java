@@ -155,7 +155,6 @@ public class GameWorldUI extends GameScreen implements GameButtonListener {
 				getDimension(R.dimen.ui_buttons_height));
 		
 		pauseBt.render(canvas, timeElapsed);
-		pauseScreen.render(canvas, timeElapsed);
 		if (!p1.isDead()){
 			canvas.drawBitmap(p1.getStatusImg(), INIT_OF_STATUS_INTERVAL + calculateMapCompletion(p1.body.getPosition().x), 390,
 			        getDimension(R.dimen.progression_character_image_size), getDimension(R.dimen.progression_character_image_size));
@@ -230,6 +229,8 @@ public class GameWorldUI extends GameScreen implements GameButtonListener {
 		}
         
         canvas.drawBitmap(R.drawable.item_frame, PLAYER_2_ITEM_FRAME_RECT);
+
+        pauseScreen.render(canvas, timeElapsed);
 	}
 
 	@Override
@@ -381,7 +382,6 @@ public class GameWorldUI extends GameScreen implements GameButtonListener {
 		switch (buttonId) {
 		case PAUSE_BT:
 			pauseScreen.show();
-			System.out.println("APERTOU O BOTAO DE PAUSE ***********");
 			break;
 		}
 		

@@ -2,12 +2,17 @@ package com.arretadogames.pilot.entities;
 
 import android.graphics.Color;
 
+import com.arretadogames.pilot.R;
 import com.arretadogames.pilot.config.GameSettings;
 import com.arretadogames.pilot.entities.effects.EffectDescriptor;
 import com.arretadogames.pilot.entities.effects.EffectManager;
 import com.arretadogames.pilot.items.ItemType;
+import com.arretadogames.pilot.render.AnimationManager;
 import com.arretadogames.pilot.render.AnimationSwitcher;
+import com.arretadogames.pilot.render.PhysicsRect;
+import com.arretadogames.pilot.render.Renderable;
 import com.arretadogames.pilot.render.opengl.GLCanvas;
+import com.arretadogames.pilot.util.Util;
 
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -25,6 +30,8 @@ import java.util.List;
 public class Water extends Entity implements Steppable {
     
     private static final int WATER_LAYER_POS = -1;
+    private static final PhysicsRect SEAWEED_SIZE = new PhysicsRect(0.6f, 0.8f);
+    private static final PhysicsRect BORDER_SIZE = new PhysicsRect(0.6f, 0.6f);
     private static EffectDescriptor splashEffect;
     
     public static EffectDescriptor getSplashEffect() {
@@ -36,6 +43,21 @@ public class Water extends Entity implements Steppable {
         }
         
         return splashEffect;
+    }
+    
+    private class Seaweed implements Renderable {
+        public AnimationSwitcher animation;
+        public Vec2 position;
+        
+        @Override
+        public void render(GLCanvas canvas, float timeElapsed) {
+            canvas.saveState();
+            
+            canvas.translatePhysics(position.x, position.y);
+            animation.render(canvas, SEAWEED_SIZE, timeElapsed);
+            
+            canvas.restoreState();
+        }
     }
 	
 	private class Spring {
@@ -89,9 +111,10 @@ public class Water extends Entity implements Steppable {
 	private float waterWidth;
 	private float density;
 	private Fixture fixture;
+	private List<Seaweed> seaweeds;
 	
 	public Water(float x, float y, float width, float height, float density) {
-		super(x, y);
+		super(x, y - 0.5f); // TODO: Remove this on newer maps
 		this.waterWidth = width;
 		this.waterHeight = height;
 		this.density = density;
@@ -104,7 +127,25 @@ public class Water extends Entity implements Steppable {
 		fixture.setSensor(false);
 		
 		initializeWaterSprings();
+		initializeSeaweeds();
 	}
+	
+	private void initializeSeaweeds() {
+	    seaweeds = new ArrayList<Seaweed>();
+	    // Algorithm:
+	    // We add a random amount to X, and then add a seaweed there
+	    // Until we can't add anymore seaweeds (because it is outside the width)
+	    float x = SEAWEED_SIZE.width() * Util.random(1f, 2f);
+	    float waterStartX = getPosX() - this.waterWidth / 2;
+	    while (x < waterWidth - SEAWEED_SIZE.width()) {
+	        Seaweed sw = new Seaweed();
+	        sw.animation = AnimationManager.getInstance().getSprite("seaweed");
+	        sw.position = new Vec2(waterStartX + x, getPosY() - waterHeight + SEAWEED_SIZE.height() / 2 + 0.4f);
+	        seaweeds.add(sw);
+	        
+	        x += SEAWEED_SIZE.width() * Util.random(1f, 4f);
+	    }
+    }
 	
 	@Override
 	public void preSolve(Entity e, Contact contact, Manifold oldManifold) {
@@ -269,6 +310,12 @@ public class Water extends Entity implements Steppable {
 		float bottomY = getPosY() - waterHeight / 2;
 		float initialX = getPosX() - waterWidth / 2;
 		
+		// Draw Seaweeds...
+		
+		for (Seaweed seaweed : seaweeds) {
+		    seaweed.render(canvas, timeElapsed);
+		}
+		
 		for (int i = 1 ; i < springs.length ; i++) {
 			
 			canvas.drawRectFromPhysics(
@@ -287,6 +334,26 @@ public class Water extends Entity implements Steppable {
 					GLCanvas.physicsRatio * (initialX + springs[i].springRelativeX), GameSettings.TARGET_HEIGHT - GLCanvas.physicsRatio * (bottomY + springs[i].springHeight + WATER_TOP_PADDING),
 					WATER_SURFACE_LINE_WIDTH, WATER_BOTTOM_COLOR);
 		}
+		
+		
+		canvas.saveState();
+		
+		canvas.translatePhysics(
+		        getPosX() - waterWidth / 2 + BORDER_SIZE.width() / 2 - 0.1f,
+		        getPosY() - waterHeight / 2 + BORDER_SIZE.height() / 2 - 0.1f);
+		
+		canvas.drawBitmap(R.drawable.water_border_left, BORDER_SIZE);
+		
+		canvas.restoreState();
+		
+		canvas.saveState();
+        
+        canvas.translatePhysics(getPosX() + waterWidth / 2 - BORDER_SIZE.width() / 2 + 0.1f,
+                getPosY() - waterHeight / 2 + BORDER_SIZE.height() / 2 - 0.1f);
+        
+        canvas.drawBitmap(R.drawable.water_border_right, BORDER_SIZE);
+        
+        canvas.restoreState();
 		
 	}
 
@@ -327,6 +394,8 @@ public class Water extends Entity implements Steppable {
 		            springs[i + 1].springHeight += rightDeltas[i];
 		    }
 		}
+		
+		
 	}
 
 	private void applyBuoyancy(Entity caixa) {

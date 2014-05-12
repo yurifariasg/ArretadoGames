@@ -20,23 +20,23 @@ public class GLTexturedRect extends GLRect {
     private static void draw(GL10 gl){
 
     	// DRAW COMMAND
-		GLES11.glEnable(GL10.GL_TEXTURE_2D);
-		GLES11.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		GLES11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		GLES11.glEnable(GLES11.GL_TEXTURE_2D);
+		GLES11.glEnableClientState(GLES11.GL_TEXTURE_COORD_ARRAY);
+		GLES11.glEnableClientState(GLES11.GL_VERTEX_ARRAY);
 
 		// Tell OpenGL where our texture is located.
-		GLES11.glBindTexture(GL10.GL_TEXTURE_2D, image.getTextureID());
+		GLES11.glBindTexture(GLES11.GL_TEXTURE_2D, image.getTextureID());
 
 		// Telling OpenGL where our textureCoords are.
-		GLES11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
+		GLES11.glTexCoordPointer(2, GLES11.GL_FLOAT, 0, textureBuffer);
 		// Specifies the location and data format of the array of
 		// vertex
 		// coordinates to use when rendering.
-		GLES11.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		GLES11.glVertexPointer(3, GLES11.GL_FLOAT, 0, vertexBuffer);
 		// Draw elements command using indices so it knows which
 		// vertices go together to form each element
-		GLES11.glDrawElements(GL10.GL_TRIANGLES, INDICES.length,
-				GL10.GL_UNSIGNED_SHORT, indexBuffer);
+		GLES11.glDrawElements(GLES11.GL_TRIANGLES, INDICES.length,
+		        GLES11.GL_UNSIGNED_SHORT, indexBuffer);
 
 		// 0,0 ---
 		/*
@@ -73,17 +73,17 @@ public class GLTexturedRect extends GLRect {
     }
 
     private static void fillTextureCoordArray(float left, float top, float right, float bottom) {
-    	textureCoords[0] = 0.001f + (left) / image.getTextureWidth();
-		textureCoords[1] = 0.001f + (top) / image.getTextureHeight();
+    	textureCoords[0] = (left) / image.getTextureWidth();
+		textureCoords[1] = (top) / image.getTextureHeight();
 
-		textureCoords[2] = 0.001f + (left) / image.getTextureWidth();
+		textureCoords[2] = (left) / image.getTextureWidth();
 		textureCoords[3] = (bottom) / image.getTextureHeight();
 
 		textureCoords[4] = (right) / image.getTextureWidth();
 		textureCoords[5] = (bottom) / image.getTextureHeight();
 
 		textureCoords[6] = (right) / image.getTextureWidth();
-		textureCoords[7] = 0.001f + (top) / image.getTextureHeight();
+		textureCoords[7] = (top) / image.getTextureHeight();
 	}
 
 //    public static void draw(GL10 gl,
